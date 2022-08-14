@@ -1,0 +1,30 @@
+{
+  "open parenthesis": {
+    "prefix": "jj",
+    "body": ["(${0:})"]
+  },
+  "open array": {
+    "prefix": "kk",
+    "body": ["[${0:}]"]
+  },
+  "open bracket": {
+    "prefix": "ll",
+    "body": ["{${0:}}"]
+  },
+  "equals": {
+    "prefix": "hh",
+    "body": ["="]
+  },
+  "triple Equals": {
+    "prefix": "hhk",
+    "body": ["==="]
+  },
+  "plus": {
+    "prefix": "uu",
+    "body": ["+"]
+  },
+  "minus": {
+    "prefix": "oo",
+    "body": ["-"]
+  }
+}
