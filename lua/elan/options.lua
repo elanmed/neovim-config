@@ -14,7 +14,6 @@ h.set.fileencoding = "utf-8"
 h.set.signcolumn = "yes" -- needed for linting symbols
 h.set.showmode = false -- disrupts lualine
 h.set.lazyredraw = true -- maybe helps performance?
-h.set.cursorline = true -- highlight current line
 h.set.splitright = true -- when splitting vertically, open new split to the right
 
 -- backups
