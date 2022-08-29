@@ -11,4 +11,4 @@ vim.api.nvim_create_user_command("FindAndReplace", function(opts)
 	vim.api.nvim_command(string.format("cdo s/%s/%s", args[1], args[2]))
 end, { nargs = "*" })
 
-h.nmap("<leader>ee", ":FindAndReplace ", { silent = false })
+h.nmap("<leader>ir", ":FindAndReplace ", { silent = false })
