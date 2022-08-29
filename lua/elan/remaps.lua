@@ -1,7 +1,6 @@
 package.path = package.path .. ";../?.lua"
 local h = require("elan.helpers")
 
--- set leader before importing remaps with <leader>
 h.map("", "<space>", "<nop>", { silent = true })
 h.let.mapleader = " "
 
@@ -27,6 +26,8 @@ h.nmap("<leader>gd", ":NvimTreeClose<cr>:DiffviewOpen<cr>")
 h.nmap("<leader>gq", ":DiffviewClose<cr>")
 h.nmap("<leader>vs", ":vsplit<cr>")
 h.nmap("<leader>mp", ":MarkdownPreview<cr>")
+h.nmap("<leader>dl", "yyp")
+h.vmap("<leader>dl", "yp")
 
 h.nmap("<leader>s", ":w<cr>")
 h.nmap("<leader>w", ":q<cr>")

@@ -4,3 +4,4 @@ package.path = package.path .. ";../?.lua"
 require("elan.remaps")
 require("elan.options")
 require("elan.plugins")
+require("elan.functions")

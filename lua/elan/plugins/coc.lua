@@ -22,6 +22,7 @@ let g:coc_global_extensions = [
 \ 'coc-eslint',
 \ 'coc-snippets',
 \ 'coc-pairs',
+\ 'coc-sumneko-lua',
 \ ]
 ]])
 

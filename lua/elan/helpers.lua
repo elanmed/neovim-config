@@ -1,17 +1,30 @@
-local function map(mode, shortcut, command)
-	vim.api.nvim_set_keymap(mode, shortcut, command, { noremap = true, silent = true }) -- silent prevents from populating the command bar
+local function map(mode, shortcut, command, opts)
+	vim.api.nvim_set_keymap(
+		mode,
+		shortcut,
+		command,
+		vim.tbl_extend("keep", opts or {}, { noremap = true, silent = true })
+	) -- silent prevents from populating the command bar
 end
 
-local function nmap(shortcut, command)
-	map("n", shortcut, command)
+local function nmap(shortcut, command, opts)
+	map("n", shortcut, command, opts)
 end
 
-local function imap(shortcut, command)
-	map("i", shortcut, command)
+local function imap(shortcut, command, opts)
+	map("i", shortcut, command, opts)
 end
 
-local function vmap(shortcut, command)
-	map("v", shortcut, command)
+local function vmap(shortcut, command, opts)
+	map("v", shortcut, command, opts)
+end
+
+local function split(s, delimiter)
+	local result = {}
+	for match in (s .. delimiter):gmatch("(.-)" .. delimiter) do
+		table.insert(result, match)
+	end
+	return result
 end
 
 local helpers = {
@@ -20,6 +33,7 @@ local helpers = {
 	nmap = nmap,
 	imap = imap,
 	vmap = vmap,
-	map = vim.api.nvim_set_keymap,
+	map = map,
+	split = split,
 }
 return helpers
