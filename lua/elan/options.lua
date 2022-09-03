@@ -15,6 +15,7 @@ h.set.signcolumn = "yes" -- needed for linting symbols
 h.set.showmode = false -- disrupts lualine
 h.set.lazyredraw = true -- maybe helps performance?
 h.set.splitright = true -- when splitting vertically, open new split to the right
+h.set.relativenumber = true
 
 -- backups
 h.set.swapfile = false

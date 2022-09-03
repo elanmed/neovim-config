@@ -2,7 +2,6 @@ package.path = package.path .. ";../?.lua"
 local h = require("elan.helpers")
 
 require("nvim-tree").setup({
-	open_on_tab = true, -- makes the tree seem separate from the tabs
 	hijack_cursor = true,
 	view = {
 		width = 40,

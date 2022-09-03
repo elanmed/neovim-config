@@ -4,15 +4,10 @@ local h = require("elan.helpers")
 h.map("", "<space>", "<nop>", { silent = true })
 h.let.mapleader = " "
 
-h.nmap("W", "0")
-h.vmap("W", "0")
-h.nmap("E", "$")
-h.vmap("E", "$")
-
-h.nmap("H", "L")
-h.vmap("H", "L")
-h.nmap("L", "H")
-h.vmap("L", "H")
+--[[ h.nmap("W", "0") ]]
+--[[ h.vmap("W", "0") ]]
+--[[ h.nmap("E", "$") ]]
+--[[ h.vmap("E", "$") ]]
 
 h.nmap("<leader>o", "o<esc>")
 h.nmap("<leader>O", "O<esc>")

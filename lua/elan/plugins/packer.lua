@@ -59,6 +59,13 @@ return packer.startup({
 		use("lukas-reineke/indent-blankline.nvim")
 		use("tpope/vim-repeat")
 		use("ThePrimeagen/harpoon")
+		use({
+			"goolord/alpha-nvim",
+			requires = { "kyazdani42/nvim-web-devicons" },
+			config = function()
+				require("alpha").setup(require("alpha.themes.startify").config)
+			end,
+		})
 
 		-- themes
 		use("ElanMedoff/vscode.nvim")
@@ -72,7 +79,7 @@ return packer.startup({
 		-- git
 		use("lewis6991/gitsigns.nvim")
 		use("tpope/vim-fugitive")
-		use({ "sindrets/diffview.nvim", requires = "nvim-lua/plenary.nvim" })
+		--[[ use({ "sindrets/diffview.nvim", requires = "nvim-lua/plenary.nvim" }) ]]
 
 		-- tree
 		use("kyazdani42/nvim-web-devicons")
