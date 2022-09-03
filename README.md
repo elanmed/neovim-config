@@ -12,9 +12,6 @@ requirements:
   - see the nightly build
 - [packer](https://github.com/wbthomason/packer.nvim#quickstart)
 - [ripgrep](https://github.com/BurntSushi/ripgrep#installation) for fzf
-- [stylua](https://github.com/JohnnyMorganz/StyLua#from-cratesio) for lua formatting
-  - easiest to install with [rust](https://www.rust-lang.org/tools/install)
-- `:LspInstallInfo` for an interactive ui to download language servers
 
 ---
 
