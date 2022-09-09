@@ -38,10 +38,7 @@ return packer.startup({
 		use("easymotion/vim-easymotion")
 		use("psliwka/vim-smoothie")
 		use({ "kevinhwang91/nvim-bqf", ft = "qf" })
-		use({
-			"romgrk/barbar.nvim",
-			requires = { "kyazdani42/nvim-web-devicons" },
-		})
+		use("romgrk/barbar.nvim")
 		use("mg979/vim-visual-multi")
 		use({
 			"iamcco/markdown-preview.nvim",
@@ -59,11 +56,16 @@ return packer.startup({
 		use("lukas-reineke/indent-blankline.nvim")
 		use("tpope/vim-repeat")
 		use("ThePrimeagen/harpoon")
+		use("goolord/alpha-nvim")
 		use({
-			"goolord/alpha-nvim",
-			requires = { "kyazdani42/nvim-web-devicons" },
+			"AckslD/nvim-neoclip.lua",
+			requires = {
+				-- you'll need at least one of these
+				{ "nvim-telescope/telescope.nvim" },
+				{ "ibhagwan/fzf-lua" },
+			},
 			config = function()
-				require("alpha").setup(require("alpha.themes.startify").config)
+				require("neoclip").setup({})
 			end,
 		})
 
@@ -74,12 +76,14 @@ return packer.startup({
 
 		-- fzf
 		use({ "junegunn/fzf", run = "./install --bin" })
-		use({ "ibhagwan/fzf-lua", requires = { "kyazdani42/nvim-web-devicons" } })
+		use("ibhagwan/fzf-lua")
 
 		-- git
 		use("lewis6991/gitsigns.nvim")
 		use("tpope/vim-fugitive")
-		--[[ use({ "sindrets/diffview.nvim", requires = "nvim-lua/plenary.nvim" }) ]]
+
+		-- https://github.com/sindrets/diffview.nvim/commit/c244577dd425072275eff925e87739820ac5e0aa
+		use({ "sindrets/diffview.nvim", commit = "a2945c82a58f23fba15c1b5319642fd6b2666df7" })
 
 		-- tree
 		use("kyazdani42/nvim-web-devicons")
