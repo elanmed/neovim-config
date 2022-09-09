@@ -1,7 +1,7 @@
 local h = require("elan.helpers")
 
 -- remap leader before importing remaps that use it
-h.map("", "<space>", "<nop>", { silent = true })
+h.map("", "<space>", "<nop>")
 h.let.mapleader = " "
 
 require("elan.remaps")
