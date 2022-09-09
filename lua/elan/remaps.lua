@@ -1,17 +1,13 @@
 package.path = package.path .. ";../?.lua"
 local h = require("elan.helpers")
 
-h.map("", "<space>", "<nop>", { silent = true })
-h.let.mapleader = " "
-
 h.nmap("<leader>o", "o<esc>")
 h.nmap("<leader>O", "O<esc>")
 h.nmap("<leader>rr", "viwp")
 h.nmap("<leader>r;", "@:") -- repeat last command
-h.nmap([[<leader>']], [["]])
+h.nmap([[<leader>']], [["]]) -- for setting register
 h.nmap("<leader>p", ":pu<cr>") -- paste on line below
 h.nmap("<leader>P", ":pu!<cr>") -- paste on line above
-h.nmap("<leader>gb", ":Git blame")
 h.nmap("<leader>gd", ":NvimTreeClose<cr>:DiffviewOpen<cr>")
 h.nmap("<leader>gq", ":DiffviewClose<cr>")
 h.nmap("<leader>vs", ":vsplit<cr>")
@@ -36,10 +32,10 @@ h.vmap(">", ">gv")
 
 -- focusing
 h.nmap("<leader>f", "<C-w>w") -- toggle
-h.nmap("<leader>h", "<C-w>h")
-h.nmap("<leader>l", "<C-w>l")
-h.nmap("<leader>j", "<C-w>j")
-h.nmap("<leader>k", "<C-w>k")
+h.nmap("<leader>h", "<C-w>h") -- left
+h.nmap("<leader>l", "<C-w>l") -- right
+h.nmap("<leader>j", "<C-w>j") -- down
+h.nmap("<leader>k", "<C-w>k") -- up
 
 -- quickfix list
 h.nmap("gn", ":cnext<cr>")

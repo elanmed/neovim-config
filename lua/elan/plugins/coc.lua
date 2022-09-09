@@ -53,4 +53,4 @@ nnoremap <silent>gh :call ShowDocumentation()<cr>
 
 h.nmap("go", "<c-o>")
 h.nmap("gi", "<c-i>")
-h.nmap("<leader>gh", "<c-w>w:close<cr>")
+h.nmap("<leader>gh", "<c-w>w:close<cr>") -- close hover documentation
