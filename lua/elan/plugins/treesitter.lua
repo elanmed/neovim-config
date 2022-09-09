@@ -9,8 +9,6 @@ configs.setup({
 	indent = { enable = true },
 	rainbow = {
 		enable = true,
-		extended_mode = false, -- also highlight non-bracket delimiters like html tags, boolean or table
-		max_file_lines = nil, -- do not enable for files with more than n lines, int
 	},
 	autotag = {
 		enable = true,

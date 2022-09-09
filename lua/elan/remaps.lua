@@ -4,11 +4,6 @@ local h = require("elan.helpers")
 h.map("", "<space>", "<nop>", { silent = true })
 h.let.mapleader = " "
 
---[[ h.nmap("W", "0") ]]
---[[ h.vmap("W", "0") ]]
---[[ h.nmap("E", "$") ]]
---[[ h.vmap("E", "$") ]]
-
 h.nmap("<leader>o", "o<esc>")
 h.nmap("<leader>O", "O<esc>")
 h.nmap("<leader>rr", "viwp")
@@ -27,6 +22,9 @@ h.vmap("<leader>dl", "yp")
 h.nmap("<leader>s", ":w<cr>")
 h.nmap("<leader>w", ":q<cr>")
 h.nmap("<leader>q", ":qa<cr>")
+
+h.imap("<C-j>", "=")
+h.imap("<C-k>", "()<left>")
 
 -- copy path of file
 h.nmap("<leader>yy", [[:let @+ = expand("%")<cr>]])
