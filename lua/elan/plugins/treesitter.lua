@@ -9,6 +9,7 @@ configs.setup({
 	indent = { enable = true },
 	rainbow = {
 		enable = true,
+		extended_mode = false,
 	},
 	autotag = {
 		enable = true,

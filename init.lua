@@ -4,7 +4,7 @@ local h = require("elan.helpers")
 h.map("", "<space>", "<nop>")
 h.let.mapleader = " "
 
+require("elan.plugins")
 require("elan.remaps")
 require("elan.options")
-require("elan.plugins")
 require("elan.functions")
