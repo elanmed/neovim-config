@@ -81,7 +81,7 @@ return packer.startup({
 		use("tpope/vim-fugitive")
 
 		-- https://github.com/sindrets/diffview.nvim/commit/c244577dd425072275eff925e87739820ac5e0aa
-		use({ "sindrets/diffview.nvim", commit = "a2945c82a58f23fba15c1b5319642fd6b2666df7" })
+		use({ "sindrets/diffview.nvim", commit = "a45163cb9ee65742cf26b940c2b24cc652f295c9" })
 
 		-- tree
 		use("kyazdani42/nvim-web-devicons")
