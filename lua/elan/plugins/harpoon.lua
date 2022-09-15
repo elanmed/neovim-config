@@ -1,7 +1,11 @@
 package.path = package.path .. ";../?.lua"
 local h = require("elan.helpers")
 
-require("harpoon").setup({})
+local ok, harpoon = pcall(require, "harpoon")
+if not ok then
+  return
+end
+harpoon.setup({})
 
 h.nmap("<leader>aa", [[:lua require("harpoon.mark").add_file()<cr>]])
 h.nmap("<leader>at", [[:lua require("harpoon.ui").toggle_quick_menu()<cr>]])

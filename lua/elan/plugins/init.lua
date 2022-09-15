@@ -1,7 +1,6 @@
 package.path = package.path .. ";../?.lua"
 
 require("elan.plugins.packer")
-
 require("elan.plugins.alpha")
 require("elan.plugins.barbar")
 require("elan.plugins.coc")

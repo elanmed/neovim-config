@@ -1,18 +1,24 @@
 package.path = package.path .. ";../?.lua"
 local h = require("elan.helpers")
 
-require("fzf-lua").setup({
-	winopts = {
-		height = 0.85,
-		width = 0.90,
-		preview = {
-			scrollbar = false,
-			layout = "vertical",
-		},
-	},
-	grep = {
-		glob_flag = "--glob", -- ignore case
-	},
+local ok, fzf = pcall(require, "fzf-lua")
+if not ok then
+  return
+end
+
+
+fzf.setup({
+  winopts = {
+    height = 0.85,
+    width = 0.90,
+    preview = {
+      scrollbar = false,
+      layout = "vertical",
+    },
+  },
+  grep = {
+    glob_flag = "--glob", -- ignore case
+  },
 })
 
 h.nmap("<C-p>", [[<cmd>lua require('fzf-lua').files()<CR>]])

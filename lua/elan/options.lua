@@ -37,10 +37,3 @@ h.nmap("<leader>u", "za") -- toggle fold
 -- search
 h.set.ignorecase = true
 h.nmap("<leader>/t", ":noh<cr>") -- turn off highlighting
-
--- search case sensitive, whole word, and both
-vim.cmd([[
-  noremap <leader>/c /\C<left><left>
-  noremap <leader>/w /\<\><left><left>
-  noremap <leader>cw /\<\>\C<left><left><left><left>
-]])

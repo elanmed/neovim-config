@@ -50,3 +50,14 @@ h.imap("∆", "<esc>:m .+1<cr>==gi")
 h.imap("˚", "<esc>:m .-2<cr>==gi")
 h.vmap("∆", ":m '>+1<cr>gv=gv")
 h.vmap("˚", ":m '<-2<cr>gv=gv")
+
+-- search case sensitive, whole word, and both
+vim.cmd([[
+  noremap <leader>/c /\C<left><left>
+  noremap <leader>/w /\<\><left><left>
+  noremap <leader>cw /\<\>\C<left><left><left><left>
+]])
+h.nmap("n", "nzz")
+h.vmap("n", "nzz")
+h.nmap("N", "Nzz")
+h.vmap("N", "Nzz")
