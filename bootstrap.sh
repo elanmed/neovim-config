@@ -56,10 +56,12 @@ fi
 
 packer_directory="$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
 if [ ! -d "$packer_directory" ]; then
-  coloredEcho "installing packer" green
+  coloredEcho "installing packer, packages" green
+  nvim $HOME/.config/nvim/lua/elan/plugins/packer.lua
 else
   coloredEcho "packer already installed" blue
 fi
 
-# trigger an install
-nvim "$HOME/.config/nvim/lua/elan/plugins/packer.lua" -c "w"
+# increase num allowed open fd
+ulimit -n 1024
+nvim $HOME/.config/nvim/lua/elan/plugins/packer.lua -c "w"

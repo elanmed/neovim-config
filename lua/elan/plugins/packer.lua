@@ -86,11 +86,11 @@ return packer.startup({
     use("kyazdani42/nvim-web-devicons")
     use("kyazdani42/nvim-tree.lua")
 
-    -- TODO: figure out how to do this sync for bootstrapping, or defer installation completely
     -- treesitter
     use({
       "nvim-treesitter/nvim-treesitter",
-      run = ":TSUpdate",
+      -- https://github.com/rafamadriz/dotfiles/commit/c1268c73bdc7da52af0d57dcbca196ca3cb5ed79
+      run = function() require("nvim-treesitter.install").update() end,
     })
     use({ "windwp/nvim-ts-autotag", after = "nvim-treesitter" })
     use({ "p00f/nvim-ts-rainbow", after = "nvim-treesitter" })
