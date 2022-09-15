@@ -40,16 +40,6 @@ else
   coloredEcho "neovim already installed" blue
 fi
 
-packer_directory="$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
-if [ ! -d "$packer_directory" ]; then
-  coloredEcho "installing packer" green
-  # git clone --depth 1 https://github.com/wbthomason/packer.nvim ~/.local/share/nvim/site/pack/packer/start/packer.nvim
-  # nvim --headless -c 'packadd packer.nvim' 
-  nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
-else
-  coloredEcho "packer already installed" blue
-fi
-
 if [ "$(brew ls --versions ripgrep)" == "" ]; then
   coloredEcho "installing ripgrep" green
   brew install ripgrep
@@ -63,3 +53,13 @@ if [ "$(brew ls --versions fzf)" == "" ]; then
 else
   coloredEcho "fzf already installed" blue
 fi
+
+packer_directory="$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
+if [ ! -d "$packer_directory" ]; then
+  coloredEcho "installing packer" green
+else
+  coloredEcho "packer already installed" blue
+fi
+
+# trigger an install
+nvim "$HOME/.config/nvim/lua/elan/plugins/packer.lua" -c "w"

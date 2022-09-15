@@ -1,3 +1,4 @@
+-- https://github.com/wbthomason/packer.nvim#bootstrapping
 local ensure_packer = function()
   local fn = vim.fn
   local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
@@ -57,14 +58,13 @@ return packer.startup({
     use("tpope/vim-repeat")
     use("ThePrimeagen/harpoon")
     use("goolord/alpha-nvim")
-    use({
-      "AckslD/nvim-neoclip.lua",
-      requires = {
-        -- you'll need at least one of these
-        { "nvim-telescope/telescope.nvim" },
-        { "ibhagwan/fzf-lua" },
-      },
-    })
+    -- TODO: get working with fzf, or switch to telescope
+    --[[ use({ ]]
+    --[[   "AckslD/nvim-neoclip.lua", ]]
+    --[[   requires = { ]]
+    --[[     { "ibhagwan/fzf-lua" }, ]]
+    --[[   }, ]]
+    --[[ }) ]]
 
     -- themes
     use("ElanMedoff/vscode.nvim")
@@ -86,15 +86,16 @@ return packer.startup({
     use("kyazdani42/nvim-web-devicons")
     use("kyazdani42/nvim-tree.lua")
 
+    -- TODO: figure out how to do this sync for bootstrapping, or defer installation completely
     -- treesitter
     use({
       "nvim-treesitter/nvim-treesitter",
       run = ":TSUpdate",
     })
     use({ "windwp/nvim-ts-autotag", after = "nvim-treesitter" })
-    use("p00f/nvim-ts-rainbow")
-    use("lukas-reineke/indent-blankline.nvim")
-    use("JoosepAlviste/nvim-ts-context-commentstring")
+    use({ "p00f/nvim-ts-rainbow", after = "nvim-treesitter" })
+    use({ "lukas-reineke/indent-blankline.nvim", after = "nvim-treesitter" })
+    use({ "JoosepAlviste/nvim-ts-context-commentstring", after = "nvim-treesitter" })
 
     -- commenting
     use("numToStr/Comment.nvim")

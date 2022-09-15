@@ -8,7 +8,7 @@
 
 requirements:
 
-- [ neovim ](https://github.com/neovim/neovim/wiki/Installing-Neovim) >= 0.8
+- [neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim) >= 0.8
   - see the nightly build
 - [packer](https://github.com/wbthomason/packer.nvim#quickstart)
 - [ripgrep](https://github.com/BurntSushi/ripgrep#installation) for fzf
@@ -17,5 +17,4 @@ requirements:
 
 TODO:
 
-- script to bootstrap
-- add in protected calls
+- make bootstrap script more resilient

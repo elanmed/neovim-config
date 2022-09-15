@@ -5,6 +5,7 @@ h.map("", "<space>", "<nop>")
 h.let.mapleader = " "
 
 
+-- TODO: is this necessary for bootstrapping?
 local packer_status_ok = pcall(require, "packer")
 if not packer_status_ok then
   require("elan.plugins.packer")
