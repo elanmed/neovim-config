@@ -7,8 +7,4 @@
     "prefix": "uu",
     "body": ["+"]
   },
-  "minus": {
-    "prefix": "oo",
-    "body": ["-"]
-  }
 }

@@ -1,65 +1,51 @@
 #!/bin/bash
-function coloredEcho(){
-    local exp=$1;
-    local color=$2;
-    if ! [[ $color =~ '^[0-9]$' ]] ; then
-       case $(echo $color | tr '[:upper:]' '[:lower:]') in
-        black) color=0 ;;
-        red) color=1 ;;
-        green) color=2 ;;
-        yellow) color=3 ;;
-        blue) color=4 ;;
-        magenta) color=5 ;;
-        cyan) color=6 ;;
-        white|*) color=7 ;; # white or invalid color
-       esac
-    fi
-    tput setaf $color;
-    echo $exp;
+function cecho(){
+    tput setaf $2;
+    echo $1;
     tput sgr0;
 }
 
 if [ "$(uname)" != "Darwin" ]; then
-  coloredEcho "sorry! this script only supports macos" red
+  cecho "sorry! this script only supports macos" 1
   exit 1
 fi
 
 if [ "$(command -v brew)" == "" ]; then
-    coloredEcho "installing hombrew" green
+    cecho "installing hombrew" 2
     NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 else
-  coloredEcho "homebrew already installed" blue
+  cecho "homebrew already installed" 4
 fi
 
 # https://github.com/neovim/neovim/wiki/Installing-Neovim#homebrew-on-macos-or-linux  
 # nightly build
 if [ "$(brew ls --versions neovim)" == "" ]; then
-  coloredEcho "installing neovim" green
+  cecho "installing neovim" 2
   brew install --HEAD neovim
 else
-  coloredEcho "neovim already installed" blue
+  cecho "neovim already installed" 4
 fi
 
 if [ "$(brew ls --versions ripgrep)" == "" ]; then
-  coloredEcho "installing ripgrep" green
+  cecho "installing ripgrep" 2
   brew install ripgrep
 else
-  coloredEcho "ripgrep already installed" blue
+  cecho "ripgrep already installed" 4
 fi
 
 if [ "$(brew ls --versions fzf)" == "" ]; then
-  coloredEcho "installing fzf" green
+  cecho "installing fzf" 2
   brew install fzf
 else
-  coloredEcho "fzf already installed" blue
+  cecho "fzf already installed" 4
 fi
 
 packer_directory="$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
 if [ ! -d "$packer_directory" ]; then
-  coloredEcho "installing packer, packages" green
+  cecho "installing packer, packages" 2
   nvim $HOME/.config/nvim/lua/elan/plugins/packer.lua
 else
-  coloredEcho "packer already installed" blue
+  cecho "packer already installed" 4
 fi
 
 # increase num allowed open fd

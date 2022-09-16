@@ -1,20 +1,15 @@
-## neovim
+# neovim config
 
-- a minimal(ish) config written entirely in lua, taking advantage of the built-in lsp support for proper [t/jsx commenting](https://github.com/JoosepAlviste/nvim-ts-context-commentstring) and [t/jsx pair renaming](https://github.com/windwp/nvim-ts-autotag)
+- a minimal(ish) config written entirely in lua. uses [coc](https://github.com/neoclide/coc.nvim) for completions/linting, built-in treesitter support for proper [t/jsx commenting](https://github.com/JoosepAlviste/nvim-ts-context-commentstring) and [t/jsx pair renaming](https://github.com/windwp/nvim-ts-autotag)
 - if it's a default, I try not to include it in my config
 - heavily inspired by [this repo](https://github.com/LunarVim/Neovim-from-scratch)
+- in its own repo so I can easily pull changes across my different computers/servers
 
 ---
 
-requirements:
+To bootstrap with external dependencies, run:
 
-- [neovim](https://github.com/neovim/neovim/wiki/Installing-Neovim) >= 0.8
-  - see the nightly build
-- [packer](https://github.com/wbthomason/packer.nvim#quickstart)
-- [ripgrep](https://github.com/BurntSushi/ripgrep#installation) for fzf
-
----
-
-TODO:
-
-- make bootstrap script more resilient
+```bash
+chmod +x bootstrap.sh # make script executable
+./bootstrap.sh
+```

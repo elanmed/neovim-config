@@ -12,15 +12,20 @@ h.nmap("<leader>gd", ":NvimTreeClose<cr>:DiffviewOpen<cr>")
 h.nmap("<leader>gq", ":DiffviewClose<cr>")
 h.nmap("<leader>vs", ":vsplit<cr>")
 h.nmap("<leader>mp", ":MarkdownPreview<cr>")
+
+-- duplicate lines
 h.nmap("<leader>dl", "yyp")
-h.vmap("<leader>dl", "yp")
+h.vmap("<leader>dl", "y`>p") -- move to end of selection, then yank
 
 h.nmap("<leader>s", ":w<cr>")
 h.nmap("<leader>w", ":q<cr>")
 h.nmap("<leader>q", ":qa<cr>")
 
-h.imap("<C-j>", "=")
-h.imap("<C-k>", "()<left>")
+-- hard to reach keys that can't be easily replaced with a snippet
+h.imap("<C-h>", "=")
+h.imap("<C-j>", "()<left>")
+h.imap("<C-k>", "-")
+h.imap("<C-l>", "_")
 
 -- copy path of file
 h.nmap("<leader>yy", [[:let @+ = expand("%")<cr>]])
@@ -57,6 +62,8 @@ vim.cmd([[
   noremap <leader>/w /\<\><left><left>
   noremap <leader>cw /\<\>\C<left><left><left><left>
 ]])
+
+-- keep search result in the middle of the page
 h.nmap("n", "nzz")
 h.vmap("n", "nzz")
 h.nmap("N", "Nzz")
