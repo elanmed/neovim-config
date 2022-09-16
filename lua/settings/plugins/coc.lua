@@ -41,14 +41,6 @@ h.imap('<TAB>', (
   ), { expr = true }
 )
 
--- TODO: test these
--- h.nmap('<C-f>', [[coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"]], { expr = true })
--- h.nmap('<C-b>', [[coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"]], { expr = true })
--- h.imap('<C-f>', [[coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"]], { expr = true })
--- h.imap('<C-b>', [[coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"]], { expr = true })
--- h.vmap('<C-f>', [[coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"]], { expr = true })
--- h.vmap('<C-b>', [[coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"]], { expr = true })
-
 h.imap('<c-space>', 'coc#refresh()', { expr = true })
 h.imap('<cr>', ([[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"]]), { expr = true })
 

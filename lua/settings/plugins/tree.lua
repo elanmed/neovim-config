@@ -9,7 +9,7 @@ end
 tree.setup({
   hijack_cursor = true,
   view = {
-    width = 40,
+    width = 60,
     mappings = {
       list = {
         { key = "Y", action = "copy_path" },
