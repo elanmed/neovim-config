@@ -1,5 +1,5 @@
 package.path = package.path .. ";../?.lua"
-local h = require("elan.helpers")
+local h = require("settings.helpers")
 
 local ok, tree = pcall(require, "nvim-tree")
 if not ok then

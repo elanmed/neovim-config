@@ -1,5 +1,5 @@
 package.path = package.path .. ";../?.lua"
-local h = require("elan.helpers")
+local h = require("settings.helpers")
 
 h.nmap("<leader>o", "o<esc>")
 h.nmap("<leader>O", "O<esc>")

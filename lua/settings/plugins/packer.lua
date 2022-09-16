@@ -16,7 +16,7 @@ local packer_bootstrap = ensure_packer()
 vim.cmd([[
   augroup packer_user_config
     autocmd!
-    autocmd BufWritePost /Users/elanmedoff/.config/nvim/lua/elan/plugins/packer.lua source <afile> | PackerSync
+    autocmd BufWritePost /Users/elanmedoff/.config/nvim/lua/settings/plugins/packer.lua source <afile> | PackerSync
   augroup end
 ]])
 

@@ -1,5 +1,5 @@
 package.path = package.path .. ";../?.lua"
-local h = require("elan.helpers")
+local h = require("settings.helpers")
 
 vim.cmd("colorscheme vscode")
 

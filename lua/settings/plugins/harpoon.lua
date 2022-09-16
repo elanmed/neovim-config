@@ -1,5 +1,5 @@
 package.path = package.path .. ";../?.lua"
-local h = require("elan.helpers")
+local h = require("settings.helpers")
 
 local ok, harpoon = pcall(require, "harpoon")
 if not ok then

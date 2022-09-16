@@ -1,5 +1,5 @@
 package.path = package.path .. ";../?.lua"
-local h = require("elan.helpers")
+local h = require("settings.helpers")
 
 --[[ function elan.sample_fn() ]]
 --[[ 	print("sample_fn") ]]

@@ -43,11 +43,11 @@ fi
 packer_directory="$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
 if [ ! -d "$packer_directory" ]; then
   cecho "installing packer, packages" 2
-  nvim $HOME/.config/nvim/lua/elan/plugins/packer.lua
+  nvim $HOME/.config/nvim/lua/settings/plugins/packer.lua
 else
   cecho "packer already installed" 4
 fi
 
 # increase num allowed open fd
 ulimit -n 1024
-nvim $HOME/.config/nvim/lua/elan/plugins/packer.lua -c "w"
+nvim $HOME/.config/nvim/lua/settings/plugins/packer.lua -c "w"

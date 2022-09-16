@@ -1,5 +1,5 @@
 package.path = package.path .. ";../?.lua"
-local h = require("elan.helpers")
+local h = require("settings.helpers")
 
 local ok, toggleterm = pcall(require, "toggleterm")
 if not ok then
