@@ -58,13 +58,19 @@ return packer.startup({
     use("tpope/vim-repeat")
     use("ThePrimeagen/harpoon")
     use("goolord/alpha-nvim")
-    -- TODO: get working with fzf, or switch to telescope
-    --[[ use({ ]]
-    --[[   "AckslD/nvim-neoclip.lua", ]]
-    --[[   requires = { ]]
-    --[[     { "ibhagwan/fzf-lua" }, ]]
-    --[[   }, ]]
-    --[[ }) ]]
+
+    -- telescope
+    use({
+      'nvim-telescope/telescope.nvim', branch = '0.1.x',
+    })
+    use({ 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' })
+    use({
+      "AckslD/nvim-neoclip.lua",
+    })
+    use {
+      "nvim-telescope/telescope-frecency.nvim",
+      requires = { "kkharji/sqlite.lua" }
+    }
 
     -- themes
     use("ElanMedoff/vscode.nvim")

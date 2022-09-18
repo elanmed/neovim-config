@@ -7,7 +7,7 @@ if not ok then
 end
 
 toggleterm.setup({})
-h.map("", "<C-g>", ":ToggleTerm direction=float<CR>")
+h.map("", "<C-g>", ":ToggleTerm direction=horizontal<CR>")
 vim.cmd([[
   autocmd TermEnter term://*toggleterm#* tnoremap <silent><C-g> <Cmd>exe v:count1 . "ToggleTerm"<CR>
 ]])
