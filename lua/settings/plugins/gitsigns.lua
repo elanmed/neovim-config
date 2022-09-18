@@ -11,4 +11,4 @@ gitsigns.setup({
     virt_text_pos = "right_align",
   },
 })
-h.nmap("<leader>gl", ":Gitsigns toggle_current_line_blame<CR>")
+h.nmap("<leader>gl", "<cmd>Gitsigns toggle_current_line_blame<cr>")

@@ -35,20 +35,20 @@ end
 
 h.imap('<TAB>', (
   [[ coc#pum#visible() ? coc#_select_confirm() : ]] ..
-      [[ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" : ]] ..
+      [[ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<cr>" : ]] ..
       [[ v:lua.check_backspace() ? "\<TAB>" : ]] ..
       [[ coc#refresh() ]]
   ), { expr = true }
 )
 
 h.imap('<c-space>', 'coc#refresh()', { expr = true })
-h.imap('<cr>', ([[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"]]), { expr = true })
+h.imap('<cr>', ([[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<cr>\<c-r>=coc#on_enter()\<CR>"]]), { expr = true })
 
 h.nmap('gd', '<Plug>(coc-definition)')
 h.nmap('gy', '<Plug>(coc-type-definition)')
 h.nmap('gu', '<Plug>(coc-references)')
 h.nmap('ga', '<Plug>(coc-codeaction)')
-h.nmap('gh', ':call v:lua.show_docs()<cr>')
+h.nmap('gh', '<cmd>call v:lua.show_docs()<cr>')
 h.nmap("go", "<c-o>")
 h.nmap("gi", "<c-i>")
-h.nmap("<leader>gh", "<c-w>w:close<cr>") -- close hover documentation
+h.nmap("<leader>gh", "<c-w>w<cmd>close<cr>") -- close hover documentation

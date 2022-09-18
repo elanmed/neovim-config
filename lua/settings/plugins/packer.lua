@@ -20,7 +20,6 @@ vim.cmd([[
   augroup end
 ]])
 
--- use a protected call so we don't error out on first use
 local ok, packer = pcall(require, "packer")
 if not ok then
   return
@@ -76,10 +75,6 @@ return packer.startup({
     use("ElanMedoff/vscode.nvim")
     use("ElanMedoff/tokyonight.nvim")
     use("Everblush/everblush.nvim")
-
-    -- fzf
-    use({ "junegunn/fzf", run = "./install --bin" })
-    use("ibhagwan/fzf-lua")
 
     -- git
     use("lewis6991/gitsigns.nvim")

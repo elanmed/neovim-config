@@ -36,4 +36,4 @@ h.nmap("<leader>u", "za") -- toggle fold
 
 -- search
 h.set.ignorecase = true
-h.nmap("<leader>/t", ":noh<cr>") -- turn off highlighting
+h.nmap("<leader>/t", "<cmd>noh<cr>") -- turn off highlighting

@@ -13,7 +13,7 @@ tree.setup({
     mappings = {
       list = {
         { key = "Y", action = "copy_path" },
-        { key = "<CR>", action = "tabnew" },
+        { key = "<cr>", action = "tabnew" },
         { key = "s", action = "" },
       },
     },
@@ -31,5 +31,5 @@ tree.setup({
   },
 })
 
-h.nmap("<leader>rb", ":NvimTreeToggle<CR>")
-h.nmap("<leader>re", ":NvimTreeFindFile<CR>")
+h.nmap("<leader>rb", "<cmd>NvimTreeToggle<cr>")
+h.nmap("<leader>re", "<cmd>NvimTreeFindFile<cr>")
