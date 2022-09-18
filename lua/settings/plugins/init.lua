@@ -1,6 +1,7 @@
 package.path = package.path .. ";../?.lua"
 
 require("settings.plugins.packer")
+
 require("settings.plugins.alpha")
 require("settings.plugins.barbar")
 require("settings.plugins.coc")
