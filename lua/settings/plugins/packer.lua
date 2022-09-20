@@ -38,7 +38,6 @@ return packer.startup({
     use("nvim-lualine/lualine.nvim")
     use("easymotion/vim-easymotion")
     use("psliwka/vim-smoothie")
-    use({ "kevinhwang91/nvim-bqf", ft = "qf" })
     use("romgrk/barbar.nvim")
     use("mg979/vim-visual-multi")
     use({
@@ -57,6 +56,10 @@ return packer.startup({
     use("tpope/vim-repeat")
     use("ThePrimeagen/harpoon")
     use("goolord/alpha-nvim")
+
+    -- bqf
+    use({ "kevinhwang91/nvim-bqf", ft = "qf" })
+    use({ 'junegunn/fzf', run = './install --bin', }) -- for fuzzy searching within a list
 
     -- telescope
     use({
@@ -79,11 +82,10 @@ return packer.startup({
     -- git
     use("lewis6991/gitsigns.nvim")
     use("tpope/vim-fugitive")
-
     -- https://github.com/sindrets/diffview.nvim/commit/c244577dd425072275eff925e87739820ac5e0aa
     use({ "sindrets/diffview.nvim", commit = "a45163cb9ee65742cf26b940c2b24cc652f295c9" })
 
-    -- tree
+    -- file tree
     use("kyazdani42/nvim-web-devicons")
     use("kyazdani42/nvim-tree.lua")
 
