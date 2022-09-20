@@ -1,20 +1,20 @@
 package.path = package.path .. ";../?.lua"
 local h = require("settings.helpers")
 
-local ok, telescope = pcall(require, "telescope")
-if not ok then
+local telescope_ok, telescope = pcall(require, "telescope")
+if not telescope_ok then
+  return
+end
+local actions_ok, actions = pcall(require, "telescope.actions")
+if not actions_ok then
+  return
+end
+local action_state_ok, action_state = pcall(require, "telescope.actions.state")
+if not action_state_ok then
   return
 end
 
--- TODO: is a pcall necessary here?
-local actions = require("telescope.actions")
-local action_state = require("telescope.actions.state")
-
 local custom_actions = {}
-
-local preview_opts = {
-  preview_width = 0.3
-}
 
 function custom_actions.fzf_multi_select(prompt_bufnr)
   local function get_table_size(t)
@@ -36,6 +36,10 @@ function custom_actions.fzf_multi_select(prompt_bufnr)
   end
 end
 
+local shared_layout_config = {
+  preview_width = 0.3
+}
+
 telescope.setup({
   defaults = {
     mappings = {
@@ -45,7 +49,6 @@ telescope.setup({
       },
       i = {
         ["<cr>"] = custom_actions.fzf_multi_select,
-        -- TODO: why isn't this working?
         ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
         ["<s-tab>"] = actions.toggle_selection + actions.move_selection_previous,
       }
@@ -54,15 +57,15 @@ telescope.setup({
   pickers = {
     live_grep = {
       theme = "ivy",
-      layout_config = preview_opts
+      layout_config = shared_layout_config
     },
     grep_string = {
       theme = "ivy",
-      layout_config = preview_opts
+      layout_config = shared_layout_config
     },
     resume = {
       theme = "ivy",
-      layout_config = preview_opts
+      layout_config = shared_layout_config
     },
     find_files = {
       theme = "ivy",
@@ -72,19 +75,19 @@ telescope.setup({
   extensions = {
     frecency = {
       default_workspace = 'CWD',
-      theme = "ivy"
     },
     neoclip = {
+      -- TODO: why doesn't this work?
       theme = "ivy"
     }
   }
 })
 telescope.load_extension('fzf')
-telescope.load_extension("frecency") -- loads results based on frequency
+telescope.load_extension("frecency") -- loads results based on frequency and recency
 telescope.load_extension('neoclip')
 
--- TODO: figure out ivy theme in setup
--- h.nmap('<C-p>', [[<cmd>lua require('telescope').extensions.frecency.frecency(require('telescope.themes').get_ivy({}))<cr>]]) -- find files
+-- TODO: why is this so slow in large projects?
+-- h.nmap('<C-p>', [[<cmd>lua require('telescope').extensions.frecency.frecency(require('telescope.themes').get_ivy({}))<cr>]])
 h.nmap('<C-p>', [[<cmd>lua require('telescope.builtin').find_files()<cr>]]) -- find files
 h.nmap("<leader>zf", [[<cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Grep For > ")})<cr>]]) -- enter before grep
 h.nmap("<leader>zu", [[<cmd>lua require('telescope.builtin').resume()<cr>]])
