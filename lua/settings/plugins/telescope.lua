@@ -12,6 +12,10 @@ local action_state = require("telescope.actions.state")
 
 local custom_actions = {}
 
+local preview_opts = {
+  preview_width = 0.3
+}
+
 function custom_actions.fzf_multi_select(prompt_bufnr)
   local function get_table_size(t)
     local count = 0
@@ -50,13 +54,20 @@ telescope.setup({
   pickers = {
     live_grep = {
       theme = "ivy",
+      layout_config = preview_opts
     },
     grep_string = {
       theme = "ivy",
+      layout_config = preview_opts
     },
     resume = {
       theme = "ivy",
+      layout_config = preview_opts
     },
+    find_files = {
+      theme = "ivy",
+      previewer = false
+    }
   },
   extensions = {
     frecency = {
@@ -73,8 +84,8 @@ telescope.load_extension("frecency") -- loads results based on frequency
 telescope.load_extension('neoclip')
 
 -- TODO: figure out ivy theme in setup
-h.nmap('<C-p>',
-  [[<cmd>lua require('telescope').extensions.frecency.frecency(require('telescope.themes').get_ivy({}))<cr>]]) -- find files
+-- h.nmap('<C-p>', [[<cmd>lua require('telescope').extensions.frecency.frecency(require('telescope.themes').get_ivy({}))<cr>]]) -- find files
+h.nmap('<C-p>', [[<cmd>lua require('telescope.builtin').find_files()<cr>]]) -- find files
 h.nmap("<leader>zf", [[<cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Grep For > ")})<cr>]]) -- enter before grep
 h.nmap("<leader>zu", [[<cmd>lua require('telescope.builtin').resume()<cr>]])
 
