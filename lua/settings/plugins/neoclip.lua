@@ -6,7 +6,6 @@ if not ok then
   return
 end
 
--- https://github.com/AckslD/nvim-neoclip.lua#configuration
 neoclip.setup()
 h.nmap("<leader>y",
   "<cmd>lua require('telescope').extensions.neoclip.default(require('telescope.themes').get_ivy({}))<cr>")

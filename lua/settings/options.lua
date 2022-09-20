@@ -15,9 +15,9 @@ h.set.signcolumn = "yes" -- needed for linting symbols
 h.set.showmode = false -- disrupts lualine
 h.set.lazyredraw = true -- maybe helps performance?
 h.set.splitright = true -- when splitting vertically, open new split to the right
-h.set.relativenumber = true
+h.set.relativenumber = true -- useful for multiline j, k
 
--- backups
+-- disable vim backups
 h.set.swapfile = false
 h.set.backup = false
 h.set.writebackup = false

@@ -1,18 +1,20 @@
 package.path = package.path .. ";../?.lua"
 local h = require("settings.helpers")
 
+h.nmap("<leader>af", "<C-6>") -- alternate file
+h.nmap("J", "gJ") -- J without whitespace
 h.nmap("<leader>o", "o<esc>")
 h.nmap("<leader>O", "O<esc>")
 h.nmap("<leader>rr", "viwp")
 h.nmap("<leader>r;", "@:") -- repeat last command
 h.nmap([[<leader>']], [["]]) -- for setting register
-h.nmap("<leader>gd", "<cmd>NvimTreeClose<cr>:DiffviewOpen<cr>")
-h.nmap("<leader>gq", "<cmd>DiffviewClose<cr>")
 h.nmap("<leader>vs", "<cmd>vsplit<cr>")
-h.nmap("<leader>mp", "<cmd>MarkdownPreview<cr>")
-
 h.nmap("<leader>p", "<cmd>pu<cr>") -- paste on line below
 h.nmap("<leader>P", "<cmd>pu!<cr>") -- paste on line above
+
+h.nmap("<leader>gd", "<cmd>NvimTreeClose<cr>:DiffviewOpen<cr>")
+h.nmap("<leader>gq", "<cmd>DiffviewClose<cr>")
+h.nmap("<leader>mp", "<cmd>MarkdownPreview<cr>")
 
 -- duplicate lines
 h.nmap("<leader>dl", "yyp")
@@ -38,10 +40,6 @@ h.vmap(">", ">gv")
 
 -- focusing
 h.nmap("<leader>f", "<C-w>w") -- toggle
---[[ h.nmap("<leader>h", "<C-w>h") -- left ]]
---[[ h.nmap("<leader>l", "<C-w>l") -- right ]]
---[[ h.nmap("<leader>j", "<C-w>j") -- down ]]
---[[ h.nmap("<leader>k", "<C-w>k") -- up ]]
 
 -- quickfix list
 h.nmap("gn", "<cmd>cnext<cr>")
@@ -81,5 +79,3 @@ vim.cmd([[
   nnoremap <expr> j v:count ? 'j' : 'gj'
   nnoremap <expr> k v:count ? 'k' : 'gk'
 ]])
-
-h.nmap("J", "gJ")
