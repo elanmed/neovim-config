@@ -1,7 +1,7 @@
 #!/bin/bash
 function cecho(){
     tput setaf $2;
-    echo "$1";
+    echo $1;
     tput sgr0;
 }
 
@@ -9,27 +9,26 @@ function hasHomebrewPackage() {
   if [ "$(brew ls --versions "$1")" == "" ]; then echo 0; else echo 1; fi
 }
 
-function hasAptPackage() {
-  echo $(dpkg-query -W -f='${Status}' nano 2>/dev/null | grep -c "ok installed");
-}
-
 function maybeInstallPackage() {
-  if [ "$(uname)" == "Darwin" ]; then
-    if [ "$(hasHomebrewPackage "$1")" == 1 ]; then
-      cecho "$1 already installed" 4
-    else
-      cecho "installing $1" 2
-      if [ "$1" == "neovim" ]; then brew install --HEAD "$1"; else brew install "$1"; fi
-    fi
+  if [ "$(hasHomebrewPackage "$1")" == 1 ]; then
+    cecho "$1 already installed" 4
   else
-    if [ "$(hasAptPackage "$1")" == 1]; then
-      cecho "$1 already installed" 4
-    else
-      cecho "installing $1" 2
-      apt install "$1"
-    fi
+    cecho "installing $1" 2
+    if [ "$1" == "neovim" ]; then brew install --HEAD "$1"; else brew install "$1"; fi
   fi
 }
+
+if [ "$(uname)" != "Darwin" ]; then
+  cecho "sorry! this script only supports macos" 1
+  exit 1
+fi
+
+if [ "$(command -v brew)" == "" ]; then
+    cecho "installing hombrew" 2
+    NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+else
+  cecho "homebrew already installed" 4
+fi
 
 maybeInstallPackage neovim
 maybeInstallPackage ripgrep
