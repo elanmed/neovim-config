@@ -58,7 +58,7 @@ return packer.startup({
     use("goolord/alpha-nvim")
 
     -- bqf
-    use({ "kevinhwang91/nvim-bqf", ft = "qf" })
+    use("kevinhwang91/nvim-bqf")
     use({ 'junegunn/fzf', run = './install --bin', }) -- for fuzzy searching within a list
 
     -- telescope

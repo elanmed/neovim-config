@@ -45,7 +45,8 @@ telescope.setup({
     mappings = {
       n = {
         ["<cr>"] = custom_actions.fzf_multi_select,
-        ["<C-c>"] = actions.close
+        ["<C-c>"] = actions.close,
+        ["gq"] = actions.close
       },
       i = {
         ["<cr>"] = custom_actions.fzf_multi_select,

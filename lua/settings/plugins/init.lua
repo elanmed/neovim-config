@@ -4,6 +4,7 @@ require("settings.plugins.packer")
 
 require("settings.plugins.alpha")
 require("settings.plugins.barbar")
+require("settings.plugins.bqf")
 require("settings.plugins.coc")
 require("settings.plugins.comment")
 require("settings.plugins.diffview")
