@@ -13,3 +13,15 @@ To bootstrap with external dependencies, run:
 chmod +x bootstrap.sh # make script executable
 ./bootstrap.sh
 ```
+
+To run a barebones config with no dependencies, run:
+
+```bash
+nvim -u ~/.config/nvim/lua/barebones/init.lua
+```
+
+or create an alias
+
+```bash
+alias nvim="nvim -u ~/.config/nvim/lua/barebones/init.lua"
+```
