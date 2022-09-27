@@ -1,5 +1,5 @@
-package.path = package.path .. ";../?.lua"
-local h = require("settings.helpers")
+package.path = package.path .. ";" .. os.getenv("HOME") .. "/.config/nvim/?.lua"
+local h = require("shared.helpers")
 
 local ok, neoclip = pcall(require, "neoclip")
 if not ok then

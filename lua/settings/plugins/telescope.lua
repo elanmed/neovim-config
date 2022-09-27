@@ -1,5 +1,5 @@
-package.path = package.path .. ";../?.lua"
-local h = require("settings.helpers")
+package.path = package.path .. ";" .. os.getenv("HOME") .. "/.config/nvim/?.lua"
+local h = require("shared.helpers")
 
 local telescope_ok, telescope = pcall(require, "telescope")
 if not telescope_ok then

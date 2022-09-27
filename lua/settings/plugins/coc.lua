@@ -1,5 +1,5 @@
-package.path = package.path .. ";../?.lua"
-local h = require("settings.helpers")
+package.path = package.path .. ";" .. os.getenv("HOME") .. "/.config/nvim/?.lua"
+local h = require("shared.helpers")
 
 -- https://github.com/samhvw8/mvim/blob/master/lua/core/coc.lua
 vim.g.coc_global_extensions = {
@@ -44,7 +44,7 @@ h.imap('<TAB>', (
 h.imap('<c-space>', 'coc#refresh()', { expr = true })
 h.imap('<cr>', ([[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<cr>\<c-r>=coc#on_enter()\<CR>"]]), { expr = true })
 
-h.nmap('gd', '<Plug>(coc-definition)')
+h.nmap('gd', '<Plug>(coc-definition)zz')
 h.nmap('gy', '<Plug>(coc-type-definition)')
 h.nmap('gu', '<Plug>(coc-references)')
 h.nmap('ga', '<Plug>(coc-codeaction)')

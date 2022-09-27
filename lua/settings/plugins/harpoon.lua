@@ -1,5 +1,5 @@
-package.path = package.path .. ";../?.lua"
-local h = require("settings.helpers")
+package.path = package.path .. ";" .. os.getenv("HOME") .. "/.config/nvim/?.lua"
+local h = require("shared.helpers")
 
 local ok, harpoon = pcall(require, "harpoon")
 if not ok then

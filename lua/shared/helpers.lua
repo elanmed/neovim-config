@@ -19,14 +19,6 @@ local function vmap(shortcut, command, opts)
   map("v", shortcut, command, opts)
 end
 
-local function split(s, delimiter)
-  local result = {}
-  for match in (s .. delimiter):gmatch("(.-)" .. delimiter) do
-    table.insert(result, match)
-  end
-  return result
-end
-
 local helpers = {
   set = vim.opt,
   let = vim.g,
@@ -34,6 +26,5 @@ local helpers = {
   imap = imap,
   vmap = vmap,
   map = map,
-  split = split,
 }
 return helpers

@@ -1,5 +1,13 @@
-package.path = package.path .. ";../?.lua"
-local h = require("settings.helpers")
+package.path = package.path .. ";" .. os.getenv("HOME") .. "/.config/nvim/?.lua"
+local h = require("shared.helpers")
+
+local function split(s, delimiter)
+  local result = {}
+  for match in (s .. delimiter):gmatch("(.-)" .. delimiter) do
+    table.insert(result, match)
+  end
+  return result
+end
 
 --[[ function elan.sample_fn() ]]
 --[[ 	print("sample_fn") ]]
@@ -7,7 +15,7 @@ local h = require("settings.helpers")
 --[[ h.nmap("", ":lua elan.sample_fn()<cr>") ]]
 
 vim.api.nvim_create_user_command("FindAndReplace", function(opts)
-  local args = h.split(opts.args, " ")
+  local args = split(opts.args, " ")
   vim.api.nvim_command(string.format("cdo s/%s/%s", args[1], args[2]))
 end, { nargs = "*" })
 

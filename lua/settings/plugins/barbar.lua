@@ -1,5 +1,5 @@
-package.path = package.path .. ";../?.lua"
-local h = require("settings.helpers")
+package.path = package.path .. ";" .. os.getenv("HOME") .. "/.config/nvim/?.lua"
+local h = require("shared.helpers")
 
 h.nmap("H", "<cmd>BufferPrevious<cr>")
 h.nmap("L", "<cmd>BufferNext<cr>")
