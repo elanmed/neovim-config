@@ -18,11 +18,6 @@ function maybeInstallPackage() {
   fi
 }
 
-if [ "$(uname)" != "Darwin" ]; then
-  cecho "sorry! this script only supports macos" 1
-  exit 1
-fi
-
 if [ "$(command -v brew)" == "" ]; then
     cecho "installing hombrew" 2
     NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"

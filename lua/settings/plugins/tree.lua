@@ -13,7 +13,6 @@ tree.setup({
     mappings = {
       list = {
         { key = "Y", action = "copy_path" },
-        { key = "<cr>", action = "tabnew" },
         { key = "s", action = "" },
       },
     },

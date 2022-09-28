@@ -9,10 +9,17 @@ local function split(s, delimiter)
   return result
 end
 
+-- two ways to call lua fns in vim
+
 --[[ function elan.sample_fn() ]]
 --[[ 	print("sample_fn") ]]
 --[[ end ]]
 --[[ h.nmap("", ":lua elan.sample_fn()<cr>") ]]
+
+--[[ function _G.sample_fn() ]]
+--[[ 	print("sample_fn") ]]
+--[[ end ]]
+--[[ h.nmap("", "v:lua.sample_fn()<cr>") ]]
 
 vim.api.nvim_create_user_command("FindAndReplace", function(opts)
   local args = split(opts.args, " ")
