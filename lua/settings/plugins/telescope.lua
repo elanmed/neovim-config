@@ -96,3 +96,4 @@ h.nmap("<leader>zu", [[<cmd>lua require('telescope.builtin').resume()<cr>]])
 h.nmap("<leader>zo", [[<cmd>lua require('telescope.builtin').grep_string()<cr>]]) -- grep over current word
 -- TODO: convert over to lua functions
 h.vmap("<leader>zo", [["zy<cmd>exec 'Telescope grep_string search=' . escape(@z, ' ')<cr>]]) -- grep over selection
+h.nmap("<leader>zl", [[<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>]])
