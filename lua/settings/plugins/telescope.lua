@@ -71,6 +71,10 @@ telescope.setup({
     find_files = {
       theme = "ivy",
       previewer = false
+    },
+    current_buffer_fuzzy_find = {
+      theme = "ivy",
+      layout_config = shared_layout_config
     }
   },
   extensions = {
