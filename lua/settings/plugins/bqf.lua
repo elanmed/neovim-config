@@ -5,6 +5,7 @@ end
 
 bqf.setup({
   func_map = {
-    openc = '<CR>',
+    -- TODO: why doens't this work?
+    --[[ openc = '<cr>', ]]
   },
 })

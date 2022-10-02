@@ -56,12 +56,12 @@ h.nmap("ge", "<cmd>copen<cr>")
 h.nmap("gq", "<cmd>cclose<cr>")
 
 -- move lines up and down with alt-j, alt-k
-h.nmap("∆", "<cmd>m .+1<cr>==")
-h.nmap("˚", "<cmd>m .-2<cr>==")
-h.imap("∆", "<esc><cmd>m .+1<cr>==gi")
-h.imap("˚", "<esc><cmd>m .-2<cr>==gi")
-h.vmap("∆", "<cmd>m '>+1<cr>gv=gv")
-h.vmap("˚", "<cmd>m '<-2<cr>gv=gv")
+h.nmap("∆", ":m .+1<cr>==")
+h.nmap("˚", ":m .-2<cr>==")
+h.imap("∆", "<esc>:m .+1<cr>==gi")
+h.imap("˚", "<esc>:m .-2<cr>==gi")
+h.vmap("∆", ":m '>+1<cr>gv=gv")
+h.vmap("˚", ":m '<-2<cr>gv=gv")
 
 -- search case sensitive, whole word, and both
 vim.cmd([[
