@@ -24,7 +24,7 @@ h.set.softtabstop = 2 -- number of spaces to delete when deleting a tab
 h.set.shiftwidth = 2 -- number of spaces to insert/delete when in insert mode
 
 -- folding
---[[ h.set.foldmethod = "indent" ]]
+h.set.foldmethod = "indent"
 h.set.foldcolumn = "0" -- disable fold symbols in left column
 h.set.foldlevelstart = 99 -- open folds by default
 h.nmap("<leader>u", "za") -- toggle fold
