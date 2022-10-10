@@ -27,8 +27,7 @@ h.imap("<C-k>", "-")
 h.imap("<C-l>", "_")
 
 -- copy path of file
-h.nmap("<leader>rp", [[<cmd>let @+ = expand("%")<cr>]])
-h.nmap("<leader>ap", [[<cmd>let @+ = expand("%:p")<cr>]])
+h.nmap("<leader>ip", [[<cmd>let @+ = expand("%:p")<cr>]])
 
 -- keeps lines highlighted while indenting
 h.vmap("<", "<gv")
