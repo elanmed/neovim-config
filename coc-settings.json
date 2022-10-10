@@ -2,6 +2,7 @@
   "coc.preferences.formatOnSaveFiletypes": ["*"],
   "coc.preferences.useQuickfixForLocations": true,
   "snippets.textmateSnippetsRoots": ["/Users/elanmedoff/.config/nvim/snippets"],
+  "snippets.loadFromExtensions": false,
   "diagnostic.checkCurrentLine": true,
   "Lua.telemetry.enable": false,
   "Lua.diagnostics.globals": ["vim", "settings"],

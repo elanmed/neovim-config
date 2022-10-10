@@ -7,7 +7,7 @@ configs.setup({
   ensure_installed = "all",
   highlight = {
     enable = true,
-    additional_vim_regex_highlighting = false, -- prevent vim highlight from interfering with treesitter
+    additional_vim_regex_highlighting = { 'org' }, -- prevent vim highlight from interfering with treesitter
   },
   indent = { enable = true },
   rainbow = {

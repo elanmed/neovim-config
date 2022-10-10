@@ -11,6 +11,10 @@ vim.g.coc_global_extensions = {
   'coc-pairs',
   'coc-sumneko-lua',
   'coc-sh',
+  '@yaegassy/coc-tailwindcss3',
+  'coc-cssmodules',
+  'coc-deno',
+  'coc-stylelint'
 }
 
 function _G.check_backspace()
