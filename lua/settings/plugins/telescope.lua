@@ -37,7 +37,7 @@ function custom_actions.fzf_multi_select(prompt_bufnr)
 end
 
 local shared_layout_config = {
-  preview_width = 0.3
+  preview_width = 0.4
 }
 
 telescope.setup({
@@ -68,10 +68,6 @@ telescope.setup({
       theme = "ivy",
       layout_config = shared_layout_config
     },
-    find_files = {
-      theme = "ivy",
-      previewer = false
-    },
     current_buffer_fuzzy_find = {
       theme = "ivy",
       layout_config = shared_layout_config
@@ -80,20 +76,16 @@ telescope.setup({
   extensions = {
     frecency = {
       default_workspace = 'CWD',
+      show_unindexed = false
     },
-    neoclip = {
-      -- TODO: why doesn't this work?
-      theme = "ivy"
-    }
   }
 })
 telescope.load_extension('fzf')
 telescope.load_extension("frecency") -- loads results based on frequency and recency
 telescope.load_extension('neoclip')
 
--- TODO: why is this so slow in large projects?
--- h.nmap('<C-p>', [[<cmd>lua require('telescope').extensions.frecency.frecency(require('telescope.themes').get_ivy({}))<cr>]])
-h.nmap('<C-p>', [[<cmd>lua require('telescope.builtin').find_files()<cr>]]) -- find files
+h.nmap('<C-p>',
+  [[<cmd>lua require('telescope').extensions.frecency.frecency(require('telescope.themes').get_ivy({ previewer = false }))<cr>]])
 h.nmap("<leader>zf", [[<cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Grep For > ")})<cr>]]) -- enter before grep
 h.nmap("<leader>zu", [[<cmd>lua require('telescope.builtin').resume()<cr>]])
 

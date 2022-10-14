@@ -7,7 +7,8 @@ if not ok then
 end
 
 toggleterm.setup({
-  size = 20
+  size = 20,
+  shade_terminals = false
 })
 h.map("", "<C-g>", "<cmd>ToggleTerm direction=horizontal<cr>")
 vim.cmd([[
