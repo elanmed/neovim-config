@@ -64,6 +64,10 @@ telescope.setup({
       theme = "ivy",
       layout_config = shared_layout_config
     },
+    find_files = {
+      theme = "ivy",
+      layout_config = shared_layout_config
+    },
     resume = {
       theme = "ivy",
       layout_config = shared_layout_config
@@ -76,7 +80,6 @@ telescope.setup({
   extensions = {
     frecency = {
       default_workspace = 'CWD',
-      show_unindexed = false
     },
   }
 })
@@ -84,8 +87,7 @@ telescope.load_extension('fzf')
 telescope.load_extension("frecency") -- loads results based on frequency and recency
 telescope.load_extension('neoclip')
 
-h.nmap('<C-p>',
-  [[<cmd>lua require('telescope').extensions.frecency.frecency(require('telescope.themes').get_ivy({ previewer = false }))<cr>]])
+h.nmap('<C-p>', [[<cmd>lua require('telescope.builtin').find_files()<cr>]])
 h.nmap("<leader>zf", [[<cmd>lua require('telescope.builtin').grep_string({ search = vim.fn.input("Grep For > ")})<cr>]]) -- enter before grep
 h.nmap("<leader>zu", [[<cmd>lua require('telescope.builtin').resume()<cr>]])
 

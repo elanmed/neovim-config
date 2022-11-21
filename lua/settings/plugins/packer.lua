@@ -56,7 +56,7 @@ return packer.startup({
     use("tpope/vim-repeat")
     use("ThePrimeagen/harpoon")
     use("goolord/alpha-nvim")
-    use('nvim-orgmode/orgmode')
+    use("petertriho/nvim-scrollbar")
 
     -- bqf
     use("kevinhwang91/nvim-bqf")
