@@ -55,8 +55,9 @@ return packer.startup({
     use("jose-elias-alvarez/null-ls.nvim")
     use("tpope/vim-repeat")
     use("ThePrimeagen/harpoon")
+    use("ThePrimeagen/vim-be-good")
     use("goolord/alpha-nvim")
-    use("petertriho/nvim-scrollbar")
+    use("Xuyuanp/scrollbar.nvim")
 
     -- bqf
     use("kevinhwang91/nvim-bqf")
@@ -70,10 +71,6 @@ return packer.startup({
     use({
       "AckslD/nvim-neoclip.lua",
     })
-    use {
-      "nvim-telescope/telescope-frecency.nvim",
-      requires = { "kkharji/sqlite.lua" }
-    }
 
     -- themes
     use("ElanMedoff/vscode.nvim")

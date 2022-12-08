@@ -1,0 +1,14 @@
+{
+  "useEffect": {
+    "body": ["useEffect(() => {", "\t$1", "}, []);\n"],
+    "prefix": "effects"
+  },
+  "useMemo": {
+    "body": ["= useMemo(() => {", "\t$1", "}, []);\n"],
+    "prefix": "memos"
+  },
+  "useCallback": {
+    "body": ["= useCallback(() => {", "\t$1", "}, []);\n"],
+    "prefix": "cbs"
+  },
+}

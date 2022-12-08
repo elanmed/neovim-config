@@ -25,3 +25,8 @@ or create an alias
 ```bash
 alias nvim="nvim -u ~/.config/nvim/lua/barebones/init.lua"
 ```
+
+<!--
+todo:
+- folding the level below where you fold
+-->

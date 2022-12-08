@@ -51,8 +51,8 @@ h.imap('<cr>', ([[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<cr>\<c-r>=co
 h.nmap('gd', '<Plug>(coc-definition)zz')
 h.nmap('gy', '<Plug>(coc-type-definition)')
 h.nmap('gu', '<Plug>(coc-references)')
-h.nmap('ga', '<Plug>(coc-codeaction)')
+h.nmap('ga', '<Plug>(coc-codeaction-cursor)')
 h.nmap('gh', '<cmd>call v:lua.show_docs()<cr>')
 h.nmap("go", "<c-o>")
 h.nmap("gi", "<c-i>")
-h.nmap("<leader>gh", "<c-w>w<cmd>close<cr>") -- close hover documentation
+h.nmap("<leader>gh", "<c-w>w<c-w>w") -- close hover documentation

@@ -36,12 +36,15 @@ function custom_actions.fzf_multi_select(prompt_bufnr)
   end
 end
 
-local shared_layout_config = {
-  preview_width = 0.4
-}
-
 telescope.setup({
   defaults = {
+    layout_strategy = 'vertical',
+    layout_config = {
+      height = 0.95,
+      width = 0.925,
+      prompt_position = "bottom",
+      preview_height = 0.4,
+    },
     mappings = {
       n = {
         ["<cr>"] = custom_actions.fzf_multi_select,
@@ -55,36 +58,9 @@ telescope.setup({
       }
     }
   },
-  pickers = {
-    live_grep = {
-      theme = "ivy",
-      layout_config = shared_layout_config
-    },
-    grep_string = {
-      theme = "ivy",
-      layout_config = shared_layout_config
-    },
-    find_files = {
-      theme = "ivy",
-      layout_config = shared_layout_config
-    },
-    resume = {
-      theme = "ivy",
-      layout_config = shared_layout_config
-    },
-    current_buffer_fuzzy_find = {
-      theme = "ivy",
-      layout_config = shared_layout_config
-    }
-  },
-  extensions = {
-    frecency = {
-      default_workspace = 'CWD',
-    },
-  }
 })
+
 telescope.load_extension('fzf')
-telescope.load_extension("frecency") -- loads results based on frequency and recency
 telescope.load_extension('neoclip')
 
 h.nmap('<C-p>', [[<cmd>lua require('telescope.builtin').find_files()<cr>]])

@@ -7,7 +7,5 @@ if not ok then
 end
 
 neoclip.setup()
-h.nmap("<leader>y",
-  "<cmd>lua require('telescope').extensions.neoclip.default(require('telescope.themes').get_ivy({}))<cr>")
-h.vmap("<leader>y",
-  "<cmd>lua require('telescope').extensions.neoclip.default(require('telescope.themes').get_ivy({}))<cr>")
+h.nmap("<leader>y", "<cmd>lua require('telescope').extensions.neoclip.default()<cr>")
+h.vmap("<leader>y", "<cmd>lua require('telescope').extensions.neoclip.default()<cr>")

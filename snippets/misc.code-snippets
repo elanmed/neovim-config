@@ -1,10 +1,14 @@
 {
   "equals": {
-    "prefix": "hh",
-    "body": ["==="]
+    "body": ["==="],
+    "prefix": "hh"
   },
   "plus": {
-    "prefix": "uu",
-    "body": ["+"]
+    "body": ["+"],
+    "prefix": "uu"
+  },
+  "arrow fn": {
+    "body": ["= () => "],
+    "prefix": "afs"
   },
 }

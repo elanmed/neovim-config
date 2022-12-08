@@ -16,11 +16,15 @@
     "prefix": "waits"
   },
   "to be in the doc": {
-    "prefix": "bes",
-    "body": ["expect(screen.getBy$0).toBeInTheDocument();"]
+    "body": ["expect(screen.getBy$1('$0')).toBeInTheDocument();"],
+    "prefix": "bes"
   },
   "not to be in the doc": {
-    "prefix": "notbes",
-    "body": ["expect(screen.queryBy$0).not.toBeInTheDocument();"]
-  }
+    "body": ["expect(screen.queryBy$1('$0')).not.toBeInTheDocument();"],
+    "prefix": "notbes"
+  },
+  "find": {
+    "body": ["await screen.findBy$1('$0');"],
+    "prefix": "finds"
+  },
 }

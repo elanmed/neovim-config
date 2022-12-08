@@ -1,11 +1,8 @@
-local ok, scrollbar = pcall(require, 'scrollbar')
-if not ok then
-  return
-end
-
-scrollbar.setup({
-  handle = {
-    --[[ TODO: use from vscode theme  ]]
-    color = '#51504F'
-  },
-})
+vim.cmd([[
+  augroup ScrollbarInit
+    autocmd!
+    autocmd WinScrolled,VimResized,QuitPre * silent! lua require('scrollbar').show()
+    autocmd WinEnter,FocusGained           * silent! lua require('scrollbar').show()
+    autocmd WinLeave,BufLeave,BufWinLeave,FocusLost            * silent! lua require('scrollbar').clear()
+  augroup end
+]])
