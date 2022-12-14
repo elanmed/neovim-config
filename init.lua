@@ -5,7 +5,6 @@ local h = require("shared.helpers")
 h.map("", "<space>", "<nop>")
 h.let.mapleader = " "
 
-
 -- for bootstrapping
 local packer_status_ok = pcall(require, "packer")
 if not packer_status_ok then

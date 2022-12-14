@@ -39,13 +39,13 @@ vim.cmd([[
 set foldexpr=GetFold(v:lnum)
 
 function! IndentLevel(lnum)
-  return indent(a:lnum) / &shiftwidth
+  return indent(a:lnum) / &shiftwidth + 1
 endfunction
 
 function! GetFold(lnum)
   " blanklines
   if getline(a:lnum) =~? '\v^\s*$'
-    if IndentLevel(a:lnum) == 0
+    if IndentLevel(a:lnum - 1) == 1 
       return 0
     endif
       
@@ -53,7 +53,7 @@ function! GetFold(lnum)
     return '-1'
   endif
 
-  return IndentLevel(a:lnum) + 1
+  return IndentLevel(a:lnum)
 endfunction
 
 " not used right now, but maybe in the future

@@ -3,6 +3,8 @@
   "coc.preferences.useQuickfixForLocations": true,
   "snippets.textmateSnippetsRoots": ["/Users/elanmedoff/.config/nvim/snippets"],
   "snippets.loadFromExtensions": false,
+  "typescript.suggest.completeFunctionCalls": false,
+  "javascript.suggest.completeFunctionCalls": false,
   "diagnostic.checkCurrentLine": true,
   "Lua.telemetry.enable": false,
   "Lua.diagnostics.globals": ["vim", "settings"],
@@ -22,5 +24,6 @@
     "border": true,
     "rounded": true,
     "highlight": "CocFloating"
-  }
+  },
+  "pairs.enableCharacters": ["(", "[", "{", "'", "\"", "`"]
 }
