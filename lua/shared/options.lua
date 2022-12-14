@@ -23,12 +23,68 @@ h.set.tabstop = 2 -- number of columns in a tab
 h.set.softtabstop = 2 -- number of spaces to delete when deleting a tab
 h.set.shiftwidth = 2 -- number of spaces to insert/delete when in insert mode
 
--- folding
-h.set.foldmethod = "indent"
-h.set.foldcolumn = "0" -- disable fold symbols in left column
-h.set.foldlevelstart = 99 -- open folds by default
-h.nmap("<leader>u", "za") -- toggle fold
 
 -- search
 h.set.ignorecase = true
 h.nmap("<leader>/t", "<cmd>noh<cr>") -- turn off highlighting
+
+
+-- folding
+h.set.foldmethod = "expr"
+h.set.foldcolumn = "0" -- disable fold symbols in left column
+h.set.foldlevelstart = 99 -- open folds by default
+h.nmap("<leader>u", "za") -- toggle fold
+
+vim.cmd([[
+set foldexpr=GetFold(v:lnum)
+
+function! IndentLevel(lnum)
+  return indent(a:lnum) / &shiftwidth
+endfunction
+
+function! GetFold(lnum)
+  " blanklines
+  if getline(a:lnum) =~? '\v^\s*$'
+    if IndentLevel(a:lnum) == 0
+      return 0
+    endif
+      
+    " the foldlevel of this line is equal to the foldlevel of the line above or below it, whichever is smaller
+    return '-1'
+  endif
+
+  return IndentLevel(a:lnum) + 1
+endfunction
+
+" not used right now, but maybe in the future
+function! NextNonBlankLine(lnum)
+  let numlines = line('$')
+  let current = a:lnum + 1
+
+  while current <= numlines
+    " match non blank
+    if getline(current) =~? '\v\S'
+      return current
+    endif
+
+    let current += 1
+  endwhile
+
+  return -2 " not a valid line number, no nonblank lines after the current one
+endfunction
+
+function! PrevNonBlankLine(lnum)
+  let current = a:lnum - 1
+
+  while current >= 1
+    " match non blank
+    if getline(current) =~? '\v\S'
+      return current 
+    endif
+
+    let current -= 1
+  endwhile
+
+  return -2
+endfunction
+]])
