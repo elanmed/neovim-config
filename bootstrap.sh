@@ -28,6 +28,7 @@ fi
 maybeInstallPackage neovim
 maybeInstallPackage ripgrep
 maybeInstallPackage fzf
+maybeInstallPackage watchman
 
 packer_directory="$HOME/.local/share/nvim/site/pack/packer/start/packer.nvim"
 if [ ! -d "$packer_directory" ]; then
