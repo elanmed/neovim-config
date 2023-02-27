@@ -25,9 +25,10 @@ if not ok then
   return
 end
 
-return packer.startup({
+return packer.startup(({
   function(use)
     use("wbthomason/packer.nvim")
+
     use("nvim-lua/popup.nvim") -- an implementation of the Popup API from vim in Neovim
     use("nvim-lua/plenary.nvim") -- lua functions used in lots of plugins
 
@@ -73,9 +74,7 @@ return packer.startup({
     })
 
     -- themes
-    use("ElanMedoff/vscode.nvim")
-    use("ElanMedoff/tokyonight.nvim")
-    use("Everblush/everblush.nvim")
+    use({ "sainnhe/everforest", })
 
     -- git
     use("lewis6991/gitsigns.nvim")
@@ -101,6 +100,7 @@ return packer.startup({
     -- commenting
     use("numToStr/Comment.nvim")
 
+
     if packer_bootstrap then
       require("packer").sync()
     end
@@ -110,4 +110,4 @@ return packer.startup({
       open_fn = require("packer.util").float,
     },
   },
-})
+}))

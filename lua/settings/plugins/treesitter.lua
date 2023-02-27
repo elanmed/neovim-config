@@ -4,7 +4,8 @@ if not ok then
 end
 
 configs.setup({
-  ensure_installed = { "bash", "comment", "css", "html", "javascript", "json", "json5", "jsonc", "lua", "markdown",
+  ensure_installed = { "bash", "comment", "css", "html", "javascript", "json", "json5", "jsonc", "lua",
+    "markdown",
     "regex", "ruby", "scss", "tsx", "typescript", "yaml", },
   highlight = {
     enable = true,

@@ -31,4 +31,4 @@ tree.setup({
 })
 
 h.nmap("<leader>rb", "<cmd>NvimTreeToggle<cr>")
-h.nmap("<leader>re", "<cmd>NvimTreeFindFile<cr>")
+h.nmap("<leader>re", "<cmd>NvimTreeFindFileToggle<cr>")

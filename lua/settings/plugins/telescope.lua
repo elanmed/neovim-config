@@ -46,15 +46,12 @@ telescope.setup({
       preview_height = 0.4,
     },
     mappings = {
-      n = {
-        ["<cr>"] = custom_actions.fzf_multi_select,
-        ["<C-c>"] = actions.close,
-        ["gq"] = actions.close
-      },
       i = {
         ["<cr>"] = custom_actions.fzf_multi_select,
         ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
         ["<s-tab>"] = actions.toggle_selection + actions.move_selection_previous,
+        ["<c-a>"] = actions.send_to_qflist,
+        ["<esc>"] = actions.close
       }
     }
   },
