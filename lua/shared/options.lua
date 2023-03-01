@@ -12,6 +12,10 @@ h.set.splitright = true -- when splitting vertically, open new split to the righ
 h.set.relativenumber = true -- useful for multiline j, k
 h.set.termguicolors = true -- needed for modern themes
 
+-- spell
+h.set.spelllang = 'en_us'
+h.set.spell = true
+
 -- disable vim backups
 h.set.swapfile = false
 h.set.backup = false
@@ -45,10 +49,10 @@ endfunction
 function! GetFold(lnum)
   " blanklines
   if getline(a:lnum) =~? '\v^\s*$'
-    if IndentLevel(a:lnum - 1) == 1 
+    if IndentLevel(a:lnum - 1) == 1
       return 0
     endif
-      
+
     " the foldlevel of this line is equal to the foldlevel of the line above or below it, whichever is smaller
     return '-1'
   endif
@@ -79,7 +83,7 @@ function! PrevNonBlankLine(lnum)
   while current >= 1
     " match non blank
     if getline(current) =~? '\v\S'
-      return current 
+      return current
     endif
 
     let current -= 1
