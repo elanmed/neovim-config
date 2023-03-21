@@ -77,6 +77,7 @@ function! NextNonBlankLine(lnum)
   return -2 " not a valid line number, no nonblank lines after the current one
 endfunction
 
+" not used right now, but maybe in the future
 function! PrevNonBlankLine(lnum)
   let current = a:lnum - 1
 

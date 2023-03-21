@@ -4,8 +4,8 @@ if not ok then
 end
 
 bqf.setup({
+  auto_resize_height = true,
   func_map = {
-    -- TODO: why doens't this work?
-    --[[ openc = '<cr>', ]]
+    openc = '<cr>',
   },
 })
