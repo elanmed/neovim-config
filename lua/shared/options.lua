@@ -14,7 +14,7 @@ h.set.termguicolors = true -- needed for modern themes
 
 -- spell
 h.set.spelllang = 'en_us'
-h.set.spell = true
+h.set.spell = false
 
 -- disable vim backups
 h.set.swapfile = false
