@@ -2,14 +2,14 @@ package.path = package.path .. ";" .. os.getenv("HOME") .. "/.config/nvim/?.lua"
 local h = require("shared.helpers")
 
 h.nmap("<leader>af", "<C-6>") -- alternate file
-h.nmap("J", "gJ") -- J without whitespace
+h.nmap("J", "gJ")             -- J without whitespace
 h.nmap("<leader>o", "o<esc>")
 h.nmap("<leader>O", "O<esc>")
 h.nmap("<leader>rr", [[viw"_dP]])
-h.nmap("<leader>r;", "@:") -- repeat last command
-h.nmap([[<leader>']], [["]]) -- for setting register
+h.nmap("<leader>r;", "@:")          -- repeat last command
+h.nmap([[<leader>']], [["]])        -- for setting register
 h.nmap("<leader>vs", "<cmd>vsplit<cr>")
-h.nmap("<leader>p", "<cmd>pu<cr>") -- paste on line below
+h.nmap("<leader>p", "<cmd>pu<cr>")  -- paste on line below
 h.nmap("<leader>P", "<cmd>pu!<cr>") -- paste on line above
 h.nmap("zh", "z=")
 
@@ -23,7 +23,6 @@ h.nmap("<leader>q", "<cmd>qa<cr>")
 
 -- hard to reach keys that can't be easily replaced with a snippet
 h.imap("<C-h>", "=")
-h.imap("<C-j>", "()<left>")
 h.imap("<C-k>", "-")
 h.imap("<C-l>", "_")
 

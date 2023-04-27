@@ -6,16 +6,20 @@ if not ok then
   return
 end
 
+local function on_attach(bufnr)
+  local api = require('nvim-tree.api')
+  local opts = { buffer = bufnr, noremap = true, silent = true, nowait = true }
+
+  -- TODO: update remap helpers to vim.keymap, update these
+  vim.keymap.set('n', 'Y', api.fs.copy.absolute_path, opts)
+  vim.keymap.set('n', 's', '', opts)
+end
+
 tree.setup({
+  on_attach = on_attach,
   hijack_cursor = true,
   view = {
     width = 40,
-    mappings = {
-      list = {
-        { key = "Y", action = "copy_path" },
-        { key = "s", action = "" },
-      },
-    },
   },
   renderer = {
     highlight_opened_files = "all",
