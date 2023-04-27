@@ -76,7 +76,7 @@ telescope.setup({
         ["<cr>"] = custom_actions.fzf_multi_select,
         ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
         ["<s-tab>"] = actions.toggle_selection + actions.move_selection_previous,
-        ["<c-a>"] = actions.send_to_qflist,
+        ["<c-f>"] = actions.send_to_qflist,
         ["<esc>"] = actions.close
       }
     }
