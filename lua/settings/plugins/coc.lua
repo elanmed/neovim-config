@@ -39,10 +39,10 @@ end
 
 h.imap('<TAB>', (
   [[ coc#pum#visible() ? coc#_select_confirm() : ]] ..
-      [[ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<cr>" : ]] ..
-      [[ v:lua.check_backspace() ? "\<TAB>" : ]] ..
-      [[ coc#refresh() ]]
-  ), { expr = true }
+  [[ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<cr>" : ]] ..
+  [[ v:lua.check_backspace() ? "\<TAB>" : ]] ..
+  [[ coc#refresh() ]]
+), { expr = true }
 )
 
 h.imap('<c-space>', 'coc#refresh()', { expr = true })
@@ -56,3 +56,6 @@ h.nmap('gh', '<cmd>call v:lua.show_docs()<cr>')
 h.nmap("go", "<c-o>")
 h.nmap("gi", "<c-i>")
 h.nmap("<leader>gh", "<c-w>w<c-w>w") -- close hover documentation
+
+h.set.updatetime = 100
+vim.cmd([[autocmd CursorHold * silent call CocActionAsync('highlight')]])

@@ -12,7 +12,10 @@ local function on_attach(bufnr)
 
   -- TODO: update remap helpers to vim.keymap, update these
   vim.keymap.set('n', 'Y', api.fs.copy.absolute_path, opts)
-  vim.keymap.set('n', 's', '', opts)
+  vim.keymap.set('n', 'H', api.tree.toggle_hidden_filter, opts)
+  vim.keymap.set('n', '<CR>', api.node.open.edit, opts)
+  vim.keymap.set('n', 'a', api.fs.create, opts)
+  vim.keymap.set('n', 'd', api.fs.trash, opts)
 end
 
 tree.setup({

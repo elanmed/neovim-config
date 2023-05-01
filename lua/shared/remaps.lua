@@ -21,11 +21,6 @@ h.nmap("<leader>s", "<cmd>w<cr>")
 h.nmap("<leader>w", "<cmd>q<cr>")
 h.nmap("<leader>q", "<cmd>qa<cr>")
 
--- hard to reach keys that can't be easily replaced with a snippet
-h.imap("<C-h>", "=")
-h.imap("<C-k>", "-")
-h.imap("<C-l>", "_")
-
 -- copy path of file
 h.nmap("<leader>ip", [[<cmd>let @+ = expand("%:p")<cr>]])
 
