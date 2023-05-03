@@ -14,8 +14,12 @@ vim.g.coc_global_extensions = {
   '@yaegassy/coc-tailwindcss3',
   'coc-cssmodules',
   'coc-deno',
-  'coc-stylelint'
+  'coc-stylelint',
+  'coc-solargraph',
+  'coc-css'
 }
+
+vim.cmd("autocmd FileType scss setl iskeyword+=@-@")
 
 function _G.check_backspace()
   local col = vim.fn.col('.') - 1

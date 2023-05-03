@@ -102,7 +102,6 @@ return packer.startup(({
     -- commenting
     use("numToStr/Comment.nvim")
 
-
     if packer_bootstrap then
       require("packer").sync()
     end
