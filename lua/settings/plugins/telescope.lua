@@ -56,9 +56,14 @@ telescope.setup({
       mappings = {
         i = {
           ["<C-l>"] = lga_actions.quote_prompt(),
-          ["<C-h>"] = lga_actions.append(' -g "*.'),
+
+          ["<C-h>"] = lga_actions.append('-g "*.'),
           ["<C-j>"] = lga_actions.append('" -g "*.'),
           ["<C-k>"] = lga_actions.append('" -g "!*.'),
+
+          ["<C-y>"] = lga_actions.append('-g "'),
+          ["<C-u>"] = lga_actions.append('" -g "'),
+          ["<C-i>"] = lga_actions.append('" -g "!'),
         },
       },
     }

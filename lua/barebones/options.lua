@@ -9,9 +9,9 @@ vim.api.nvim_create_autocmd('filetype', {
       vim.keymap.set('n', lhs, rhs, { remap = true, buffer = true })
     end
 
-    nmap("h", "-^") -- go up a directory
+    nmap("h", "-^")                     -- go up a directory
     nmap("l", "<cr>")
-    nmap("P", "<C-w>z") -- close preview
-    nmap("<leader>rb", ":Lexplore<cr>") -- close netrw
+    nmap("P", "<C-w>z")                 -- close preview
+    nmap("<leader>re", ":Lexplore<cr>") -- close netrw
   end
 })
