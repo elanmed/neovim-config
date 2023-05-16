@@ -6,7 +6,7 @@ h.nmap("<leader>gq", "<cmd>DiffviewClose<cr>")
 h.nmap("<leader>mp", "<cmd>MarkdownPreview<cr>")
 
 -- vim visual multi
-vim.cmd([[
-  let g:VM_maps = {}
-  let g:VM_maps["Add Cursor Down"] = '<C-k>'
-]])
+-- vim.cmd([[
+--   let g:VM_maps = {}
+--   let g:VM_maps["Add Cursor Down"] = '<C-k>'
+-- ]])

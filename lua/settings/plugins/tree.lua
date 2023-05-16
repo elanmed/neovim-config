@@ -23,7 +23,7 @@ tree.setup({
   on_attach = on_attach,
   hijack_cursor = true,
   view = {
-    width = 40,
+    width = 60,
   },
   renderer = {
     highlight_opened_files = "all",

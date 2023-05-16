@@ -51,32 +51,15 @@ lga_actions.append = function(toAppend)
 end
 
 telescope.setup({
-  extensions = {
-    live_grep_args = {
-      mappings = {
-        i = {
-          ["<C-l>"] = lga_actions.quote_prompt(),
-
-          ["<C-h>"] = lga_actions.append('-g "*.'),
-          ["<C-j>"] = lga_actions.append('" -g "*.'),
-          ["<C-k>"] = lga_actions.append('" -g "!*.'),
-
-          ["<C-y>"] = lga_actions.append('-g "'),
-          ["<C-u>"] = lga_actions.append('" -g "'),
-          ["<C-i>"] = lga_actions.append('" -g "!'),
-        },
-      },
-    }
-  },
   defaults = {
     layout_strategy = 'vertical',
-    layout_config = {
+    layout_config   = {
       height = 0.95,
       width = 0.925,
       prompt_position = "bottom",
       preview_height = 0.4,
     },
-    mappings = {
+    mappings        = {
       i = {
         ["<cr>"] = custom_actions.fzf_multi_select,
         ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
@@ -90,14 +73,10 @@ telescope.setup({
 
 telescope.load_extension('fzf')
 telescope.load_extension('neoclip')
-telescope.load_extension('live_grep_args')
+telescope.load_extension('rg_with_args')
 
 h.nmap('<C-p>', [[<cmd>lua require('telescope.builtin').find_files()<cr>]])
 h.nmap("<leader>zu", [[<cmd>lua require('telescope.builtin').resume()<cr>]])
-h.nmap("<leader>zf", "<cmd>lua require('telescope').extensions.live_grep_args.live_grep_args()<CR>")
-h.vmap("<leader>zo",
-  [[<cmd>lua require("telescope-live-grep-args.shortcuts").grep_visual_selection()<cr>]])
-h.nmap("<leader>zo",
-  [[<cmd>lua require("telescope-live-grep-args.shortcuts").grep_word_under_cursor()<cr>]])
+h.nmap("<leader>zf", ":lua require('telescope').extensions.rg_with_args.rg_with_args()<CR>")
 
 h.nmap("<leader>zl", [[<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>]])

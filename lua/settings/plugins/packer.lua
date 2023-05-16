@@ -29,11 +29,10 @@ return packer.startup(({
   function(use)
     use("wbthomason/packer.nvim")
 
-    use("nvim-lua/popup.nvim")   -- an implementation of the Popup API from vim in Neovim
+    use("nvim-lua/popup.nvim") -- an implementation of the Popup API from vim in Neovim
     use("nvim-lua/plenary.nvim") -- lua functions used in lots of plugins
 
     -- misc
-    use("akinsho/toggleterm.nvim")
     use("tpope/vim-surround")
     use("ggandor/lightspeed.nvim")
     use("nvim-lualine/lualine.nvim")
@@ -59,6 +58,7 @@ return packer.startup(({
     use("ThePrimeagen/vim-be-good")
     use("goolord/alpha-nvim")
     use("Xuyuanp/scrollbar.nvim")
+    use("christoomey/vim-tmux-navigator")
 
     -- bqf
     use("kevinhwang91/nvim-bqf")
@@ -69,7 +69,6 @@ return packer.startup(({
       'nvim-telescope/telescope.nvim', branch = '0.1.x',
     })
     use({ 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' })
-    use({ 'nvim-telescope/telescope-live-grep-args.nvim' })
     use({
       "AckslD/nvim-neoclip.lua",
     })
