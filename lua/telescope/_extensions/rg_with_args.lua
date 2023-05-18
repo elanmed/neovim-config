@@ -89,7 +89,7 @@ local rg_with_args = function(opts)
       repeat
         if index == len(files_split) then
           print("last item", "'" .. file .. "'")
-          if string.sub(file, -1) ~= " " then
+          if string.sub(file, -1) ~= " " and string.sub(file, -1) ~= "," then
             print "not a space"
             -- continue
             do break end
