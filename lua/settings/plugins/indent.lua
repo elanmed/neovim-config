@@ -1,3 +1,4 @@
+-- TODO: why does this break without a pcall?
 local ok, indent = pcall(require, "indent_blankline")
 if not ok then
   return

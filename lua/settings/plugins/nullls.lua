@@ -1,3 +1,4 @@
+-- TODO: why does this break without a pcall?
 local ok, null_ls = pcall(require, "null_ls")
 if not ok then
   return

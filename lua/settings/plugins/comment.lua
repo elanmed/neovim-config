@@ -1,3 +1,5 @@
+-- TODO: update lua comment
+-- TODO: why does this break without a pcall?
 local ok, comment = pcall(require, "Comment")
 if not ok then
   return
