@@ -1,4 +1,4 @@
-local h = require "shared.helpers"
+local h = require "shared/helpers"
 
 vim.cmd("colorscheme vscode")
 h.set.signcolumn = "yes" -- needed for linting symbols

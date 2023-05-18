@@ -1,4 +1,4 @@
-local h = require "shared.helpers"
+local h = require "shared/helpers"
 local tree = require "nvim-tree"
 
 local function on_attach(bufnr)

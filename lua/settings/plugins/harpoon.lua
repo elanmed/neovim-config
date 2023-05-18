@@ -1,4 +1,4 @@
-local h = require "shared.helpers"
+local h = require "shared/helpers"
 
 local harpoon = require "harpoon"
 harpoon.setup({})

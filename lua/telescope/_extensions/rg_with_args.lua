@@ -68,7 +68,6 @@ local rg_with_args = function(opts)
   local function cmd_generator(prompt)
     local args = tbl_clone(opts.vimgrep_arguments)
     if not prompt or prompt == "" then
-      print "return early"
       return nil
     end
 
@@ -76,7 +75,7 @@ local rg_with_args = function(opts)
     local term = trim(term_and_files[1])
 
     if len(term_and_files) == 1 then
-      print("just term", dump(vim.tbl_flatten { args, term }))
+      print(table.concat(vim.tbl_flatten { args, term }, " "))
       return vim.tbl_flatten { args, term }
     end
 
@@ -89,9 +88,7 @@ local rg_with_args = function(opts)
       -- hack for continue
       repeat
         if index == len(files_split) then
-          print("last item", "'" .. file .. "'")
-          if string.sub(file, -1) ~= " " and string.sub(file, -1) ~= "," then
-            print "not a space"
+          if string.sub(file, -1) ~= " " then
             -- continue
             do break end
           end
@@ -104,7 +101,7 @@ local rg_with_args = function(opts)
     end
 
 
-    print(dump(vim.tbl_flatten { args, rg_cmd }))
+    print(table.concat(vim.tbl_flatten { args, rg_cmd }, " "))
     return vim.tbl_flatten { args, rg_cmd }
   end
 

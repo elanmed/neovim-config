@@ -1,4 +1,4 @@
-local h = require "shared.helpers"
+local h = require "shared/helpers"
 
 -- two ways to call lua fns in vim
 

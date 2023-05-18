@@ -1,4 +1,4 @@
-local h = require "shared.helpers"
+local h = require "shared/helpers"
 
 h.nmap("<leader>af", "<C-6>") -- alternate file
 h.nmap("J", "gJ")             -- J without whitespace

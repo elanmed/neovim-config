@@ -1,4 +1,4 @@
-local h = require "shared.helpers"
+local h = require "shared/helpers"
 
 local telescope = require "telescope"
 local actions = require "telescope.actions"
