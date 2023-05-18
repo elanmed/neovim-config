@@ -1,10 +1,6 @@
-package.path = package.path .. ";" .. os.getenv("HOME") .. "/.config/nvim/?.lua"
-local h = require("shared.helpers")
+local h = require "shared.helpers"
 
-local ok, harpoon = pcall(require, "harpoon")
-if not ok then
-  return
-end
+local harpoon = require "harpoon"
 harpoon.setup({})
 
 h.nmap("<leader>aa", [[<cmd>lua require("harpoon.mark").add_file()<cr>]])

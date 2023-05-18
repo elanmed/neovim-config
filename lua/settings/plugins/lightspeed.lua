@@ -1,7 +1,4 @@
-local ok, lightspeed = pcall(require, "lightspeed")
-if not ok then
-  return
-end
+local lightspeed = require "lightspeed"
 
 lightspeed.setup({
   ignore_case = true,

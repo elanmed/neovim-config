@@ -1,10 +1,6 @@
-package.path = package.path .. ";" .. os.getenv("HOME") .. "/.config/nvim/?.lua"
-local h = require("shared.helpers")
+local h = require "shared.helpers"
 
-local ok, gitsigns = pcall(require, "gitsigns")
-if not ok then
-  return
-end
+local gitsigns = require "gitsigns"
 
 gitsigns.setup({
   current_line_blame_opts = {

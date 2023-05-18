@@ -1,10 +1,6 @@
-package.path = package.path .. ";" .. os.getenv("HOME") .. "/.config/nvim/?.lua"
-local h = require("shared.helpers")
+local h = require "shared.helpers"
 
-local ok, bufferline = pcall(require, 'bufferline')
-if not ok then
-  return
-end
+local bufferline = require "bufferline"
 
 bufferline.setup({
   auto_hide = true,

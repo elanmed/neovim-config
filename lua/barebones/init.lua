@@ -1,13 +1,11 @@
-package.path = package.path .. ";" .. os.getenv("HOME") .. "/.config/nvim/?.lua"
-local h = require("shared.helpers")
+local h = require "shared.helpers"
 
 -- remap leader before importing remaps that use it
 h.map("", "<space>", "<nop>")
 h.let.mapleader = " "
 
-require("barebones.options")
-require("barebones.remaps")
+require "barebones.options"
+require "barebones.remaps"
 
-require("shared.options")
-require("shared.remaps")
-
+require "shared.options"
+require "shared.remaps"

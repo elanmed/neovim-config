@@ -1,11 +1,7 @@
-package.path = package.path .. ";" .. os.getenv("HOME") .. "/.config/nvim/?.lua"
-local h = require("shared.helpers")
+local h = require "shared.helpers"
 
-local ok, neoclip = pcall(require, "neoclip")
-if not ok then
-  return
-end
+local neoclip = require "neoclip"
 
 neoclip.setup()
-h.nmap("<leader>y", "<cmd>lua require('telescope').extensions.neoclip.default()<cr>")
-h.vmap("<leader>y", "<cmd>lua require('telescope').extensions.neoclip.default()<cr>")
+h.nmap("<leader>y", [[<cmd>lua require("telescope").extensions.neoclip.default()<cr>]])
+h.vmap("<leader>y", [[<cmd>lua require("telescope").extensions.neoclip.default()<cr>]])

@@ -1,6 +1,3 @@
-local ok, alpha = pcall(require, "alpha")
-if not ok then
-  return
-end
+local alpha = require "alpha"
 
 alpha.setup(require("alpha.themes.startify").config)

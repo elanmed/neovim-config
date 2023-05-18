@@ -1,5 +1,4 @@
-package.path = package.path .. ";" .. os.getenv("HOME") .. "/.config/nvim/?.lua"
-local h = require("shared.helpers")
+local h = require "shared.helpers"
 
 h.nmap("<leader>af", "<C-6>") -- alternate file
 h.nmap("J", "gJ")             -- J without whitespace
@@ -79,6 +78,6 @@ h.map("", "C", [["_C]])
 
 -- TODO: convert this to lua
 vim.cmd([[
-  nnoremap <expr> j v:count ? 'j' : 'gj'
-  nnoremap <expr> k v:count ? 'k' : 'gk'
+  nnoremap <expr> j v:count ? "j" : "gj"
+  nnoremap <expr> k v:count ? "k" : "gk"
 ]])

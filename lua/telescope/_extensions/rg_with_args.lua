@@ -1,23 +1,24 @@
 local pickers = require "telescope.pickers"
 local finders = require "telescope.finders"
-local conf = require("telescope.config").values
-local make_entry = require('telescope.make_entry')
+local config = require "telescope.config"
+local config_values = config.values
+local make_entry = require "telescope.make_entry"
 
 local function dump(o)
-  if type(o) == 'table' then
-    local s = '{ '
+  if type(o) == "table" then
+    local s = "{ "
     for k, v in pairs(o) do
-      if type(k) ~= 'number' then k = '"' .. k .. '"' end
-      s = s .. '[' .. k .. '] = ' .. dump(v)
+      if type(k) ~= "number" then k = '"' .. k .. '"' end
+      s = s .. "[" .. k .. "] = " .. dump(v)
     end
-    return s .. '} '
+    return s .. "} "
   else
     return tostring(o)
   end
 end
 
 local function split(self, sSeparator, nMax, bRegexp)
-  assert(sSeparator ~= '')
+  assert(sSeparator ~= "")
   assert(nMax == nil or nMax >= 1)
 
   local aRecord = {}
@@ -61,7 +62,7 @@ end
 
 local rg_with_args = function(opts)
   opts = opts or {}
-  opts.vimgrep_arguments = opts.vimgrep_arguments or conf.vimgrep_arguments
+  opts.vimgrep_arguments = opts.vimgrep_arguments or config_values.vimgrep_arguments
   opts.entry_maker = opts.entry_maker or make_entry.gen_from_vimgrep(opts)
 
   local function cmd_generator(prompt)
@@ -75,7 +76,7 @@ local rg_with_args = function(opts)
     local term = trim(term_and_files[1])
 
     if len(term_and_files) == 1 then
-      print('just term', dump(vim.tbl_flatten { args, term }))
+      print("just term", dump(vim.tbl_flatten { args, term }))
       return vim.tbl_flatten { args, term }
     end
 
@@ -111,7 +112,7 @@ local rg_with_args = function(opts)
   pickers.new(opts, {
     prompt_title = "Prompt",
     finder = finders.new_job(cmd_generator, opts.entry_maker),
-    previewer = conf.grep_previewer(opts),
+    previewer = config_values.grep_previewer(opts),
   }):find()
 end
 

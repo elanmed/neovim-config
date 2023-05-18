@@ -1,5 +1,4 @@
-package.path = package.path .. ";" .. os.getenv("HOME") .. "/.config/nvim/?.lua"
-local h = require("shared.helpers")
+local h = require "shared.helpers"
 
 h.set.clipboard = "unnamedplus" -- os clipboard
 h.set.number = true             -- line numbers

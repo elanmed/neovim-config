@@ -1,7 +1,4 @@
-local ok, configs = pcall(require, "nvim-treesitter.configs")
-if not ok then
-  return
-end
+local configs = require "nvim-treesitter.configs"
 
 configs.setup({
   ensure_installed = { "bash", "comment", "css", "html", "javascript", "json", "json5", "jsonc", "lua",

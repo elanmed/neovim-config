@@ -1,7 +1,4 @@
-local ok, diffview = pcall(require, "diffview")
-if not ok then
-  return
-end
+local diffview = require "diffview"
 
 diffview.setup({
   file_panel = {

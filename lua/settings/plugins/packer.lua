@@ -32,6 +32,7 @@ return packer.startup(({
     use("nvim-lua/popup.nvim") -- an implementation of the Popup API from vim in Neovim
     use("nvim-lua/plenary.nvim") -- lua functions used in lots of plugins
 
+
     -- misc
     use("tpope/vim-surround")
     use("ggandor/lightspeed.nvim")
@@ -62,13 +63,13 @@ return packer.startup(({
 
     -- bqf
     use("kevinhwang91/nvim-bqf")
-    use({ 'junegunn/fzf', run = './install --bin', }) -- for fuzzy searching within a list
+    use({ "junegunn/fzf", run = "./install --bin", }) -- for fuzzy searching within a list
 
     -- telescope
     use({
-      'nvim-telescope/telescope.nvim', branch = '0.1.x',
+      "nvim-telescope/telescope.nvim", branch = "0.1.x",
     })
-    use({ 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' })
+    use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })
     use({
       "AckslD/nvim-neoclip.lua",
     })
