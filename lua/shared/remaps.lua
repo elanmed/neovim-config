@@ -35,14 +35,6 @@ h.nmap("<leader>j", "<C-w>j") -- toggle
 h.nmap("<leader>k", "<C-w>k") -- toggle
 h.nmap("<leader>l", "<C-w>l") -- toggle
 
--- TODO: convert to lua
-vim.cmd([[
-  command! Cnext try | cnext | catch | cfirst | catch | endtry
-  command! Cprev try | cprev | catch | clast | catch | endtry
-  command! Lnext try | lnext | catch | lfirst | catch | endtry
-  command! Lprev try | lprev | catch | llast | catch | endtry
-]])
-
 -- quickfix list
 h.nmap("gn", "<cmd>Cnext<cr>zz")
 h.nmap("gp", "<cmd>Cprev<cr>zz")
@@ -76,8 +68,15 @@ h.map("", "X", [["_X]])
 h.map("", "c", [["_c]])
 h.map("", "C", [["_C]])
 
--- TODO: convert this to lua
-vim.cmd([[
-  nnoremap <expr> j v:count ? "j" : "gj"
-  nnoremap <expr> k v:count ? "k" : "gk"
-]])
+
+local function count_based_keymap(movement)
+  local count = vim.v.count
+  if count > 0 then
+    return movement
+  else
+    return 'g' .. movement
+  end
+end
+
+h.nmap('j', function() return count_based_keymap("j") end, { expr = true })
+h.nmap('k', function() return count_based_keymap("k") end, { expr = true })

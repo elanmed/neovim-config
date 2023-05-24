@@ -40,6 +40,7 @@ function _G.show_docs()
   end
 end
 
+-- TODO: do I need this?
 h.imap("<TAB>", (
   [[ coc#pum#visible() ? coc#_select_confirm() : ]] ..
   [[ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<cr>" : ]] ..
@@ -61,4 +62,8 @@ h.nmap("gi", "<c-i>")
 h.nmap("<leader>gh", "<c-w>w<c-w>w") -- close hover documentation
 
 h.set.updatetime = 100
-vim.cmd([[autocmd CursorHold * silent call CocActionAsync("highlight")]])
+vim.api.nvim_create_augroup("CocGroup", {})
+vim.api.nvim_create_autocmd("CursorHold", {
+  group = "CocGroup",
+  command = "silent call CocActionAsync('highlight')",
+})

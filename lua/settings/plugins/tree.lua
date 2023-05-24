@@ -3,15 +3,14 @@ local tree = require "nvim-tree"
 
 local function on_attach(bufnr)
   local api = require "nvim-tree.api"
-  local opts = { buffer = bufnr, noremap = true, silent = true, nowait = true }
+  local opts = { buffer = bufnr }
 
-  -- TODO: update remap helpers to vim.keymap, update these
-  vim.keymap.set("n", "Y", api.fs.copy.absolute_path, opts)
-  vim.keymap.set("n", "H", api.tree.toggle_hidden_filter, opts)
-  vim.keymap.set("n", "<CR>", api.node.open.edit, opts)
-  vim.keymap.set("n", "a", api.fs.create, opts)
-  vim.keymap.set("n", "d", api.fs.trash, opts)
-  vim.keymap.set("n", "r", api.fs.rename, opts)
+  h.nmap("Y", api.fs.copy.absolute_path, opts)
+  h.nmap("H", api.tree.toggle_hidden_filter, opts)
+  h.nmap("<CR>", api.node.open.edit, opts)
+  h.nmap("a", api.fs.create, opts)
+  h.nmap("d", api.fs.trash, opts)
+  h.nmap("r", api.fs.rename, opts)
 end
 
 tree.setup({
