@@ -19,5 +19,4 @@ comment.setup {
 }
 
 local ft = require('Comment.ft')
-ft({ 'javascript', 'typescript' }, { '// %s', '// %s' })
 ft.lua = { '-- %s', '-- %s' }

@@ -71,7 +71,6 @@ return packer.startup(({
     use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })
     use "AckslD/nvim-neoclip.lua"
 
-
     -- git
     use "lewis6991/gitsigns.nvim"
     use "tpope/vim-fugitive"
@@ -82,20 +81,15 @@ return packer.startup(({
     use "kyazdani42/nvim-web-devicons"
     use "kyazdani42/nvim-tree.lua"
 
-    -- treesitter
     use({
-      "numToStr/Comment.nvim",
-      require = {
-        use({
-          "nvim-treesitter/nvim-treesitter",
-          -- https://github.com/rafamadriz/dotfiles/commit/c1268c73bdc7da52af0d57dcbca196ca3cb5ed79
-          run = function() require("nvim-treesitter.install").update() end,
-          requires = {
-            "windwp/nvim-ts-autotag",
-            "lukas-reineke/indent-blankline.nvim",
-            "JoosepAlviste/nvim-ts-context-commentstring"
-          }
-        })
+      "nvim-treesitter/nvim-treesitter",
+      -- https://github.com/rafamadriz/dotfiles/commit/c1268c73bdc7da52af0d57dcbca196ca3cb5ed79
+      run = function() require("nvim-treesitter.install").update() end,
+      requires = {
+        "windwp/nvim-ts-autotag",
+        "lukas-reineke/indent-blankline.nvim",
+        "JoosepAlviste/nvim-ts-context-commentstring",
+        "numToStr/Comment.nvim"
       }
     })
 
