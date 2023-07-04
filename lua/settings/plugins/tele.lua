@@ -54,6 +54,7 @@ telescope.load_extension("rg_with_args")
 h.nmap("<C-p>", [[<cmd>lua require("telescope.builtin").find_files()<cr>]])
 h.nmap("<leader>zu", [[<cmd>lua require("telescope.builtin").resume()<cr>]])
 h.nmap("<leader>zl", [[<cmd>lua require("telescope.builtin").current_buffer_fuzzy_find()<cr>]])
+h.nmap("<leader>zk", [[<cmd>lua require("telescope.builtin").buffers()<cr>]])
 
 h.nmap("<leader>zf", [[<cmd>lua require("telescope").extensions.rg_with_args.rg_with_args()<CR>]])
 h.nmap("<leader>zo", [[<cmd>lua require("telescope").extensions.rg_with_args.rg_under_cursor()<CR>]])

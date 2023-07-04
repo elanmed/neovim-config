@@ -3,7 +3,7 @@ local finders = require "telescope.finders"
 local config = require "telescope.config"
 local config_values = config.values
 local make_entry = require "telescope.make_entry"
-local fns = require "shared.helpers"
+local fns = require "shared/helpers"
 
 
 local rg_with_args = function(opts)

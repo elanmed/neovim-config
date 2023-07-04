@@ -11,6 +11,8 @@ local function on_attach(bufnr)
   h.nmap("a", api.fs.create, opts)
   h.nmap("d", api.fs.trash, opts)
   h.nmap("r", api.fs.rename, opts)
+  h.nmap("t", api.marks.toggle, opts)
+  h.nmap("m", api.marks.bulk.move, opts)
 end
 
 tree.setup({
