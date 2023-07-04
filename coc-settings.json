@@ -6,7 +6,6 @@
   "typescript.suggest.completeFunctionCalls": false,
   "javascript.suggest.completeFunctionCalls": false,
   "diagnostic.checkCurrentLine": true,
-  "Lua.telemetry.enable": false,
   "Lua.diagnostics.globals": ["vim", "settings"],
   "Lua.hint.enable": false,
   "Lua.signatureHelp.enable": false,
