@@ -24,5 +24,6 @@
     "rounded": true,
     "highlight": "CocFloating"
   },
-  "pairs.enableCharacters": ["(", "[", "{", "'", "\"", "`"]
+  "pairs.enableCharacters": ["(", "[", "{", "'", "\"", "`"],
+  "pairs.enableBackspace": true
 }

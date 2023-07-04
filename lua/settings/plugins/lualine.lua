@@ -1,9 +1,5 @@
+vim.cmd("colorscheme base16-tomorrow-night")
 local lualine = require "lualine"
-
--- TODO:
--- change in mode shouldn't update color
--- update color of text
--- update height?
 
 lualine.setup({
   options = {
@@ -12,7 +8,8 @@ lualine.setup({
     },
     component_separators = { left = '', right = '' },
     section_separators = { left = '', right = '' },
-    max_height = 4
+    theme = "base16",
+    globalstatus = true
   },
   tabline = {
     lualine_a = {
@@ -24,7 +21,6 @@ lualine.setup({
           packer = '',
           fzf = '',
         },
-        use_mode_colors = true,
       }
     },
     lualine_b = {},

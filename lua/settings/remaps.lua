@@ -6,6 +6,7 @@ h.nmap("L", "<cmd>bnext<cr>")
 h.nmap("H", "<cmd>bprev<cr>")
 h.nmap("<leader>tw", "<cmd>Bdelete<cr>")
 h.nmap("<leader>ta", ":bufdo :Bdelete<cr>")
+h.nmap("<leader>to", ":BufOnly<cr>")
 
 -- vim visual multi
 -- vim.cmd([[

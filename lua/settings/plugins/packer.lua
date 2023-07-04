@@ -29,28 +29,36 @@ return packer.startup(({
   function(use)
     use "wbthomason/packer.nvim"
 
-    use "nvim-lua/popup.nvim"   -- an implementation of the Popup API from vim in Neovim
+    use "nvim-lua/popup.nvim"
     use "nvim-lua/plenary.nvim" -- lua functions used in lots of plugins
 
     -- misc
     use "tpope/vim-surround"
+    use "tpope/vim-repeat"
     use "ggandor/lightspeed.nvim"
     use "nvim-lualine/lualine.nvim"
     use "easymotion/vim-easymotion"
     use "psliwka/vim-smoothie"
     use "jose-elias-alvarez/null-ls.nvim"
-    use "tpope/vim-repeat"
     use "ThePrimeagen/harpoon"
     use "ThePrimeagen/vim-be-good"
     use "Xuyuanp/scrollbar.nvim"
     use "christoomey/vim-tmux-navigator"
-    use "ElanMedoff/vscode.nvim"
+    --[[ use "ElanMedoff/vscode.nvim" ]]
+    use "RRethy/nvim-base16"
     use({
       "neoclide/coc.nvim",
       branch = "release",
     })
     use "moll/vim-bbye"
     use "mg979/vim-visual-multi"
+    use "vim-scripts/BufOnly.vim"
+    use({
+      "iamcco/markdown-preview.nvim",
+      run = "cd app && npm install",
+      setup = function() vim.g.mkdp_filetypes = { "markdown" } end,
+      ft = { "markdown" },
+    })
 
     -- bqf
     use "kevinhwang91/nvim-bqf"
@@ -76,17 +84,20 @@ return packer.startup(({
 
     -- treesitter
     use({
-      "nvim-treesitter/nvim-treesitter",
-      -- https://github.com/rafamadriz/dotfiles/commit/c1268c73bdc7da52af0d57dcbca196ca3cb5ed79
-      run = function() require("nvim-treesitter.install").update() end,
+      "numToStr/Comment.nvim",
+      require = {
+        use({
+          "nvim-treesitter/nvim-treesitter",
+          -- https://github.com/rafamadriz/dotfiles/commit/c1268c73bdc7da52af0d57dcbca196ca3cb5ed79
+          run = function() require("nvim-treesitter.install").update() end,
+          requires = {
+            "windwp/nvim-ts-autotag",
+            "lukas-reineke/indent-blankline.nvim",
+            "JoosepAlviste/nvim-ts-context-commentstring"
+          }
+        })
+      }
     })
-    use({ "windwp/nvim-ts-autotag", after = "nvim-treesitter" })
-    use({ "p00f/nvim-ts-rainbow", after = "nvim-treesitter" })
-    use({ "lukas-reineke/indent-blankline.nvim", after = "nvim-treesitter" })
-    use({ "JoosepAlviste/nvim-ts-context-commentstring", after = "nvim-treesitter" })
-
-    -- commenting
-    use "numToStr/Comment.nvim"
 
     if packer_bootstrap then
       require("packer").sync()
