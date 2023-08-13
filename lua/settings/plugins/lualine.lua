@@ -1,11 +1,10 @@
-vim.cmd("colorscheme base16-tomorrow-night")
+vim.cmd("colorscheme vscode")
 local lualine = require "lualine"
 
 lualine.setup({
   options = {
     component_separators = { left = '', right = '' },
     section_separators = { left = '', right = '' },
-    theme = "base16",
     globalstatus = true
   },
   sections = {

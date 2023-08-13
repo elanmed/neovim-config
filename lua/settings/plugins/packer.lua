@@ -43,12 +43,10 @@ return packer.startup(({
     use "ThePrimeagen/vim-be-good"
     use "Xuyuanp/scrollbar.nvim"
     use "christoomey/vim-tmux-navigator"
-    use "RRethy/nvim-base16"
     use({
       "neoclide/coc.nvim",
       branch = "release",
     })
-    use "moll/vim-bbye"
     use "mg979/vim-visual-multi"
     use "vim-scripts/BufOnly.vim"
     use({
@@ -58,6 +56,7 @@ return packer.startup(({
       ft = { "markdown" },
     })
     use({ 'akinsho/bufferline.nvim', tag = "*" })
+    use "Mofiqul/vscode.nvim"
 
     -- bqf
     use "kevinhwang91/nvim-bqf"
