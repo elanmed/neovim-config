@@ -8,7 +8,7 @@ vim.g.coc_global_extensions = {
   "coc-eslint",
   "coc-snippets",
   "coc-pairs",
-  "coc-sumneko-lua",
+  "coc-lua",
   "coc-sh",
   "@yaegassy/coc-tailwindcss3",
   "coc-cssmodules",
@@ -39,15 +39,6 @@ function _G.show_docs()
     vim.cmd("!" .. vim.o.keywordprg .. " " .. cw)
   end
 end
-
--- TODO: do I need this?
-h.imap("<TAB>", (
-  [[ coc#pum#visible() ? coc#_select_confirm() : ]] ..
-  [[ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<cr>" : ]] ..
-  [[ v:lua.check_backspace() ? "\<TAB>" : ]] ..
-  [[ coc#refresh() ]]
-), { expr = true }
-)
 
 h.imap("<c-space>", "coc#refresh()", { expr = true })
 h.imap("<cr>", ([[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<cr>\<c-r>=coc#on_enter()\<CR>"]]), { expr = true })

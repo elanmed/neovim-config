@@ -39,12 +39,10 @@ return packer.startup(({
     use "nvim-lualine/lualine.nvim"
     use "easymotion/vim-easymotion"
     use "psliwka/vim-smoothie"
-    use "jose-elias-alvarez/null-ls.nvim"
     use "ThePrimeagen/harpoon"
     use "ThePrimeagen/vim-be-good"
     use "Xuyuanp/scrollbar.nvim"
     use "christoomey/vim-tmux-navigator"
-    --[[ use "ElanMedoff/vscode.nvim" ]]
     use "RRethy/nvim-base16"
     use({
       "neoclide/coc.nvim",
@@ -59,6 +57,7 @@ return packer.startup(({
       setup = function() vim.g.mkdp_filetypes = { "markdown" } end,
       ft = { "markdown" },
     })
+    use({ 'akinsho/bufferline.nvim', tag = "*" })
 
     -- bqf
     use "kevinhwang91/nvim-bqf"
