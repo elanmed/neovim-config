@@ -39,7 +39,11 @@ vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { fg = colors.base0C, underli
 
 h.nmap("<leader>tp", "<cmd>BufferLinePick<CR>")
 h.nmap("<leader>ti", "<cmd>BufferLineTogglePin<CR>")
--- h.nmap("<leader>mn", "<cmd>BufferLineMoveNext<CR>")
--- h.nmap("<leader>mp", "<cmd>BufferLineMovePrev<CR>")
+h.nmap("<leader>mn", "<cmd>BufferLineMoveNext<CR>")
+h.nmap("<leader>mp", "<cmd>BufferLineMovePrev<CR>")
 h.nmap("L", "<cmd>BufferLineCycleNext<CR>")
 h.nmap("H", "<cmd>BufferLineCyclePrev<CR>")
+
+h.nmap("<leader>tw", "<cmd>Bdelete<cr>")
+h.nmap("<leader>ta", ":bufdo :Bdelete<cr>")
+h.nmap("<leader>to", ":BufOnly<cr>")

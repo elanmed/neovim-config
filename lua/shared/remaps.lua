@@ -10,7 +10,6 @@ h.nmap([[<leader>']], [["]])        -- for setting register
 h.nmap("<leader>vs", "<cmd>vsplit<cr>")
 h.nmap("<leader>p", "<cmd>pu<cr>")  -- paste on line below
 h.nmap("<leader>P", "<cmd>pu!<cr>") -- paste on line above
-h.nmap("zh", "z=")
 h.nmap("<bs>", "b")
 
 -- duplicate lines

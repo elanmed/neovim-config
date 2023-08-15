@@ -8,4 +8,4 @@ require "barebones/options"
 require "barebones/remaps"
 
 require "shared/options"
-require "shared.remaps"
+require "shared/remaps"
