@@ -1,4 +1,3 @@
-vim.cmd("colorscheme vscode")
 local lualine = require "lualine"
 
 lualine.setup({
