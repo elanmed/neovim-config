@@ -17,8 +17,6 @@ vim.g.coc_global_extensions = {
   "coc-css"
 }
 
-vim.cmd("autocmd FileType scss setl iskeyword+=@-@")
-
 function _G.show_docs()
   local cw = vim.fn.expand("<cword>")
   if vim.fn.index({ "vim", "help" }, vim.bo.filetype) >= 0 then
@@ -41,10 +39,15 @@ h.nmap("gh", "<cmd>call v:lua.show_docs()<cr>")
 h.nmap("go", "<c-o>")
 h.nmap("gi", "<c-i>")
 h.nmap("<leader>gh", "<c-w>w<c-w>w") -- close hover documentation
+h.nmap("<leader>cr", "<cmd>CocRestart<cr>")
 
 h.set.updatetime = 100
+h.set.signcolumn = "yes" -- needed for linting symbols
+
 vim.api.nvim_create_augroup("CocGroup", {})
 vim.api.nvim_create_autocmd("CursorHold", {
   group = "CocGroup",
   command = "silent call CocActionAsync('highlight')",
 })
+vim.api.nvim_set_hl(0, "CocFloating", { link = "Normal" })
+-- vim.cmd("autocmd FileType scss setl iskeyword+=@-@")

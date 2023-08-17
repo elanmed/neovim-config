@@ -26,11 +26,9 @@ h.set.tabstop = 2      -- number of columns in a tab
 h.set.softtabstop = 2  -- number of spaces to delete when deleting a tab
 h.set.shiftwidth = 2   -- number of spaces to insert/delete when in insert mode
 
-
 -- search
 h.set.ignorecase = true
 h.nmap("<leader>/t", "<cmd>noh<cr>") -- turn off highlighting
-
 
 -- folding
 h.set.foldmethod = "expr"
@@ -38,58 +36,23 @@ h.set.foldcolumn = "0"    -- disable fold symbols in left column
 h.set.foldlevelstart = 99 -- open folds by default
 h.nmap("<leader>u", "za") -- toggle fold
 
+vim.api.nvim_set_option("foldexpr", "v:lua.GetFold(vim.fn.line('.'))")
+
+function IndentLevel(lnum)
+  return vim.fn.indent(lnum) / vim.api.nvim_get_option("shiftwidth") + 1
+end
+
 -- fold based on indent, or if on the outermost indent, until the next newline
-vim.cmd([[
-set foldexpr=GetFold(v:lnum)
-
-function! IndentLevel(lnum)
-  return indent(a:lnum) / &shiftwidth + 1
-endfunction
-
-function! GetFold(lnum)
-  " blanklines
-  if getline(a:lnum) =~? '\v^\s*$'
-    if IndentLevel(a:lnum - 1) == 1
+function _G.GetFold(lnum)
+  -- blanklines
+  if vim.fn.getline(lnum):match('^%s*$') then
+    -- if first line,
+    if IndentLevel(lnum - 1) == 1 then
       return 0
-    endif
+    end
 
-    " the foldlevel of this line is equal to the foldlevel of the line above or below it, whichever is smaller
-    return '-1'
-  endif
-
-  return IndentLevel(a:lnum)
-endfunction
-
-" not used right now, but maybe in the future
-function! NextNonBlankLine(lnum)
-  let numlines = line('$')
-  let current = a:lnum + 1
-
-  while current <= numlines
-    " match non blank
-    if getline(current) =~? '\v\S'
-      return current
-    endif
-
-    let current += 1
-  endwhile
-
-  return -2 " not a valid line number, no nonblank lines after the current one
-endfunction
-
-" not used right now, but maybe in the future
-function! PrevNonBlankLine(lnum)
-  let current = a:lnum - 1
-
-  while current >= 1
-    " match non blank
-    if getline(current) =~? '\v\S'
-      return current
-    endif
-
-    let current -= 1
-  endwhile
-
-  return -2
-endfunction
-]])
+    -- i.e. the foldlevel of this line is equal to the foldlevel of the line above or below it, whichever is smaller
+    return -1
+  end
+  return IndentLevel(lnum)
+end

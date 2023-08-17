@@ -1,4 +1,7 @@
 local lualine = require "lualine"
+local h = require "shared/helpers"
+
+h.set.showmode = false -- disrupts lualine
 
 lualine.setup({
   options = {

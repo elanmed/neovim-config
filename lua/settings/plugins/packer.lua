@@ -40,7 +40,6 @@ return packer.startup(({
     use "easymotion/vim-easymotion"
     use "psliwka/vim-smoothie"
     use "ThePrimeagen/harpoon"
-    use "ThePrimeagen/vim-be-good"
     use "Xuyuanp/scrollbar.nvim"
     use "christoomey/vim-tmux-navigator"
     use({
@@ -48,15 +47,17 @@ return packer.startup(({
       branch = "release",
     })
     use "mg979/vim-visual-multi"
-    use "vim-scripts/BufOnly.vim"
     use({
       "iamcco/markdown-preview.nvim",
       run = "cd app && npm install",
-      setup = function() vim.g.mkdp_filetypes = { "markdown" } end,
       ft = { "markdown" },
     })
+
+    -- buffers as tabs
     use({ 'akinsho/bufferline.nvim', tag = "*" })
-    use "Mofiqul/vscode.nvim"
+    use "RRethy/nvim-base16"
+    use "moll/vim-bbye"
+    use "vim-scripts/BufOnly.vim"
 
     -- bqf
     use "kevinhwang91/nvim-bqf"
