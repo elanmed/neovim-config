@@ -1,8 +1,10 @@
-local h = require "shared/helpers"
+local h = require "shared.helpers"
 
 local telescope = require "telescope"
 local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
+local builtin = require "telescope.builtin"
+local tree_api = require "nvim-tree.api"
 
 local custom_actions = {}
 
@@ -23,6 +25,7 @@ custom_actions.fzf_multi_select = function(prompt_bufnr)
     actions.open_qflist()
   else
     actions.file_edit(prompt_bufnr)
+    tree_api.tree.close()
   end
 end
 
@@ -31,15 +34,15 @@ telescope.setup({
     layout_strategy = "vertical",
     layout_config   = {
       height = 0.95,
-      width = 0.925,
+      width = 0.95,
       prompt_position = "bottom",
       preview_height = 0.4,
     },
     mappings        = {
       i = {
         ["<cr>"] = custom_actions.fzf_multi_select,
-        ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
-        ["<s-tab>"] = actions.toggle_selection + actions.move_selection_previous,
+        ["<tab>"] = actions.toggle_selection + actions.move_selection_previous,
+        ["<s-tab>"] = actions.move_selection_next + actions.toggle_selection,
         ["<c-f>"] = actions.send_to_qflist,
         ["<esc>"] = actions.close
       }
@@ -51,11 +54,21 @@ telescope.load_extension("fzf")
 telescope.load_extension("neoclip")
 telescope.load_extension("rg_with_args")
 
-h.nmap("<C-p>", [[<cmd>lua require("telescope.builtin").find_files()<cr>]])
-h.nmap("<leader>zu", [[<cmd>lua require("telescope.builtin").resume()<cr>]])
-h.nmap("<leader>zl", [[<cmd>lua require("telescope.builtin").current_buffer_fuzzy_find()<cr>]])
-h.nmap("<leader>zk", [[<cmd>lua require("telescope.builtin").buffers()<cr>]])
+h.nmap("<C-p>", builtin.find_files)
+h.nmap("<leader>zu", builtin.resume)
+h.nmap("<leader>zl", builtin.current_buffer_fuzzy_find)
+h.nmap("<leader>zk", builtin.buffers)
 
-h.nmap("<leader>zf", [[<cmd>lua require("telescope").extensions.rg_with_args.rg_with_args()<CR>]])
-h.nmap("<leader>zo", [[<cmd>lua require("telescope").extensions.rg_with_args.rg_under_cursor()<CR>]])
-h.vmap("<leader>zo", [[<cmd>lua require("telescope").extensions.rg_with_args.rg_visual_selection()<CR>]])
+local shared_grep_string_options = { only_sort_text = true }
+
+local function grep_string_with_search()
+  local term = vim.fn.input("Grep for > ")
+  if term == "" then return end
+
+  local grep_string_options = vim.tbl_extend("error", shared_grep_string_options, { search = term })
+  builtin.grep_string(grep_string_options)
+end
+
+h.nmap("<leader>zf", grep_string_with_search)
+h.nmap("<leader>zo", function() builtin.grep_string(shared_grep_string_options) end)
+h.vmap("<leader>zo", function() builtin.grep_string(shared_grep_string_options) end)

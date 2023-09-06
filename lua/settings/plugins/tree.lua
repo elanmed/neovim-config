@@ -1,4 +1,4 @@
-local h = require "shared/helpers"
+local h = require "shared.helpers"
 local tree = require "nvim-tree"
 
 local function on_attach(bufnr)
@@ -34,5 +34,5 @@ tree.setup({
   },
 })
 
-h.nmap("<leader>rw", "<cmd>NvimTreeToggle<cr>")
-h.nmap("<leader>re", "<cmd>NvimTreeFindFileToggle<cr>zz")
+h.nmap("<leader>rw", h.user_command_cb("NvimTreeClose"))
+h.nmap("<leader>re", "<cmd>NvimTreeFindFile<cr>zz")

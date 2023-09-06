@@ -52,6 +52,10 @@ return packer.startup(({
       run = "cd app && npm install",
       ft = { "markdown" },
     })
+    -- use({
+    --   'ckolkey/ts-node-action',
+    --   requires = { 'nvim-treesitter' },
+    -- })
 
     -- buffers as tabs
     use({ 'akinsho/bufferline.nvim', tag = "*" })

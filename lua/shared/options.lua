@@ -1,4 +1,4 @@
-local h = require "shared/helpers"
+local h = require "shared.helpers"
 
 h.set.clipboard = "unnamedplus" -- os clipboard
 h.set.number = true             -- line numbers
@@ -36,23 +36,25 @@ h.set.foldcolumn = "0"    -- disable fold symbols in left column
 h.set.foldlevelstart = 99 -- open folds by default
 h.nmap("<leader>u", "za") -- toggle fold
 
-vim.api.nvim_set_option("foldexpr", "v:lua.GetFold(vim.fn.line('.'))")
-
-function IndentLevel(lnum)
-  return vim.fn.indent(lnum) / vim.api.nvim_get_option("shiftwidth") + 1
-end
-
 -- fold based on indent, or if on the outermost indent, until the next newline
-function _G.GetFold(lnum)
-  -- blanklines
-  if vim.fn.getline(lnum):match('^%s*$') then
-    -- if first line,
-    if IndentLevel(lnum - 1) == 1 then
-      return 0
-    end
+vim.cmd([[
+  set foldexpr=GetFold(v:lnum)
 
-    -- i.e. the foldlevel of this line is equal to the foldlevel of the line above or below it, whichever is smaller
-    return -1
-  end
-  return IndentLevel(lnum)
-end
+  function! IndentLevel(lnum)
+    return indent(a:lnum) / &shiftwidth + 1
+  endfunction
+
+  function! GetFold(lnum)
+    " blanklines
+    if getline(a:lnum) =~? '\v^\s*$'
+      if IndentLevel(a:lnum - 1) == 1
+        return 0
+      endif
+
+      " the foldlevel of this line is equal to the foldlevel of the line above or below it, whichever is smaller
+      return '-1'
+    endif
+
+    return IndentLevel(a:lnum)
+  endfunction
+]])

@@ -1,4 +1,4 @@
-local h = require "shared/helpers"
+local h = require "shared.helpers"
 
 -- vim visual multi
 vim.cmd([[
@@ -7,4 +7,4 @@ vim.cmd([[
  ]])
 
 -- markdown preview
-h.nmap("<leader>mp", "<cmd>MarkdownPreviewToggle<cr>")
+h.nmap("<leader>mp", h.user_command_cb("MarkdownPreviewToggle"))

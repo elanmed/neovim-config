@@ -1,5 +1,5 @@
 local lualine = require "lualine"
-local h = require "shared/helpers"
+local h = require "shared.helpers"
 
 h.set.showmode = false -- disrupts lualine
 

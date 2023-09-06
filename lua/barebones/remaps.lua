@@ -1,4 +1,4 @@
-local h = require "shared/helpers"
+local h = require "shared.helpers"
 
 h.nmap("<leader>re", ":Lexplore<cr>")
 h.nmap("L", "<cmd>bnext<cr>")

@@ -1,5 +1,6 @@
-local h = require "shared/helpers"
+local h = require "shared.helpers"
 local diffview = require "diffview"
+local actions = require "diffview.actions"
 
 diffview.setup({
   file_panel = {
@@ -8,7 +9,19 @@ diffview.setup({
       height = 10,
     },
   },
+  keymaps = {
+    file_panel = {
+      { "n", "j",       actions.next_entry },
+      { "n", "k",       actions.prev_entry },
+      { "n", "<cr>",    actions.goto_file_edit },
+      { "n", "<tab>",   actions.select_next_entry },
+      { "n", "<s-tab>", actions.select_prev_entry },
+      { "n", "X",       actions.restore_entry },
+    }
+  }
 })
 
 h.nmap("<leader>gd", "<cmd>NvimTreeClose<cr>:DiffviewOpen<cr>")
-h.nmap("<leader>gq", "<cmd>DiffviewClose<cr>")
+h.nmap("<leader>gq", h.user_command_cb("DiffviewClose"))
+h.nmap("<leader>gi", "<cmd>DiffviewFileHistory %<cr>")
+h.nmap("T", h.user_command_cb("tabnext"))

@@ -1,6 +1,7 @@
-local h = require "shared/helpers"
+local h = require "shared.helpers"
 
 local neoclip = require "neoclip"
+local telescope = require "telescope"
 
 neoclip.setup({
   keys = {
@@ -11,6 +12,6 @@ neoclip.setup({
     },
   },
 })
-h.nmap("<leader>yo", [[<cmd>lua require("telescope").extensions.neoclip.default()<cr>]])
-h.vmap("<leader>yo", [[<cmd>lua require("telescope").extensions.neoclip.default()<cr>]])
+h.nmap("<leader>yo", telescope.extensions.neoclip.default)
+h.vmap("<leader>yo", telescope.extensions.neoclip.default)
 h.nmap("<leader>yp", [[""p]])

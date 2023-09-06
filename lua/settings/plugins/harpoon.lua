@@ -1,9 +1,12 @@
-local h = require "shared/helpers"
+local h = require "shared.helpers"
 
 local harpoon = require "harpoon"
+local harpoon_mark = require "harpoon.mark"
+local harpoon_ui = require "harpoon.ui"
+
 harpoon.setup({})
 
-h.nmap("<leader>aa", [[<cmd>lua require("harpoon.mark").add_file()<cr>]])
-h.nmap("<leader>at", [[<cmd>lua require("harpoon.ui").toggle_quick_menu()<cr>]])
-h.nmap("<leader>an", [[<cmd>lua require("harpoon.ui").nav_next()<cr>]])
-h.nmap("<leader>ap", [[<cmd>lua require("harpoon.ui").nav_prev()<cr>]])
+h.nmap("<leader>aa", harpoon_mark.add_file)
+h.nmap("<leader>at", harpoon_ui.toggle_quick_menu)
+h.nmap("<leader>an", harpoon_ui.nav_next)
+h.nmap("<leader>ap", harpoon_ui.nav_prev)

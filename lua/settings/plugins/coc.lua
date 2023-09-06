@@ -1,4 +1,4 @@
-local h = require "shared/helpers"
+local h = require "shared.helpers"
 
 -- https://github.com/samhvw8/mvim/blob/master/lua/core/coc.lua
 vim.g.coc_global_extensions = {

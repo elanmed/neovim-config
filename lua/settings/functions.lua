@@ -1,4 +1,4 @@
-local h = require "shared/helpers"
+local h = require "shared.helpers"
 
 --[[ function _G.sample_fn() ]]
 --[[ 	print("sample_fn") ]]

@@ -1,4 +1,4 @@
-local h = require "shared/helpers"
+local h = require "shared.helpers"
 
 h.nmap("<leader>af", "<C-6>") -- alternate file
 h.nmap("J", "gJ")             -- J without whitespace
@@ -37,7 +37,7 @@ h.nmap("<leader>l", "<C-w>l") -- toggle
 -- quickfix list
 h.nmap("gn", "<cmd>Cnext<cr>zz")
 h.nmap("gp", "<cmd>Cprev<cr>zz")
-h.nmap("ge", "<cmd>copen<cr>")
+h.nmap("ge", "<cmd>copen 25<cr>")
 h.nmap("gq", "<cmd>cclose<cr>")
 
 -- move lines up and down with alt-j, alt-k

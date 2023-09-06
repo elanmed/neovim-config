@@ -1,4 +1,4 @@
-local h = require "shared/helpers"
+local h = require "shared.helpers"
 
 local gitsigns = require "gitsigns"
 
@@ -7,4 +7,4 @@ gitsigns.setup({
     virt_text_pos = "right_align",
   },
 })
-h.nmap("<leader>gl", "<cmd>Gitsigns toggle_current_line_blame<cr>")
+h.nmap("<leader>gl", h.user_command_cb("Gitsigns toggle_current_line_blame"))
