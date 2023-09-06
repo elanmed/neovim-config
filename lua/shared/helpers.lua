@@ -22,8 +22,8 @@ M.dump = function(o)
   end
 end
 
-M.user_command_cb = function(user_command)
-  return function() vim.cmd(user_command) end
+M.user_cmd_cb = function(user_cmd)
+  return function() vim.cmd(user_cmd) end
 end
 
 M.pcall_cb = function(call)

@@ -4,8 +4,8 @@ local h = require "shared.helpers"
 h.map("", "<space>", "<nop>")
 h.let.mapleader = " "
 
-require "barebones/options"
-require "barebones/remaps"
+require "barebones.options"
+require "barebones.remaps"
 
 require "shared.options"
 require "shared.remaps"

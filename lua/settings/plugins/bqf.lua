@@ -13,4 +13,7 @@ bqf.setup({
 
 -- delete all quickfix lists
 -- TODO: figure out a way to clear only one list, not all
-h.nmap("<leader>gl", "<cmd>call setqflist([])<cr><cmd>q<cr>")
+h.nmap("<leader>gl", function()
+  vim.cmd('call setqflist([])')
+  vim.cmd('q')
+end)

@@ -1,3 +1,4 @@
+-- easymotion
 vim.api.nvim_create_autocmd({ "User" }, {
   pattern = "EasyMotionPromptBegin",
   callback = function() vim.b.coc_diagnostic_disable = 1 end

@@ -5,23 +5,23 @@ h.nmap("J", "gJ")             -- J without whitespace
 h.nmap("<leader>o", "o<esc>")
 h.nmap("<leader>O", "O<esc>")
 h.nmap("<leader>rr", [[viw"_dP]])
-h.nmap("<leader>r;", "@:")          -- repeat last command
-h.nmap([[<leader>']], [["]])        -- for setting register
-h.nmap("<leader>vs", "<cmd>vsplit<cr>")
-h.nmap("<leader>p", "<cmd>pu<cr>")  -- paste on line below
-h.nmap("<leader>P", "<cmd>pu!<cr>") -- paste on line above
+h.nmap("<leader>r;", "@:")                -- repeat last command
+h.nmap([[<leader>']], [["]])              -- for setting register
+h.nmap("<leader>vs", h.user_cmd_cb("vsplit"))
+h.nmap("<leader>p", h.user_cmd_cb "pu")   -- paste on line below
+h.nmap("<leader>P", h.user_cmd_cb("pu!")) -- paste on line above
 h.nmap("<bs>", "b")
 
 -- duplicate lines
 h.nmap("<leader>dl", "yyp")
 h.vmap("<leader>dl", "y`>p") -- move to end of selection, then yank
 
-h.nmap("<leader>s", "<cmd>w<cr>")
-h.nmap("<leader>w", "<cmd>q<cr>")
-h.nmap("<leader>q", "<cmd>qa<cr>")
+h.nmap("<leader>s", h.user_cmd_cb("w"))
+h.nmap("<leader>w", h.user_cmd_cb("q"))
+h.nmap("<leader>q", h.user_cmd_cb "qa")
 
 -- copy path of file
-h.nmap("<leader>ip", [[<cmd>let @+ = expand("%:p")<cr>]])
+h.nmap("<leader>ip", h.user_cmd_cb([[let @+ = expand("%:p")]]))
 
 -- keeps lines highlighted while indenting
 h.vmap("<", "<gv")
@@ -35,10 +35,16 @@ h.nmap("<leader>k", "<C-w>k") -- toggle
 h.nmap("<leader>l", "<C-w>l") -- toggle
 
 -- quickfix list
-h.nmap("gn", "<cmd>Cnext<cr>zz")
-h.nmap("gp", "<cmd>Cprev<cr>zz")
-h.nmap("ge", "<cmd>copen 25<cr>")
-h.nmap("gq", "<cmd>cclose<cr>")
+h.nmap("gn", function()
+  vim.cmd("Cnext")
+  vim.cmd("normal zz")
+end)
+h.nmap("gp", function()
+  vim.cmd("Cprev")
+  vim.cmd("normal zz")
+end)
+h.nmap("ge", h.user_cmd_cb("copen 25"))
+h.nmap("gq", h.user_cmd_cb("cclose"))
 
 -- move lines up and down with alt-j, alt-k
 h.nmap("∆", ":m .+1<cr>==")

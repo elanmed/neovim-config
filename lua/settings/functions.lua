@@ -1,9 +1,9 @@
 local h = require "shared.helpers"
 
---[[ function _G.sample_fn() ]]
---[[ 	print("sample_fn") ]]
---[[ end ]]
---[[ h.nmap("", "v:lua.sample_fn()<cr>") ]]
+-- function _G.sample_fn()
+--   print("sample_fn")
+-- end
+-- h.nmap("", "v:lua.sample_fn()<cr>")
 
 vim.api.nvim_create_user_command("FindAndReplace", function(opts)
   vim.api.nvim_command(string.format("cdo s/%s/%s", opts.fargs[1], opts.fargs[2]))
@@ -22,7 +22,7 @@ local function gen_circular_next_prev(try, catch)
   end
 end
 
-vim.api.nvim_create_user_command('Cnext', function() return gen_circular_next_prev("cnext", "cfirst") end, {})
-vim.api.nvim_create_user_command('Cprev', function() return gen_circular_next_prev("cprev", "clast") end, {})
-vim.api.nvim_create_user_command('Lnext', function() return gen_circular_next_prev("lnext", "lfirst") end, {})
-vim.api.nvim_create_user_command('Lprev', function() return gen_circular_next_prev("lprev", "llast") end, {})
+vim.api.nvim_create_user_command('Cnext', function() gen_circular_next_prev("cnext", "cfirst") end, {})
+vim.api.nvim_create_user_command('Cprev', function() gen_circular_next_prev("cprev", "clast") end, {})
+vim.api.nvim_create_user_command('Lnext', function() gen_circular_next_prev("lnext", "lfirst") end, {})
+vim.api.nvim_create_user_command('Lprev', function() gen_circular_next_prev("lprev", "llast") end, {})

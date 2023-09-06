@@ -13,9 +13,9 @@ end
 local packer_bootstrap = ensure_packer()
 
 -- reloads neovim whenever you save the file
-vim.api.nvim_create_augroup("packer_user_config", {})
+vim.api.nvim_create_augroup("PackerGroup", {})
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-  group = "packer_user_config",
+  group = "PackerGroup",
   pattern = "/Users/elanmedoff/.config/nvim/lua/settings/plugins/packer.lua",
   command = "source <afile> | PackerSync"
 })

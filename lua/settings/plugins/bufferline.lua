@@ -37,13 +37,13 @@ bufferline.setup({
 
 vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { fg = colors.base0C, underline = true })
 
-h.nmap("<leader>tp", h.user_command_cb("BufferLinePick"))
-h.nmap("<leader>ti", h.user_command_cb("BufferLineTogglePin"))
-h.nmap("<leader>mn", h.user_command_cb("BufferLineMoveNext"))
-h.nmap("<leader>mp", h.user_command_cb("BufferLineMovePrev"))
-h.nmap("L", h.user_command_cb("BufferLineCycleNext"))
-h.nmap("H", h.user_command_cb("BufferLineCyclePrev"))
+h.nmap("<leader>tp", h.user_cmd_cb("BufferLinePick"))
+h.nmap("<leader>ti", h.user_cmd_cb("BufferLineTogglePin"))
+h.nmap("<leader>mn", h.user_cmd_cb("BufferLineMoveNext"))
+h.nmap("<leader>mp", h.user_cmd_cb("BufferLineMovePrev"))
+h.nmap("L", h.user_cmd_cb("BufferLineCycleNext"))
+h.nmap("H", h.user_cmd_cb("BufferLineCyclePrev"))
 
-h.nmap("<leader>tw", h.user_command_cb("Bdelete"))
-h.nmap("<leader>ta", ":bufdo :Bdelete<cr>")
-h.nmap("<leader>to", h.user_command_cb("BufOnly"))
+h.nmap("<leader>tw", h.user_cmd_cb("Bdelete"))
+h.nmap("<leader>ta", h.user_cmd_cb("bufdo Bdelete"))
+h.nmap("<leader>to", h.user_cmd_cb("BufOnly"))

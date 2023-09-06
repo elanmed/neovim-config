@@ -28,7 +28,7 @@ h.set.shiftwidth = 2   -- number of spaces to insert/delete when in insert mode
 
 -- search
 h.set.ignorecase = true
-h.nmap("<leader>/t", "<cmd>noh<cr>") -- turn off highlighting
+h.nmap("<leader>/t", h.user_cmd_cb("noh")) -- turn off highlighting
 
 -- folding
 h.set.foldmethod = "expr"
