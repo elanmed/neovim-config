@@ -1,6 +1,7 @@
 local h = require "shared.helpers"
 
 local harpoon = require "harpoon"
+-- TODO: why can't I derive this all from harpoon aboe
 local harpoon_mark = require "harpoon.mark"
 local harpoon_ui = require "harpoon.ui"
 

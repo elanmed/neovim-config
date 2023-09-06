@@ -46,4 +46,4 @@ h.nmap("H", h.user_command_cb("BufferLineCyclePrev"))
 
 h.nmap("<leader>tw", h.user_command_cb("Bdelete"))
 h.nmap("<leader>ta", ":bufdo :Bdelete<cr>")
-h.nmap("<leader>to", ":BufOnly<cr>")
+h.nmap("<leader>to", h.user_command_cb("BufOnly"))

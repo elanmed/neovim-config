@@ -1,8 +1,16 @@
-vim.cmd([[
-  augroup ScrollbarInit
-    autocmd!
-    autocmd WinScrolled,VimResized,QuitPre * silent! lua require("scrollbar").show()
-    autocmd WinEnter,FocusGained           * silent! lua require("scrollbar").show()
-    autocmd WinLeave,BufLeave,BufWinLeave,FocusLost            * silent! lua require("scrollbar").clear()
-  augroup end
-]])
+local h = require "shared.helpers"
+local scrollbar = require "scrollbar"
+
+vim.api.nvim_create_augroup("ScrollbarInit", {})
+vim.api.nvim_create_autocmd({ "WinScrolled", "VimResized", "QuitPre" }, {
+  group = "ScrollbarInit",
+  callback = h.pcall_cb(scrollbar.show)
+})
+vim.api.nvim_create_autocmd({ "WinEnter", "FocusGained" }, {
+  group = "ScrollbarInit",
+  callback = h.pcall_cb(scrollbar.show)
+})
+vim.api.nvim_create_autocmd({ "WinLeave", "BufLeave", "BufWinLeave", "FocusLost" }, {
+  group = "ScrollbarInit",
+  callback = h.pcall_cb(scrollbar.clear)
+})

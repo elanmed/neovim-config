@@ -23,5 +23,5 @@ diffview.setup({
 
 h.nmap("<leader>gd", "<cmd>NvimTreeClose<cr>:DiffviewOpen<cr>")
 h.nmap("<leader>gq", h.user_command_cb("DiffviewClose"))
-h.nmap("<leader>gi", "<cmd>DiffviewFileHistory %<cr>")
+h.nmap("<leader>gi", h.user_command_cb("DiffviewFileHistory %"))
 h.nmap("T", h.user_command_cb("tabnext"))

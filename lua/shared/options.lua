@@ -36,25 +36,21 @@ h.set.foldcolumn = "0"    -- disable fold symbols in left column
 h.set.foldlevelstart = 99 -- open folds by default
 h.nmap("<leader>u", "za") -- toggle fold
 
--- fold based on indent, or if on the outermost indent, until the next newline
-vim.cmd([[
-  set foldexpr=GetFold(v:lnum)
+h.set.foldexpr = "v:lua.GetFold(v:lnum)"
 
-  function! IndentLevel(lnum)
-    return indent(a:lnum) / &shiftwidth + 1
-  endfunction
+local function indent_level(lnum)
+  return vim.fn.indent(lnum) / vim.o.shiftwidth + 1
+end
 
-  function! GetFold(lnum)
-    " blanklines
-    if getline(a:lnum) =~? '\v^\s*$'
-      if IndentLevel(a:lnum - 1) == 1
-        return 0
-      endif
-
-      " the foldlevel of this line is equal to the foldlevel of the line above or below it, whichever is smaller
-      return '-1'
-    endif
-
-    return IndentLevel(a:lnum)
-  endfunction
-]])
+-- Equivalent to the GetFold function
+function _G.GetFold(lnum)
+  -- Check for blank lines
+  if vim.fn.match(vim.fn.getline(lnum), [[\v^\s*$]]) ~= -1 then
+    if indent_level(lnum - 1) == 1 then
+      return 0
+    end
+    -- the foldlevel of this line is equal to the foldlevel of the line above or below it, whichever is smaller
+    return "-1"
+  end
+  return indent_level(lnum)
+end

@@ -49,11 +49,9 @@ h.vmap("∆", ":m '>+1<cr>gv=gv")
 h.vmap("˚", ":m '<-2<cr>gv=gv")
 
 -- search case sensitive, whole word, and both
-vim.cmd([[
-  noremap <leader>/c /\C<left><left>
-  noremap <leader>/w /\<\><left><left>
-  noremap <leader>cw /\<\>\C<left><left><left><left>
-]])
+h.nmap('<leader>/c', '/\\C<left><left>')
+h.nmap('<leader>/w', '/\\<\\><left><left>')
+h.nmap('<leader>cw', '/\\<\\>\\C<left><left><left><left>')
 
 -- keep search result in the middle of the page
 h.nmap("n", "nzz")
