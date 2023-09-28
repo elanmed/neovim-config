@@ -11,6 +11,7 @@ h.nmap("<leader>vs", h.user_cmd_cb("vsplit"))
 h.nmap("<leader>p", h.user_cmd_cb "pu")   -- paste on line below
 h.nmap("<leader>P", h.user_cmd_cb("pu!")) -- paste on line above
 h.nmap("<bs>", "b")
+h.nmap("*", "*N")
 
 -- duplicate lines
 h.nmap("<leader>dl", "yyp")
@@ -37,11 +38,11 @@ h.nmap("<leader>l", "<C-w>l") -- toggle
 -- quickfix list
 h.nmap("gn", function()
   vim.cmd("Cnext")
-  vim.cmd("normal zz")
+  vim.cmd("normal! zz")
 end)
 h.nmap("gp", function()
   vim.cmd("Cprev")
-  vim.cmd("normal zz")
+  vim.cmd("normal! zz")
 end)
 h.nmap("ge", h.user_cmd_cb("copen 25"))
 h.nmap("gq", h.user_cmd_cb("cclose"))
@@ -55,9 +56,12 @@ h.vmap("∆", ":m '>+1<cr>gv=gv")
 h.vmap("˚", ":m '<-2<cr>gv=gv")
 
 -- search case sensitive, whole word, and both
-h.nmap('<leader>/c', '/\\C<left><left>')
-h.nmap('<leader>/w', '/\\<\\><left><left>')
-h.nmap('<leader>cw', '/\\<\\>\\C<left><left><left><left>')
+vim.cmd([[
+  noremap <leader>/c /\C<left><left>
+  noremap <leader>/w /\<\><left><left>
+  noremap <leader>cw /\<\>\C<left><left><left><left>
+]])
+
 
 -- keep search result in the middle of the page
 h.nmap("n", "nzz")

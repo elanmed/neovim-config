@@ -29,6 +29,23 @@ custom_actions.fzf_multi_select = function(prompt_bufnr)
   end
 end
 
+-- local function quickfix_shortcut_all(prompt_bufnr)
+--   actions.send_to_qflist(prompt_bufnr)
+--   vim.cmd('copen 25')
+--   require('bqf.filter.fzf').run()
+-- end
+--
+-- local function quickfix_shortcut_selected(prompt_bufnr)
+--   custom_actions.fzf_multi_select(prompt_bufnr)
+--   vim.cmd('copen 25')
+--   require('bqf.filter.fzf').run()
+-- end
+
+local function send_to_qflist_and_open(prompt_bufnr)
+  actions.send_to_qflist(prompt_bufnr)
+  vim.cmd('copen 25')
+end
+
 telescope.setup({
   defaults = {
     layout_strategy = "vertical",
@@ -41,10 +58,12 @@ telescope.setup({
     mappings        = {
       i = {
         ["<cr>"] = custom_actions.fzf_multi_select,
+        ["<c-f>"] = send_to_qflist_and_open,
         ["<tab>"] = actions.toggle_selection + actions.move_selection_previous,
         ["<s-tab>"] = actions.move_selection_next + actions.toggle_selection,
-        ["<c-f>"] = actions.send_to_qflist,
-        ["<esc>"] = actions.close
+        ["<esc>"] = actions.close,
+        -- ["<c-d>"] = quickfix_shortcut_selected,
+        -- ["<c-f>"] = quickfix_shortcut_all,
       }
     }
   },
@@ -52,7 +71,7 @@ telescope.setup({
 
 telescope.load_extension("fzf")
 telescope.load_extension("neoclip")
-telescope.load_extension("rg_with_args")
+-- telescope.load_extension("rg_with_args")
 
 h.nmap("<C-p>", builtin.find_files)
 h.nmap("<leader>zu", builtin.resume)
@@ -69,6 +88,17 @@ local function grep_string_with_search()
   builtin.grep_string(grep_string_options)
 end
 
+
+local function grep_string_with_visual()
+  local _, ls, cs = unpack(vim.fn.getpos('v'))
+  local _, le, ce = unpack(vim.fn.getpos('.'))
+  local visual = vim.api.nvim_buf_get_text(0, ls - 1, cs - 1, le - 1, ce, {})
+  local selected_text = visual[1] or ""
+
+  local grep_string_options = vim.tbl_extend("error", shared_grep_string_options, { search = selected_text })
+  builtin.grep_string(grep_string_options)
+end
+
 h.nmap("<leader>zf", grep_string_with_search)
 h.nmap("<leader>zo", function() builtin.grep_string(shared_grep_string_options) end)
-h.vmap("<leader>zo", function() builtin.grep_string(shared_grep_string_options) end)
+h.vmap("<leader>zo", grep_string_with_visual)

@@ -37,5 +37,5 @@ tree.setup({
 h.nmap("<leader>rw", h.user_cmd_cb("NvimTreeClose"))
 h.nmap("<leader>re", function()
   vim.cmd("NvimTreeFindFile")
-  vim.cmd("normal zz")
+  vim.cmd("normal! zz")
 end)
