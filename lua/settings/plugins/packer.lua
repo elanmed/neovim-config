@@ -56,6 +56,7 @@ return packer.startup(({
     --   'ckolkey/ts-node-action',
     --   requires = { 'nvim-treesitter' },
     -- })
+    use "HiPhish/rainbow-delimiters.nvim"
 
     -- buffers as tabs
     use({ 'akinsho/bufferline.nvim', tag = "*" })
