@@ -61,3 +61,28 @@ vim.api.nvim_create_autocmd({ "CursorHold" }, {
   command = "silent call CocActionAsync('highlight')",
 })
 vim.api.nvim_set_hl(0, "CocFloating", { link = "Normal" })
+
+local prettier_supported_filetypes = {
+   "*.js",
+  "*.jsx",
+  "*.mjs",
+  "*.cjs",
+  "*.ts",
+  "*.tsx",
+  "*.json",
+  "*.json5",
+  "*.jsonc",
+  "*.css",
+  "*.postcss",
+  "*.scss",
+  "*.less",
+  "*.html",
+  "*.xml",
+  "*.svg",
+  "*.md",
+  "*.mdx",
+  "*.yaml",
+  "*.yml",
+}
+
+vim.cmd([[autocmd BufWritePre ]] .. table.concat(prettier_supported_filetypes, ",") .. [[ call CocActionAsync('runCommand', 'prettier.formatFile') | write]])

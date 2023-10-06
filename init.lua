@@ -14,6 +14,7 @@ end
 require "settings.plugins"
 require "settings.functions"
 require "settings.remaps"
+
 require "settings.options"
 
 require "shared.options"
