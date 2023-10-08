@@ -1,9 +1,9 @@
 local h = require "shared.helpers"
 
-h.nmap("<, testleader>af", "<C-6>") -- alternate file
+h.nmap("<leader>af", "<C-6>") -- alternate file
 h.nmap("J", "gJ")             -- J without whitespace
 h.nmap("<leader>o", "o<esc>")
-h.nmap("<leader, test>O", "O<esc>")
+h.nmap("<leader>O", "O<esc>")
 h.nmap("<leader>rr", [[viw"_dP]])
 h.nmap("<leader>r;", "@:")                -- repeat last command
 h.nmap([[<leader>']], [["]])              -- for setting register
