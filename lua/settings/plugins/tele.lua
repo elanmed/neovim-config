@@ -73,11 +73,6 @@ telescope.load_extension("fzf")
 telescope.load_extension("neoclip")
 -- telescope.load_extension("rg_with_args")
 
-h.nmap("<C-p>", builtin.find_files)
-h.nmap("<leader>zu", builtin.resume)
-h.nmap("<leader>zl", builtin.current_buffer_fuzzy_find)
-h.nmap("<leader>zk", builtin.buffers)
-
 local shared_grep_string_options = { only_sort_text = true }
 
 local function grep_string_with_search()
@@ -87,7 +82,6 @@ local function grep_string_with_search()
   local grep_string_options = vim.tbl_extend("error", shared_grep_string_options, { search = term })
   builtin.grep_string(grep_string_options)
 end
-
 
 local function grep_string_with_visual()
   local _, ls, cs = unpack(vim.fn.getpos('v'))
@@ -99,6 +93,26 @@ local function grep_string_with_visual()
   builtin.grep_string(grep_string_options)
 end
 
+local function grep_filename()
+  local filepath = vim.fn.expand('%:p')
+
+  local stripped_start = filepath:match("wf_modules.*$")
+  if not stripped_start then
+      print("`wf_modules` not found in the filepath!")
+      return
+  end
+
+  local stripped_extension = stripped_start:match("(.-)%..-$")
+
+  local grep_string_options = vim.tbl_extend("error", shared_grep_string_options, { search = stripped_extension })
+  builtin.grep_string(grep_string_options)
+end
+
+h.nmap("<C-p>", builtin.find_files)
+h.nmap("<leader>zu", builtin.resume)
+h.nmap("<leader>zl", builtin.current_buffer_fuzzy_find)
+h.nmap("<leader>zk", builtin.buffers)
 h.nmap("<leader>zf", grep_string_with_search)
+h.nmap("<leader>zp", grep_filename)
 h.nmap("<leader>zo", function() builtin.grep_string(shared_grep_string_options) end)
 h.vmap("<leader>zo", grep_string_with_visual)

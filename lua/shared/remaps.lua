@@ -56,12 +56,14 @@ h.imap("˚", "<esc>:m .-2<cr>==gi")
 h.vmap("∆", ":m '>+1<cr>gv=gv")
 h.vmap("˚", ":m '<-2<cr>gv=gv")
 
+-- using vim.cmd populates the command bar instantly
 -- search case sensitive, whole word, and both
 vim.cmd([[
   noremap <leader>/c /\C<left><left>
   noremap <leader>/w /\<\><left><left>
   noremap <leader>cw /\<\>\C<left><left><left><left>
 ]])
+vim.cmd([[nnoremap / /\V]]) -- search without regex
 
 
 -- keep search result in the middle of the page
