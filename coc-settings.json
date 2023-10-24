@@ -1,4 +1,5 @@
 {
+  "coc.preferences.formatOnSave": true,
   "coc.preferences.useQuickfixForLocations": true,
   "snippets.textmateSnippetsRoots": ["/Users/elanmedoff/.config/nvim/snippets"],
   "snippets.loadFromExtensions": false,
