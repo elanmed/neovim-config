@@ -93,19 +93,31 @@ local function grep_string_with_visual()
   builtin.grep_string(grep_string_options)
 end
 
-local function grep_filename()
+local function get_stripped_filename()
   local filepath = vim.fn.expand('%:p')
 
   local stripped_start = filepath:match("wf_modules.*$")
   if not stripped_start then
       print("`wf_modules` not found in the filepath!")
-      return
+      return nil
   end
 
-  local stripped_extension = stripped_start:match("(.-)%..-$")
+  return stripped_start:match("(.-)%..-$")
+end
 
-  local grep_string_options = vim.tbl_extend("error", shared_grep_string_options, { search = stripped_extension })
+local function grep_stripped_filename()
+  local stripped_filename = get_stripped_filename()
+  if stripped_filename == nil then return end
+
+  local grep_string_options = vim.tbl_extend("error", shared_grep_string_options, { search = stripped_filename })
   builtin.grep_string(grep_string_options)
+end
+
+local function yank_stripped_filename()
+  local stripped_filename = get_stripped_filename()
+  if stripped_filename == nil then return end
+
+  vim.fn.setreg('+', stripped_filename)
 end
 
 h.nmap("<C-p>", builtin.find_files)
@@ -113,6 +125,7 @@ h.nmap("<leader>zu", builtin.resume)
 h.nmap("<leader>zl", builtin.current_buffer_fuzzy_find)
 h.nmap("<leader>zk", builtin.buffers)
 h.nmap("<leader>zf", grep_string_with_search)
-h.nmap("<leader>zp", grep_filename)
+h.nmap("<leader>zp", grep_stripped_filename)
 h.nmap("<leader>zo", function() builtin.grep_string(shared_grep_string_options) end)
 h.vmap("<leader>zo", grep_string_with_visual)
+h.nmap("<leader>if", yank_stripped_filename)

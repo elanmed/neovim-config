@@ -22,8 +22,10 @@ h.nmap("<leader>s", h.user_cmd_cb("w"))
 h.nmap("<leader>w", h.user_cmd_cb("q"))
 h.nmap("<leader>q", h.user_cmd_cb "qa")
 
--- copy path of file
-h.nmap("<leader>ip", h.user_cmd_cb([[let @+ = expand("%:p")]]))
+-- copy absolute path of file
+h.nmap("<leader>ia", function() vim.fn.setreg('+', vim.fn.expand('%:p')) end)
+-- relative path
+h.nmap("<leader>ir", function() vim.fn.setreg('+', vim.fn.expand('%:~:.')) end)
 
 -- keeps lines highlighted while indenting
 h.vmap("<", "<gv")
