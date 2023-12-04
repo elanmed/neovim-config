@@ -1,6 +1,8 @@
+local h = require "shared.helpers"
+
 vim.cmd("colorscheme slate")
-vim.g.netrw_winsize = 40
-vim.g.netrw_banner = 0 -- removes banner at the top
+h.let.netrw_winsize = 40
+h.let.netrw_banner = 0 -- removes banner at the top
 
 vim.api.nvim_create_autocmd({ "filetype" }, {
   pattern = "netrw",

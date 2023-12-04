@@ -1,3 +1,5 @@
+local h = require "shared.helpers"
+
 -- easymotion
 vim.api.nvim_create_autocmd({ "User" }, {
   pattern = "EasyMotionPromptBegin",
@@ -9,6 +11,6 @@ vim.api.nvim_create_autocmd({ "User" }, {
 })
 
 -- markdown preview
-vim.g.mkdp_filetypes = {
+h.let.mkdp_filetypes = {
   "markdown"
 }

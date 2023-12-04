@@ -1,7 +1,7 @@
 local h = require "shared.helpers"
 
 -- https://github.com/samhvw8/mvim/blob/master/lua/core/coc.lua
-vim.g.coc_global_extensions = {
+h.let.coc_global_extensions = {
   "coc-tsserver",
   "coc-prettier",
   "coc-json",
@@ -14,7 +14,8 @@ vim.g.coc_global_extensions = {
   "coc-cssmodules",
   "coc-deno",
   "coc-stylelint",
-  "coc-css"
+  "coc-css",
+  "coc-solargraph"
 }
 
 local function coc_show_docs()

@@ -14,12 +14,13 @@ local colors = {
   base09 = '#de935f',
   base0A = '#f0c674',
   base0B = '#b5bd68',
-  base0C = '#8abeb7',
+  base0C = '#8abeb7', -- cursor
   base0D = '#81a2be',
   base0E = '#b294bb',
   base0F = '#a3685a'
 }
 base16.setup(colors)
+vim.cmd [[highlight TermCursor guibg=#de935f]]
 
 local bufferline = require "bufferline"
 bufferline.setup({

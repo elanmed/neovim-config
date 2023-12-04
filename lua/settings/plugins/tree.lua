@@ -5,7 +5,6 @@ local function on_attach(bufnr)
   local api = require "nvim-tree.api"
   local opts = { buffer = bufnr }
 
-  h.nmap("Y", api.fs.copy.absolute_path, opts)
   h.nmap("H", api.tree.toggle_hidden_filter, opts)
   h.nmap("<CR>", api.node.open.edit, opts)
   h.nmap("a", api.fs.create, opts)
@@ -13,6 +12,11 @@ local function on_attach(bufnr)
   h.nmap("r", api.fs.rename, opts)
   h.nmap("t", api.marks.toggle, opts)
   h.nmap("m", api.marks.bulk.move, opts)
+  h.nmap("y", api.fs.copy.relative_path, opts)
+  h.nmap("c", api.fs.copy.node, opts)
+  h.nmap("x", api.fs.cut, opts)
+  h.nmap("p", api.fs.paste, opts)
+  h.nmap("K", api.node.navigate.parent_close, opts)
 end
 
 tree.setup({

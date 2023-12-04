@@ -19,3 +19,7 @@ require "settings.options"
 
 require "shared.options"
 require "shared.remaps"
+
+-- TODO:
+-- 2. List of errors to ignore, like that a buffer doesn't exist anymore, or that a git job timed out
+-- 4. spell checker

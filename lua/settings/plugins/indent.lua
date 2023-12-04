@@ -1,4 +1,5 @@
 local indent = require "ibl"
+local h = require "shared.helpers"
 
 local highlight = {
   "RainbowYellow",
@@ -37,7 +38,7 @@ indent.setup({
 
 hooks.register(hooks.type.SCOPE_HIGHLIGHT, hooks.builtin.scope_highlight_from_extmark)
 
-vim.g.rainbow_delimiters = {
+h.let.rainbow_delimiters = {
   query = {
     [''] = 'rainbow-blocks',
   },
