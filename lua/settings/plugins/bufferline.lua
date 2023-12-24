@@ -11,16 +11,34 @@ local colors = {
   base06 = '#e0e0e0',
   base07 = '#ffffff',
   base08 = '#cc6666',
-  base09 = '#de935f',
+  base09 = '#de935f', -- cursor
   base0A = '#f0c674',
   base0B = '#b5bd68',
-  base0C = '#8abeb7', -- cursor
+  base0C = '#8abeb7',
   base0D = '#81a2be',
   base0E = '#b294bb',
   base0F = '#a3685a'
 }
 base16.setup(colors)
-vim.cmd [[highlight TermCursor guibg=#de935f]]
+
+local function is_quickfix()
+  return vim.fn.getbufvar(vim.fn.bufnr('%'), '&buftype') == 'quickfix'
+end
+
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  pattern = "*",
+  callback = function(e)
+    h.dump(e)
+    if is_quickfix() then
+      -- TODO: why won't this link to TermCursor?
+      vim.cmd [[highlight CursorLine guifg=#1d1f21 guibg=#de935f]]
+      h.set.cursorline = true
+    else
+      h.set.cursorline = false
+    end
+  end
+})
+
 
 local bufferline = require "bufferline"
 bufferline.setup({
@@ -37,6 +55,9 @@ bufferline.setup({
 })
 
 vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { fg = colors.base0C, underline = true })
+
+-- output highlight groups
+-- redir > highlight_groups.txt | silent hi | redir END
 
 h.nmap("<leader>tp", h.user_cmd_cb("BufferLinePick"))
 h.nmap("<leader>ti", h.user_cmd_cb("BufferLineTogglePin"))
