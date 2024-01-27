@@ -35,7 +35,7 @@ return packer.startup(({
     -- misc
     use "tpope/vim-surround"
     use "tpope/vim-repeat"
-    use "ggandor/lightspeed.nvim"
+    use "ggandor/leap.nvim"
     use "nvim-lualine/lualine.nvim"
     use "easymotion/vim-easymotion"
     use "psliwka/vim-smoothie"

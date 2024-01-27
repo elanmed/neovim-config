@@ -26,6 +26,5 @@
   },
   "pairs.enableCharacters": ["(", "[", "{", "'", "`"],
   "pairs.enableBackspace": true,
-  "deno.unstable": true,
-  "tsserver.tsdk": "/Users/elanmedoff/.nvm/versions/node/v20.3.1/lib/node_modules/typescript/lib"
+  "deno.unstable": true
 }
