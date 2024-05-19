@@ -10,5 +10,4 @@ h.nmap("<leader>ta", function()
 end)
 
 -- netrw
-h.nmap("<leader>re", h.user_cmd_cb("Lexplore")) -- toggle netrw
-h.nmap("<leader>rw", h.user_cmd_cb("Lexplore")) -- toggle netrw
+h.nmap("<leader>r", h.user_cmd_cb("Lexplore")) -- toggle netrw

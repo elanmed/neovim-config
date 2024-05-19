@@ -15,7 +15,6 @@ h.let.coc_global_extensions = {
   "coc-deno",
   "coc-stylelint",
   "coc-css",
-  "coc-solargraph"
 }
 
 local function coc_show_docs()
@@ -47,6 +46,7 @@ h.nmap("gd", "<Plug>(coc-definition)zz")
 h.nmap("gy", "<Plug>(coc-type-definition)")
 h.nmap("gu", "<Plug>(coc-references)")
 h.nmap("ga", "<Plug>(coc-codeaction-cursor)")
+h.nmap("gm", "<Plug>(coc-rename)")
 h.nmap("gh", coc_show_docs)
 h.nmap("go", "<c-o>")
 h.nmap("gi", "<c-i>")

@@ -59,7 +59,7 @@ return packer.startup(({
     use "HiPhish/rainbow-delimiters.nvim"
 
     -- buffers as tabs
-    use({ 'akinsho/bufferline.nvim', tag = "*" })
+    use "akinsho/bufferline.nvim"
     use "RRethy/nvim-base16"
     use "moll/vim-bbye"
     use "vim-scripts/BufOnly.vim"
@@ -76,7 +76,6 @@ return packer.startup(({
     use "AckslD/nvim-neoclip.lua"
 
     -- git
-    use "lewis6991/gitsigns.nvim"
     use "tpope/vim-fugitive"
     -- https://github.com/sindrets/diffview.nvim/commit/c244577dd425072275eff925e87739820ac5e0aa
     use({ "sindrets/diffview.nvim", commit = "a45163cb9ee65742cf26b940c2b24cc652f295c9" })
@@ -91,8 +90,8 @@ return packer.startup(({
       run = function() require("nvim-treesitter.install").update() end,
       requires = {
         "windwp/nvim-ts-autotag",
-        "lukas-reineke/indent-blankline.nvim",
         "JoosepAlviste/nvim-ts-context-commentstring",
+        "lukas-reineke/indent-blankline.nvim",
         "numToStr/Comment.nvim"
       }
     })

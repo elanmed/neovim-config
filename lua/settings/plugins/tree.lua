@@ -1,11 +1,11 @@
 local h = require "shared.helpers"
 local tree = require "nvim-tree"
+local tree_view = require 'nvim-tree.view'
 
 local function on_attach(bufnr)
   local api = require "nvim-tree.api"
   local opts = { buffer = bufnr }
 
-  h.nmap("H", api.tree.toggle_hidden_filter, opts)
   h.nmap("<CR>", api.node.open.edit, opts)
   h.nmap("a", api.fs.create, opts)
   h.nmap("d", api.fs.remove, opts)
@@ -17,6 +17,7 @@ local function on_attach(bufnr)
   h.nmap("x", api.fs.cut, opts)
   h.nmap("p", api.fs.paste, opts)
   h.nmap("K", api.node.navigate.parent_close, opts)
+  h.nmap("H", api.tree.toggle_hidden_filter, opts)
 end
 
 tree.setup({
@@ -38,8 +39,11 @@ tree.setup({
   },
 })
 
-h.nmap("<leader>rw", h.user_cmd_cb("NvimTreeClose"))
-h.nmap("<leader>re", function()
-  vim.cmd("NvimTreeFindFile")
-  vim.cmd("normal! zz")
+h.nmap("<leader>r", function()
+  if tree_view.is_visible() then
+    vim.cmd("NvimTreeClose")
+  else
+    vim.cmd("NvimTreeFindFile")
+    vim.cmd("normal! zz")
+  end
 end)

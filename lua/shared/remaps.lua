@@ -4,10 +4,9 @@ h.nmap("<leader>af", "<C-6>") -- alternate file
 h.nmap("J", "gJ")             -- J without whitespace
 h.nmap("<leader>o", "o<esc>")
 h.nmap("<leader>O", "O<esc>")
-h.nmap("<leader>rr", [[viw"_dP]])
-h.nmap("<leader>r;", "@:")                -- repeat last command
+h.nmap("<leader>e", [[viw"_dP]])
 h.nmap([[<leader>']], [["]])              -- for setting register
-h.nmap('@', '@r')              -- for replaying macros, assumes you always set to r
+h.nmap('@', '@r')                         -- for replaying macros, assumes you always set to r
 h.nmap("<leader>vs", h.user_cmd_cb("vsplit"))
 h.nmap("<leader>p", h.user_cmd_cb "pu")   -- paste on line below
 h.nmap("<leader>P", h.user_cmd_cb("pu!")) -- paste on line above

@@ -98,8 +98,8 @@ local function get_stripped_filename()
 
   local stripped_start = filepath:match("wf_modules.*$")
   if not stripped_start then
-      print("`wf_modules` not found in the filepath!")
-      return nil
+    print("`wf_modules` not found in the filepath!")
+    return nil
   end
 
   return stripped_start:match("(.-)%..-$")

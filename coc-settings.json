@@ -25,6 +25,5 @@
     "highlight": "CocFloating"
   },
   "pairs.enableCharacters": ["(", "[", "{", "'", "`"],
-  "pairs.enableBackspace": true,
-  "deno.unstable": true
+  "pairs.enableBackspace": true
 }
