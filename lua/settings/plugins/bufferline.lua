@@ -58,8 +58,8 @@ vim.api.nvim_set_hl(0, "CursorLine", { fg = colors.base09, bg = colors.base02, u
 
 h.nmap("<leader>tp", h.user_cmd_cb("BufferLinePick"))
 h.nmap("<leader>ti", h.user_cmd_cb("BufferLineTogglePin"))
-h.nmap("<leader>vn", h.user_cmd_cb("BufferLineMoveNext"))
-h.nmap("<leader>vp", h.user_cmd_cb("BufferLineMovePrev"))
+h.nmap("<leader>tl", h.user_cmd_cb("BufferLineMoveNext"))
+h.nmap("<leader>th", h.user_cmd_cb("BufferLineMovePrev"))
 h.nmap("L", h.user_cmd_cb("BufferLineCycleNext"))
 h.nmap("H", h.user_cmd_cb("BufferLineCyclePrev"))
 
