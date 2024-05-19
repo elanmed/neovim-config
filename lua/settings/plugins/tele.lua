@@ -121,12 +121,16 @@ local function yank_stripped_filename()
 end
 
 h.nmap("<C-p>", builtin.find_files)
+-- resUme
 h.nmap("<leader>zu", builtin.resume)
+-- fInd
 h.nmap("<leader>zi", builtin.current_buffer_fuzzy_find)
+-- gLobal
 h.nmap("<leader>zl", grep_string_with_search)
 
+-- Visual
 h.nmap("<leader>zv", function() builtin.grep_string(shared_grep_string_options) end)
 h.vmap("<leader>zv", grep_string_with_visual)
 
 h.nmap("<leader>if", yank_stripped_filename)
-h.nmap("<leader>zp", grep_stripped_filename)
+h.nmap("<leader>zf", grep_stripped_filename)

@@ -10,7 +10,7 @@ vim.api.nvim_create_user_command("FindAndReplace", function(opts)
   vim.api.nvim_command("cfdo update")
 end, { nargs = "*" })
 
-h.nmap("<leader>ir", ":FindAndReplace ", { silent = false })
+h.nmap("<leader>ie", ":FindAndReplace ", { silent = false })
 
 local function gen_circular_next_prev(try, catch)
   local success, _ = pcall(vim.cmd, try)

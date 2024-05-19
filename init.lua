@@ -21,5 +21,4 @@ require "shared.options"
 require "shared.remaps"
 
 -- TODO:
--- 1. List of errors to ignore, like that a buffer doesn't exist anymore, or that a git job timed out
--- 2. spell checker
+-- 1. spell checker
