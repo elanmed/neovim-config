@@ -122,10 +122,11 @@ end
 
 h.nmap("<C-p>", builtin.find_files)
 h.nmap("<leader>zu", builtin.resume)
-h.nmap("<leader>zl", builtin.current_buffer_fuzzy_find)
-h.nmap("<leader>zk", builtin.buffers)
-h.nmap("<leader>zf", grep_string_with_search)
-h.nmap("<leader>zp", grep_stripped_filename)
-h.nmap("<leader>zo", function() builtin.grep_string(shared_grep_string_options) end)
-h.vmap("<leader>zo", grep_string_with_visual)
+h.nmap("<leader>zi", builtin.current_buffer_fuzzy_find)
+h.nmap("<leader>zl", grep_string_with_search)
+
+h.nmap("<leader>zv", function() builtin.grep_string(shared_grep_string_options) end)
+h.vmap("<leader>zv", grep_string_with_visual)
+
 h.nmap("<leader>if", yank_stripped_filename)
+h.nmap("<leader>zp", grep_stripped_filename)

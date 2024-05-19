@@ -31,11 +31,11 @@ h.vmap("<", "<gv")
 h.vmap(">", ">gv")
 
 -- focusing
-h.nmap("<leader>f", "<C-w>w") -- toggle
-h.nmap("<leader>h", "<C-w>h") -- toggle
-h.nmap("<leader>j", "<C-w>j") -- toggle
-h.nmap("<leader>k", "<C-w>k") -- toggle
-h.nmap("<leader>l", "<C-w>l") -- toggle
+h.nmap("<leader>f", "<C-w>w")
+h.nmap("<leader>h", "<C-w>h")
+h.nmap("<leader>j", "<C-w>j")
+h.nmap("<leader>k", "<C-w>k")
+h.nmap("<leader>l", "<C-w>l")
 
 -- quickfix list
 h.nmap("gn", function()
@@ -57,7 +57,6 @@ h.imap("˚", "<esc>:m .-2<cr>==gi")
 h.vmap("∆", ":m '>+1<cr>gv=gv")
 h.vmap("˚", ":m '<-2<cr>gv=gv")
 
--- using vim.cmd populates the command bar instantly
 -- search case sensitive, whole word, and both
 vim.cmd([[
   noremap <leader>/c /\C<left><left>

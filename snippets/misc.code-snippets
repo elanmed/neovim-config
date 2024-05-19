@@ -3,10 +3,6 @@
     "body": ["==="],
     "prefix": "hh"
   },
-  "plus": {
-    "body": ["+"],
-    "prefix": "uu"
-  },
   "arrow fn": {
     "body": ["= () => "],
     "prefix": "afs"

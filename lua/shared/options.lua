@@ -42,7 +42,6 @@ local function indent_level(lnum)
   return vim.fn.indent(lnum) / vim.o.shiftwidth + 1
 end
 
--- Equivalent to the GetFold function
 function _G.GetFold(lnum)
   -- Check for blank lines
   if vim.fn.match(vim.fn.getline(lnum), [[\v^\s*$]]) ~= -1 then
