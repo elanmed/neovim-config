@@ -22,3 +22,5 @@ require "shared.remaps"
 
 -- TODO:
 -- 1. spell checker
+
+-- test submodules
