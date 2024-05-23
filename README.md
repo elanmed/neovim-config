@@ -16,13 +16,6 @@
 
 ---
 
-To bootstrap with external dependencies, run:
-
-```bash
-chmod +x bootstrap.sh # make script executable
-./bootstrap.sh
-```
-
 To run a barebones config with no dependencies, run:
 
 ```bash
