@@ -53,7 +53,7 @@ h.nmap("gq", h.user_cmd_cb("cclose"))
 
 -- move lines up and down with alt-j, alt-k
 local alt_j = h.is_mac() and "∆" or "<A-j>"
-local alt_k = h.is_mac() and "˚" or "<A-j>"
+local alt_k = h.is_mac() and "˚" or "<A-k>"
 
 h.nmap(alt_j, ":m .+1<cr>==")
 h.nmap(alt_k, ":m .-2<cr>==")
