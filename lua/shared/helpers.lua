@@ -42,6 +42,10 @@ M.vmap = function(shortcut, command, opts)
   map("v", shortcut, command, opts)
 end
 
+M.is_mac = function()
+  return vim.fn.has('macunix')
+end
+
 return vim.tbl_extend("error", M, {
   set = vim.opt,
   let = vim.g,
