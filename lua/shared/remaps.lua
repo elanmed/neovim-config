@@ -52,23 +52,15 @@ h.nmap("ge", h.user_cmd_cb("copen 25"))
 h.nmap("gq", h.user_cmd_cb("cclose"))
 
 -- move lines up and down with alt-j, alt-k
+local alt_j = h.is_mac() and "∆" or "<A-j>"
+local alt_k = h.is_mac() and "˚" or "<A-j>"
 
-if h.is_mac() then
-  h.nmap("∆", ":m .+1<cr>==")
-  h.nmap("˚", ":m .-2<cr>==")
-  h.imap("∆", "<esc>:m .+1<cr>==gi")
-  h.imap("˚", "<esc>:m .-2<cr>==gi")
-  h.vmap("∆", ":m '>+1<cr>gv=gv")
-  h.vmap("˚", ":m '<-2<cr>gv=gv")
-else
-  h.nmap("<A-j>", ":m .+1<cr>==")
-  h.nmap("<A-k>", ":m .-2<cr>==")
-  h.imap("<A-j>", "<esc>:m .+1<cr>==gi")
-  h.imap("<A-k>", "<esc>:m .-2<cr>==gi")
-  h.vmap("<A-j>", ":m '>+1<cr>gv=gv")
-  h.vmap("<A-k>", ":m '<-2<cr>gv=gv")
-end
-
+h.nmap(alt_j, ":m .+1<cr>==")
+h.nmap(alt_k, ":m .-2<cr>==")
+h.imap(alt_j, "<esc>:m .+1<cr>==gi")
+h.imap(alt_k, "<esc>:m .-2<cr>==gi")
+h.vmap(alt_j, ":m '>+1<cr>gv=gv")
+h.vmap(alt_k, ":m '<-2<cr>gv=gv")
 
 -- search case sensitive, whole word, and both
 vim.cmd([[
