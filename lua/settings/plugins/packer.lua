@@ -1,9 +1,10 @@
+local h = require "shared.helpers"
+
 -- https://github.com/wbthomason/packer.nvim#bootstrapping
 local ensure_packer = function()
-  local fn = vim.fn
-  local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
-  if fn.empty(fn.glob(install_path)) > 0 then
-    fn.system({ "git", "clone", "--depth", "1", "https://github.com/wbthomason/packer.nvim", install_path })
+  local install_path = vim.fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
+  if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+    vim.fn.system({ "git", "clone", "--depth", "1", "https://github.com/wbthomason/packer.nvim", install_path })
     vim.cmd("packadd packer.nvim")
     return true
   end
@@ -16,7 +17,8 @@ local packer_bootstrap = ensure_packer()
 vim.api.nvim_create_augroup("PackerGroup", {})
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
   group = "PackerGroup",
-  pattern = "/Users/elanmedoff/.config/nvim/lua/settings/plugins/packer.lua",
+  pattern = (h.is_mac() and "/Users/elanmedoff" or "/home/elan") ..
+      "/.dotfiles/neovim/.config/nvim/lua/settings/plugins/packer.lua",
   command = "source <afile> | PackerSync"
 })
 
@@ -47,16 +49,8 @@ return packer.startup(({
       branch = "release",
     })
     use "mg979/vim-visual-multi"
-    use({
-      "iamcco/markdown-preview.nvim",
-      run = "cd app && npm install",
-      ft = { "markdown" },
-    })
-    -- use({
-    --   'ckolkey/ts-node-action',
-    --   requires = { 'nvim-treesitter' },
-    -- })
     use "HiPhish/rainbow-delimiters.nvim"
+    use "rmagatti/auto-session"
 
     -- buffers as tabs
     use "akinsho/bufferline.nvim"

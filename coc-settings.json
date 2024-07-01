@@ -1,6 +1,8 @@
 {
   "coc.preferences.formatOnSave": true,
   "coc.preferences.useQuickfixForLocations": true,
+  "coc.preferences.maxFileSize": "1MB",
+  "coc.preferences.enableMarkdown": true,
   "snippets.textmateSnippetsRoots": ["/Users/elanmedoff/.config/nvim/snippets"],
   "snippets.loadFromExtensions": false,
   "typescript.suggest.completeFunctionCalls": false,
