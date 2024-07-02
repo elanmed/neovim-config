@@ -1,7 +1,7 @@
 local h = require "shared.helpers"
 
 -- https://github.com/wbthomason/packer.nvim#bootstrapping
-local ensure_packer = function()
+local function ensure_packer()
   local install_path = vim.fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
   if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
     vim.fn.system({ "git", "clone", "--depth", "1", "https://github.com/wbthomason/packer.nvim", install_path })
@@ -51,6 +51,7 @@ return packer.startup(({
     use "mg979/vim-visual-multi"
     use "HiPhish/rainbow-delimiters.nvim"
     use "rmagatti/auto-session"
+    use "stevearc/oil.nvim"
 
     -- buffers as tabs
     use "akinsho/bufferline.nvim"

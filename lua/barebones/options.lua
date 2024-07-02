@@ -13,8 +13,7 @@ vim.api.nvim_create_autocmd({ "filetype" }, {
       vim.keymap.set("n", shortcut, command, { remap = true, silent = true, nowait = true })
     end
 
-    nmap("h", "-^")      -- go up a directory
-    nmap("l", "<cr>")
+    nmap("-", "-^")      -- go up a directory
     nmap("P", "<C-w>z")  -- close preview, p to open
     nmap("r", "R")       -- rename
     nmap("a", "%:w<cr>") -- new file

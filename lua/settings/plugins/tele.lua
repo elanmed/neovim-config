@@ -4,7 +4,7 @@ local telescope = require "telescope"
 local actions = require "telescope.actions"
 local action_state = require "telescope.actions.state"
 local builtin = require "telescope.builtin"
-local tree_api = require "nvim-tree.api"
+-- local tree_api = require "nvim-tree.api"
 
 local custom_actions = {}
 
@@ -25,25 +25,18 @@ custom_actions.fzf_multi_select = function(prompt_bufnr)
     actions.open_qflist()
   else
     actions.file_edit(prompt_bufnr)
-    tree_api.tree.close()
+    -- tree_api.tree.close()
   end
 end
 
--- local function quickfix_shortcut_all(prompt_bufnr)
---   actions.send_to_qflist(prompt_bufnr)
---   vim.cmd('copen 25')
---   require('bqf.filter.fzf').run()
--- end
---
--- local function quickfix_shortcut_selected(prompt_bufnr)
---   custom_actions.fzf_multi_select(prompt_bufnr)
---   vim.cmd('copen 25')
---   require('bqf.filter.fzf').run()
--- end
-
-local function send_to_qflist_and_open(prompt_bufnr)
+custom_actions.bqf_fzf_all = function(prompt_bufnr)
   actions.send_to_qflist(prompt_bufnr)
-  vim.cmd('copen 25')
+  require('bqf.filter.fzf').run()
+end
+
+custom_actions.bqf_fzf_selected = function(prompt_bufnr)
+  custom_actions.fzf_multi_select(prompt_bufnr)
+  require('bqf.filter.fzf').run()
 end
 
 telescope.setup({
@@ -58,12 +51,11 @@ telescope.setup({
     mappings        = {
       i = {
         ["<cr>"] = custom_actions.fzf_multi_select,
-        ["<c-f>"] = send_to_qflist_and_open,
+        ["<c-f>"] = actions.send_to_qflist,
+        ["<c-d>"] = custom_actions.bqf_fzf_selected,
         ["<tab>"] = actions.toggle_selection + actions.move_selection_previous,
         ["<s-tab>"] = actions.move_selection_next + actions.toggle_selection,
         ["<esc>"] = actions.close,
-        -- ["<c-d>"] = quickfix_shortcut_selected,
-        -- ["<c-f>"] = quickfix_shortcut_all,
       }
     }
   },
