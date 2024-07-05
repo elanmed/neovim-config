@@ -33,6 +33,7 @@ return packer.startup(({
     use "nvim-lua/popup.nvim"
     use "nvim-lua/plenary.nvim"
 
+
     -- misc
     use "ThePrimeagen/harpoon"
     use "christoomey/vim-tmux-navigator"
@@ -41,8 +42,8 @@ return packer.startup(({
     use "mg979/vim-visual-multi"
     use "nvim-lualine/lualine.nvim"
     use "psliwka/vim-smoothie"
-    use "Xuyuanp/scrollbar.nvim"
     use "rmagatti/auto-session"
+    use { 'echasnovski/mini.map', version = '*' }
     use({
       "neoclide/coc.nvim",
       branch = "release",

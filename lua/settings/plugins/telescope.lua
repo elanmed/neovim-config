@@ -35,7 +35,6 @@ custom_actions.send_selected_and_open = function(prompt_bufnr)
     actions.open_qflist()
   else
     actions.file_edit(prompt_bufnr)
-    -- tree_api.tree.close()
   end
 end
 
@@ -52,7 +51,7 @@ telescope.setup({
       height = 0.95,
       width = 0.95,
       prompt_position = "bottom",
-      preview_height = 0.4,
+      preview_height = 0.3,
     },
     mappings        = {
       i = {
