@@ -1,10 +1,5 @@
 local h = require "shared.helpers"
 
--- function _G.sample_fn()
---   print("sample_fn")
--- end
--- h.nmap("", "v:lua.sample_fn()<cr>")
-
 vim.api.nvim_create_user_command("FindAndReplace", function(opts)
   vim.api.nvim_command(string.format("cdo s/%s/%s", opts.fargs[1], opts.fargs[2]))
   vim.api.nvim_command("cfdo update")

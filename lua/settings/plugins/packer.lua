@@ -30,28 +30,28 @@ end
 return packer.startup(({
   function(use)
     use "wbthomason/packer.nvim"
-
     use "nvim-lua/popup.nvim"
-    use "nvim-lua/plenary.nvim" -- lua functions used in lots of plugins
+    use "nvim-lua/plenary.nvim"
 
     -- misc
+    use "ThePrimeagen/harpoon"
+    use "christoomey/vim-tmux-navigator"
     use "tpope/vim-surround"
     use "tpope/vim-repeat"
-    use "ggandor/leap.nvim"
+    use "mg979/vim-visual-multi"
     use "nvim-lualine/lualine.nvim"
-    use "easymotion/vim-easymotion"
     use "psliwka/vim-smoothie"
-    use "ThePrimeagen/harpoon"
     use "Xuyuanp/scrollbar.nvim"
-    use "christoomey/vim-tmux-navigator"
+    use "rmagatti/auto-session"
     use({
       "neoclide/coc.nvim",
       branch = "release",
     })
-    use "mg979/vim-visual-multi"
-    use "HiPhish/rainbow-delimiters.nvim"
-    use "rmagatti/auto-session"
-    use "stevearc/oil.nvim"
+
+    -- movements
+    use "ggandor/leap.nvim"
+    use "easymotion/vim-easymotion"
+    use "rhysd/clever-f.vim"
 
     -- buffers as tabs
     use "akinsho/bufferline.nvim"
@@ -71,13 +71,14 @@ return packer.startup(({
     use "AckslD/nvim-neoclip.lua"
 
     -- git
-    use "tpope/vim-fugitive"
     -- https://github.com/sindrets/diffview.nvim/commit/c244577dd425072275eff925e87739820ac5e0aa
     use({ "sindrets/diffview.nvim", commit = "a45163cb9ee65742cf26b940c2b24cc652f295c9" })
+    use "lewis6991/gitsigns.nvim"
 
     -- file tree
     use "kyazdani42/nvim-web-devicons"
-    use "kyazdani42/nvim-tree.lua"
+    -- use "kyazdani42/nvim-tree.lua"
+    use "stevearc/oil.nvim"
 
     use({
       "nvim-treesitter/nvim-treesitter",
@@ -87,6 +88,7 @@ return packer.startup(({
         "windwp/nvim-ts-autotag",
         "JoosepAlviste/nvim-ts-context-commentstring",
         "lukas-reineke/indent-blankline.nvim",
+        "HiPhish/rainbow-delimiters.nvim",
         "numToStr/Comment.nvim"
       }
     })

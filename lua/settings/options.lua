@@ -1,3 +1,5 @@
+local h = require "shared.helpers"
+
 -- easymotion
 vim.api.nvim_create_autocmd({ "User" }, {
   pattern = "EasyMotionPromptBegin",
@@ -7,3 +9,5 @@ vim.api.nvim_create_autocmd({ "User" }, {
   pattern = "EasyMotionPromptEnd",
   callback = function() vim.b.coc_diagnostic_disable = 0 end
 })
+
+vim.g.clever_f_across_no_line = 1

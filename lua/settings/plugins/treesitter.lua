@@ -18,6 +18,7 @@ configs.setup({
     "tsx",
     "typescript",
     "yaml",
+    "vimdoc"
   },
   indent = { enable = true },
   autotag = {

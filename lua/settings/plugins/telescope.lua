@@ -2,13 +2,22 @@ local h = require "shared.helpers"
 
 local telescope = require "telescope"
 local actions = require "telescope.actions"
-local action_state = require "telescope.actions.state"
 local builtin = require "telescope.builtin"
--- local tree_api = require "nvim-tree.api"
+local action_state = require "telescope.actions.state"
 
 local custom_actions = {}
 
-custom_actions.fzf_multi_select = function(prompt_bufnr)
+custom_actions.send_all_and_open = function(prompt_bufnr)
+  actions.send_to_qflist(prompt_bufnr)
+  vim.cmd('copen 25')
+end
+
+custom_actions.send_all_and_open_with_fzf = function(prompt_bufnr)
+  custom_actions.send_all_and_open(prompt_bufnr)
+  require('bqf.filter.fzf').run()
+end
+
+custom_actions.send_selected_and_open = function(prompt_bufnr)
   local function get_table_size(t)
     local count = 0
     for _ in pairs(t) do
@@ -22,6 +31,7 @@ custom_actions.fzf_multi_select = function(prompt_bufnr)
 
   if num_selections > 1 then
     actions.send_selected_to_qflist(prompt_bufnr)
+    vim.cmd('copen 25')
     actions.open_qflist()
   else
     actions.file_edit(prompt_bufnr)
@@ -29,15 +39,11 @@ custom_actions.fzf_multi_select = function(prompt_bufnr)
   end
 end
 
-custom_actions.bqf_fzf_all = function(prompt_bufnr)
-  actions.send_to_qflist(prompt_bufnr)
+custom_actions.send_selected_and_open_with_fzf = function(prompt_bufnr)
+  custom_actions.send_selected_and_open(prompt_bufnr)
   require('bqf.filter.fzf').run()
 end
 
-custom_actions.bqf_fzf_selected = function(prompt_bufnr)
-  custom_actions.fzf_multi_select(prompt_bufnr)
-  require('bqf.filter.fzf').run()
-end
 
 telescope.setup({
   defaults = {
@@ -50,9 +56,9 @@ telescope.setup({
     },
     mappings        = {
       i = {
-        ["<cr>"] = custom_actions.fzf_multi_select,
-        ["<c-f>"] = actions.send_to_qflist,
-        ["<c-d>"] = custom_actions.bqf_fzf_selected,
+        ["<cr>"] = custom_actions.send_selected_and_open,
+        -- ["<c-f>"] = custom_actions.send_selected_and_open_with_fzf,
+        ["<c-a>"] = custom_actions.send_all_and_open,
         ["<tab>"] = actions.toggle_selection + actions.move_selection_previous,
         ["<s-tab>"] = actions.move_selection_next + actions.toggle_selection,
         ["<esc>"] = actions.close,
@@ -126,3 +132,5 @@ h.vmap("<leader>zo", grep_string_with_visual)
 
 h.nmap("<leader>if", yank_stripped_filename)
 h.nmap("<leader>zf", grep_stripped_filename)
+
+vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { link = 'TelescopePreviewTitle' })

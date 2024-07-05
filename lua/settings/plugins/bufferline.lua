@@ -55,6 +55,7 @@ bufferline.setup({
 
 vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { fg = colors.base0C, underline = true })
 vim.api.nvim_set_hl(0, "CursorLine", { fg = colors.base09, bg = colors.base02, underline = true })
+vim.api.nvim_set_hl(0, "TelescopeBorder", { fg = colors.base09 })
 
 h.nmap("<leader>tp", h.user_cmd_cb("BufferLinePick"))
 h.nmap("<leader>ti", h.user_cmd_cb("BufferLineTogglePin"))
