@@ -26,10 +26,6 @@ M.user_cmd_cb = function(user_cmd)
   return function() vim.cmd(user_cmd) end
 end
 
-M.pcall_cb = function(call)
-  return function() pcall(call) end
-end
-
 M.nmap = function(shortcut, command, opts)
   map("n", shortcut, command, opts)
 end

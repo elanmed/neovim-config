@@ -11,10 +11,8 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
   pattern = "*",
   callback = function()
     if vim.bo.filetype == 'oil' then
-      print('in oil')
       require('mini.map').close()
     else
-      print('NOT in oil')
       require('mini.map').open()
     end
   end

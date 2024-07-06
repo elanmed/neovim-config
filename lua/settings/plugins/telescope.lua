@@ -12,10 +12,10 @@ custom_actions.send_all_and_open = function(prompt_bufnr)
   vim.cmd('copen 25')
 end
 
-custom_actions.send_all_and_open_with_fzf = function(prompt_bufnr)
-  custom_actions.send_all_and_open(prompt_bufnr)
-  require('bqf.filter.fzf').run()
-end
+-- custom_actions.send_all_and_open_with_fzf = function(prompt_bufnr)
+--   custom_actions.send_all_and_open(prompt_bufnr)
+--   require('bqf.filter.fzf').run()
+-- end
 
 custom_actions.send_selected_and_open = function(prompt_bufnr)
   local function get_table_size(t)
@@ -38,10 +38,10 @@ custom_actions.send_selected_and_open = function(prompt_bufnr)
   end
 end
 
-custom_actions.send_selected_and_open_with_fzf = function(prompt_bufnr)
-  custom_actions.send_selected_and_open(prompt_bufnr)
-  require('bqf.filter.fzf').run()
-end
+-- custom_actions.send_selected_and_open_with_fzf = function(prompt_bufnr)
+--   custom_actions.send_selected_and_open(prompt_bufnr)
+--   require('bqf.filter.fzf').run()
+-- end
 
 
 telescope.setup({
@@ -72,11 +72,34 @@ telescope.load_extension("neoclip")
 
 local shared_grep_string_options = { only_sort_text = true }
 
-local function grep_string_with_search()
-  local term = vim.fn.input("Grep for > ")
+local function grep_string_with_search(opts)
+  opts = opts or {}
+
+  local base_input_text = "Grep for"
+  local additional_args = {}
+  local word_match
+  local input_text
+
+  if opts.case_sensitive and opts.whole_word then
+    input_text = base_input_text .. ' (case sensitive + whole word): '
+    additional_args = { '-s' }
+    word_match = "-w"
+  elseif opts.case_sensitive then
+    input_text = base_input_text .. ' (case sensitive): '
+    additional_args = { '-s' }
+  elseif opts.whole_word then
+    input_text = base_input_text .. ' (whole word): '
+    word_match = "-w"
+  else
+    input_text = base_input_text .. ': '
+    word_match = nil
+  end
+
+  local term = vim.fn.input(input_text)
   if term == "" then return end
 
-  local grep_string_options = vim.tbl_extend("error", shared_grep_string_options, { search = term })
+  local grep_string_options = vim.tbl_extend("error", shared_grep_string_options,
+    { search = term, word_match = word_match, additional_args = additional_args })
   builtin.grep_string(grep_string_options)
 end
 
@@ -124,6 +147,12 @@ h.nmap("<leader>zu", builtin.resume)
 h.nmap("<leader>zi", builtin.current_buffer_fuzzy_find)
 -- gLobal
 h.nmap("<leader>zl", grep_string_with_search)
+-- Case sensitive
+h.nmap("<leader>zc", function() grep_string_with_search({ case_sensitive = true }) end)
+-- whole Word
+h.nmap("<leader>zw", function() grep_string_with_search({ whole_word = true }) end)
+-- both case sensitive and whole word
+h.nmap("<leader>z/", function() grep_string_with_search({ whole_word = true, case_sensitive = true }) end)
 
 -- Over
 h.nmap("<leader>zo", function() builtin.grep_string(shared_grep_string_options) end)
