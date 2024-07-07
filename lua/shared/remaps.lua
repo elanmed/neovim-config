@@ -2,30 +2,37 @@ local h = require "shared.helpers"
 
 h.nmap("<leader>af", "<C-6>", { desc = "Alternate file" })
 h.nmap("J", "gJ", { desc = "J without whitespace" })
-h.nmap("<leader>o", "o<esc>")
-h.nmap("<leader>O", "O<esc>")
 -- h.nmap("<leader>e", [[viw"_dP]])
 h.nmap("<leader>e", h.user_cmd_cb("e"), { desc = "Reload buffer" })
 h.nmap([[<leader>']], [["]], { desc = "Set register" })
 h.nmap("@", "@r", { desc = "Replay macro, assuming it's set to `r`" })
 h.nmap("<leader>vs", h.user_cmd_cb("vsplit"))
 h.nmap("<leader>va", "ggVG", { desc = "Select all" })
-h.nmap("<leader>p", h.user_cmd_cb "pu", { desc = "Paste on the line below" })
-h.nmap("<leader>P", h.user_cmd_cb("pu!"), { desc = "Paste on the line above" })
 h.nmap("<bs>", "b")
 h.nmap("*", "*N")
+h.nmap("<leader>f", "<C-w>w", { desc = "Toggle focus between windows" })
+
+h.nmap("<leader>o", "o<esc>")
+h.nmap("<leader>O", "O<esc>")
+
+h.nmap("<leader>p", h.user_cmd_cb "pu", { desc = "Paste on the line below" })
+h.nmap("<leader>P", h.user_cmd_cb("pu!"), { desc = "Paste on the line above" })
+
 h.nmap("<leader>dl", "yyp", { desc = "Duplicate the current line" })
 h.vmap("<leader>dl", "y`>p", { desc = "Duplicate the current line" }) -- move to end of selection, then yank
+
 h.nmap("<leader>s", h.user_cmd_cb("w"), { desc = "Save" })
 h.nmap("<leader>w", h.user_cmd_cb("q"), { desc = "Close" })
 h.nmap("<leader>q", h.user_cmd_cb "qa", { desc = "Quit" })
+
 h.nmap("<leader>ia", function() vim.fn.setreg("+", vim.fn.expand("%:p")) end,
   { desc = "Copy the absolute path of a file" })
 h.nmap("<leader>ir", function() vim.fn.setreg("+", vim.fn.expand("%:~:.")) end,
   { desc = "Copy the relative path of a file" })
+
 h.vmap("<", "<gv", { desc = "Outdent, while keeping selection" })
 h.vmap(">", ">gv", { desc = "Indent, while keeping selection" })
-h.nmap("<leader>f", "<C-w>w", { desc = "Toggle focus between windows" })
+
 h.nmap("gn", function()
   vim.cmd("Cnext")
   vim.cmd("normal! zz")
