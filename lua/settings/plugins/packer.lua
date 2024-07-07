@@ -33,21 +33,23 @@ return packer.startup(({
     use "nvim-lua/popup.nvim"
     use "nvim-lua/plenary.nvim"
 
-
     -- misc
     use "ThePrimeagen/harpoon"
     use "christoomey/vim-tmux-navigator"
     use "tpope/vim-surround"
     use "tpope/vim-repeat"
     use "mg979/vim-visual-multi"
-    use "nvim-lualine/lualine.nvim"
-    use "psliwka/vim-smoothie"
     use "rmagatti/auto-session"
-    use { "echasnovski/mini.map", version = "*" }
     use({
       "neoclide/coc.nvim",
       branch = "release",
     })
+
+    -- visuals
+    use "nvim-lualine/lualine.nvim"
+    use "psliwka/vim-smoothie"
+    use { "echasnovski/mini.map", version = "*" }
+    use "folke/zen-mode.nvim"
 
     -- movements
     use "ggandor/leap.nvim"
@@ -62,7 +64,7 @@ return packer.startup(({
 
     -- bqf
     use "kevinhwang91/nvim-bqf"
-    use({ "junegunn/fzf", run = "./install --bin", }) -- for fuzzy searching within a list
+    use({ "junegunn/fzf", run = "./install --bin", })
 
     -- telescope
     use({
@@ -78,7 +80,6 @@ return packer.startup(({
 
     -- file tree
     use "kyazdani42/nvim-web-devicons"
-    -- use "kyazdani42/nvim-tree.lua"
     use "stevearc/oil.nvim"
 
     use({

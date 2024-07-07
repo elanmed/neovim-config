@@ -152,7 +152,7 @@ h.nmap("<leader>lb", function() grep_string_with_search({ whole_word = true, cas
   { desc = "Search globally (case-sensitive and whole-word) with telescope" })
 h.nmap("<leader>lo", function() builtin.grep_string(shared_grep_string_options) end,
   { desc = "Search the currently hovered word with telescope" })
-h.vmap("<leader>zo", grep_string_with_visual, { desc = "Search the current selection with telescope" })
+h.vmap("<leader>lo", grep_string_with_visual, { desc = "Search the current selection with telescope" })
 h.nmap("<leader>ie", yank_stripped_filename, { desc = "Yank a file name starting with `wf_modules`" })
 h.nmap("<leader>le", grep_stripped_filename, { desc = "Search a file name starting with `wf_modules` with telescope" })
 

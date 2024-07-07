@@ -19,7 +19,7 @@ comment.setup {
   },
 }
 
-local ft = require("Comment.ft")
+local ft = require "Comment.ft"
 ft.lua = { "-- %s", "-- %s" }
 
 h.let.skip_ts_context_commentstring_module = true

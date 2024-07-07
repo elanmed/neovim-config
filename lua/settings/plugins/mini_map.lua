@@ -1,4 +1,4 @@
-local mini_map = require("mini.map")
+local mini_map = require "mini.map"
 
 mini_map.setup({
   symbols = {
