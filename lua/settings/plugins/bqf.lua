@@ -13,4 +13,4 @@ bqf.setup({
 
 -- delete all quickfix lists
 -- TODO: figure out a way to clear only one list, not all
-h.nmap("gc", h.user_cmd_cb("cex \"\""))
+h.nmap("gc", h.user_cmd_cb("cex \"\""), { desc = "Clear all quickfix lists" })

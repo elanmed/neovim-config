@@ -9,12 +9,12 @@ local custom_actions = {}
 
 custom_actions.send_all_and_open = function(prompt_bufnr)
   actions.send_to_qflist(prompt_bufnr)
-  vim.cmd('copen 25')
+  vim.cmd("copen 25")
 end
 
 -- custom_actions.send_all_and_open_with_fzf = function(prompt_bufnr)
 --   custom_actions.send_all_and_open(prompt_bufnr)
---   require('bqf.filter.fzf').run()
+--   require("bqf.filter.fzf").run()
 -- end
 
 custom_actions.send_selected_and_open = function(prompt_bufnr)
@@ -31,7 +31,7 @@ custom_actions.send_selected_and_open = function(prompt_bufnr)
 
   if num_selections > 1 then
     actions.send_selected_to_qflist(prompt_bufnr)
-    vim.cmd('copen 25')
+    vim.cmd("copen 25")
     actions.open_qflist()
   else
     actions.file_edit(prompt_bufnr)
@@ -40,7 +40,7 @@ end
 
 -- custom_actions.send_selected_and_open_with_fzf = function(prompt_bufnr)
 --   custom_actions.send_selected_and_open(prompt_bufnr)
---   require('bqf.filter.fzf').run()
+--   require("bqf.filter.fzf").run()
 -- end
 
 
@@ -81,17 +81,17 @@ local function grep_string_with_search(opts)
   local input_text
 
   if opts.case_sensitive and opts.whole_word then
-    input_text = base_input_text .. ' (case sensitive + whole word): '
-    additional_args = { '-s' }
+    input_text = base_input_text .. " (case sensitive + whole word): "
+    additional_args = { "-s" }
     word_match = "-w"
   elseif opts.case_sensitive then
-    input_text = base_input_text .. ' (case sensitive): '
-    additional_args = { '-s' }
+    input_text = base_input_text .. " (case sensitive): "
+    additional_args = { "-s" }
   elseif opts.whole_word then
-    input_text = base_input_text .. ' (whole word): '
+    input_text = base_input_text .. " (whole word): "
     word_match = "-w"
   else
-    input_text = base_input_text .. ': '
+    input_text = base_input_text .. ": "
     word_match = nil
   end
 
@@ -104,8 +104,8 @@ local function grep_string_with_search(opts)
 end
 
 local function grep_string_with_visual()
-  local _, ls, cs = unpack(vim.fn.getpos('v'))
-  local _, le, ce = unpack(vim.fn.getpos('.'))
+  local _, ls, cs = unpack(vim.fn.getpos("v"))
+  local _, le, ce = unpack(vim.fn.getpos("."))
   local visual = vim.api.nvim_buf_get_text(0, ls - 1, cs - 1, le - 1, ce, {})
   local selected_text = visual[1] or ""
 
@@ -114,7 +114,7 @@ local function grep_string_with_visual()
 end
 
 local function get_stripped_filename()
-  local filepath = vim.fn.expand('%:p')
+  local filepath = vim.fn.expand("%:p")
 
   local stripped_start = filepath:match("wf_modules.*$")
   if not stripped_start then
@@ -137,28 +137,23 @@ local function yank_stripped_filename()
   local stripped_filename = get_stripped_filename()
   if stripped_filename == nil then return end
 
-  vim.fn.setreg('+', stripped_filename)
+  vim.fn.setreg("+", stripped_filename)
 end
 
-h.nmap("<C-p>", builtin.find_files)
--- resUme
-h.nmap("<leader>zu", builtin.resume)
--- fInd
-h.nmap("<leader>zi", builtin.current_buffer_fuzzy_find)
--- gLobal
-h.nmap("<leader>zl", grep_string_with_search)
--- Case sensitive
-h.nmap("<leader>zc", function() grep_string_with_search({ case_sensitive = true }) end)
--- whole Word
-h.nmap("<leader>zw", function() grep_string_with_search({ whole_word = true }) end)
--- both case sensitive and whole word
-h.nmap("<leader>z/", function() grep_string_with_search({ whole_word = true, case_sensitive = true }) end)
+h.nmap("<C-p>", builtin.find_files, { desc = "Find files with telescope" })
+h.nmap("<leader>lr", builtin.resume, { desc = "Resume telescope search" })
+h.nmap("<leader>lf", builtin.current_buffer_fuzzy_find, { desc = "Search in the current file with telescope" })
+h.nmap("<leader>lg", grep_string_with_search, { desc = "Search globally with telescope" })
+h.nmap("<leader>lc", function() grep_string_with_search({ case_sensitive = true }) end,
+  { desc = "Search globally (case-sensitive) with telescope" })
+h.nmap("<leader>lw", function() grep_string_with_search({ whole_word = true }) end,
+  { desc = "Search globally (whole-word) with telescope" })
+h.nmap("<leader>lb", function() grep_string_with_search({ whole_word = true, case_sensitive = true }) end,
+  { desc = "Search globally (case-sensitive and whole-word) with telescope" })
+h.nmap("<leader>lo", function() builtin.grep_string(shared_grep_string_options) end,
+  { desc = "Search the currently hovered word with telescope" })
+h.vmap("<leader>zo", grep_string_with_visual, { desc = "Search the current selection with telescope" })
+h.nmap("<leader>ie", yank_stripped_filename, { desc = "Yank a file name starting with `wf_modules`" })
+h.nmap("<leader>le", grep_stripped_filename, { desc = "Search a file name starting with `wf_modules` with telescope" })
 
--- Over
-h.nmap("<leader>zo", function() builtin.grep_string(shared_grep_string_options) end)
-h.vmap("<leader>zo", grep_string_with_visual)
-
-h.nmap("<leader>if", yank_stripped_filename)
-h.nmap("<leader>zf", grep_stripped_filename)
-
-vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { link = 'TelescopePreviewTitle' })
+vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { link = "TelescopePreviewTitle" })

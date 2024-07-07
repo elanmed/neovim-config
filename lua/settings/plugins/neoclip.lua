@@ -7,7 +7,7 @@
 --   keys = {
 --     telescope = {
 --       i = {
---         paste = '<f1>', -- doesn't accept nil or ''
+--         paste = "<f1>", -- doesn't accept nil or ""
 --       },
 --     },
 --   },

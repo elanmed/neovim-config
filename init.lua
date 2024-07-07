@@ -21,10 +21,6 @@ require "shared.options"
 require "shared.remaps"
 
 -- TODO:
--- spell checker
--- other file trees, oil?
 -- merge conflicts, with diffview
 -- moving around code with treesitter
 -- frecency
-
--- test submodules

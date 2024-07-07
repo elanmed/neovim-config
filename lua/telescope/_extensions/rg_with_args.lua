@@ -5,8 +5,8 @@ local config_values = config.values
 local make_entry = require "telescope.make_entry"
 
 local function get_visual()
-  local _, ls, cs = unpack(vim.fn.getpos('v'))
-  local _, le, ce = unpack(vim.fn.getpos('.'))
+  local _, ls, cs = unpack(vim.fn.getpos("v"))
+  local _, le, ce = unpack(vim.fn.getpos("."))
   return vim.api.nvim_buf_get_text(0, ls - 1, cs - 1, le - 1, ce, {})
 end
 
@@ -78,7 +78,7 @@ local function rg_with_args(opts)
     for index, file in pairs(files_split) do
       local trimmed = trim(file)
       -- ignore split items that are empty strings, after being trimmed
-      if trimmed == '' then
+      if trimmed == "" then
         goto continue
       end
 
@@ -111,13 +111,13 @@ end
 
 local function rg_under_cursor()
   local word_under_cursor = vim.fn.expand("<cword>")
-  rg_with_args({ default_text = word_under_cursor .. ' ? ' })
+  rg_with_args({ default_text = word_under_cursor .. " ? " })
 end
 
 local function rg_visual_selection()
   local visual = get_visual()
   local text = visual[1] or ""
-  rg_with_args({ default_text = text .. ' ? ' })
+  rg_with_args({ default_text = text .. " ? " })
 end
 
 return require("telescope").register_extension({

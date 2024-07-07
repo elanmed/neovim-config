@@ -43,7 +43,7 @@ return packer.startup(({
     use "nvim-lualine/lualine.nvim"
     use "psliwka/vim-smoothie"
     use "rmagatti/auto-session"
-    use { 'echasnovski/mini.map', version = '*' }
+    use { "echasnovski/mini.map", version = "*" }
     use({
       "neoclide/coc.nvim",
       branch = "release",

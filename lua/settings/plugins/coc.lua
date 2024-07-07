@@ -28,19 +28,19 @@ local function coc_show_docs()
   end
 end
 
-h.imap("<c-space>", "coc#refresh()", { expr = true })
+h.imap("<c-space>", "coc#refresh()", { expr = true, desc = "Show autocompletion options" })
 h.imap("<cr>", ([[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<cr>\<c-r>=coc#on_enter()\<CR>"]]), { expr = true })
 
-h.nmap("gd", "<Plug>(coc-definition)zz")
-h.nmap("gy", "<Plug>(coc-type-definition)")
-h.nmap("gu", "<Plug>(coc-references)")
-h.nmap("ga", "<Plug>(coc-codeaction-cursor)")
-h.nmap("gm", "<Plug>(coc-rename)")
-h.nmap("gh", coc_show_docs)
-h.nmap("go", "<c-o>")
-h.nmap("gi", "<c-i>")
-h.nmap("<leader>gh", "<c-w>w<c-w>w") -- close hover documentation
-h.nmap("<leader>cr", h.user_cmd_cb("CocRestart"))
+h.nmap("gd", "<Plug>(coc-definition)zz", { desc = "Go to definition" })
+h.nmap("gy", "<Plug>(coc-type-definition)", { desc = "Go to type definition" })
+h.nmap("gu", "<Plug>(coc-references)", { desc = "Go to references" })
+h.nmap("ga", "<Plug>(coc-codeaction-cursor)", { desc = "Open code actions" })
+h.nmap("gm", "<Plug>(coc-rename)", { desc = "Rename symbol" })
+h.nmap("gh", coc_show_docs, { desc = "Open docs" })
+h.nmap("go", "<c-o>", { desc = "Go backwards" })
+h.nmap("gi", "<c-i>", { desc = "Go forwards" })
+h.nmap("<leader>gh", "<c-w>w<c-w>w", { desc = "Close docs" }) -- close hover documentation
+h.nmap("<leader>cr", h.user_cmd_cb("CocRestart"), { desc = "Restart coc" })
 
 h.set.updatetime = 100
 h.set.signcolumn = "yes" -- needed for linting symbols

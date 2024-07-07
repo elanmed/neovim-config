@@ -7,4 +7,5 @@ gitsigns.setup({
   },
 })
 
-h.nmap("<leader>gl", h.user_cmd_cb("Gitsigns toggle_current_line_blame"))
+h.nmap("<leader>gl", h.user_cmd_cb("Gitsigns toggle_current_line_blame"),
+  { desc = "Toggle git blame for the current line" })

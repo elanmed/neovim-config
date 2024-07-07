@@ -1,66 +1,51 @@
 local h = require "shared.helpers"
 
-h.nmap("<leader>af", "<C-6>") -- alternate file
-h.nmap("J", "gJ")             -- J without whitespace
+h.nmap("<leader>af", "<C-6>", { desc = "Alternate file" })
+h.nmap("J", "gJ", { desc = "J without whitespace" })
 h.nmap("<leader>o", "o<esc>")
 h.nmap("<leader>O", "O<esc>")
 -- h.nmap("<leader>e", [[viw"_dP]])
-h.nmap("<leader>e", h.user_cmd_cb("e"))
-h.nmap([[<leader>']], [["]]) -- for setting register
-h.nmap('@', '@r')            -- for replaying macros, assumes you always set to r
+h.nmap("<leader>e", h.user_cmd_cb("e"), { desc = "Reload buffer" })
+h.nmap([[<leader>']], [["]], { desc = "Set register" })
+h.nmap("@", "@r", { desc = "Replay macro, assuming it's set to `r`" })
 h.nmap("<leader>vs", h.user_cmd_cb("vsplit"))
-h.nmap("<leader>va", "ggVG")
-h.nmap("<leader>p", h.user_cmd_cb "pu")   -- paste on line below
-h.nmap("<leader>P", h.user_cmd_cb("pu!")) -- paste on line above
+h.nmap("<leader>va", "ggVG", { desc = "Select all" })
+h.nmap("<leader>p", h.user_cmd_cb "pu", { desc = "Paste on the line below" })
+h.nmap("<leader>P", h.user_cmd_cb("pu!"), { desc = "Paste on the line above" })
 h.nmap("<bs>", "b")
 h.nmap("*", "*N")
-
--- duplicate lines
-h.nmap("<leader>dl", "yyp")
-h.vmap("<leader>dl", "y`>p") -- move to end of selection, then yank
-
-h.nmap("<leader>s", h.user_cmd_cb("w"))
-h.nmap("<leader>w", h.user_cmd_cb("q"))
-h.nmap("<leader>q", h.user_cmd_cb "qa")
-
--- copy absolute path of file
-h.nmap("<leader>ia", function() vim.fn.setreg('+', vim.fn.expand('%:p')) end)
--- relative path
-h.nmap("<leader>ir", function() vim.fn.setreg('+', vim.fn.expand('%:~:.')) end)
-
--- keeps lines highlighted while indenting
-h.vmap("<", "<gv")
-h.vmap(">", ">gv")
-
--- focusing
-h.nmap("<leader>f", "<C-w>w")
-h.nmap("<leader>h", "<C-w>h")
-h.nmap("<leader>j", "<C-w>j")
-h.nmap("<leader>k", "<C-w>k")
-h.nmap("<leader>l", "<C-w>l")
-
--- quickfix list
+h.nmap("<leader>dl", "yyp", { desc = "Duplicate the current line" })
+h.vmap("<leader>dl", "y`>p", { desc = "Duplicate the current line" }) -- move to end of selection, then yank
+h.nmap("<leader>s", h.user_cmd_cb("w"), { desc = "Save" })
+h.nmap("<leader>w", h.user_cmd_cb("q"), { desc = "Close" })
+h.nmap("<leader>q", h.user_cmd_cb "qa", { desc = "Quit" })
+h.nmap("<leader>ia", function() vim.fn.setreg("+", vim.fn.expand("%:p")) end,
+  { desc = "Copy the absolute path of a file" })
+h.nmap("<leader>ir", function() vim.fn.setreg("+", vim.fn.expand("%:~:.")) end,
+  { desc = "Copy the relative path of a file" })
+h.vmap("<", "<gv", { desc = "Outdent, while keeping selection" })
+h.vmap(">", ">gv", { desc = "Indent, while keeping selection" })
+h.nmap("<leader>f", "<C-w>w", { desc = "Toggle focus between windows" })
 h.nmap("gn", function()
   vim.cmd("Cnext")
   vim.cmd("normal! zz")
-end)
+end, { desc = "Move to the next item in the quickfix list" })
 h.nmap("gp", function()
   vim.cmd("Cprev")
   vim.cmd("normal! zz")
-end)
-h.nmap("ge", h.user_cmd_cb("copen 25"))
-h.nmap("gq", h.user_cmd_cb("cclose"))
+end, { desc = "Move to the previous item in the quickfix list" })
+h.nmap("ge", h.user_cmd_cb("copen 25"), { desc = "Open the quickfix list" })
+h.nmap("gq", h.user_cmd_cb("cclose"), { desc = "Close the quickfix list" })
 
--- move lines up and down with alt-j, alt-k
 local alt_j = h.is_mac() and "∆" or "<A-j>"
 local alt_k = h.is_mac() and "˚" or "<A-k>"
 
-h.nmap(alt_j, ":m .+1<cr>==")
-h.nmap(alt_k, ":m .-2<cr>==")
-h.imap(alt_j, "<esc>:m .+1<cr>==gi")
-h.imap(alt_k, "<esc>:m .-2<cr>==gi")
-h.vmap(alt_j, ":m '>+1<cr>gv=gv")
-h.vmap(alt_k, ":m '<-2<cr>gv=gv")
+h.nmap(alt_j, ":m .+1<cr>==", { desc = "Move line down" })
+h.nmap(alt_k, ":m .-2<cr>==", { desc = "Move line up" })
+h.imap(alt_j, "<esc>:m .+1<cr>==gi", { desc = "Move line down" })
+h.imap(alt_k, "<esc>:m .-2<cr>==gi", { desc = "Move line up" })
+h.vmap(alt_j, ":m '>+1<cr>gv=gv", { desc = "Move line down" })
+h.vmap(alt_k, ":m '<-2<cr>gv=gv", { desc = "Move line up" })
 
 -- search case sensitive, whole word, and both
 vim.cmd([[
@@ -89,9 +74,11 @@ local function count_based_keymap(movement)
   if count > 0 then
     return movement
   else
-    return 'g' .. movement
+    return "g" .. movement
   end
 end
 
-h.nmap('j', function() return count_based_keymap("j") end, { expr = true })
-h.nmap('k', function() return count_based_keymap("k") end, { expr = true })
+h.nmap("j", function() return count_based_keymap("j") end, { expr = true },
+  { desc = "Move down a line, but respect lines that wrap" })
+h.nmap("k", function() return count_based_keymap("k") end, { expr = true },
+  { desc = "Move up a line, but respect lines that wrap" })

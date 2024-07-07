@@ -1,6 +1,6 @@
 local h = require "shared.helpers"
 local tree = require "nvim-tree"
-local tree_view = require 'nvim-tree.view'
+local tree_view = require "nvim-tree.view"
 
 local function on_attach(bufnr)
   local api = require "nvim-tree.api"

@@ -2,27 +2,27 @@ local h = require "shared.helpers"
 
 local base16 = require "base16-colorscheme"
 local colors = {
-  base00 = '#1d1f21',
-  base01 = '#282a2e',
-  base02 = '#373b41',
-  base03 = '#969896',
-  base04 = '#b4b7b4',
-  base05 = '#c5c8c6',
-  base06 = '#e0e0e0',
-  base07 = '#ffffff',
-  base08 = '#cc6666',
-  base09 = '#de935f', -- cursor
-  base0A = '#f0c674',
-  base0B = '#b5bd68',
-  base0C = '#8abeb7',
-  base0D = '#81a2be',
-  base0E = '#b294bb',
-  base0F = '#a3685a'
+  base00 = "#1d1f21",
+  base01 = "#282a2e",
+  base02 = "#373b41",
+  base03 = "#969896",
+  base04 = "#b4b7b4",
+  base05 = "#c5c8c6",
+  base06 = "#e0e0e0",
+  base07 = "#ffffff",
+  base08 = "#cc6666",
+  base09 = "#de935f", -- cursor
+  base0A = "#f0c674",
+  base0B = "#b5bd68",
+  base0C = "#8abeb7",
+  base0D = "#81a2be",
+  base0E = "#b294bb",
+  base0F = "#a3685a"
 }
 base16.setup(colors)
 
 local function is_quickfix()
-  return vim.fn.getbufvar(vim.fn.bufnr('%'), '&buftype') == 'quickfix'
+  return vim.fn.getbufvar(vim.fn.bufnr("%"), "&buftype") == "quickfix"
 end
 
 
@@ -48,7 +48,7 @@ bufferline.setup({
     right_mouse_command = nil,
     left_mouse_command = nil,
     indicator = {
-      style = 'underline'
+      style = "underline"
     },
   }
 })
@@ -57,13 +57,13 @@ vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { fg = colors.base0C, underli
 vim.api.nvim_set_hl(0, "CursorLine", { fg = colors.base09, bg = colors.base02, underline = true })
 vim.api.nvim_set_hl(0, "TelescopeBorder", { fg = colors.base09 })
 
-h.nmap("<leader>tp", h.user_cmd_cb("BufferLinePick"))
-h.nmap("<leader>ti", h.user_cmd_cb("BufferLineTogglePin"))
-h.nmap("<leader>tl", h.user_cmd_cb("BufferLineMoveNext"))
-h.nmap("<leader>th", h.user_cmd_cb("BufferLineMovePrev"))
-h.nmap("L", h.user_cmd_cb("BufferLineCycleNext"))
-h.nmap("H", h.user_cmd_cb("BufferLineCyclePrev"))
+h.nmap("<leader>tp", h.user_cmd_cb("BufferLinePick"), { desc = "Pick a buffer" })
+h.nmap("<leader>ti", h.user_cmd_cb("BufferLineTogglePin"), { desc = "Pin a buffer" })
+h.nmap("<leader>tl", h.user_cmd_cb("BufferLineMoveNext"), { desc = "Move a buffer to the left" })
+h.nmap("<leader>th", h.user_cmd_cb("BufferLineMovePrev"), { desc = "Move a buffer to the right" })
+h.nmap("L", h.user_cmd_cb("BufferLineCycleNext"), { desc = "Move to the buffer to the right" })
+h.nmap("H", h.user_cmd_cb("BufferLineCyclePrev"), { desc = "Move to the buffer to the left" })
 
-h.nmap("<leader>tw", h.user_cmd_cb("Bdelete"))
-h.nmap("<leader>ta", h.user_cmd_cb("bufdo Bdelete"))
-h.nmap("<leader>to", h.user_cmd_cb("BufOnly"))
+h.nmap("<leader>tw", h.user_cmd_cb("Bdelete"), { desc = "Close the current buffer" })
+h.nmap("<leader>ta", h.user_cmd_cb("bufdo Bdelete"), { desc = "Close all buffers" })
+h.nmap("<leader>to", h.user_cmd_cb("BufOnly"), { desc = "Close all buffers, except the open one" })

@@ -16,4 +16,4 @@ oil.setup({
     ["g."] = "actions.toggle_hidden",
   },
 })
-h.nmap("<leader>r", "<cmd>Oil<cr>")
+h.nmap("<leader>r", "<cmd>Oil<cr>", { desc = "Toggle oil" })
