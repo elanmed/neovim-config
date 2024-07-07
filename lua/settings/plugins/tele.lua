@@ -51,7 +51,7 @@ telescope.setup({
       height = 0.95,
       width = 0.95,
       prompt_position = "bottom",
-      preview_height = 0.3,
+      preview_height = 0.35,
     },
     mappings        = {
       i = {

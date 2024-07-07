@@ -6,10 +6,10 @@ h.set.errorbells = false        -- disable error beep
 h.set.mouse = "a"               -- allow mouse to click, scroll
 h.set.confirm = true            -- prompt to save before quitting
 h.set.linebreak = true          -- won't break on word when wrapping
-h.set.fileencoding = "utf-8"
 h.set.splitright = true         -- when splitting vertically, open new split to the right
 h.set.relativenumber = true     -- useful for multiline j, k
 h.set.termguicolors = true      -- needed for modern themes
+h.set.fileencoding = "utf-8"
 
 -- spell
 h.set.spelllang = "en_us"
