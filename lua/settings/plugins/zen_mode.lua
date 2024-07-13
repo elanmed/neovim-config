@@ -5,10 +5,10 @@ zen_mode.setup({
   window = {
     backdrop = 1,
     height = 0.5,
-  },
-  plugins = {
-    gitsigns = { enabled = true },
-    tmux = { enabled = true },
+    options = {
+      number = false,         -- disable number column
+      relativenumber = false, -- disable relative numbers
+    },
   },
 })
 

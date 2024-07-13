@@ -54,7 +54,10 @@ return packer.startup(({
     -- movements
     use "ggandor/leap.nvim"
     use "easymotion/vim-easymotion"
-    use "rhysd/clever-f.vim"
+    use({
+      "ggandor/flit.nvim",
+      config = function() require('flit').setup() end
+    })
 
     -- buffers as tabs
     use "akinsho/bufferline.nvim"

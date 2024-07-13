@@ -10,4 +10,10 @@ h.nmap("<leader>ta", function()
 end, { desc = "Close all buffers" })
 
 -- netrw
-h.nmap("<leader>r", h.user_cmd_cb("Lexplore %:p:h"), { desc = "Toggle netrw, focusing the current file" })
+h.nmap("<leader>r", function()
+  if vim.bo.filetype == 'netrw' then
+    vim.cmd("q")
+  else
+    vim.cmd("Lexplore %:p:h")
+  end
+end, { desc = "Toggle netrw, focusing the current file" })
