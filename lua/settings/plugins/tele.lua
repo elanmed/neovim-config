@@ -66,8 +66,9 @@ telescope.setup({
   },
 })
 
-telescope.load_extension("fzf")
-telescope.load_extension("neoclip")
+telescope.load_extension "fzf"
+telescope.load_extension "neoclip"
+telescope.load_extension "frecency"
 -- telescope.load_extension("rg_with_args")
 
 local shared_grep_string_options = { only_sort_text = true }
@@ -140,7 +141,8 @@ local function yank_stripped_filename()
   vim.fn.setreg("+", stripped_filename)
 end
 
-h.nmap("<C-p>", builtin.find_files, { desc = "Find files with telescope" })
+h.nmap("<C-p>", h.user_cmd_cb("Telescope frecency workspace=CWD"), { desc = "Find files with telescope" })
+-- h.nmap("<C-p>", builtin.find_files, { desc = "Find files with telescope" })
 h.nmap("<leader>lr", builtin.resume, { desc = "Resume telescope search" })
 h.nmap("<leader>lf", builtin.current_buffer_fuzzy_find, { desc = "Search in the current file with telescope" })
 h.nmap("<leader>lg", grep_string_with_search, { desc = "Search globally with telescope" })

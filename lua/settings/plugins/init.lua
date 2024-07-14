@@ -18,3 +18,6 @@ require "settings.plugins.oil"
 require "settings.plugins.tele"
 require "settings.plugins.treesitter"
 require "settings.plugins.zen_mode"
+
+require('mini.pairs').setup()
+require('flit').setup()

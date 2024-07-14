@@ -21,7 +21,6 @@ configs.setup({
     "vimdoc"
   },
   indent = { enable = true },
-  autotag = {
-    enable = true,
-  },
+  autotag = { enable = true, },
+  endwise = { enable = true, },
 })

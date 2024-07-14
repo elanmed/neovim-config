@@ -40,24 +40,19 @@ return packer.startup(({
     use "tpope/vim-repeat"
     use "mg979/vim-visual-multi"
     use "rmagatti/auto-session"
-    use({
-      "neoclide/coc.nvim",
-      branch = "release",
-    })
+    use({ "neoclide/coc.nvim", branch = "release", })
+    use "echasnovski/mini.pairs"
 
     -- visuals
     use "nvim-lualine/lualine.nvim"
     use "psliwka/vim-smoothie"
-    use { "echasnovski/mini.map", version = "*" }
+    use "echasnovski/mini.map"
     use "folke/zen-mode.nvim"
 
     -- movements
     use "ggandor/leap.nvim"
     use "easymotion/vim-easymotion"
-    use({
-      "ggandor/flit.nvim",
-      config = function() require('flit').setup() end
-    })
+    use "ggandor/flit.nvim"
 
     -- buffers as tabs
     use "akinsho/bufferline.nvim"
@@ -70,11 +65,11 @@ return packer.startup(({
     use({ "junegunn/fzf", run = "./install --bin", })
 
     -- telescope
-    use({
-      "nvim-telescope/telescope.nvim", branch = "0.1.x",
-    })
+    use({ "nvim-telescope/telescope.nvim", branch = "0.1.x", })
     use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })
     use "AckslD/nvim-neoclip.lua"
+    use "nvim-telescope/telescope-frecency.nvim"
+
 
     -- git
     -- https://github.com/sindrets/diffview.nvim/commit/c244577dd425072275eff925e87739820ac5e0aa
@@ -94,7 +89,8 @@ return packer.startup(({
         "JoosepAlviste/nvim-ts-context-commentstring",
         "lukas-reineke/indent-blankline.nvim",
         "HiPhish/rainbow-delimiters.nvim",
-        "numToStr/Comment.nvim"
+        "numToStr/Comment.nvim",
+        "RRethy/nvim-treesitter-endwise"
       }
     })
 
