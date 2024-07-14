@@ -41,7 +41,7 @@ return packer.startup(({
     use "mg979/vim-visual-multi"
     use "rmagatti/auto-session"
     use({ "neoclide/coc.nvim", branch = "release", })
-    use "echasnovski/mini.pairs"
+    use "windwp/nvim-autopairs"
 
     -- visuals
     use "nvim-lualine/lualine.nvim"
@@ -69,7 +69,6 @@ return packer.startup(({
     use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })
     use "AckslD/nvim-neoclip.lua"
     use "nvim-telescope/telescope-frecency.nvim"
-
 
     -- git
     -- https://github.com/sindrets/diffview.nvim/commit/c244577dd425072275eff925e87739820ac5e0aa

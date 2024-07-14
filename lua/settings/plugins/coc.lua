@@ -27,8 +27,17 @@ local function coc_show_docs()
   end
 end
 
+local function coc_handle_cr()
+  if vim.fn['coc#pum#visible']() == 1 then
+    return vim.fn['coc#pum#confirm']()
+  else
+    return '<Cr>'
+  end
+end
+
+
 h.imap("<c-space>", "coc#refresh()", { expr = true, desc = "Show autocompletion options" })
-h.imap("<cr>", ([[coc#pum#visible() ? coc#pum#confirm() : "\<C-g>u\<cr>\<c-r>=coc#on_enter()\<CR>"]]), { expr = true })
+h.imap("<cr>", coc_handle_cr, { expr = true })
 
 h.nmap("gd", "<Plug>(coc-definition)zz", { desc = "Go to definition" })
 h.nmap("gy", "<Plug>(coc-type-definition)", { desc = "Go to type definition" })
@@ -38,7 +47,7 @@ h.nmap("gm", "<Plug>(coc-rename)", { desc = "Rename symbol" })
 h.nmap("gh", coc_show_docs, { desc = "Open docs" })
 h.nmap("go", "<c-o>", { desc = "Go backwards" })
 h.nmap("gi", "<c-i>", { desc = "Go forwards" })
-h.nmap("<leader>gh", "<c-w>w<c-w>w", { desc = "Close docs" }) -- close hover documentation
+h.nmap("<leader>gh", "<c-w>w:q<cr>", { desc = "Close docs" }) -- close hover documentation
 h.nmap("<leader>cr", h.user_cmd_cb("CocRestart"), { desc = "Restart coc" })
 
 h.set.updatetime = 100
