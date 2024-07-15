@@ -1,6 +1,5 @@
 require "settings.plugins.packer"
 
-require "settings.plugins.auto_session"
 require "settings.plugins.bufferline"
 require "settings.plugins.bqf"
 require "settings.plugins.coc"
@@ -19,4 +18,11 @@ require "settings.plugins.tele"
 require "settings.plugins.treesitter"
 require "settings.plugins.zen_mode"
 
-require('flit').setup()
+require("flit").setup()
+require("auto-session").setup({
+  auto_session_use_git_branch = true,
+  auto_save_enabled = true
+})
+require("nvim-autopairs").setup({
+  map_cr = false,
+})

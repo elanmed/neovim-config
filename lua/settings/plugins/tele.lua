@@ -12,37 +12,20 @@ custom_actions.send_all_and_open = function(prompt_bufnr)
   vim.cmd("copen 25")
 end
 
+custom_actions.send_selected_and_open = function(prompt_bufnr)
+  actions.send_selected_to_qflist(prompt_bufnr)
+  vim.cmd("copen 25")
+end
+
 -- custom_actions.send_all_and_open_with_fzf = function(prompt_bufnr)
 --   custom_actions.send_all_and_open(prompt_bufnr)
 --   require("bqf.filter.fzf").run()
 -- end
 
-custom_actions.send_selected_and_open = function(prompt_bufnr)
-  local function get_table_size(t)
-    local count = 0
-    for _ in pairs(t) do
-      count = count + 1
-    end
-    return count
-  end
-
-  local picker = action_state.get_current_picker(prompt_bufnr)
-  local num_selections = get_table_size(picker:get_multi_selection())
-
-  if num_selections > 1 then
-    actions.send_selected_to_qflist(prompt_bufnr)
-    vim.cmd("copen 25")
-    actions.open_qflist()
-  else
-    actions.file_edit(prompt_bufnr)
-  end
-end
-
 -- custom_actions.send_selected_and_open_with_fzf = function(prompt_bufnr)
 --   custom_actions.send_selected_and_open(prompt_bufnr)
 --   require("bqf.filter.fzf").run()
 -- end
-
 
 telescope.setup({
   defaults = {
@@ -55,9 +38,8 @@ telescope.setup({
     },
     mappings        = {
       i = {
-        ["<cr>"] = custom_actions.send_selected_and_open,
-        -- ["<c-f>"] = custom_actions.send_selected_and_open_with_fzf,
-        ["<c-a>"] = custom_actions.send_all_and_open,
+        ["<c-f>"] = custom_actions.send_selected_and_open,
+        ["<c-a>"] = actions.toggle_all,
         ["<tab>"] = actions.toggle_selection + actions.move_selection_previous,
         ["<s-tab>"] = actions.move_selection_next + actions.toggle_selection,
         ["<esc>"] = actions.close,
@@ -144,6 +126,9 @@ end
 h.nmap("<C-p>", h.user_cmd_cb("Telescope frecency workspace=CWD"), { desc = "Find files with telescope" })
 -- h.nmap("<C-p>", builtin.find_files, { desc = "Find files with telescope" })
 h.nmap("<leader>lr", builtin.resume, { desc = "Resume telescope search" })
+h.nmap("<leader>lt", builtin.buffers, { desc = "Search currently open buffers with telescope" })
+h.nmap("<leader>l:", builtin.command_history, { desc = "Search command history with telescope" })
+h.nmap("<leader>ls", builtin.search_history, { desc = "Search search history with telescope" })
 h.nmap("<leader>lf", builtin.current_buffer_fuzzy_find, { desc = "Search in the current file with telescope" })
 h.nmap("<leader>lg", grep_string_with_search, { desc = "Search globally with telescope" })
 h.nmap("<leader>lc", function() grep_string_with_search({ case_sensitive = true }) end,
@@ -155,7 +140,7 @@ h.nmap("<leader>lb", function() grep_string_with_search({ whole_word = true, cas
 h.nmap("<leader>lo", function() builtin.grep_string(shared_grep_string_options) end,
   { desc = "Search the currently hovered word with telescope" })
 h.vmap("<leader>lo", grep_string_with_visual, { desc = "Search the current selection with telescope" })
-h.nmap("<leader>ie", yank_stripped_filename, { desc = "Yank a file name starting with `wf_modules`" })
 h.nmap("<leader>le", grep_stripped_filename, { desc = "Search a file name starting with `wf_modules` with telescope" })
+h.nmap("<leader>ie", yank_stripped_filename, { desc = "Yank a file name starting with `wf_modules`" })
 
 vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { link = "TelescopePreviewTitle" })
