@@ -18,7 +18,7 @@ h.let.coc_global_extensions = {
 
 local function coc_show_docs()
   local cw = vim.fn.expand("<cword>")
-  if vim.fn.index({ "vim", "help" }, vim.bo.filetype) >= 0 then
+  if h.table_contains({ "vim", "help" }, vim.bo.filetype) then
     vim.cmd("h " .. cw)
   elseif vim.api.nvim_eval("coc#rpc#ready()") then
     vim.fn.CocActionAsync("doHover")
@@ -28,10 +28,10 @@ local function coc_show_docs()
 end
 
 local function coc_handle_cr()
-  if vim.fn['coc#pum#visible']() == 1 then
-    return vim.fn['coc#pum#confirm']()
+  if vim.fn["coc#pum#visible"]() == 1 then
+    return vim.fn["coc#pum#confirm"]()
   else
-    return '<Cr>'
+    return "<Cr>"
   end
 end
 

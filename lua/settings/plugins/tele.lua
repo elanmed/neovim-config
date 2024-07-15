@@ -1,9 +1,9 @@
+local color_helpers = require "settings.plugins.bufferline"
 local h = require "shared.helpers"
 
 local telescope = require "telescope"
 local actions = require "telescope.actions"
 local builtin = require "telescope.builtin"
-local action_state = require "telescope.actions.state"
 
 local custom_actions = {}
 
@@ -165,3 +165,4 @@ h.nmap("<leader>lp", function()
   { desc = "Search the planets with telescope" })
 
 vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { link = "TelescopePreviewTitle" })
+vim.api.nvim_set_hl(0, "TelescopeBorder", { fg = color_helpers.colors.base09 })

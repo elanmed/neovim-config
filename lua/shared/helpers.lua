@@ -64,6 +64,19 @@ M.is_mac = function()
   return vim.fn.has("macunix") == 1
 end
 
+M.table_contains = function(table, element)
+  for _, value in pairs(table) do
+    if value == element then
+      return true
+    end
+  end
+  return false
+end
+
+M.send_keys = function(keys)
+  vim.api.nvim_command("normal! " .. keys)
+end
+
 return vim.tbl_extend("error", M, {
   set = vim.opt,
   let = vim.g,

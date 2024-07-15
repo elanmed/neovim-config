@@ -1,7 +1,9 @@
 local h = require "shared.helpers"
 
 local base16 = require "base16-colorscheme"
-local colors = {
+local M = {}
+
+M.colors = {
   base00 = "#1d1f21",
   base01 = "#282a2e",
   base02 = "#373b41",
@@ -19,25 +21,7 @@ local colors = {
   base0E = "#b294bb",
   base0F = "#a3685a"
 }
-base16.setup(colors)
-
-local function is_quickfix()
-  return vim.fn.getbufvar(vim.fn.bufnr("%"), "&buftype") == "quickfix"
-end
-
-
-vim.api.nvim_create_autocmd({ "FileType" }, {
-  pattern = "*",
-  callback = function(e)
-    h.dump(e)
-    if is_quickfix() then
-      h.set.cursorline = true
-    else
-      h.set.cursorline = false
-    end
-  end
-})
-
+base16.setup(M.colors)
 
 local bufferline = require "bufferline"
 bufferline.setup({
@@ -53,9 +37,7 @@ bufferline.setup({
   }
 })
 
-vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { fg = colors.base0C, underline = true })
-vim.api.nvim_set_hl(0, "CursorLine", { fg = colors.base09, bg = colors.base02, underline = true })
-vim.api.nvim_set_hl(0, "TelescopeBorder", { fg = colors.base09 })
+vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { fg = M.colors.base0C, underline = true })
 
 h.nmap("<leader>tp", h.user_cmd_cb("BufferLinePick"), { desc = "Pick a buffer" })
 h.nmap("<leader>ti", h.user_cmd_cb("BufferLineTogglePin"), { desc = "Pin a buffer" })
@@ -67,3 +49,5 @@ h.nmap("H", h.user_cmd_cb("BufferLineCyclePrev"), { desc = "Move to the buffer t
 h.nmap("<leader>tw", h.user_cmd_cb("Bdelete"), { desc = "Close the current buffer" })
 h.nmap("<leader>ta", h.user_cmd_cb("bufdo Bdelete"), { desc = "Close all buffers" })
 h.nmap("<leader>to", h.user_cmd_cb("BufOnly"), { desc = "Close all buffers, except the open one" })
+
+return vim.tbl_extend("error", M, {})

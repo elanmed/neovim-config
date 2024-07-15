@@ -11,7 +11,7 @@ end, { desc = "Close all buffers" })
 
 -- netrw
 h.nmap("<leader>r", function()
-  if vim.bo.filetype == 'netrw' then
+  if vim.bo.filetype == "netrw" then
     vim.cmd("q")
   else
     vim.cmd("Lexplore %:p:h")

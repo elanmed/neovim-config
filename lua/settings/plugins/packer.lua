@@ -45,9 +45,10 @@ return packer.startup(({
 
     -- visuals
     use "nvim-lualine/lualine.nvim"
-    use "psliwka/vim-smoothie"
+    -- use "psliwka/vim-smoothie"
     use "echasnovski/mini.map"
     use "folke/zen-mode.nvim"
+    use "karb94/neoscroll.nvim"
 
     -- movements
     use "ggandor/leap.nvim"
