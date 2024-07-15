@@ -29,19 +29,28 @@ end
 
 telescope.setup({
   defaults = {
-    layout_strategy = "vertical",
-    layout_config   = {
-      height = 0.99,
-      width = 0.99,
-      prompt_position = "bottom",
-      preview_height = 0.35,
+    layout_strategy  = "vertical",
+    sorting_strategy = "ascending",
+    border           = true,
+    borderchars      = {
+      prompt = { " " },
+      results = { " " },
+      preview = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
     },
-    mappings        = {
+    layout_config    = {
+      vertical = {
+        height = 0.999,
+        width = 0.999,
+        prompt_position = "bottom",
+        preview_height = 0.35,
+      },
+    },
+    mappings         = {
       i = {
         ["<c-f>"] = custom_actions.send_selected_and_open,
         ["<c-a>"] = actions.toggle_all,
-        ["<tab>"] = actions.toggle_selection + actions.move_selection_previous,
-        ["<s-tab>"] = actions.move_selection_next + actions.toggle_selection,
+        ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
+        ["<s-tab>"] = actions.move_selection_previous + actions.toggle_selection,
         ["<esc>"] = actions.close,
       }
     }
@@ -142,5 +151,17 @@ h.nmap("<leader>lo", function() builtin.grep_string(shared_grep_string_options) 
 h.vmap("<leader>lo", grep_string_with_visual, { desc = "Search the current selection with telescope" })
 h.nmap("<leader>le", grep_stripped_filename, { desc = "Search a file name starting with `wf_modules` with telescope" })
 h.nmap("<leader>ie", yank_stripped_filename, { desc = "Yank a file name starting with `wf_modules`" })
+h.nmap("<leader>lp", function()
+    builtin.planets({
+      layout_strategy = "horizontal",
+      border = true,
+      borderchars = {
+        prompt = { " " },
+        results = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+        preview = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+      },
+    })
+  end,
+  { desc = "Search the planets with telescope" })
 
 vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { link = "TelescopePreviewTitle" })
