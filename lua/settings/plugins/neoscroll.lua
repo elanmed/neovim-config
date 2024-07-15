@@ -2,13 +2,21 @@ local neoscroll = require "neoscroll"
 local h = require "shared.helpers"
 local color_helpers = require "settings.plugins.bufferline"
 
+local function is_override_filetype()
+  -- TODO: extend as necessary
+  return h.table_contains({ "oil" }, vim.bo.filetype)
+end
+
 neoscroll.setup({
   hide_cursor = false,
   pre_hook = function()
+    if is_override_filetype() then return end
+
     h.set.cursorline = true
     vim.api.nvim_set_hl(0, "CursorLine", { fg = nil, bg = color_helpers.colors.base02, underline = false })
   end,
   post_hook = function()
+    if is_override_filetype() then return end
     h.set.cursorline = false
   end
 })
@@ -27,13 +35,6 @@ local function is_last_line()
   local last_line = vim.fn.line("$")
   return current_line == last_line
 end
-
-local function is_override_filetype()
-  -- TODO: extend as necessary
-  return h.table_contains({ "oil" }, vim.bo.filetype)
-end
-
-
 
 local modes = { "n", "v", "x" }
 for _, mode in pairs(modes) do
