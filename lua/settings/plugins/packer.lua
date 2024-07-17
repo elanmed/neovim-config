@@ -45,7 +45,6 @@ return packer.startup(({
 
     -- visuals
     use "nvim-lualine/lualine.nvim"
-    -- use "psliwka/vim-smoothie"
     use "echasnovski/mini.map"
     use "folke/zen-mode.nvim"
     use "karb94/neoscroll.nvim"
@@ -60,6 +59,7 @@ return packer.startup(({
     use "RRethy/nvim-base16"
     use "moll/vim-bbye"
     use "vim-scripts/BufOnly.vim"
+    use({ "numtostr/BufOnly.nvim", cmd = "BufOnly" })
 
     -- bqf
     use "kevinhwang91/nvim-bqf"
