@@ -3,8 +3,10 @@
 - A minimal(ish) config written in lua, uses:
 
   - [coc](https://github.com/neoclide/coc.nvim) for completions/linting
-  - treesitter for [t/jsx commenting](https://github.com/JoosepAlviste/nvim-ts-context-commentstring) and [t/jsx pair renaming](https://github.com/windwp/nvim-ts-autotag)
-  - [leap](https://github.com/ggandor/leap.nvim), [clever-f](https://github.com/rhysd/clever-f.vim) and [easymotion](https://github.com/easymotion/vim-easymotion) for quicker movements
+  - treesitter for [t/jsx commenting](https://github.com/JoosepAlviste/nvim-ts-context-commentstring) and
+    [t/jsx pair renaming](https://github.com/windwp/nvim-ts-autotag)
+  - [leap](https://github.com/ggandor/leap.nvim), [clever-f](https://github.com/rhysd/clever-f.vim) and
+    [easymotion](https://github.com/easymotion/vim-easymotion) for quicker movements
   - [vim tmux navigator](https://github.com/christoomey/vim-tmux-navigator) for moving between vim and tmux panes
   - [bqf](https://github.com/kevinhwang91/nvim-bqf) for a better quick-fix list
   - [telescope](https://github.com/nvim-telescope/telescope.nvim)

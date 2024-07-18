@@ -90,8 +90,16 @@ return packer.startup(({
         "lukas-reineke/indent-blankline.nvim",
         "HiPhish/rainbow-delimiters.nvim",
         "numToStr/Comment.nvim",
-        "RRethy/nvim-treesitter-endwise"
+        "RRethy/nvim-treesitter-endwise",
       }
+    })
+    use({
+      'MeanderingProgrammer/markdown.nvim',
+      as = 'render-markdown',
+      after = { 'nvim-treesitter' },
+      config = function()
+        require('render-markdown').setup({})
+      end,
     })
 
     if packer_bootstrap then

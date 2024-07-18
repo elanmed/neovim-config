@@ -27,17 +27,8 @@ local function coc_show_docs()
   end
 end
 
-local function coc_handle_cr()
-  if vim.fn["coc#pum#visible"]() == 1 then
-    return vim.fn["coc#pum#confirm"]()
-  else
-    return "<Cr>"
-  end
-end
-
-
 h.imap("<c-space>", "coc#refresh()", { expr = true, desc = "Show autocompletion options" })
-h.imap("<cr>", coc_handle_cr, { expr = true })
+h.imap("<c-f>", "coc#pum#confirm()", { expr = true })
 
 h.nmap("gd", "<Plug>(coc-definition)zz", { desc = "Go to definition" })
 h.nmap("gy", "<Plug>(coc-type-definition)", { desc = "Go to type definition" })
