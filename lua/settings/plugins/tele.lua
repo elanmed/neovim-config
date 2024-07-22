@@ -4,6 +4,7 @@ local h = require "shared.helpers"
 local telescope = require "telescope"
 local actions = require "telescope.actions"
 local builtin = require "telescope.builtin"
+local action_state = require "telescope.actions.state"
 
 local custom_actions = {}
 
@@ -13,8 +14,24 @@ custom_actions.send_all_and_open = function(prompt_bufnr)
 end
 
 custom_actions.send_selected_and_open = function(prompt_bufnr)
-  actions.send_selected_to_qflist(prompt_bufnr)
-  vim.cmd("copen 25")
+  local function get_table_size(t)
+    local count = 0
+    for _ in pairs(t) do
+      count = count + 1
+    end
+    return count
+  end
+
+  local picker = action_state.get_current_picker(prompt_bufnr)
+  local num_selections = get_table_size(picker:get_multi_selection())
+
+  if num_selections > 1 then
+    actions.send_selected_to_qflist(prompt_bufnr)
+    vim.cmd("copen 25")
+    actions.open_qflist()
+  else
+    actions.file_edit(prompt_bufnr)
+  end
 end
 
 -- custom_actions.send_all_and_open_with_fzf = function(prompt_bufnr)
@@ -47,7 +64,7 @@ telescope.setup({
     },
     mappings         = {
       i = {
-        ["<c-f>"] = custom_actions.send_selected_and_open,
+        ["<cr>"] = custom_actions.send_selected_and_open,
         ["<c-a>"] = actions.toggle_all,
         ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
         ["<s-tab>"] = actions.move_selection_previous + actions.toggle_selection,

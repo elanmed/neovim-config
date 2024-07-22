@@ -28,7 +28,11 @@ local function coc_show_docs()
 end
 
 h.imap("<c-space>", "coc#refresh()", { expr = true, desc = "Show autocompletion options" })
-h.imap("<c-f>", "coc#pum#confirm()", { expr = true })
+-- TODO: update to lua
+vim.cmd([[
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() :
+	\ "\<CMD>call feedkeys(v:lua.require('nvim-autopairs').autopairs_cr(), 'in')\<CR>"
+]])
 
 h.nmap("gd", "<Plug>(coc-definition)zz", { desc = "Go to definition" })
 h.nmap("gy", "<Plug>(coc-type-definition)", { desc = "Go to type definition" })
