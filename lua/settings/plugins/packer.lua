@@ -18,7 +18,7 @@ vim.api.nvim_create_augroup("PackerGroup", {})
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
   group = "PackerGroup",
   pattern = (h.is_mac() and "/Users/elanmedoff" or "/home/elan") ..
-      "/.dotfiles/nvim/.config/nvim/lua/settings/plugins/packer.lua",
+      "/.dotfiles/neovim/.config/nvim/lua/settings/plugins/packer.lua",
   command = "source <afile> | PackerSync"
 })
 

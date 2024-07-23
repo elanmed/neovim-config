@@ -68,6 +68,7 @@ telescope.setup({
         ["<c-a>"] = actions.toggle_all,
         ["<c-j>"] = actions.toggle_selection + actions.move_selection_next,
         ["<c-k>"] = actions.move_selection_previous + actions.toggle_selection,
+        ["<c-t>"] = actions.toggle_selection,
         ["<esc>"] = actions.close,
       }
     }
