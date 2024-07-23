@@ -30,7 +30,7 @@ custom_actions.send_selected_and_open = function(prompt_bufnr)
     vim.cmd("copen 25")
     actions.open_qflist()
   else
-    actions.file_edit(prompt_bufnr)
+    actions.select_default(prompt_bufnr)
   end
 end
 
@@ -66,8 +66,8 @@ telescope.setup({
       i = {
         ["<cr>"] = custom_actions.send_selected_and_open,
         ["<c-a>"] = actions.toggle_all,
-        ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
-        ["<s-tab>"] = actions.move_selection_previous + actions.toggle_selection,
+        ["<c-j>"] = actions.toggle_selection + actions.move_selection_next,
+        ["<c-k>"] = actions.move_selection_previous + actions.toggle_selection,
         ["<esc>"] = actions.close,
       }
     }
