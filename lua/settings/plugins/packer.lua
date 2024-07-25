@@ -76,6 +76,7 @@ return packer.startup(({
     -- https://github.com/sindrets/diffview.nvim/commit/c244577dd425072275eff925e87739820ac5e0aa
     use({ "sindrets/diffview.nvim", commit = "a45163cb9ee65742cf26b940c2b24cc652f295c9" })
     use "lewis6991/gitsigns.nvim"
+    use "tpope/vim-fugitive"
 
     -- file tree
     use "kyazdani42/nvim-web-devicons"
