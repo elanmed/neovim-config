@@ -7,10 +7,6 @@ h.let.netrw_keepdir = 0
 vim.api.nvim_create_autocmd({ "FileType" }, {
   pattern = "netrw",
   callback = function()
-    local nmap = function(shortcut, command)
-      vim.keymap.set("n", shortcut, command, { remap = true, silent = true, nowait = true })
-    end
-
-    nmap("-", "-^") -- go up a directory
+    h.nmap("-", "-^") -- go up a directory
   end
 })
