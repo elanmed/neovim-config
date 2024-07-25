@@ -7,3 +7,5 @@ h.nmap("'", function()
   vim.cmd("q")
   vim.cmd("q")
 end)
+
+h.nmap(":", function() print("use ; instead!") end)
