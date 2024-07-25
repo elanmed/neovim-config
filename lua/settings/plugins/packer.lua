@@ -70,6 +70,7 @@ return packer.startup(({
     use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })
     use "AckslD/nvim-neoclip.lua"
     use "nvim-telescope/telescope-frecency.nvim"
+    use "jonarrien/telescope-cmdline.nvim"
 
     -- git
     -- https://github.com/sindrets/diffview.nvim/commit/c244577dd425072275eff925e87739820ac5e0aa

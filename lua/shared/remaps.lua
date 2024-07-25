@@ -1,8 +1,6 @@
 local h = require "shared.helpers"
 
 
--- needs to be in a vim.cmd to register the command immediately
-vim.cmd("nnoremap ; :")
 h.nmap("<leader>af", "<C-6>", { desc = "Alternate file" })
 h.nmap("J", "gJ", { desc = "J without whitespace" })
 -- h.nmap("<leader>e", [[viw"_dP]])

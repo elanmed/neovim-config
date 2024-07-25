@@ -34,6 +34,9 @@ custom_actions.send_selected_and_open = function(prompt_bufnr)
   end
 end
 
+local border_borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" }
+local no_border_borderchars = { " " }
+
 -- custom_actions.send_all_and_open_with_fzf = function(prompt_bufnr)
 --   custom_actions.send_all_and_open(prompt_bufnr)
 --   require("bqf.filter.fzf").run()
@@ -50,9 +53,9 @@ telescope.setup({
     sorting_strategy = "ascending",
     border           = true,
     borderchars      = {
-      prompt = { " " },
-      results = { " " },
-      preview = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+      prompt = no_border_borderchars,
+      results = no_border_borderchars,
+      preview = border_borderchars,
     },
     layout_config    = {
       vertical = {
@@ -73,11 +76,28 @@ telescope.setup({
       }
     }
   },
+  extensions = {
+    cmdline = {
+      picker = {
+        border        = true,
+        borderchars   = {
+          prompt = no_border_borderchars,
+          results = border_borderchars,
+          preview = border_borderchars,
+        },
+        layout_config = {
+          width  = 120,
+          height = 10,
+        }
+      },
+    },
+  }
 })
 
 telescope.load_extension "fzf"
 telescope.load_extension "neoclip"
 telescope.load_extension "frecency"
+telescope.load_extension "cmdline"
 -- telescope.load_extension("rg_with_args")
 
 local shared_grep_string_options = { only_sort_text = true }
@@ -151,11 +171,9 @@ local function yank_stripped_filename()
 end
 
 h.nmap("<C-p>", h.user_cmd_cb("Telescope frecency workspace=CWD"), { desc = "Find files with telescope" })
--- h.nmap("<C-p>", builtin.find_files, { desc = "Find files with telescope" })
 h.nmap("<leader>lr", builtin.resume, { desc = "Resume telescope search" })
 h.nmap("<leader>lt", builtin.buffers, { desc = "Search currently open buffers with telescope" })
-h.nmap("<leader>l:", builtin.command_history, { desc = "Search command history with telescope" })
-h.nmap("<leader>ls", builtin.search_history, { desc = "Search search history with telescope" })
+h.nmap("<leader>lh", builtin.search_history, { desc = "Search search history with telescope" })
 h.nmap("<leader>lf", builtin.current_buffer_fuzzy_find, { desc = "Search in the current file with telescope" })
 h.nmap("<leader>lg", grep_string_with_search, { desc = "Search globally with telescope" })
 h.nmap("<leader>lc", function() grep_string_with_search({ case_sensitive = true }) end,
@@ -174,13 +192,14 @@ h.nmap("<leader>lp", function()
       layout_strategy = "horizontal",
       border = true,
       borderchars = {
-        prompt = { " " },
-        results = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
-        preview = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" },
+        prompt = no_border_borderchars,
+        results = border_borderchars,
+        preview = border_borderchars,
       },
     })
   end,
   { desc = "Search the planets with telescope" })
+h.nmap(";", h.user_cmd_cb("Telescope cmdline"), { desc = "Command line with telescope" })
 
 vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { link = "TelescopePreviewTitle" })
 vim.api.nvim_set_hl(0, "TelescopeBorder", { fg = color_helpers.colors.base09 })
