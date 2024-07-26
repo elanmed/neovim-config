@@ -12,4 +12,4 @@ zen_mode.setup({
   },
 })
 
-h.nmap("<leader>zm", h.user_cmd_cb(":ZenMode"))
+h.nmap("<leader>zm", h.user_cmd_cb("ZenMode"))

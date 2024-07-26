@@ -96,11 +96,11 @@ return packer.startup(({
       }
     })
     use({
-      'MeanderingProgrammer/markdown.nvim',
-      as = 'render-markdown',
-      after = { 'nvim-treesitter' },
+      "MeanderingProgrammer/markdown.nvim",
+      as = "render-markdown",
+      after = { "nvim-treesitter" },
       config = function()
-        require('render-markdown').setup({})
+        require("render-markdown").setup({})
       end,
     })
 

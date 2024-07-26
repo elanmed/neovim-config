@@ -3,7 +3,6 @@ local h = require "shared.helpers"
 local color_helpers = require "settings.plugins.bufferline"
 
 local function is_override_filetype()
-  -- TODO: extend as necessary
   return h.table_contains({ "oil" }, vim.bo.filetype)
 end
 
@@ -39,28 +38,28 @@ end
 local modes = { "n", "v", "x" }
 for _, mode in pairs(modes) do
   h.map(mode, "<C-u>", function()
-    h.send_keys('0')
+    h.send_keys("0")
     if is_override_filetype() then
       neoscroll.ctrl_u({ duration = 250 })
       return
     end
 
     if is_last_line() then
-      h.send_keys('M')
+      h.send_keys("M")
     else
       neoscroll.ctrl_u({ duration = 250 })
     end
   end)
 
   h.map(mode, "<C-d>", function()
-    h.send_keys('0')
+    h.send_keys("0")
     if is_override_filetype() then
       neoscroll.ctrl_d({ duration = 250 })
       return
     end
 
     if is_first_line() then
-      h.send_keys('M')
+      h.send_keys("M")
     else
       neoscroll.ctrl_d({ duration = 250 })
     end
