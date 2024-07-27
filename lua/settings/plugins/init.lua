@@ -27,3 +27,15 @@ require("auto-session").setup({
 require("nvim-autopairs").setup({
   map_cr = false
 })
+require("marks").setup({
+  builtin_marks = { ".", "<", ">", "^" },
+  excluded_filetypes = { "oil" },
+  default_mappings = false,
+  mappings = {
+    toggle = "mt",
+    next = "me",         -- nExt
+    prev = "mr",         -- pRev
+    delete_line = "dmt", -- delete mark added with Toggle
+    delete_buf = "dma",  -- delete All
+  }
+})
