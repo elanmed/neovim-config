@@ -34,8 +34,9 @@ custom_actions.send_selected_and_open = function(prompt_bufnr)
   end
 end
 
-local border_borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" }
-local no_border_borderchars = { " " }
+local M = {}
+M.border_borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" }
+M.no_border_borderchars = { " " }
 
 -- custom_actions.send_all_and_open_with_fzf = function(prompt_bufnr)
 --   custom_actions.send_all_and_open(prompt_bufnr)
@@ -53,9 +54,9 @@ telescope.setup({
     sorting_strategy = "ascending",
     border           = true,
     borderchars      = {
-      prompt = no_border_borderchars,
-      results = no_border_borderchars,
-      preview = border_borderchars,
+      prompt = M.no_border_borderchars,
+      results = M.no_border_borderchars,
+      preview = M.border_borderchars,
     },
     layout_config    = {
       vertical = {
@@ -81,9 +82,9 @@ telescope.setup({
       picker = {
         border        = true,
         borderchars   = {
-          prompt = no_border_borderchars,
-          results = border_borderchars,
-          preview = border_borderchars,
+          prompt = M.no_border_borderchars,
+          results = M.border_borderchars,
+          preview = M.border_borderchars,
         },
         layout_config = {
           width  = 120,
@@ -192,9 +193,9 @@ h.nmap("<leader>lp", function()
       layout_strategy = "horizontal",
       border = true,
       borderchars = {
-        prompt = no_border_borderchars,
-        results = border_borderchars,
-        preview = border_borderchars,
+        prompt = M.no_border_borderchars,
+        results = M.border_borderchars,
+        preview = M.border_borderchars,
       },
     })
   end,
@@ -203,3 +204,5 @@ h.nmap(";", h.user_cmd_cb("Telescope cmdline"), { desc = "Command line with tele
 
 vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { link = "TelescopePreviewTitle" })
 vim.api.nvim_set_hl(0, "TelescopeBorder", { fg = color_helpers.colors.base09 })
+
+return M

@@ -49,4 +49,4 @@ h.nmap("<leader>tw", h.user_cmd_cb("bdelete"), { desc = "Close the current buffe
 h.nmap("<leader>ta", h.user_cmd_cb("bufdo bdelete"), { desc = "Close all buffers" })
 h.nmap("<leader>to", h.user_cmd_cb("BufOnly"), { desc = "Close all buffers, except the open one" })
 
-return vim.tbl_extend("error", M, {})
+return M

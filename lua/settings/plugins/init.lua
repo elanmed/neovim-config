@@ -28,7 +28,7 @@ require("nvim-autopairs").setup({
   map_cr = false
 })
 require("marks").setup({
-  builtin_marks = { ".", "<", ">", "^" },
+  builtin_marks = { ".", "^" },
   excluded_filetypes = { "oil" },
   default_mappings = false,
   mappings = {

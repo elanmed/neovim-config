@@ -34,7 +34,10 @@ return packer.startup(({
     use "nvim-lua/plenary.nvim"
 
     -- misc
-    use "ThePrimeagen/harpoon"
+    use({
+      "ThePrimeagen/harpoon",
+      branch = "harpoon2",
+    })
     use "christoomey/vim-tmux-navigator"
     use "tpope/vim-surround"
     use "tpope/vim-repeat"
