@@ -34,7 +34,7 @@ require("marks").setup({
     toggle = "mt",
     next = "me",         -- nExt
     prev = "mr",         -- pRev
-    delete_line = "dmt", -- delete mark added with Toggle
+    delete_line = "dml", -- delete mark on the current Line
     delete_buf = "dma",  -- delete All
   }
 })

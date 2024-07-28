@@ -1,4 +1,4 @@
-local color_helpers = require "settings.plugins.bufferline"
+local colors = require "settings.plugins.base16"
 local h = require "shared.helpers"
 
 local telescope = require "telescope"
@@ -203,6 +203,6 @@ h.nmap("<leader>lp", function()
 h.nmap(";", h.user_cmd_cb("Telescope cmdline"), { desc = "Command line with telescope" })
 
 vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { link = "TelescopePreviewTitle" })
-vim.api.nvim_set_hl(0, "TelescopeBorder", { fg = color_helpers.colors.base09 })
+vim.api.nvim_set_hl(0, "TelescopeBorder", { fg = colors.orange })
 
 return M

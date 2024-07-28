@@ -1,6 +1,6 @@
 local neoscroll = require "neoscroll"
 local h = require "shared.helpers"
-local color_helpers = require "settings.plugins.bufferline"
+local colors = require "settings.plugins.base16"
 
 local function is_override_filetype()
   return h.table_contains({ "oil" }, vim.bo.filetype)
@@ -12,7 +12,7 @@ neoscroll.setup({
     if is_override_filetype() then return end
 
     h.set.cursorline = true
-    vim.api.nvim_set_hl(0, "CursorLine", { fg = nil, bg = color_helpers.colors.base02, underline = false })
+    vim.api.nvim_set_hl(0, "CursorLine", { link = "Visual" })
   end,
   post_hook = function()
     if is_override_filetype() then return end

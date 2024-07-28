@@ -57,7 +57,6 @@ return packer.startup(({
     -- buffers as tabs
     use "akinsho/bufferline.nvim"
     use "RRethy/nvim-base16"
-    use "moll/vim-bbye"
     use "vim-scripts/BufOnly.vim"
     use({ "numtostr/BufOnly.nvim", cmd = "BufOnly" })
 

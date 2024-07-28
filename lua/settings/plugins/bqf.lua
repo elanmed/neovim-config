@@ -1,6 +1,6 @@
 local h = require "shared.helpers"
 local bqf = require "bqf"
-local color_helpers = require "settings.plugins.bufferline"
+local colors = require "settings.plugins.base16"
 
 bqf.setup({
   auto_resize_height = true,
@@ -21,8 +21,7 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
   callback = function()
     if h.table_contains({ "qf", "DiffviewFiles" }, vim.bo.filetype) then
       h.set.cursorline = true
-      vim.api.nvim_set_hl(0, "CursorLine",
-        { fg = color_helpers.colors.base09, bg = color_helpers.colors.base02, underline = true })
+      vim.api.nvim_set_hl(0, "CursorLine", { link = "StatusLine" })
     else
       h.set.cursorline = false
     end
