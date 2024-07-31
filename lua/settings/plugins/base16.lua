@@ -1,5 +1,6 @@
 local base16 = require "base16-colorscheme"
 
+-- tomorrow-night
 local colors = {
   base00 = "#1d1f21",
   base01 = "#282a2e",
