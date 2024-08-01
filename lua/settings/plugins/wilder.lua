@@ -15,4 +15,5 @@ wilder.set_option('renderer', wilder.wildmenu_renderer({
   highlighter = wilder.basic_highlighter(),
 }))
 
-vim.api.nvim_set_hl(0, "WildMenu", { fg = colors.red, underline = true, })
+-- vim.api.nvim_set_hl(0, "WildMenu", { link = "CurSearch" })
+vim.api.nvim_set_hl(0, "WildMenu", { link = "TermCursor" })
