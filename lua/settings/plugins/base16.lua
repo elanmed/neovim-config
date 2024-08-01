@@ -22,7 +22,14 @@ local colors = {
 base16.setup(colors)
 
 local M = {
+  white = colors.base07,
+  red = colors.base08,
   orange = colors.base09,
-  blue = colors.base0C,
+  yellow = colors.base0A,
+  green = colors.base0B,
+  cyan = colors.base0C,
+  blue = colors.base0D,
+  purple = colors.base0E,
+  brown = colors.base0F,
 }
 return M

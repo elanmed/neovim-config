@@ -17,6 +17,7 @@ require "settings.plugins.neoscroll"
 require "settings.plugins.oil"
 require "settings.plugins.tele"
 require "settings.plugins.treesitter"
+require "settings.plugins.wilder"
 require "settings.plugins.zen_mode"
 
 require("flit").setup()

@@ -42,6 +42,7 @@ return packer.startup(({
     use({ "neoclide/coc.nvim", branch = "release", })
     use "windwp/nvim-autopairs"
     use "chentoast/marks.nvim"
+    use "gelguy/wilder.nvim"
 
     -- visuals
     use "nvim-lualine/lualine.nvim"

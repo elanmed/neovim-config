@@ -1,6 +1,8 @@
 local h = require "shared.helpers"
 
 
+h.nmap(";", ":")
+h.nmap(":", function() print('use ; instead!') end)
 h.nmap("<leader>af", "<C-6>", { desc = "Alternate file" })
 h.nmap("J", "gJ", { desc = "J without whitespace" })
 -- h.nmap("<leader>e", [[viw"_dP]])

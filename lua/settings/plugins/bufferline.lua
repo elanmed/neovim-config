@@ -14,7 +14,7 @@ bufferline.setup({
   }
 })
 
-vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { fg = colors.blue, underline = true })
+vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { fg = colors.cyan, underline = true })
 
 h.nmap("<leader>tp", h.user_cmd_cb("BufferLinePick"), { desc = "Pick a buffer" })
 h.nmap("<leader>ti", h.user_cmd_cb("BufferLineTogglePin"), { desc = "Pin a buffer" })
