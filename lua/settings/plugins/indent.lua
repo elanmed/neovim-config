@@ -21,13 +21,6 @@ hooks.register(hooks.type.HIGHLIGHT_SETUP, function()
   vim.api.nvim_set_hl(0, "RainbowCyan", { fg = "#88cbd4" })
 end)
 
--- if turning rainbow_delimiters off, uncomment this
--- vim.api.nvim_set_hl(0, "IblIndent", { fg = "#363636" })
-vim.api.nvim_set_hl(0, "IblIndent", { fg = "#484948" })
-
--- scope is overwritten by rainbow_delimiters
--- vim.api.nvim_set_hl(0, "IblScope", { fg = "#484948" })
-
 indent.setup({
   scope = {
     highlight = highlight,

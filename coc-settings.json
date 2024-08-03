@@ -27,5 +27,6 @@
     "border": true,
     "rounded": true,
     "highlight": "CocFloating"
-  }
+  },
+  "colors.enable": true
 }

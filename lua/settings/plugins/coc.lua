@@ -14,6 +14,7 @@ h.let.coc_global_extensions = {
   "coc-deno",
   "coc-stylelint",
   "coc-css",
+  "coc-highlight"
 }
 
 local function coc_show_docs()
@@ -51,6 +52,11 @@ h.set.signcolumn = "yes" -- needed for linting symbols
 vim.api.nvim_create_augroup("CocGroup", {})
 vim.api.nvim_create_autocmd({ "CursorHold" }, {
   group = "CocGroup",
-  command = "silent call CocActionAsync('highlight')",
+  callback = function()
+    if not h.table_contains({ "qf", "DiffviewFiles", "oil", "harpoon" }, vim.bo.filetype) then
+      vim.cmd("silent call CocActionAsync('highlight')")
+    end
+  end
 })
 vim.api.nvim_set_hl(0, "CocFloating", { link = "Normal" })
+vim.api.nvim_set_hl(0, "CocHighlightText", { link = "Visual" })

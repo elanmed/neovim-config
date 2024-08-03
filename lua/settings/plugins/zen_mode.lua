@@ -10,6 +10,12 @@ zen_mode.setup({
       relativenumber = false, -- disable relative numbers
     },
   },
+  on_open = function()
+    require("ibl").update({ enabled = false })
+  end,
+  on_close = function()
+    require("ibl").update({ enabled = true })
+  end,
 })
 
 h.nmap("<leader>zm", h.user_cmd_cb("ZenMode"))
