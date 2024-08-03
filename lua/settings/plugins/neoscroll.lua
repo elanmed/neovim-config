@@ -1,12 +1,12 @@
 local neoscroll = require "neoscroll"
 local h = require "shared.helpers"
-local colors = require "settings.plugins.base16"
 
 local function is_override_filetype()
   return h.table_contains({ "oil" }, vim.bo.filetype)
 end
 
 neoscroll.setup({
+  mappings = { '<C-u>', '<C-d>', 'zz', },
   hide_cursor = false,
   pre_hook = function()
     if is_override_filetype() then return end

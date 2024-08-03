@@ -1,6 +1,5 @@
 local h = require "shared.helpers"
 local bqf = require "bqf"
-local colors = require "settings.plugins.base16"
 
 bqf.setup({
   auto_resize_height = true,

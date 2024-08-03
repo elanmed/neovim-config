@@ -1,5 +1,6 @@
 require "settings.plugins.packer"
 
+require "settings.plugins.aerial"
 require "settings.plugins.bufferline"
 require "settings.plugins.bqf"
 require "settings.plugins.coc"
@@ -17,7 +18,6 @@ require "settings.plugins.neoscroll"
 require "settings.plugins.oil"
 require "settings.plugins.tele"
 require "settings.plugins.treesitter"
-require "settings.plugins.wilder"
 require "settings.plugins.zen_mode"
 
 require("flit").setup()

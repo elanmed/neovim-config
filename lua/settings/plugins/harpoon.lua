@@ -14,6 +14,6 @@ harpoon.setup({
 h.nmap("<leader>aa", function() harpoon_mark.add_file() end, { desc = "Add a file to harpoon" })
 h.nmap("<leader>an", function() harpoon_ui.nav_next() end, { desc = "Go to the next harpoon item" })
 h.nmap("<leader>ap", function() harpoon_ui.nav_prev() end, { desc = "Go to the previous harpoon item" })
-h.nmap("<leader>at", function() harpoon_ui.toggle_quick_menu() end, { desc = "Toggle the harpoon menu" })
+h.nmap("<leader>ao", function() harpoon_ui.toggle_quick_menu() end, { desc = "Open the harpoon menu" })
 
 vim.api.nvim_set_hl(0, "HarpoonBorder", { fg = colors.orange })

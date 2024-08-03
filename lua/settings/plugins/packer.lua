@@ -33,16 +33,16 @@ return packer.startup(({
     use "nvim-lua/popup.nvim"
     use "nvim-lua/plenary.nvim"
 
-    use "MeanderingProgrammer/harpoon-core.nvim"
-    use "christoomey/vim-tmux-navigator"
-    use "tpope/vim-surround"
-    use "tpope/vim-repeat"
     use "mg979/vim-visual-multi"
     use "rmagatti/auto-session"
-    use({ "neoclide/coc.nvim", branch = "release", })
     use "windwp/nvim-autopairs"
-    use "chentoast/marks.nvim"
-    use "gelguy/wilder.nvim"
+    use "stevearc/aerial.nvim"
+    use({ "neoclide/coc.nvim", branch = "release", })
+
+    -- tpope
+    use "tpope/vim-surround"
+    use "tpope/vim-repeat"
+    use "tpope/vim-speeddating"
 
     -- visuals
     use "nvim-lualine/lualine.nvim"
@@ -54,6 +54,9 @@ return packer.startup(({
     use "ggandor/leap.nvim"
     use "easymotion/vim-easymotion"
     use "ggandor/flit.nvim"
+    use "MeanderingProgrammer/harpoon-core.nvim"
+    use "chentoast/marks.nvim"
+    use "christoomey/vim-tmux-navigator"
 
     -- buffers as tabs
     use "akinsho/bufferline.nvim"
@@ -70,7 +73,6 @@ return packer.startup(({
     use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })
     use "AckslD/nvim-neoclip.lua"
     use "nvim-telescope/telescope-frecency.nvim"
-    use "jonarrien/telescope-cmdline.nvim"
 
     -- git
     -- https://github.com/sindrets/diffview.nvim/commit/c244577dd425072275eff925e87739820ac5e0aa
@@ -82,6 +84,7 @@ return packer.startup(({
     use "kyazdani42/nvim-web-devicons"
     use "stevearc/oil.nvim"
 
+    -- treesitter
     use({
       "nvim-treesitter/nvim-treesitter",
       -- https://github.com/rafamadriz/dotfiles/commit/c1268c73bdc7da52af0d57dcbca196ca3cb5ed79
