@@ -26,7 +26,7 @@ h.vmap("<leader>dl", "y`>p", { desc = "Duplicate the current line" }) -- move to
 
 h.nmap("<leader>s", function() print "use <leader>w instead!" end)
 h.nmap("<leader>w", h.user_cmd_cb("w"), { desc = "Save" })
-h.nmap("<leader>q", h.user_cmd_cb "qa", { desc = "Quit" })
+h.nmap("<leader>q", h.user_cmd_cb "q", { desc = "Quit" })
 
 h.nmap("<leader>ia", function() vim.fn.setreg("+", vim.fn.expand("%:p")) end,
   { desc = "Copy the absolute path of a file" })
