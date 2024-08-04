@@ -59,4 +59,4 @@ vim.api.nvim_create_autocmd({ "CursorHold" }, {
   end
 })
 vim.api.nvim_set_hl(0, "CocFloating", { link = "Normal" })
-vim.api.nvim_set_hl(0, "CocHighlightText", { link = "Visual" })
+vim.api.nvim_set_hl(0, "CocHighlightText", { bg = "#2e3136" }) -- between base01 and base 02
