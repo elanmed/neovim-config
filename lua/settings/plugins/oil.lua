@@ -11,9 +11,9 @@ oil.setup({
   keymaps = {
     ["g?"] = "actions.show_help",
     ["<cr>"] = "actions.select",
-    ["<leader>r"] = "actions.close",
+    ["<C-f>"] = "actions.close",
     ["-"] = "actions.parent",
     ["g."] = "actions.toggle_hidden",
   },
 })
-h.nmap("<leader>r", h.user_cmd_cb("Oil"), { desc = "Toggle oil" })
+h.nmap("<C-f>", h.user_cmd_cb("Oil"), { desc = "Toggle oil" })

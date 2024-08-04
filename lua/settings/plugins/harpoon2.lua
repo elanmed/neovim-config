@@ -7,7 +7,7 @@ harpoon:setup({
     save_on_toggle = true,
   },
 })
-h.nmap("ot", function() harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_max_width = 80 }) end,
+h.nmap("<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_max_width = 80 }) end,
   { desc = "Toggle the harpoon window" })
 h.nmap("on", function() harpoon:list():next({ ui_nav_wrap = true }) end, { desc = "Go to the next harpoon entry" })
 h.nmap("op", function() harpoon:list():prev({ ui_nav_wrap = true }) end, { desc = "Go to the prev harpoon entry" })
