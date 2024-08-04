@@ -99,3 +99,4 @@ h.nmap("oo", "o")
 -- remaps to figure out in the future:
 h.nmap("<C-b>", function() end, { desc = "TODO find a remap" })
 h.nmap("Z", function() end, { desc = "TODO find a remap" })
+h.nmap("U", function() end, { desc = "TODO find a remap" })
