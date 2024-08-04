@@ -18,4 +18,4 @@ zen_mode.setup({
   end,
 })
 
-h.nmap("<leader>zm", h.user_cmd_cb("ZenMode"))
+h.nmap("<leader>zm", h.user_cmd_cb("ZenMode"), { desc = "Toggle zen mode" })

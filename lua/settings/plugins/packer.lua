@@ -54,9 +54,12 @@ return packer.startup(({
     use "ggandor/leap.nvim"
     use "easymotion/vim-easymotion"
     use "ggandor/flit.nvim"
-    use "MeanderingProgrammer/harpoon-core.nvim"
     use "chentoast/marks.nvim"
     use "christoomey/vim-tmux-navigator"
+    use({
+      "ThePrimeagen/harpoon",
+      branch = "harpoon2",
+    })
 
     -- buffers as tabs
     use "akinsho/bufferline.nvim"

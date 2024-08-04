@@ -37,12 +37,12 @@ inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() :
 
 h.nmap("gd", "<Plug>(coc-definition)zz", { desc = "Go to definition" })
 h.nmap("gy", "<Plug>(coc-type-definition)", { desc = "Go to type definition" })
-h.nmap("gu", "<Plug>(coc-references)", { desc = "Go to references" })
+h.nmap("gu", "<Plug>(coc-references)", { desc = "Go to uses" })
 h.nmap("ga", "<Plug>(coc-codeaction-cursor)", { desc = "Open code actions" })
 h.nmap("gn", "<Plug>(coc-rename)", { desc = "Rename symbol" })
-h.nmap("gh", coc_show_docs, { desc = "Open docs" })
-h.nmap("go", "<c-o>", { desc = "Go backwards" })
-h.nmap("gi", "<c-i>", { desc = "Go forwards" })
+h.nmap("gh", coc_show_docs, { desc = "Hover" })
+h.nmap("go", "<C-o>", { desc = "Go backwards" })
+h.nmap("gi", "<C-i>", { desc = "Go forwards" })
 h.nmap("<leader>gh", "<c-w>w:q<cr>", { desc = "Close docs" }) -- close hover documentation
 h.nmap("<leader>cr", h.user_cmd_cb("CocRestart"), { desc = "Restart coc" })
 

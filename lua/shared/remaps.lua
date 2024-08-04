@@ -1,10 +1,8 @@
 local h = require "shared.helpers"
 
 
-vim.cmd([[
-nnoremap ; :
-]])
-h.nmap(":", function() print('use ; instead!') end)
+vim.cmd("nnoremap ; :")
+h.nmap(":", function() print "use ; instead!" end)
 h.nmap("<leader>af", "<C-6>", { desc = "Alternate file" })
 h.nmap("J", "gJ", { desc = "J without whitespace" })
 -- h.nmap("<leader>e", [[viw"_dP]])
@@ -26,8 +24,8 @@ h.nmap("<leader>P", h.user_cmd_cb("pu!"), { desc = "Paste on the line above" })
 h.nmap("<leader>dl", "yyp", { desc = "Duplicate the current line" })
 h.vmap("<leader>dl", "y`>p", { desc = "Duplicate the current line" }) -- move to end of selection, then yank
 
-h.nmap("<leader>s", h.user_cmd_cb("w"), { desc = "Save" })
-h.nmap("<leader>w", h.user_cmd_cb("q"), { desc = "Close" })
+h.nmap("<leader>s", function() print "use <leader>w instead!" end)
+h.nmap("<leader>w", h.user_cmd_cb("w"), { desc = "Save" })
 h.nmap("<leader>q", h.user_cmd_cb "qa", { desc = "Quit" })
 
 h.nmap("<leader>ia", function() vim.fn.setreg("+", vim.fn.expand("%:p")) end,
@@ -94,3 +92,10 @@ h.nmap("j", function() return count_based_keymap("j") end, { expr = true },
   { desc = "Move down a line, but respect lines that wrap" })
 h.nmap("k", function() return count_based_keymap("k") end, { expr = true },
   { desc = "Move up a line, but respect lines that wrap" })
+
+-- free up o_ remaps for harpoon
+h.nmap("oo", "o")
+
+-- remaps to figure out in the future:
+h.nmap("<C-b>", function() end, { desc = "TODO find a remap" })
+h.nmap("<C-y>", function() end, { desc = "TODO find a remap" })
