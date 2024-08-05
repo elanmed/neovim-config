@@ -17,4 +17,4 @@ oil.setup({
   },
 })
 h.nmap("<C-f>", h.user_cmd_cb("Oil"), { desc = "Toggle oil" })
-h.nmap("<leader>r", function() print "use <C-f> instead!" end, { desc = "Toggle oil" })
+h.nmap("<leader>r", function() error "use <C-f> instead!" end, { desc = "Toggle oil" })

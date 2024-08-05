@@ -2,7 +2,7 @@ local h = require "shared.helpers"
 
 
 vim.cmd("nnoremap ; :")
-h.nmap(":", function() print "use ; instead!" end)
+h.nmap(":", function() error "use ; instead!" end)
 h.nmap("<leader>af", "<C-6>", { desc = "Alternate file" })
 h.nmap("J", "gJ", { desc = "J without whitespace" })
 -- h.nmap("<leader>e", [[viw"_dP]])
@@ -24,7 +24,7 @@ h.nmap("<leader>P", h.user_cmd_cb("pu!"), { desc = "Paste on the line above" })
 h.nmap("<leader>dl", "yyp", { desc = "Duplicate the current line" })
 h.vmap("<leader>dl", "y`>p", { desc = "Duplicate the current line" }) -- move to end of selection, then yank
 
-h.nmap("<leader>s", function() print "use <leader>w instead!" end)
+h.nmap("<leader>s", function() error "use <leader>w instead!" end)
 h.nmap("<leader>w", h.user_cmd_cb("w"), { desc = "Save" })
 h.nmap("<leader>q", h.user_cmd_cb "q", { desc = "Quit" })
 
