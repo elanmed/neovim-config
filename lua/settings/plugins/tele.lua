@@ -156,7 +156,8 @@ end
 h.nmap("<C-p>", h.user_cmd_cb("Telescope frecency workspace=CWD"), { desc = "Find files with telescope" })
 h.nmap("<leader>lr", builtin.resume, { desc = "Resume telescope search" })
 h.nmap("<leader>lt", builtin.buffers, { desc = "Search currently open buffers with telescope" })
-h.nmap("<leader>lh", builtin.search_history, { desc = "Search search history with telescope" })
+h.nmap("<leader>li", builtin.search_history, { desc = "Search search history with telescope" })
+h.nmap("<leader>lh", builtin.help_tags, { desc = "Search search history with telescope" })
 h.nmap("<leader>lf", builtin.current_buffer_fuzzy_find, { desc = "Search in the current file with telescope" })
 h.nmap("<C-g>", grep_string_with_search, { desc = "Search globally with telescope" })
 h.nmap("<leader>lc", function() grep_string_with_search({ case_sensitive = true }) end,

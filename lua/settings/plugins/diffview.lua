@@ -24,4 +24,4 @@ diffview.setup({
 h.nmap("<leader>gd", h.user_cmd_cb("DiffviewOpen"), { desc = "Open diffview" })
 h.nmap("<leader>gq", h.user_cmd_cb("DiffviewClose"), { desc = "Close diffview" })
 h.nmap("<leader>gi", h.user_cmd_cb("DiffviewFileHistory %"), { desc = "View the file's git history with diffview" })
-h.nmap("T", h.user_cmd_cb("tabnext"), { desc = "Move to the next tab" })
+h.nmap("<C-b>", h.user_cmd_cb("tabnext"), { desc = "Move to the next tab" })
