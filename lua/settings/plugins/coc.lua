@@ -7,7 +7,7 @@ h.let.coc_global_extensions = {
   "coc-json",
   "coc-eslint",
   "coc-snippets",
-  "coc-lua",
+  "coc-sumneko-lua",
   "coc-sh",
   "@yaegassy/coc-tailwindcss3",
   "coc-cssmodules",

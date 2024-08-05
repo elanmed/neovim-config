@@ -21,8 +21,6 @@ require "settings.options"
 require "shared.options"
 require "shared.remaps"
 
-
-
 -- TODO:
 -- merge conflicts, with diffview
 -- moving around code with treesitter

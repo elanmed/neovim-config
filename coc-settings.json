@@ -10,9 +10,9 @@
   "typescript.suggest.completeFunctionCalls": false,
   "javascript.suggest.completeFunctionCalls": false,
   "diagnostic.checkCurrentLine": true,
-  "Lua.diagnostics.globals": ["vim", "settings"],
-  "Lua.hint.enable": false,
-  "Lua.signatureHelp.enable": false,
+  "sumneko-lua.enableNvimLuaDev": true,
+  "Lua.diagnostics.globals": ["vim"],
+  "Lua.hint.paramName": "Disable",
   "hover.floatConfig": {
     "border": true,
     "rounded": true,
