@@ -18,9 +18,9 @@ h.nmap("gc", h.user_cmd_cb("cex \"\""), { desc = "Clear all quickfix lists" })
 vim.api.nvim_create_autocmd({ "BufEnter" }, {
   pattern = "*",
   callback = function()
-    if h.table_contains({ "qf", "DiffviewFiles" }, vim.bo.filetype) then
+    if h.table_contains({ "qf", "DiffviewFiles", "aerial" }, vim.bo.filetype) then
       h.set.cursorline = true
-      vim.api.nvim_set_hl(0, "CursorLine", { link = "StatusLine" })
+      vim.api.nvim_set_hl(0, "CursorLine", { link = "Visual" })
     else
       h.set.cursorline = false
     end
