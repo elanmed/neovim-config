@@ -93,9 +93,6 @@ h.nmap("j", function() return count_based_keymap("j") end, { expr = true },
 h.nmap("k", function() return count_based_keymap("k") end, { expr = true },
   { desc = "Move up a line, but respect lines that wrap" })
 
--- free up o_ remaps for harpoon
-h.nmap("oo", "o")
-
 -- remaps to figure out in the future:
 h.nmap("U", function() end, { desc = "TODO find a remap" })
 h.nmap("Z", function() end, { desc = "TODO find a remap" })
