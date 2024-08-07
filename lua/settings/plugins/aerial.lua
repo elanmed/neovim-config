@@ -2,7 +2,6 @@ local h = require "shared.helpers"
 
 require("aerial").setup({
   lazy_load = false,
-  highlight_on_hover = true,
   show_guides = true,
   -- use automatic resizing
   layout = {

@@ -23,7 +23,6 @@ require "shared.remaps"
 
 -- TODO:
 -- merge conflicts, with diffview
--- moving around code with treesitter
 
 -- to generate highlight_groups.txt
 -- redir > highlight_groups.txt | silent hi | redir END
