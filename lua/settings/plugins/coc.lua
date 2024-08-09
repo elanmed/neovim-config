@@ -41,7 +41,7 @@ h.nmap("gu", "<Plug>(coc-references)", { desc = "Go to uses" })
 h.nmap("ga", "<Plug>(coc-codeaction-cursor)", { desc = "Open code actions" })
 h.nmap("gh", coc_show_docs, { desc = "Hover" })
 
-h.nmap("<leader>gh", "<c-w>w:q<cr>", { desc = "Close docs" }) -- close hover documentation
+h.nmap("<leader>gh", "<c-w>w:q<cr>", { desc = "Close hover" })
 h.nmap("<leader>cr", h.user_cmd_cb("CocRestart"), { desc = "Restart coc" })
 
 h.set.updatetime = 100

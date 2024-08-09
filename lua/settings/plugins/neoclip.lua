@@ -13,5 +13,4 @@ neoclip.setup({
   },
 })
 h.nmap("<leader>yt", telescope.extensions.neoclip.default, { desc = "Open neoclip" })
-h.vmap("<leader>yt", telescope.extensions.neoclip.default, { desc = "Open neoclip" })
 h.nmap("<leader>yp", [[""p]], { desc = "Paste the last item selected from neoclip" })

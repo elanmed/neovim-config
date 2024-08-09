@@ -7,7 +7,7 @@ h.nmap("<leader>ta", function()
   vim.cmd("bufdo")
   vim.cmd("bdelete")
 end, { desc = "Close all buffers" })
-h.nmap("<leader>r", function()
+h.nmap("<C-f>", function()
   if vim.bo.filetype == "netrw" then
     vim.cmd("Rex")
   else
