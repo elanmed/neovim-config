@@ -1,19 +1,15 @@
 local h = require "shared.helpers"
 
-
 vim.cmd("nnoremap ; :")
 h.nmap(":", function() error "use ; instead!" end)
 h.nmap("<leader>af", "<C-6>", { desc = "Alternate file" })
-h.nmap("J", "gJ", { desc = "J without whitespace" })
--- h.nmap("<leader>e", [[viw"_dP]])
-h.nmap("<leader>e", h.user_cmd_cb("e"), { desc = "Reload buffer" })
-h.nmap([[<leader>']], [["]], { desc = "Set register" })
-h.nmap("@", "@r", { desc = "Replay macro, assuming it's set to `r`" })
-h.nmap("<leader>vs", h.user_cmd_cb("vsplit"))
+h.nmap("p", [[viw"_dP]], { desc = "paste without overwriting the default register" })
 h.nmap("<leader>va", "ggVG", { desc = "Select all" })
 h.nmap("<bs>", "b")
 h.nmap("*", "*N")
 h.nmap("<leader>f", "<C-w>w", { desc = "Toggle focus between windows" })
+h.nmap("<leader>e", h.user_cmd_cb("e"), { desc = "Reload buffer" })
+h.nmap("<leader>vs", h.user_cmd_cb("vsplit"))
 
 h.nmap("<leader>o", "o<esc>")
 h.nmap("<leader>O", "O<esc>")
@@ -24,26 +20,30 @@ h.nmap("<leader>P", h.user_cmd_cb("pu!"), { desc = "Paste on the line above" })
 h.nmap("<leader>dl", "yyp", { desc = "Duplicate the current line" })
 h.vmap("<leader>dl", "y`>p", { desc = "Duplicate the current line" }) -- move to end of selection, then yank
 
-h.nmap("<leader>s", function() error "use <leader>w instead!" end)
+h.nmap("<leader>s", function() error "use `<leader>w` instead!" end)
 h.nmap("<leader>w", h.user_cmd_cb("w"), { desc = "Save" })
 h.nmap("<leader>q", h.user_cmd_cb "q", { desc = "Quit" })
 
-h.nmap("<leader>ia", function() vim.fn.setreg("+", vim.fn.expand("%:p")) end,
-  { desc = "Copy the absolute path of a file" })
-h.nmap("<leader>ir", function() vim.fn.setreg("+", vim.fn.expand("%:~:.")) end,
-  { desc = "Copy the relative path of a file" })
+h.nmap("<leader>ka", function() vim.fn.setreg("+", vim.fn.expand("%:p")) end,
+  { desc = "C(K)opy the absolute path of a file" })
+h.nmap("<leader>kr", function() vim.fn.setreg("+", vim.fn.expand("%:~:.")) end,
+  { desc = "C(K)opy the relative path of a file" })
 
 h.vmap("<", "<gv", { desc = "Outdent, while keeping selection" })
 h.vmap(">", ">gv", { desc = "Indent, while keeping selection" })
 
-h.nmap("gn", function()
+h.nmap("<leader>i", "I")
+h.nmap("I", function()
   vim.cmd("Cnext")
   vim.cmd("normal! zz")
 end, { desc = "Move to the next item in the quickfix list" })
-h.nmap("gp", function()
+h.nmap("U", function()
   vim.cmd("Cprev")
   vim.cmd("normal! zz")
 end, { desc = "Move to the previous item in the quickfix list" })
+h.nmap("gn", function() error "use `I` instead!" end)
+h.nmap("gp", function() error "use `U` instead!" end)
+
 h.nmap("ge", h.user_cmd_cb("copen 25"), { desc = "Open the quickfix list" })
 h.nmap("gq", h.user_cmd_cb("cclose"), { desc = "Close the quickfix list" })
 
@@ -64,7 +64,6 @@ vim.cmd([[
   noremap <leader>cw /\<\>\C<left><left><left><left>
 ]])
 vim.cmd([[nnoremap / /\V]]) -- search without regex
-
 
 -- keep search result in the middle of the page
 h.nmap("n", "nzz")
@@ -93,6 +92,18 @@ h.nmap("j", function() return count_based_keymap("j") end, { expr = true },
 h.nmap("k", function() return count_based_keymap("k") end, { expr = true },
   { desc = "Move up a line, but respect lines that wrap" })
 
+-- TODOs
+
 -- remaps to figure out in the future:
-h.nmap("U", function() end, { desc = "TODO find a remap" })
-h.nmap("Z", function() end, { desc = "TODO find a remap" })
+-- h.nmap("Z", function() end, { desc = "TODO find a remap" })
+-- h.nmap("<C-i>", function() end, { desc = "TODO find a remap" })
+-- h.nmap("<C-b>", function() end, { desc = "TODO find a remap" })
+
+-- TODO: use more
+h.nmap([[<leader>']], [["]], { desc = "Set register" })
+h.nmap("@", "@r", { desc = "Replay macro, assuming it's set to `r`" })
+
+-- TODO: think of better remaps
+h.nmap("J", "<C-o>", { desc = "Go backwards" })
+h.nmap("K", "<C-i>", { desc = "Go forwards" })
+h.nmap("<C-m>", "gJ", { desc = "J without whitespace" })
