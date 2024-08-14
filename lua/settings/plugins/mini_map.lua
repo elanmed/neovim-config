@@ -1,3 +1,4 @@
+local h = require "shared.helpers"
 local mini_map = require "mini.map"
 
 mini_map.setup({
@@ -10,7 +11,7 @@ mini_map.setup({
 vim.api.nvim_create_autocmd({ "BufEnter" }, {
   pattern = "*",
   callback = function()
-    if vim.bo.filetype == "oil" then
+    if h.table_contains({ "oil" }, vim.bo.filetype) then
       require("mini.map").close()
     else
       require("mini.map").open()

@@ -28,7 +28,7 @@ local function coc_show_docs()
   end
 end
 
-h.imap("<c-space>", "coc#refresh()", { expr = true, desc = "Show autocompletion options" })
+h.imap("<C-s>", "coc#refresh()", { expr = true, desc = "Show autocompletion options" })
 -- TODO: update to lua
 vim.cmd([[
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() :

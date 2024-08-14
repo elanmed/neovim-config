@@ -33,11 +33,11 @@ h.vmap("<", "<gv", { desc = "Outdent, while keeping selection" })
 h.vmap(">", ">gv", { desc = "Indent, while keeping selection" })
 
 h.nmap("<leader>i", "I")
-h.nmap("I", function()
+h.nmap("J", function()
   vim.cmd("Cnext")
   vim.cmd("normal! zz")
 end, { desc = "Move to the next item in the quickfix list" })
-h.nmap("U", function()
+h.nmap("K", function()
   vim.cmd("Cprev")
   vim.cmd("normal! zz")
 end, { desc = "Move to the previous item in the quickfix list" })
@@ -96,7 +96,6 @@ h.nmap("k", function() return count_based_keymap("k") end, { expr = true },
 
 -- remaps to figure out in the future:
 -- h.nmap("Z", function() end, { desc = "TODO find a remap" })
--- h.nmap("<C-i>", function() end, { desc = "TODO find a remap" })
 -- h.nmap("<C-b>", function() end, { desc = "TODO find a remap" })
 
 -- TODO: use more
@@ -104,6 +103,4 @@ h.nmap([[<leader>']], [["]], { desc = "Set register" })
 h.nmap("@", "@r", { desc = "Replay macro, assuming it's set to `r`" })
 
 -- TODO: think of better remaps
-h.nmap("J", "<C-o>", { desc = "Go backwards" })
-h.nmap("K", "<C-i>", { desc = "Go forwards" })
-h.nmap("<C-m>", "gJ", { desc = "J without whitespace" })
+h.nmap("Z", "gJ", { desc = "J without whitespace" })
