@@ -3,7 +3,7 @@ local h = require "shared.helpers"
 vim.cmd("nnoremap ; :")
 h.nmap(":", function() error "use ; instead!" end)
 h.nmap("<leader>af", "<C-6>", { desc = "Alternate file" })
-h.nmap("p", [[viw"_dP]], { desc = "paste without overwriting the default register" })
+-- h.nmap("p", [[viw"_dP]], { desc = "paste without overwriting the default register" })
 h.nmap("<leader>va", "ggVG", { desc = "Select all" })
 h.nmap("<bs>", "b")
 h.nmap("*", "*N")
