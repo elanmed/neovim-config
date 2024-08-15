@@ -10,11 +10,11 @@ require("aerial").setup({
     min_width = nil,
   },
   keymaps = {
-    ["<C-m>"] = "actions.close",
+    ["<C-g>"] = "actions.close",
   }
 })
 
-h.nmap("<C-m>", h.user_cmd_cb("AerialOpen left"), { desc = "Toggle aerial  window" })
+h.nmap("<C-g>", h.user_cmd_cb("AerialOpen left"), { desc = "Toggle aerial  window" })
 h.nmap("zn", h.user_cmd_cb("AerialNext"), { desc = "Go to the next aerial symbol" })
 h.nmap("zp", h.user_cmd_cb("AerialPrev"), { desc = "Go to the prev aerial symbol" })
 
