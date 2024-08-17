@@ -96,7 +96,6 @@ return packer.startup(({
         "windwp/nvim-ts-autotag",
         "JoosepAlviste/nvim-ts-context-commentstring",
         "lukas-reineke/indent-blankline.nvim",
-        "HiPhish/rainbow-delimiters.nvim",
         "numToStr/Comment.nvim",
         "RRethy/nvim-treesitter-endwise",
       }

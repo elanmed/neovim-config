@@ -48,7 +48,31 @@ local no_border_borderchars = { " " }
 -- end
 
 telescope.setup({
+  pickers = {
+    find_files = {
+      preview_title = "",
+    },
+    buffers = {
+      preview_title = "",
+    },
+    search_history = {
+      preview_title = "",
+    },
+    help_tags = {
+      preview_title = "",
+    },
+    command_history = {
+      preview_title = "",
+    },
+    current_buffer_fuzzy_find = {
+      preview_title = "",
+    },
+    grep_string = {
+      preview_title = "",
+    },
+  },
   defaults = {
+    results_title    = "",
     layout_strategy  = "vertical",
     sorting_strategy = "ascending",
     border           = true,
@@ -59,8 +83,8 @@ telescope.setup({
     },
     layout_config    = {
       vertical = {
-        height = 0.999,
-        width = 0.999,
+        width = { padding = 0 },
+        height = { padding = 0 },
         prompt_position = "bottom",
         preview_height = 0.35,
       },
@@ -69,8 +93,8 @@ telescope.setup({
       i = {
         ["<cr>"] = custom_actions.send_selected_and_open,
         ["<c-a>"] = actions.toggle_all,
-        ["<c-j>"] = actions.toggle_selection + actions.move_selection_next,
-        ["<c-k>"] = actions.move_selection_previous + actions.toggle_selection,
+        ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
+        ["<s-tab>"] = actions.move_selection_previous + actions.toggle_selection,
         ["<c-t>"] = actions.toggle_selection,
         ["<esc>"] = actions.close,
       }
@@ -185,5 +209,25 @@ h.nmap("<leader>lp", function()
   end,
   { desc = "Search the planets with telescope" })
 
-vim.api.nvim_set_hl(0, "TelescopeResultsTitle", { link = "TelescopePreviewTitle" })
-vim.api.nvim_set_hl(0, "TelescopeBorder", { fg = colors.orange })
+vim.api.nvim_set_hl(0, "TelescopeBorder", { fg = colors.grey })
+vim.api.nvim_set_hl(0, "TelescopeNormal", { link = "Normal" })
+
+vim.api.nvim_create_autocmd("User", {
+  pattern = "TelescopeFindPre",
+  callback = function()
+    h.set.showtabline = 0
+    h.set.laststatus = 0
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "TelescopePrompt",
+  callback = function()
+    vim.api.nvim_create_autocmd("BufLeave", {
+      callback = function()
+        h.set.laststatus = 2
+        h.set.showtabline = 2
+      end,
+    })
+  end,
+})
