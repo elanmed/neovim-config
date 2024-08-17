@@ -17,8 +17,8 @@ h.nmap("<leader>O", "O<esc>")
 h.nmap("<leader>p", h.user_cmd_cb "pu", { desc = "Paste on the line below" })
 h.nmap("<leader>P", h.user_cmd_cb("pu!"), { desc = "Paste on the line above" })
 
-h.nmap("<leader>dl", "yyp", { desc = "Duplicate the current line" })
-h.vmap("<leader>dl", "y`>p", { desc = "Duplicate the current line" }) -- move to end of selection, then yank
+h.nmap("<leader>dl", [["zyy"zp]], { desc = "Duplicate the current line" })
+h.vmap("<leader>dl", [["zy`>"zp]], { desc = "Duplicate the current line" }) -- move to end of selection, then yank
 
 h.nmap("<leader>s", function() error "use `<leader>w` instead!" end)
 h.nmap("<leader>w", h.user_cmd_cb("w"), { desc = "Save" })
@@ -33,6 +33,21 @@ h.vmap("<", "<gv", { desc = "Outdent, while keeping selection" })
 h.vmap(">", ">gv", { desc = "Indent, while keeping selection" })
 
 h.nmap("<leader>i", "I")
+
+local function gen_circular_next_prev(try, catch)
+  local success, _ = pcall(vim.cmd, try)
+  if not success then
+    success, _ = pcall(vim.cmd, catch)
+    if not success then
+      return
+    end
+  end
+end
+
+vim.api.nvim_create_user_command("Cnext", function() gen_circular_next_prev("cnext", "cfirst") end, {})
+vim.api.nvim_create_user_command("Cprev", function() gen_circular_next_prev("cprev", "clast") end, {})
+vim.api.nvim_create_user_command("Lnext", function() gen_circular_next_prev("lnext", "lfirst") end, {})
+vim.api.nvim_create_user_command("Lprev", function() gen_circular_next_prev("lprev", "llast") end, {})
 h.nmap("J", function()
   vim.cmd("Cnext")
   vim.cmd("normal! zz")
@@ -41,8 +56,8 @@ h.nmap("K", function()
   vim.cmd("Cprev")
   vim.cmd("normal! zz")
 end, { desc = "Move to the previous item in the quickfix list" })
-h.nmap("gn", function() error "use `I` instead!" end)
-h.nmap("gp", function() error "use `U` instead!" end)
+h.nmap("gn", function() error "use `J` instead!" end)
+h.nmap("gp", function() error "use `K` instead!" end)
 
 h.nmap("ge", h.user_cmd_cb("copen 25"), { desc = "Open the quickfix list" })
 h.nmap("gq", h.user_cmd_cb("cclose"), { desc = "Close the quickfix list" })
@@ -95,7 +110,6 @@ h.nmap("k", function() return count_based_keymap("k") end, { expr = true },
 -- TODOs
 
 -- remaps to figure out in the future:
--- h.nmap("Z", function() end, { desc = "TODO find a remap" })
 -- h.nmap("<C-b>", function() end, { desc = "TODO find a remap" })
 
 -- TODO: use more
