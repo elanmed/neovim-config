@@ -29,7 +29,7 @@ local function coc_show_docs()
 end
 
 h.imap("<C-s>", "coc#refresh()", { expr = true, desc = "Show autocompletion options" })
--- TODO: update to lua
+-- TODO: issues when written in lua
 vim.cmd([[
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() :
 	\ "\<CMD>call feedkeys(v:lua.require('nvim-autopairs').autopairs_cr(), 'in')\<CR>"

@@ -6,8 +6,8 @@ zen_mode.setup({
     backdrop = 1,
     height = 0.5,
     options = {
-      number = false,         -- disable number column
-      relativenumber = false, -- disable relative numbers
+      number = false,
+      relativenumber = false,
     },
   },
   on_open = function()

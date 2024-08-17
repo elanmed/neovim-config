@@ -9,7 +9,6 @@ require "settings.plugins.commentstring"
 require "settings.plugins.gitsigns"
 require "settings.plugins.diffview"
 require "settings.plugins.harpoon2"
-require "settings.plugins.indent"
 require "settings.plugins.leap"
 require "settings.plugins.lualine"
 require "settings.plugins.neoclip"
@@ -20,22 +19,23 @@ require "settings.plugins.tele"
 require "settings.plugins.treesitter"
 require "settings.plugins.zen_mode"
 
+require("ibl").setup()
 require("flit").setup()
 require("auto-session").setup({
-  auto_session_use_git_branch = true,
-  auto_save_enabled = true
+	auto_session_use_git_branch = true,
+	auto_save_enabled = true
 })
 require("nvim-autopairs").setup({
-  map_cr = false
+	map_cr = false
 })
 require("marks").setup({
-  excluded_filetypes = { "oil" },
-  default_mappings = false,
-  mappings = {
-    toggle = "mt",
-    next = "me",         -- nExt
-    prev = "mr",         -- pRev
-    delete_line = "dml", -- delete mark on the current Line
-    delete_buf = "dma",  -- delete All
-  }
+	excluded_filetypes = { "oil" },
+	default_mappings = false,
+	mappings = {
+		toggle = "mt",
+		next = "me", -- nExt
+		prev = "mr", -- pRev
+		delete_line = "dml", -- delete mark on the current Line
+		delete_buf = "dma", -- delete All
+	}
 })

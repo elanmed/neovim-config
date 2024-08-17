@@ -6,7 +6,7 @@ require("aerial").setup({
   -- use automatic resizing
   layout = {
     resize_to_content = true,
-    max_width = nil,
+    max_width = 0.99,
     width = nil,
     min_width = nil,
   },
@@ -15,7 +15,7 @@ require("aerial").setup({
   }
 })
 
-h.nmap("<C-g>", h.user_cmd_cb("AerialOpen left"), { desc = "Toggle aerial  window" })
+h.nmap("<C-g>", h.user_cmd_cb("AerialToggle left"), { desc = "Toggle aerial  window" })
 h.nmap("zn", h.user_cmd_cb("AerialNext"), { desc = "Go to the next aerial symbol" })
 h.nmap("zp", h.user_cmd_cb("AerialPrev"), { desc = "Go to the prev aerial symbol" })
 
