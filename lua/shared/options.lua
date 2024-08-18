@@ -7,14 +7,14 @@ h.set.mouse = "nvi"             -- send vim commands with mouse in vim, prevents
 h.set.confirm = true            -- prompt to save before quitting
 h.set.linebreak = true          -- won't break on word when wrapping
 h.set.splitright = true         -- when splitting vertically, open new split to the right
-h.set.splitbelow = true         -- when splitting horizontally, open new split to the bottom
+h.set.splitbelow = true         -- when splitting horizontally, open new split below
 h.set.relativenumber = true     -- useful for multiline j, k
 h.set.termguicolors = true      -- needed for modern themes
 h.set.fileencoding = "utf-8"
 
 -- spell
 h.set.spelllang = "en_us"
-h.set.spell = false
+h.set.spell = false -- TODO: look into
 
 -- disable vim backups
 h.set.swapfile = false

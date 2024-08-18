@@ -1,6 +1,6 @@
 # neovim config
 
-- A minimal(ish) config written in lua, uses:
+- A minimalish config written in lua, uses:
 
   - [coc](https://github.com/neoclide/coc.nvim) for completions/linting
   - treesitter for [t/jsx commenting](https://github.com/JoosepAlviste/nvim-ts-context-commentstring) and

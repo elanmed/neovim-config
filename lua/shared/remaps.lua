@@ -3,6 +3,7 @@ local h = require "shared.helpers"
 vim.cmd("nnoremap ; :")
 h.nmap(":", function() error "use ; instead!" end)
 h.nmap("<leader>af", "<C-6>", { desc = "Alternate file" })
+-- TODO: find a remap for this
 -- h.nmap("p", [[viw"_dP]], { desc = "paste without overwriting the default register" })
 h.nmap("<leader>va", "ggVG", { desc = "Select all" })
 h.nmap("<bs>", "b")
@@ -20,7 +21,6 @@ h.nmap("<leader>P", h.user_cmd_cb("pu!"), { desc = "Paste on the line above" })
 h.nmap("<leader>dl", [["zyy"zp]], { desc = "Duplicate the current line" })
 h.vmap("<leader>dl", [["zy`>"zp]], { desc = "Duplicate the current line" }) -- move to end of selection, then yank
 
-h.nmap("<leader>s", function() error "use `<leader>w` instead!" end)
 h.nmap("<leader>w", h.user_cmd_cb("w"), { desc = "Save" })
 h.nmap("<leader>q", h.user_cmd_cb "q", { desc = "Quit" })
 
@@ -31,8 +31,6 @@ h.nmap("<leader>kr", function() vim.fn.setreg("+", vim.fn.expand("%:~:.")) end,
 
 h.vmap("<", "<gv", { desc = "Outdent, while keeping selection" })
 h.vmap(">", ">gv", { desc = "Indent, while keeping selection" })
-
-h.nmap("<leader>i", "I")
 
 local function gen_circular_next_prev(try, catch)
   local success, _ = pcall(vim.cmd, try)
@@ -92,7 +90,6 @@ h.map("", "X", [["_X]])
 h.map("", "c", [["_c]])
 h.map("", "C", [["_C]])
 
-
 local function count_based_keymap(movement)
   local count = vim.v.count
   if count > 0 then
@@ -107,14 +104,27 @@ h.nmap("j", function() return count_based_keymap("j") end, { expr = true },
 h.nmap("k", function() return count_based_keymap("k") end, { expr = true },
   { desc = "Move up a line, but respect lines that wrap" })
 
--- TODOs
-
--- remaps to figure out in the future:
--- h.nmap("<C-b>", function() end, { desc = "TODO find a remap" })
+h.nmap("Y", h.user_cmd_cb("bdelete"), { desc = "Close the current buffer" })
+h.nmap("<leader>tw", function() error "use `Y` instead!" end)
+h.nmap("<leader>ta", h.user_cmd_cb("bufdo bdelete"), { desc = "Close all buffers" })
+h.nmap("<C-y>", function() vim.cmd("tabclose") end, { desc = "Close the current tab" })
 
 -- TODO: use more
 h.nmap([[<leader>']], [["]], { desc = "Set register" })
 h.nmap("@", "@r", { desc = "Replay macro, assuming it's set to `r`" })
 
--- TODO: think of better remaps
+-- TODO: think of a better remap?
 h.nmap("Z", "gJ", { desc = "J without whitespace" })
+
+-- remaps to figure out in the future:
+-- h.nmap("<C-b>", function() end, { desc = "TODO find a remap" })
+-- h.nmap("<leader>s", function() end, { desc = "TODO find a remap" })
+-- h.nmap("<leader>;", function() end, { desc = "TODO find a remap" })
+-- h.nmap("<leader>r", function() end, { desc = "TODO find a remap" })
+-- h.nmap("<leader>i", function() end, { desc = "TODO find a remap" })
+-- h.nmap("<leader>x", function() end, { desc = "TODO find a remap" })
+-- h.nmap("<leader>b", function() end, { desc = "TODO find a remap" })
+-- h.nmap("<leader>n", function() end, { desc = "TODO find a remap" })
+-- h.nmap("<leader>n", function() end, { desc = "TODO find a remap" })
+-- h.nmap("<leader>,", function() end, { desc = "TODO find a remap" })
+-- h.nmap("<leader>.", function() end, { desc = "TODO find a remap" })

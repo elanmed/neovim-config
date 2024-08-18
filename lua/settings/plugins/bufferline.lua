@@ -22,7 +22,4 @@ h.nmap("<leader>tl", h.user_cmd_cb("BufferLineMoveNext"), { desc = "Move a buffe
 h.nmap("<leader>th", h.user_cmd_cb("BufferLineMovePrev"), { desc = "Move a buffer to the right" })
 h.nmap("L", h.user_cmd_cb("BufferLineCycleNext"), { desc = "Move to the buffer to the right" })
 h.nmap("H", h.user_cmd_cb("BufferLineCyclePrev"), { desc = "Move to the buffer to the left" })
-h.nmap("Y", h.user_cmd_cb("bdelete"), { desc = "Close the current buffer" })
-h.nmap("<leader>tw", function() error "use `Y` instead!" end)
-h.nmap("<leader>ta", h.user_cmd_cb("bufdo bdelete"), { desc = "Close all buffers" })
 h.nmap("<leader>to", h.user_cmd_cb("BufOnly"), { desc = "Close all buffers, except the open one" })
