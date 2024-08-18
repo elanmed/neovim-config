@@ -7,7 +7,7 @@ gitsigns.setup({
   },
 })
 
-h.nmap("<leader>gs", h.user_cmd_cb("Git"), { desc = "Git status" })
+h.nmap("<leader>gs", h.user_cmd_cb("tab Git"), { desc = "Git status" })
 h.nmap("<leader>gd", h.user_cmd_cb("Git difftool -y"), { desc = "Open the git diff in different tabs" })
 h.nmap("<leader>gq", function()
   h.send_keys("1gt");
