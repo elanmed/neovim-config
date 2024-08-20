@@ -19,37 +19,35 @@
 
 - Uses a unique project structure that supports:
   1. A barebones config that requires no external dependencies
-  2. An IDE-like config with plugins managed by [packer](https://github.com/wbthomason/packer.nvim)
-     - The default when running `nvim`
+  2. An feature-complete config with plugins managed by [packer](https://github.com/wbthomason/packer.nvim)
   3. Options, remaps, and utilities shared between the two
 
 ```
+├── +barebones.lua
+├── +feature_complete.lua
 ├── coc-settings.json
-├── init.lua
 ├── lua
 │   ├── barebones
+│   │   └── init.lua
+│   ├── feature_complete
 │   │   ├── init.lua
-│   │   ├── options.lua
-│   │   └── remaps.lua
-│   ├── settings
-│   │   ├── functions.lua
-│   │   ├── options.lua
-│   │   ├── plugins
-│   │   │   ├── [plugin_name].lua
-│   │   │   ├── init.lua
-│   │   │   ├── packer.lua
-│   │   └── remaps.lua
+│   │   ├── packer.lua
+│   │   └── plugins
+│   │       ├── [plugin_name].lua
 │   ├── shared
 │   │   ├── helpers.lua
 │   │   ├── options.lua
 │   │   └── remaps.lua
-│   └── telescope
-│       └── _extensions
-│           └── rg_with_args.lua
+```
+
+To run the feature-complete config:
+
+```bash
+nvim -u ~/.config/nvim/+feature_complete.lua
 ```
 
 To run the barebones config:
 
 ```bash
-nvim -u ~/.config/nvim/lua/barebones/init.lua
+nvim -u ~/.config/nvim/+barebones.lua
 ```
