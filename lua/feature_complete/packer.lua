@@ -18,7 +18,7 @@ vim.api.nvim_create_augroup("PackerGroup", {})
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
   group = "PackerGroup",
   pattern = (h.is_mac() and "/Users/elanmedoff" or "/home/elan") ..
-      "/.dotfiles/neovim/.config/nvim/lua/settings/plugins/packer.lua",
+      "/.dotfiles/neovim/.config/nvim/lua/feature_complete/plugins/packer.lua",
   command = "source <afile> | PackerSync"
 })
 
@@ -75,7 +75,6 @@ return packer.startup(({
     use({ "nvim-telescope/telescope.nvim", branch = "0.1.x", })
     use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })
     use "AckslD/nvim-neoclip.lua"
-    use "nvim-telescope/telescope-frecency.nvim"
 
     -- git
     use "lewis6991/gitsigns.nvim"

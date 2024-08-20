@@ -1,5 +1,5 @@
 local h = require "shared.helpers"
--- local colors = require "settings.plugins.base16"
+-- local colors = require "feature_complete.plugins.base16"
 local harpoon = require("harpoon")
 
 harpoon:setup({

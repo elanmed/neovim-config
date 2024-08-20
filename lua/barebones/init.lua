@@ -1,12 +1,20 @@
 local h = require "shared.helpers"
 
--- remap leader before importing remaps that use it
-h.map("", "<space>", "<nop>")
-h.let.mapleader = " "
-h.let.maplocalleader = " "
+h.let.netrw_banner = 0 -- removes banner at the top
 
-require "barebones.options"
-require "barebones.remaps"
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  pattern = "netrw",
+  callback = function()
+    h.nmap("-", "-^") -- go up a directory
+  end
+})
 
-require "shared.options"
-require "shared.remaps"
+h.nmap("L", h.user_cmd_cb("bnext"), { desc = "Next buffer" })
+h.nmap("H", h.user_cmd_cb("bprev"), { desc = "Previous buffer" })
+h.nmap("<C-f>", function()
+  if vim.bo.filetype == "netrw" then
+    vim.cmd("Rex")
+  else
+    vim.cmd("Explore %:p:h")
+  end
+end, { desc = "Toggle netrw, focusing the current file" })

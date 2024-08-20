@@ -1,5 +1,0 @@
-vim.api.nvim_create_user_command("FindAndReplace", function(opts)
-  vim.cmd(string.format("cdo s/%s/%s", opts.fargs[1], opts.fargs[2]))
-  vim.cmd("cfdo update")
-  vim.cmd("cfdo bdelete")
-end, { nargs = "*" })
