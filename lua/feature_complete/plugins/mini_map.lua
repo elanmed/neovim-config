@@ -26,7 +26,7 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
 vim.api.nvim_create_autocmd({ "TabEnter" }, {
   pattern = "*",
   callback = function()
-    if vim.fn.winnr('$') > 2 then
+    if vim.fn.winnr("$") > 2 then
       hide_mini = true
       require("mini.map").close()
     else

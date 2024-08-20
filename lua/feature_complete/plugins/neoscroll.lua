@@ -6,7 +6,7 @@ local function is_override_filetype()
 end
 
 neoscroll.setup({
-  mappings = { '<C-u>', '<C-d>', 'zz', },
+  mappings = { "<C-u>", "<C-d>", "zz", },
   hide_cursor = false,
   pre_hook = function()
     if is_override_filetype() then return end
