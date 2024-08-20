@@ -8,7 +8,7 @@ h.let.maplocalleader = " "
 -- for bootstrapping
 local packer_status_ok = pcall(require, "packer")
 if not packer_status_ok then
-  require "feature_complete.plugins.packer"
+  require "feature_complete.packer"
   return
 end
 

@@ -18,4 +18,4 @@ h_install_package $1 watchman
 # increase num allowed open fd
 ulimit -n 1024
 h_cecho --doing "opening nvim"
-nvim ~/.config/nvim/lua/settings/plugins/packer.lua -c "w"
+$NVIM_EXEC ~/.config/nvim/lua/feature_complete/packer.lua -c "w"
