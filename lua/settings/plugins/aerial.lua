@@ -6,7 +6,7 @@ require("aerial").setup({
   -- use automatic resizing
   layout = {
     resize_to_content = true,
-    max_width = 0.99,
+    max_width = 0.4,
     width = nil,
     min_width = nil,
   },
