@@ -9,6 +9,12 @@ gitsigns.setup({
 
 h.nmap("<leader>gs", h.user_cmd_cb("tab Git"), { desc = "Git status" })
 h.nmap("<leader>gd", h.user_cmd_cb("Git difftool -y"), { desc = "Open the git diff in different tabs" })
+h.nmap("<leader>gh", h.user_cmd_cb("Git push origin HEAD"), { desc = "Git pusH origin HEAD" })
+h.nmap("<leader>gl", h.user_cmd_cb("Git pull origin master"), { desc = "Git puLl origin master" })
+h.nmap("<leader>ga", h.user_cmd_cb("Git add -A"), { desc = "Git Add -A" })
+vim.cmd([[nnoremap <leader>ge :Git checkout ]])    -- Git checkout (an Existing branch)
+vim.cmd([[nnoremap <leader>gn :Git checkout -b ]]) -- Git checkout -b (a New branch)
+
 h.nmap("<leader>gq", function()
   h.send_keys("1gt");
   vim.cmd("tabonly")
