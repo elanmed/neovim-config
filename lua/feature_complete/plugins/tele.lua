@@ -100,10 +100,17 @@ telescope.setup({
       }
     }
   },
+  extensions = {
+    coc = {
+      timeout = 3000, -- timeout for coc commands
+    }
+  },
+
 })
 
 telescope.load_extension "fzf"
 telescope.load_extension "neoclip"
+telescope.load_extension "coc"
 -- telescope.load_extension "frecency"
 -- telescope.load_extension("rg_with_args")
 
@@ -185,6 +192,7 @@ h.nmap("<leader>li", builtin.search_history, { desc = "Search search history wit
 h.nmap("<leader>lh", builtin.help_tags, { desc = "Search help tags with telescope" })
 h.nmap("<leader>l;", builtin.command_history, { desc = "Search command history with telescope" })
 h.nmap("<leader>lf", builtin.current_buffer_fuzzy_find, { desc = "Search in the current file with telescope" })
+h.nmap("<leader>ld", h.user_cmd_cb("Telescope coc diagnostics"), { desc = "Open diagnostics with telescope" })
 h.nmap("<leader>lg", grep_string_with_search, { desc = "Search globally with telescope" })
 h.nmap("<leader>lc", function() grep_string_with_search({ case_sensitive = true }) end,
   { desc = "Search globally (case-sensitive) with telescope" })

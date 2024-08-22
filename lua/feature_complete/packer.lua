@@ -2,13 +2,13 @@ local h = require "shared.helpers"
 
 -- https://github.com/wbthomason/packer.nvim#bootstrapping
 local function ensure_packer()
-	local install_path = vim.fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
-	if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
-		vim.fn.system({ "git", "clone", "--depth", "1", "https://github.com/wbthomason/packer.nvim", install_path })
-		vim.cmd("packadd packer.nvim")
-		return true
-	end
-	return false
+  local install_path = vim.fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
+  if vim.fn.empty(vim.fn.glob(install_path)) > 0 then
+    vim.fn.system({ "git", "clone", "--depth", "1", "https://github.com/wbthomason/packer.nvim", install_path })
+    vim.cmd("packadd packer.nvim")
+    return true
+  end
+  return false
 end
 
 local packer_bootstrap = ensure_packer()
@@ -16,104 +16,106 @@ local packer_bootstrap = ensure_packer()
 -- reloads neovim whenever you save the file
 vim.api.nvim_create_augroup("PackerGroup", {})
 vim.api.nvim_create_autocmd({ "BufWritePost" }, {
-	group = "PackerGroup",
-	pattern = (h.is_mac() and "/Users/elanmedoff" or "/home/elan") ..
-	    "/.dotfiles/neovim/.config/nvim/lua/feature_complete/packer.lua",
-	command = "source <afile> | PackerSync"
+  group = "PackerGroup",
+  pattern = (h.is_mac() and "/Users/elanmedoff" or "/home/elan") ..
+      "/.dotfiles/neovim/.config/nvim/lua/feature_complete/packer.lua",
+  command = "source <afile> | PackerSync"
 })
 
 local ok, packer = pcall(require, "packer")
 if not ok then
-	return
+  return
 end
 
 return packer.startup(({
-	function(use)
-		use "wbthomason/packer.nvim"
-		use "nvim-lua/popup.nvim"
-		use "nvim-lua/plenary.nvim"
+  function(use)
+    use "wbthomason/packer.nvim"
+    use "nvim-lua/popup.nvim"
+    use "nvim-lua/plenary.nvim"
 
-		use "mg979/vim-visual-multi"
-		use "rmagatti/auto-session"
-		use "windwp/nvim-autopairs"
-		use "stevearc/aerial.nvim"
-		use({ "neoclide/coc.nvim", branch = "release", })
+    use "mg979/vim-visual-multi"
+    use "rmagatti/auto-session"
+    use "windwp/nvim-autopairs"
+    use "stevearc/aerial.nvim"
+    use({ "neoclide/coc.nvim", branch = "release", })
 
-		-- tpope
-		use "tpope/vim-surround"
-		use "tpope/vim-repeat"
-		use "tpope/vim-speeddating"
+    -- tpope
+    use "tpope/vim-surround"
+    use "tpope/vim-repeat"
+    use "tpope/vim-speeddating"
 
-		-- visuals
-		use "nvim-lualine/lualine.nvim"
-		use "echasnovski/mini.map"
-		use "folke/zen-mode.nvim"
-		use "karb94/neoscroll.nvim"
+    -- visuals
+    use "nvim-lualine/lualine.nvim"
+    use "echasnovski/mini.map"
+    use "folke/zen-mode.nvim"
+    use "karb94/neoscroll.nvim"
 
-		-- movements
-		use "ggandor/leap.nvim"
-		use "easymotion/vim-easymotion"
-		use "ggandor/flit.nvim"
-		use "chentoast/marks.nvim"
-		use "christoomey/vim-tmux-navigator"
-		use({
-			"ThePrimeagen/harpoon",
-			branch = "harpoon2",
-		})
+    -- movements
+    use "ggandor/leap.nvim"
+    use "easymotion/vim-easymotion"
+    use "ggandor/flit.nvim"
+    use "chentoast/marks.nvim"
+    use "christoomey/vim-tmux-navigator"
+    use({
+      "ThePrimeagen/harpoon",
+      branch = "harpoon2",
+    })
 
-		-- buffers as tabs
-		use "akinsho/bufferline.nvim"
-		use "RRethy/nvim-base16"
-		use "vim-scripts/BufOnly.vim"
-		use({ "numtostr/BufOnly.nvim", cmd = "BufOnly" })
+    -- buffers as tabs
+    use "akinsho/bufferline.nvim"
+    use "RRethy/nvim-base16"
+    use "vim-scripts/BufOnly.vim"
+    use({ "numtostr/BufOnly.nvim", cmd = "BufOnly" })
 
-		-- bqf
-		use "kevinhwang91/nvim-bqf"
-		use({ "junegunn/fzf", run = "./install --bin", })
+    -- bqf
+    use "kevinhwang91/nvim-bqf"
+    use({ "junegunn/fzf", run = "./install --bin", })
 
-		-- telescope
-		use({ "nvim-telescope/telescope.nvim", branch = "0.1.x", })
-		use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })
-		use "AckslD/nvim-neoclip.lua"
-		-- use "nvim-telescope/telescope-frecency.nvim"
+    -- telescope
+    use({ "nvim-telescope/telescope.nvim", branch = "0.1.x", })
+    use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })
+    use "AckslD/nvim-neoclip.lua"
+    use "fannheyward/telescope-coc.nvim"
+    -- use "nvim-telescope/telescope-frecency.nvim"
 
-		-- git
-		use "lewis6991/gitsigns.nvim"
-		use "tpope/vim-fugitive"
+    -- git
+    use "lewis6991/gitsigns.nvim"
+    use "tpope/vim-fugitive"
 
-		-- file tree
-		use "kyazdani42/nvim-web-devicons"
-		use "stevearc/oil.nvim"
+    -- file tree
+    use "kyazdani42/nvim-web-devicons"
+    use "stevearc/oil.nvim"
+    use "preservim/nerdtree"
 
-		-- treesitter
-		use({
-			"nvim-treesitter/nvim-treesitter",
-			-- https://github.com/rafamadriz/dotfiles/commit/c1268c73bdc7da52af0d57dcbca196ca3cb5ed79
-			run = function() require("nvim-treesitter.install").update() end,
-			requires = {
-				"windwp/nvim-ts-autotag",
-				"JoosepAlviste/nvim-ts-context-commentstring",
-				"lukas-reineke/indent-blankline.nvim",
-				"numToStr/Comment.nvim",
-				"RRethy/nvim-treesitter-endwise",
-			}
-		})
-		use({
-			"MeanderingProgrammer/markdown.nvim",
-			as = "render-markdown",
-			after = { "nvim-treesitter" },
-			config = function()
-				require("render-markdown").setup({})
-			end,
-		})
+    -- treesitter
+    use({
+      "nvim-treesitter/nvim-treesitter",
+      -- https://github.com/rafamadriz/dotfiles/commit/c1268c73bdc7da52af0d57dcbca196ca3cb5ed79
+      run = function() require("nvim-treesitter.install").update() end,
+      requires = {
+        "windwp/nvim-ts-autotag",
+        "JoosepAlviste/nvim-ts-context-commentstring",
+        "lukas-reineke/indent-blankline.nvim",
+        "numToStr/Comment.nvim",
+        "RRethy/nvim-treesitter-endwise",
+      }
+    })
+    use({
+      "MeanderingProgrammer/markdown.nvim",
+      as = "render-markdown",
+      after = { "nvim-treesitter" },
+      config = function()
+        require("render-markdown").setup({})
+      end,
+    })
 
-		if packer_bootstrap then
-			require("packer").sync()
-		end
-	end,
-	config = {
-		display = {
-			open_fn = require("packer.util").float,
-		},
-	},
+    if packer_bootstrap then
+      require("packer").sync()
+    end
+  end,
+  config = {
+    display = {
+      open_fn = require("packer.util").float,
+    },
+  },
 }))
