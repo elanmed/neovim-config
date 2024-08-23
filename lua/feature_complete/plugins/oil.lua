@@ -17,4 +17,4 @@ oil.setup({
   },
 })
 h.nmap("<C-f>", h.user_cmd_cb("Oil"), { desc = "Toggle oil" })
-h.nmap("<leader>ne", h.user_cmd_cb("NERDTree"), { desc = "Open NERDTree" })
+h.nmap("<leader>ne", h.user_cmd_cb("NERDTreeFind"), { desc = "Open NERDTree" })
