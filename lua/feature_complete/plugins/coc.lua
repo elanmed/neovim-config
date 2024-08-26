@@ -14,7 +14,8 @@ h.let.coc_global_extensions = {
   "coc-deno",
   "coc-stylelint",
   "coc-css",
-  "coc-highlight"
+  "coc-highlight",
+  "coc-pyright"
 }
 
 local function coc_show_docs()

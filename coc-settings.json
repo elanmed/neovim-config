@@ -29,5 +29,5 @@
     "rounded": true,
     "highlight": "CocFloating"
   },
-  "colors.enable": true
+  "highlight.colors.enable": false
 }

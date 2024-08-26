@@ -20,7 +20,11 @@ require "feature_complete.plugins.treesitter"
 require "feature_complete.plugins.visual_multi"
 require "feature_complete.plugins.zen_mode"
 
-require("ibl").setup()
+require("ibl").setup({
+  scope = {
+    show_start = false
+  }
+})
 require("flit").setup()
 require("auto-session").setup({
   auto_session_use_git_branch = true,
