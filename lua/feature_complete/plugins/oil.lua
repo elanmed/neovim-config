@@ -18,3 +18,4 @@ oil.setup({
 })
 h.nmap("<C-f>", h.user_cmd_cb("Oil"), { desc = "Toggle oil" })
 h.nmap("<leader>ne", h.user_cmd_cb("NERDTreeFind"), { desc = "Open NERDTree" })
+vim.api.nvim_set_var('NERDTreeWinSize', 100)
