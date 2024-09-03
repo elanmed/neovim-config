@@ -1,1 +1,1 @@
-require "+feature_complete"
+require "./+feature_complete"
