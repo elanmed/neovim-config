@@ -46,17 +46,6 @@ vim.api.nvim_create_user_command("Cprev", function() gen_circular_next_prev("cpr
 vim.api.nvim_create_user_command("Lnext", function() gen_circular_next_prev("lnext", "lfirst") end, {})
 vim.api.nvim_create_user_command("Lprev", function() gen_circular_next_prev("lprev", "llast") end, {})
 
-vim.api.nvim_create_user_command("FindAndReplace", function(opts)
-  vim.cmd(string.format("cdo s/%s/%s", opts.fargs[1], opts.fargs[2]))
-  vim.cmd("cfdo update")
-  vim.cmd("cfdo bdelete")
-end, { nargs = "*" })
-
-vim.api.nvim_create_user_command("PrintHighlights", function()
-  vim.cmd(
-    "enew | setlocal buftype=nofile | redir => m | silent hi | redir END | put=m")
-end, {})
-
 h.nmap("Z", "gJ", { desc = "J without whitespace" })
 h.nmap("J", function()
   vim.cmd("Cnext")

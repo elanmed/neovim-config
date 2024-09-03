@@ -5,6 +5,7 @@ h.map("", "<space>", "<nop>")
 h.let.mapleader = " "
 h.let.maplocalleader = " "
 
-require "barebones"
 require "shared.options"
 require "shared.remaps"
+require "shared.user_commands"
+require "barebones"

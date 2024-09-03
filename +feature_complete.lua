@@ -12,9 +12,10 @@ if not packer_status_ok then
   return
 end
 
-require "feature_complete"
 require "shared.options"
 require "shared.remaps"
+require "shared.user_commands"
+require "feature_complete"
 
 -- TODO:
 -- merge conflicts with fugitive

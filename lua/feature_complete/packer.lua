@@ -39,7 +39,6 @@ return packer.startup(({
     use({ "tpope/vim-speeddating" })
 
     use({ "mg979/vim-visual-multi", commit = "38b0e8d" })
-    use({ "rmagatti/auto-session", commit = "0e9aa77" })
     use({ "windwp/nvim-autopairs", commit = "19606af" })
     use({ "stevearc/aerial.nvim", commit = "92f93f4" })
     use({ "neoclide/coc.nvim", branch = "release", commit = "ae1a557" })

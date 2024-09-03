@@ -1,4 +1,6 @@
-local remaps = {}
+local M = {}
+
+M.remaps = {}
 
 local function map(mode, shortcut, command, opts)
   opts = opts or {}
@@ -19,17 +21,9 @@ local function map(mode, shortcut, command, opts)
   local formatted_shortcut = shortcut .. string.rep(" ", 10 - get_string_len(shortcut))
   local formatted_command = type(command) == "string" and command or "Function"
 
-  remaps[#remaps + 1] = table.concat({ formatted_mode, formatted_shortcut, formatted_command, desc }, string.rep(" ", 3))
+  M.remaps[#M.remaps + 1] = table.concat({ formatted_mode, formatted_shortcut, formatted_command, desc },
+    string.rep(" ", 3))
 end
-
-vim.api.nvim_create_user_command("PrintRemaps", function()
-  print("Custom remaps:")
-  for _, val in pairs(remaps) do
-    print(val)
-  end
-end, { nargs = "*" })
-
-local M = {}
 
 M.dump = function(o)
   if type(o) == "table" then
