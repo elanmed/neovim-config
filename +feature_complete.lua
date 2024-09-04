@@ -5,13 +5,6 @@ h.map("", "<space>", "<nop>")
 h.let.mapleader = " "
 h.let.maplocalleader = " "
 
--- for bootstrapping
-local packer_status_ok = pcall(require, "packer")
-if not packer_status_ok then
-  require "feature_complete.packer"
-  return
-end
-
 require "shared.options"
 require "shared.remaps"
 require "shared.user_commands"
