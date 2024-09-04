@@ -1,2 +1,1 @@
-package.path = package.path .. ";./?.lua"
-require "./+feature_complete"
++feature_complete.lua
