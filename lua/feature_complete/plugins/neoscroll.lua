@@ -5,21 +5,6 @@ local function is_override_filetype()
   return h.table_contains({ "oil" }, vim.bo.filetype)
 end
 
-neoscroll.setup({
-  mappings = { "<C-u>", "<C-d>", "zz", },
-  hide_cursor = false,
-  pre_hook = function()
-    if is_override_filetype() then return end
-
-    h.set.cursorline = true
-    vim.api.nvim_set_hl(0, "CursorLine", { link = "Visual" })
-  end,
-  post_hook = function()
-    if is_override_filetype() then return end
-    h.set.cursorline = false
-  end
-})
-
 local function get_current_line()
   return vim.api.nvim_win_get_cursor(0)[1]
 end
@@ -65,3 +50,22 @@ for _, mode in pairs(modes) do
     end
   end)
 end
+
+return {
+  "karb94/neoscroll.nvim",
+  commit = "532dcc8",
+  opts = {
+    mappings = { "<C-u>", "<C-d>", "zz", },
+    hide_cursor = false,
+    pre_hook = function()
+      if is_override_filetype() then return end
+
+      h.set.cursorline = true
+      vim.api.nvim_set_hl(0, "CursorLine", { link = "Visual" })
+    end,
+    post_hook = function()
+      if is_override_filetype() then return end
+      h.set.cursorline = false
+    end
+  }
+}

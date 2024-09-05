@@ -1,14 +1,6 @@
 local h = require "shared.helpers"
 local mini_map = require "mini.map"
 
-mini_map.setup({
-  symbols = {
-    encode = mini_map.gen_encode_symbols.dot("4x2"),
-    scroll_line = "▶",
-  }
-})
-
-
 -- TODO: find a better way to do this
 local hide_mini = false
 
@@ -35,3 +27,14 @@ vim.api.nvim_create_autocmd({ "TabEnter" }, {
     end
   end
 })
+
+return {
+  "echasnovski/mini.map",
+  commit = "8baf542",
+  opts = {
+    symbols = {
+      encode = mini_map.gen_encode_symbols.dot("4x2"),
+      scroll_line = "▶",
+    }
+  }
+}

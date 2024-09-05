@@ -1,11 +1,6 @@
 local h = require "shared.helpers"
 
 local gitsigns = require "gitsigns"
-gitsigns.setup({
-  current_line_blame_opts = {
-    virt_text_pos = "right_align",
-  },
-})
 
 h.nmap("<leader>gs", h.user_cmd_cb("tab Git"), { desc = "Git status" })
 h.nmap("<leader>gd", h.user_cmd_cb("Git difftool -y"), { desc = "Open the git diff in different tabs" })
@@ -51,3 +46,14 @@ h.nmap("<leader>hp", gitsigns.preview_hunk, { desc = "Preview the current hunk" 
 h.nmap("<leader>hl", gitsigns.toggle_current_line_blame, { desc = "Toggle git blame for the current line" })
 h.nmap("<leader>hf", gitsigns.blame, { desc = "Toggle git blame for the current file" })
 h.nmap("<leader>hd", h.user_cmd_cb("Gdiffsplit"), { desc = "Diff the current file" })
+
+
+return {
+  "lewis6991/gitsigns.nvim",
+  commit = "899e993",
+  opts = {
+    current_line_blame_opts = {
+      virt_text_pos = "right_align",
+    },
+  }
+}

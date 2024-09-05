@@ -1,20 +1,24 @@
-local lualine = require "lualine"
 local h = require "shared.helpers"
 
-h.set.showmode = false -- disrupts lualine
-
-lualine.setup({
-  options = {
-    component_separators = { left = "", right = "" },
-    section_separators = { left = "", right = "" },
-    globalstatus = true
-  },
-  sections = {
-    lualine_a = { "mode" },
-    lualine_b = { "filename" },
-    lualine_c = {},
-    lualine_x = {},
-    lualine_y = { "branch" },
-    lualine_z = { "filetype" },
-  },
-})
+return {
+  "nvim-lualine/lualine.nvim",
+  commit = "b431d22",
+  config = function()
+    h.set.showmode = false -- disrupts lualine
+  end,
+  opts = {
+    options = {
+      component_separators = { left = "", right = "" },
+      section_separators = { left = "", right = "" },
+      globalstatus = true
+    },
+    sections = {
+      lualine_a = { "mode" },
+      lualine_b = { "filename" },
+      lualine_c = {},
+      lualine_x = {},
+      lualine_y = { "branch" },
+      lualine_z = { "filetype" },
+    },
+  }
+}

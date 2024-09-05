@@ -13,6 +13,7 @@
   "sumneko-lua.enableNvimLuaDev": true,
   "Lua.diagnostics.globals": ["vim"],
   "Lua.hint.paramName": "Disable",
+  "Lua.hint.arrayIndex": "Disable",
   "Lua.workspace.checkThirdParty": false,
   "hover.floatConfig": {
     "border": true,

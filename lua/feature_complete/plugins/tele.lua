@@ -1,4 +1,4 @@
-local colors = require "feature_complete.plugins.base16"
+local colors = require "feature_complete.colors.named_colors"
 local h = require "shared.helpers"
 
 local telescope = require "telescope"
@@ -46,67 +46,6 @@ local no_border_borderchars = { " " }
 --   custom_actions.send_selected_and_open(prompt_bufnr)
 --   require("bqf.filter.fzf").run()
 -- end
-
-telescope.setup({
-  pickers = {
-    find_files = {
-      preview_title = "",
-    },
-    buffers = {
-      preview_title = "",
-    },
-    search_history = {
-      preview_title = "",
-    },
-    help_tags = {
-      preview_title = "",
-    },
-    command_history = {
-      preview_title = "",
-    },
-    current_buffer_fuzzy_find = {
-      preview_title = "",
-    },
-    grep_string = {
-      preview_title = "",
-    },
-  },
-  defaults = {
-    results_title    = "",
-    layout_strategy  = "vertical",
-    sorting_strategy = "ascending",
-    border           = true,
-    borderchars      = {
-      prompt = no_border_borderchars,
-      results = no_border_borderchars,
-      preview = border_borderchars,
-    },
-    layout_config    = {
-      vertical = {
-        width = { padding = 0 },
-        height = { padding = 0 },
-        prompt_position = "bottom",
-        preview_height = 0.35,
-      },
-    },
-    mappings         = {
-      i = {
-        ["<cr>"] = custom_actions.send_selected_and_open,
-        ["<c-a>"] = actions.toggle_all,
-        ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
-        ["<s-tab>"] = actions.move_selection_previous + actions.toggle_selection,
-        ["<c-t>"] = actions.toggle_selection,
-        ["<esc>"] = actions.close,
-      }
-    }
-  },
-  extensions = {
-    coc = {
-      timeout = 3000, -- timeout for coc commands
-    }
-  },
-
-})
 
 telescope.load_extension "fzf"
 telescope.load_extension "neoclip"
@@ -240,3 +179,67 @@ vim.api.nvim_create_autocmd("FileType", {
     })
   end,
 })
+
+return {
+  "nvim-telescope/telescope.nvim",
+  commit = "a0bbec2",
+  opts = {
+    pickers = {
+      find_files = {
+        preview_title = "",
+      },
+      buffers = {
+        preview_title = "",
+      },
+      search_history = {
+        preview_title = "",
+      },
+      help_tags = {
+        preview_title = "",
+      },
+      command_history = {
+        preview_title = "",
+      },
+      current_buffer_fuzzy_find = {
+        preview_title = "",
+      },
+      grep_string = {
+        preview_title = "",
+      },
+    },
+    defaults = {
+      results_title    = "",
+      layout_strategy  = "vertical",
+      sorting_strategy = "ascending",
+      border           = true,
+      borderchars      = {
+        prompt = no_border_borderchars,
+        results = no_border_borderchars,
+        preview = border_borderchars,
+      },
+      layout_config    = {
+        vertical = {
+          width = { padding = 0 },
+          height = { padding = 0 },
+          prompt_position = "bottom",
+          preview_height = 0.35,
+        },
+      },
+      mappings         = {
+        i = {
+          ["<cr>"] = custom_actions.send_selected_and_open,
+          ["<c-a>"] = actions.toggle_all,
+          ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
+          ["<s-tab>"] = actions.move_selection_previous + actions.toggle_selection,
+          ["<c-t>"] = actions.toggle_selection,
+          ["<esc>"] = actions.close,
+        }
+      }
+    },
+    extensions = {
+      coc = {
+        timeout = 3000, -- timeout for coc commands
+      }
+    },
+  }
+}
