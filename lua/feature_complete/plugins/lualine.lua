@@ -1,11 +1,10 @@
 local h = require "shared.helpers"
 
+h.set.showmode = false     -- disrupts lualine
+
 return {
   "nvim-lualine/lualine.nvim",
   commit = "b431d22",
-  config = function()
-    h.set.showmode = false -- disrupts lualine
-  end,
   opts = {
     options = {
       component_separators = { left = "", right = "" },

@@ -1,7 +1,9 @@
 local h = require "shared.helpers"
 
 h.nmap("<C-f>", h.user_cmd_cb("Oil"), { desc = "Toggle oil" })
+h.nmap("<leader>ne", h.user_cmd_cb("NERDTreeFind"), { desc = "Open NERDTree" })
 
+vim.api.nvim_set_var('NERDTreeWinSize', 100)
 return {
   "stevearc/oil.nvim",
   commit = "30e0438",
@@ -20,10 +22,4 @@ return {
       ["g."] = "actions.toggle_hidden",
     },
   },
-  config = function()
-    vim.api.nvim_set_var('NERDTreeWinSize', 100)
-  end,
-  keys = {
-    { "<leader>ne", h.user_cmd_cb("NERDTreeFind"), desc = "Open NERDTree" }
-  }
 }
