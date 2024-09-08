@@ -3,8 +3,8 @@ return {
   commit = "7a64148",
   -- https://github.com/rafamadriz/dotfiles/commit/c1268c73bdc7da52af0d57dcbca196ca3cb5ed79
   build = function() require("nvim-treesitter.install").update() end,
+  event = { "BufReadPre", "BufNewFile" },
   dependencies = {
-    { "windwp/nvim-ts-autotag",         commit = "e239a56" },
     {
       "lukas-reineke/indent-blankline.nvim",
       commit = "18603eb",
@@ -17,9 +17,11 @@ return {
         })
       end
     },
+    { "windwp/nvim-ts-autotag",         commit = "e239a56" },
     { "RRethy/nvim-treesitter-endwise", commit = "8b34305" },
     "JoosepAlviste/nvim-ts-context-commentstring",
     "numToStr/Comment.nvim",
+    "nvim-treesitter/nvim-treesitter-textobjects"
   },
   opts = {
     {
