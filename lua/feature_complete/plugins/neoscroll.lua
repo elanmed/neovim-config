@@ -39,7 +39,7 @@ return {
   config = function()
     local neoscroll = require "neoscroll"
 
-    local modes = { "n", "v", "x" }
+    local modes = { "n", "v", "i" }
     for _, mode in pairs(modes) do
       h.map(mode, "<C-u>", function()
         h.send_keys("0")

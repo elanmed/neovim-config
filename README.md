@@ -31,7 +31,6 @@
 │   │   └── init.lua
 │   ├── feature_complete
 │   │   ├── init.lua
-│   │   ├── packer.lua
 │   │   └── plugins
 │   │       ├── [plugin_name].lua
 │   ├── shared

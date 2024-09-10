@@ -60,4 +60,22 @@ vim.api.nvim_create_autocmd({ "CursorHold" }, {
 vim.api.nvim_set_hl(0, "CocFloating", { link = "Normal" })
 vim.api.nvim_set_hl(0, "CocHighlightText", { bg = "#2e3136" }) -- between base01 and base 02
 
-return {}
+return {
+  {
+    "neoclide/coc.nvim",
+    branch = "release",
+    commit = "ae1a557"
+  },
+  {
+    "windwp/nvim-autopairs",
+    commit = "19606af",
+    event = "InsertEnter",
+    opts = { map_cr = false }
+  },
+  {
+    "MeanderingProgrammer/markdown.nvim",
+    commit = "8c67dbc",
+    opts = {},
+    ft = "markdown"
+  },
+}

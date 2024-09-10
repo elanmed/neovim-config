@@ -4,10 +4,6 @@ h.let.skip_ts_context_commentstring_module = true
 return {
   "numToStr/Comment.nvim",
   commit = "e30b7f2",
-  config = function()
-    local ft = require "Comment.ft"
-    ft.lua = { "-- %s", "-- %s" }
-  end,
   dependencies = {
     {
       "JoosepAlviste/nvim-ts-context-commentstring",
@@ -36,5 +32,6 @@ return {
         extended = false,
       },
     })
+    require("Comment.ft").lua = { "-- %s", "-- %s" }
   end
 }
