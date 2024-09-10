@@ -1,5 +1,4 @@
 local h = require "shared.helpers"
-local mini_map = require "mini.map"
 
 -- TODO: find a better way to do this
 local hide_mini = false
@@ -31,10 +30,12 @@ vim.api.nvim_create_autocmd({ "TabEnter" }, {
 return {
   "echasnovski/mini.map",
   commit = "8baf542",
-  opts = {
-    symbols = {
-      encode = mini_map.gen_encode_symbols.dot("4x2"),
-      scroll_line = "▶",
-    }
-  }
+  config = function()
+    require("mini.map").setup({
+      symbols = {
+        encode = require("mini.map").gen_encode_symbols.dot("4x2"),
+        scroll_line = "▶",
+      }
+    })
+  end
 }

@@ -81,15 +81,22 @@ return {
 
   -- telescope
   {
-    "nvim-telescope/telescope-fzf-native.nvim",
-    build = "make",
-    commit = "cf48d4d"
+    "nvim-telescope/telescope.nvim",
+    commit = "a0bbec2",
+    priority = 1000,
+    dependencies = {
+      "AckslD/nvim-neoclip.lua",
+      {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        build = "make",
+        commit = "cf48d4d"
+      },
+      {
+        "fannheyward/telescope-coc.nvim",
+        commit = "b305a2c"
+      },
+    },
   },
-  {
-    "fannheyward/telescope-coc.nvim",
-    commit = "b305a2c"
-  },
-  -- {  "nvim-telescope/telescope-frecency.nvim" },
 
   -- file tree
   {

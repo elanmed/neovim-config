@@ -1,4 +1,3 @@
-local neoscroll = require "neoscroll"
 local h = require "shared.helpers"
 
 local function is_override_filetype()
@@ -20,37 +19,6 @@ local function is_last_line()
   return current_line == last_line
 end
 
-local modes = { "n", "v", "x" }
-for _, mode in pairs(modes) do
-  h.map(mode, "<C-u>", function()
-    h.send_keys("0")
-    if is_override_filetype() then
-      neoscroll.ctrl_u({ duration = 250 })
-      return
-    end
-
-    if is_last_line() then
-      h.send_keys("M")
-    else
-      neoscroll.ctrl_u({ duration = 250 })
-    end
-  end)
-
-  h.map(mode, "<C-d>", function()
-    h.send_keys("0")
-    if is_override_filetype() then
-      neoscroll.ctrl_d({ duration = 250 })
-      return
-    end
-
-    if is_first_line() then
-      h.send_keys("M")
-    else
-      neoscroll.ctrl_d({ duration = 250 })
-    end
-  end)
-end
-
 return {
   "karb94/neoscroll.nvim",
   commit = "532dcc8",
@@ -67,5 +35,39 @@ return {
       if is_override_filetype() then return end
       h.set.cursorline = false
     end
-  }
+  },
+  config = function()
+    local neoscroll = require "neoscroll"
+
+    local modes = { "n", "v", "x" }
+    for _, mode in pairs(modes) do
+      h.map(mode, "<C-u>", function()
+        h.send_keys("0")
+        if is_override_filetype() then
+          neoscroll.ctrl_u({ duration = 250 })
+          return
+        end
+
+        if is_last_line() then
+          h.send_keys("M")
+        else
+          neoscroll.ctrl_u({ duration = 250 })
+        end
+      end)
+
+      h.map(mode, "<C-d>", function()
+        h.send_keys("0")
+        if is_override_filetype() then
+          neoscroll.ctrl_d({ duration = 250 })
+          return
+        end
+
+        if is_first_line() then
+          h.send_keys("M")
+        else
+          neoscroll.ctrl_d({ duration = 250 })
+        end
+      end)
+    end
+  end
 }

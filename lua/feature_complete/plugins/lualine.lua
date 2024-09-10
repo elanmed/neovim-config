@@ -1,6 +1,6 @@
 local h = require "shared.helpers"
 
-h.set.showmode = false     -- disrupts lualine
+h.set.showmode = false -- disrupts lualine
 
 return {
   "nvim-lualine/lualine.nvim",
