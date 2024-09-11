@@ -3,7 +3,6 @@ return {
   commit = "7a64148",
   -- https://github.com/rafamadriz/dotfiles/commit/c1268c73bdc7da52af0d57dcbca196ca3cb5ed79
   build = function() require("nvim-treesitter.install").update() end,
-  event = { "BufReadPre", "BufNewFile" },
   dependencies = {
     {
       "lukas-reineke/indent-blankline.nvim",
