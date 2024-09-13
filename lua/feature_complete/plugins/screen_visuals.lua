@@ -1,4 +1,12 @@
 local h = require "shared.helpers"
+local mini_map = require("mini.map")
+
+mini_map.setup({
+  symbols = {
+    encode = require("mini.map").gen_encode_symbols.dot("4x2"),
+    scroll_line = "▶",
+  }
+})
 
 -- TODO: find a better way to do this
 local hide_mini = false
@@ -27,15 +35,20 @@ vim.api.nvim_create_autocmd({ "TabEnter" }, {
   end
 })
 
-return {
-  "echasnovski/mini.map",
-  commit = "8baf542",
-  config = function()
-    require("mini.map").setup({
-      symbols = {
-        encode = require("mini.map").gen_encode_symbols.dot("4x2"),
-        scroll_line = "▶",
-      }
-    })
-  end
-}
+require("zen-mode").setup({
+  window = {
+    backdrop = 1,
+    height = 0.5,
+    options = {
+      number = false,
+      relativenumber = false,
+    },
+  },
+  on_open = function()
+    require("ibl").update({ enabled = false })
+  end,
+  on_close = function()
+    require("ibl").update({ enabled = true })
+  end,
+})
+h.nmap("<leader>zm", h.user_cmd_cb("ZenMode"), { desc = "Toggle zen mode" })

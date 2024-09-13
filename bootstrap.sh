@@ -15,6 +15,7 @@ fi
 h_install_package $1 fzf
 h_install_package $1 ripgrep
 h_install_package $1 watchman
+h_install_package $1 fd
 
 # increase num allowed open fd
 ulimit -n 1024

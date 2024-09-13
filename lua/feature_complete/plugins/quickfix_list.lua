@@ -1,4 +1,15 @@
 local h = require "shared.helpers"
+local bqf = require('bqf')
+
+bqf.setup({
+  auto_resize_height = true,
+  func_map = {
+    openc = "<cr>",
+  },
+  preview = {
+    winblend = 0
+  }
+})
 
 -- TODO: figure out a way to clear only one list, not all
 -- delete all quickfix lists
@@ -15,20 +26,3 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
     end
   end
 })
-
-return {
-  "kevinhwang91/nvim-bqf",
-  commit = "1b24dc6",
-  opts = {
-    auto_resize_height = true,
-    func_map = {
-      openc = "<cr>",
-    },
-    preview = {
-      winblend = 0
-    }
-  },
-  dependencies = {
-    { "junegunn/fzf", build = "./install --bin", commit = "a09c6e9" },
-  }
-}

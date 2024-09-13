@@ -1,4 +1,6 @@
 local h = require "shared.helpers"
+local autopairs = require("nvim-autopairs")
+autopairs.setup({ map_cr = false })
 
 -- https://github.com/samhvw8/mvim/blob/master/lua/core/coc.lua
 h.let.coc_global_extensions = {
@@ -57,27 +59,5 @@ vim.api.nvim_create_autocmd({ "CursorHold" }, {
     end
   end
 })
-
-return {
-  {
-    "neoclide/coc.nvim",
-    branch = "release",
-    commit = "ae1a557",
-    config = function()
-      vim.api.nvim_set_hl(0, "CocFloating", { link = "Normal" })
-      vim.api.nvim_set_hl(0, "CocHighlightText", { bg = "#2e3136" }) -- between base01 and base 02
-    end
-  },
-  {
-    "windwp/nvim-autopairs",
-    commit = "19606af",
-    event = "InsertEnter",
-    opts = { map_cr = false }
-  },
-  {
-    "MeanderingProgrammer/markdown.nvim",
-    commit = "8c67dbc",
-    opts = {},
-    ft = "markdown"
-  },
-}
+vim.api.nvim_set_hl(0, "CocFloating", { link = "Normal" })
+vim.api.nvim_set_hl(0, "CocHighlightText", { bg = "#2e3136" }) -- between base01 and base 02
