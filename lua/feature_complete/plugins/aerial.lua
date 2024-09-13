@@ -3,8 +3,6 @@ local h = require "shared.helpers"
 h.nmap("zn", h.user_cmd_cb("AerialNext"), { desc = "Go to the next aerial symbol" })
 h.nmap("zp", h.user_cmd_cb("AerialPrev"), { desc = "Go to the prev aerial symbol" })
 
-vim.api.nvim_set_hl(0, "AerialLine", { link = "Visual" })
-
 return {
   "stevearc/aerial.nvim",
   commit = "92f93f4",
@@ -24,5 +22,9 @@ return {
   },
   keys = {
     { "<C-g>", h.user_cmd_cb("AerialToggle left"), desc = "Toggle aerial  window" }
-  }
+  },
+  config = function()
+    vim.api.nvim_set_hl(0, "AerialLine", { link = "Visual" })
+  end
+
 }

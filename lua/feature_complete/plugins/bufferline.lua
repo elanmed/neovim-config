@@ -1,8 +1,6 @@
 local h = require "shared.helpers"
 local colors = require "feature_complete.colors.named_colors"
 
-vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { fg = colors.cyan, underline = true })
-
 h.nmap("<leader>tp", h.user_cmd_cb("BufferLinePick"), { desc = "Pick a buffer" })
 h.nmap("<leader>ti", h.user_cmd_cb("BufferLineTogglePin"), { desc = "Pin a buffer" })
 h.nmap("<leader>tl", h.user_cmd_cb("BufferLineMoveNext"), { desc = "Move a buffer to the left" })
@@ -27,6 +25,7 @@ return {
         },
       }
     })
+    vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { fg = colors.cyan, underline = true })
   end,
   dependencies = {
     { "numtostr/BufOnly.nvim", cmd = "BufOnly", commit = "30579c2" },
