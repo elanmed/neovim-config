@@ -1,7 +1,7 @@
 local h = require "shared.helpers"
 
 h.set.showmode = false -- disrupts lualine
-require('lualine').setup({
+require("lualine").setup({
   options = {
     component_separators = { left = "", right = "" },
     section_separators = { left = "", right = "" },

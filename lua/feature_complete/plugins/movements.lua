@@ -11,11 +11,11 @@ vim.api.nvim_create_autocmd({ "User" }, {
   callback = function() vim.b.coc_diagnostic_disable = 0 end
 })
 
-local leap = require("leap")
+local leap = require "leap"
 leap.create_default_mappings()
 leap.opts.highlight_unlabeled_phase_one_targets = true
 
-local harpoon = require("harpoon")
+local harpoon = require "harpoon"
 harpoon:setup({
   settings = {
     save_on_toggle = true,
@@ -28,7 +28,7 @@ h.nmap("<leader>r", function() harpoon:list():add() end, { desc = "Add a haRpoon
 
 -- vim.api.nvim_set_hl(0, "FloatBorder", { fg = colors.orange, bg = colors.black })
 
-require('flit').setup({})
+require("flit").setup({})
 require("marks").setup({
   excluded_filetypes = { "oil" },
   default_mappings = false,

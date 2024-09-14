@@ -1,5 +1,5 @@
 local h = require "shared.helpers"
-local autopairs = require("nvim-autopairs")
+local autopairs = require "nvim-autopairs"
 autopairs.setup({ map_cr = false })
 
 -- https://github.com/samhvw8/mvim/blob/master/lua/core/coc.lua

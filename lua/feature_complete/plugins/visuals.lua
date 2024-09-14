@@ -1,9 +1,9 @@
 local h = require "shared.helpers"
-local mini_map = require("mini.map")
+local mini_map = require "mini.map"
 
 mini_map.setup({
   symbols = {
-    encode = require("mini.map").gen_encode_symbols.dot("4x2"),
+    encode = mini_map.gen_encode_symbols.dot("4x2"),
     scroll_line = "▶",
   }
 })
@@ -15,9 +15,9 @@ vim.api.nvim_create_autocmd({ "BufEnter" }, {
   pattern = "*",
   callback = function()
     if h.table_contains({ "oil" }, vim.bo.filetype) or hide_mini then
-      require("mini.map").close()
+      mini_map.close()
     else
-      require("mini.map").open()
+      mini_map.open()
     end
   end
 })
@@ -27,10 +27,10 @@ vim.api.nvim_create_autocmd({ "TabEnter" }, {
   callback = function()
     if vim.fn.winnr("$") > 2 then
       hide_mini = true
-      require("mini.map").close()
+      mini_map.close()
     else
       hide_mini = false
-      require("mini.map").open()
+      mini_map.open()
     end
   end
 })

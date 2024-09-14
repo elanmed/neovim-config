@@ -1,6 +1,6 @@
 local h = require "shared.helpers"
 
-require('nvim-treesitter.configs').setup({
+require("nvim-treesitter.configs").setup({
   {
     ensure_installed = {
       "bash",
@@ -53,14 +53,14 @@ require('nvim-treesitter.configs').setup({
 })
 
 
-require('ibl').setup({
+require("ibl").setup({
   scope = {
     show_start = false,
     show_end = false
   }
 })
 
-require('render-markdown').setup({})
+require("render-markdown").setup({})
 
 require("aerial").setup({
   lazy_load = false,
@@ -76,6 +76,30 @@ require("aerial").setup({
     ["<C-g>"] = "actions.close",
   }
 })
+
+h.let.skip_ts_context_commentstring_module = true
+
+require("ts_context_commentstring").setup({
+  enable_autocmd = false
+})
+require("Comment").setup({
+  pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
+  toggler = {
+    line = "<leader>cc",
+    block = "<leader>bb",
+  },
+  -- multiple lines
+  opleader = {
+    line = "<leader>mc",
+    block = "<leader>mb",
+  },
+  mappings = {
+    basic = true,
+    extra = false,
+    extended = false,
+  },
+})
+require("Comment.ft").lua = { "-- %s", "-- %s" }
 
 h.nmap("zn", h.user_cmd_cb("AerialNext"), { desc = "Go to the next aerial symbol" })
 h.nmap("zp", h.user_cmd_cb("AerialPrev"), { desc = "Go to the prev aerial symbol" })

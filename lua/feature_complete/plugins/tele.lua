@@ -241,7 +241,7 @@ telescope.setup({
   },
 })
 
-require('neoclip').setup({
+require("neoclip").setup({
   history = 25,
   keys = {
     telescope = {

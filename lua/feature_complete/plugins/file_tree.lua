@@ -19,4 +19,4 @@ require("oil").setup({
   },
 })
 
-vim.api.nvim_set_var('NERDTreeWinSize', 100)
+vim.api.nvim_set_var("NERDTreeWinSize", 100)

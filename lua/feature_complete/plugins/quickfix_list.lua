@@ -1,5 +1,5 @@
 local h = require "shared.helpers"
-local bqf = require('bqf')
+local bqf = require "bqf"
 
 bqf.setup({
   auto_resize_height = true,
