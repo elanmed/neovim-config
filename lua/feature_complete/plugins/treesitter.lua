@@ -12,6 +12,7 @@ require('nvim-treesitter.configs').setup({
       "json5",
       "jsonc",
       "lua",
+      "vim",
       "markdown",
       "regex",
       "ruby",
@@ -19,7 +20,8 @@ require('nvim-treesitter.configs').setup({
       "tsx",
       "typescript",
       "yaml",
-      "vimdoc"
+      "vimdoc",
+      "luadoc"
     },
     indent = { enable = true },
     autotag = { enable = true, },
