@@ -17,18 +17,15 @@
   "Lua.workspace.checkThirdParty": false,
   "hover.floatConfig": {
     "border": true,
-    "rounded": true,
-    "highlight": "CocFloating"
+    "rounded": true
   },
   "suggest.floatConfig": {
     "border": true,
-    "rounded": true,
-    "highlight": "CocFloating"
+    "rounded": true
   },
   "diagnostic.floatConfig": {
     "border": true,
-    "rounded": true,
-    "highlight": "CocFloating"
+    "rounded": true
   },
   "highlight.colors.enable": true
 }

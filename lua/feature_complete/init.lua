@@ -74,6 +74,9 @@ Plug("RRethy/nvim-treesitter-endwise", { commit = "8b34305" })
 Plug("lukas-reineke/indent-blankline.nvim", { commit = "18603eb" })
 Plug("numToStr/Comment.nvim", { commit = "e30b7f2", })
 Plug("JoosepAlviste/nvim-ts-context-commentstring", { commit = "375c2d8" })
+-- wild_menu
+Plug("gelguy/wilder.nvim", { commit = "679f348", ["do"] = ":UpdateRemotePlugins" })
+Plug("romgrk/fzy-lua-native", { commit = "820f745" })
 
 vim.call("plug#end")
 

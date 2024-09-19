@@ -36,5 +36,6 @@ local M = {
 }
 
 vim.api.nvim_set_hl(0, "MatchParen", { fg = nil, bg = colors.base02 })
+vim.api.nvim_set_hl(0, "Pmenu", { link = "Normal" })
 
 return M
