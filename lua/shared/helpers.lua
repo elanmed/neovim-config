@@ -54,6 +54,10 @@ M.vmap = function(shortcut, command, opts)
   map("v", shortcut, command, opts)
 end
 
+M.cmap = function(shortcut, command, opts)
+  map("c", shortcut, command, opts)
+end
+
 M.is_mac = function()
   return vim.fn.has("macunix") == 1
 end
