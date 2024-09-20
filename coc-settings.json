@@ -16,16 +16,13 @@
   "Lua.hint.arrayIndex": "Disable",
   "Lua.workspace.checkThirdParty": false,
   "hover.floatConfig": {
-    "border": true,
-    "rounded": true
+    "border": true
   },
   "suggest.floatConfig": {
-    "border": true,
-    "rounded": true
+    "border": true
   },
   "diagnostic.floatConfig": {
-    "border": true,
-    "rounded": true
+    "border": true
   },
   "highlight.colors.enable": true
 }
