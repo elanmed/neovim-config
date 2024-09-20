@@ -16,13 +16,19 @@
   "Lua.hint.arrayIndex": "Disable",
   "Lua.workspace.checkThirdParty": false,
   "hover.floatConfig": {
-    "border": true
+    "border": true,
+    "borderhighlight": "PmenuBorder",
+    "highlight": "Normal"
   },
   "suggest.floatConfig": {
-    "border": true
+    "border": true,
+    "borderhighlight": "PmenuBorder",
+    "highlight": "Normal"
   },
   "diagnostic.floatConfig": {
-    "border": true
+    "border": true,
+    "borderhighlight": "PmenuBorder",
+    "highlight": "Normal"
   },
   "highlight.colors.enable": true
 }

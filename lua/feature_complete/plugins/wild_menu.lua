@@ -24,6 +24,7 @@ wilder.set_option('pipeline', {
 
 wilder.set_option('renderer', wilder.popupmenu_renderer(
   wilder.popupmenu_border_theme({
+    border = { "", "", "", "", "", "", "", "" },
     empty_message = wilder.popupmenu_empty_message_with_spinner(),
     highlighter = wilder.lua_fzy_highlighter(),
     highlights = {
