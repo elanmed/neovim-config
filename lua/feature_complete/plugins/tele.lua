@@ -34,7 +34,7 @@ custom_actions.send_selected_and_open = function(prompt_bufnr)
   end
 end
 
-local border_borderchars = { "─", "│", "─", "│", "╭", "╮", "╯", "╰" }
+local border_borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└" }
 local no_border_borderchars = { " " }
 
 -- custom_actions.send_all_and_open_with_fzf = function(prompt_bufnr)
