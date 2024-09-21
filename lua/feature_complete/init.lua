@@ -1,13 +1,14 @@
+local h = require "shared.helpers"
+
 local data_dir = vim.fn.stdpath("data")
 if vim.fn.empty(vim.fn.glob(data_dir .. "/site/autoload/plug.vim")) == 1 then
   vim.cmd("silent !curl -fLo " ..
     data_dir ..
     "/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim")
   vim.o.runtimepath = vim.o.runtimepath
-  vim.cmd("autocmd VimEnter * PlugInstall --sync | source $MYVIMRC")
+  vim.api.nvim_create_autocmd({ "VimEnter" }, { pattern = "*", callback = h.user_cmd_cb("PlugInstall --sync") })
 end
 
--- An example of vim-plug section --------------------------------------------
 local vim = vim
 local Plug = vim.fn["plug#"]
 
@@ -21,6 +22,7 @@ Plug("tpope/vim-surround")
 Plug("tpope/vim-repeat")
 Plug("tpope/vim-speeddating")
 Plug("mg979/vim-visual-multi", { commit = "38b0e8d" })
+Plug("jxnblk/vim-mdx-js")
 -- buffers
 Plug("akinsho/bufferline.nvim", { commit = "0b2fd86", })
 Plug("vim-scripts/BufOnly.vim", { cmd = "BufOnly", commit = "43dd923" })
@@ -46,11 +48,9 @@ Plug("christoomey/vim-tmux-navigator", { commit = "5b3c701" })
 -- quickfix_list
 Plug("kevinhwang91/nvim-bqf", { commit = "1b24dc6" })
 Plug("junegunn/fzf", { commit = "a09c6e9", ["do"] = "./install --bin" })
--- screen_visuals
-Plug("echasnovski/mini.map", { commit = "8baf542", })
-Plug("folke/zen-mode.nvim", { commit = "29b292b" })
 -- scroll
 Plug("karb94/neoscroll.nvim", { commit = "532dcc8" })
+Plug("echasnovski/mini.map", { commit = "8baf542", })
 -- statusline
 Plug("nvim-lualine/lualine.nvim", { commit = "b431d22" })
 -- tele
@@ -59,13 +59,7 @@ Plug("nvim-telescope/telescope-fzf-native.nvim", { commit = "cf48d4d", ["do"] = 
 Plug("fannheyward/telescope-coc.nvim", { commit = "b305a2c" })
 Plug("AckslD/nvim-neoclip.lua", { commit = "709c97f" })
 -- treesitter
-Plug("nvim-treesitter/nvim-treesitter",
-  {
-    commit = "7a64148",
-    -- https://github.com/rafamadriz/dotfiles/commit/c1268c73bdc7da52af0d57dcbca196ca3cb5ed79
-    ["do"] = function() require("nvim-treesitter.install").update() end,
-  }
-)
+Plug("nvim-treesitter/nvim-treesitter", { commit = "7a64148", ["do"] = h.user_cmd_cb('TSUpdate') })
 Plug("stevearc/aerial.nvim", { commit = "92f93f4" })
 Plug("MeanderingProgrammer/markdown.nvim", { commit = "8c67dbc" })
 Plug("nvim-treesitter/nvim-treesitter-textobjects", { commit = "bf8d2ad" })
@@ -84,7 +78,7 @@ local base_lua_path = vim.fn.stdpath("config") .. "/lua"             -- ~/.confi
 local glob_path = base_lua_path .. "/feature_complete/plugins/*.lua" -- ~/.config/nvim/lua/feature_complete/plugins/*.lua
 for _, path in pairs(vim.split(vim.fn.glob(glob_path), "\n")) do
   -- convert absolute filename to relative
-  -- ~/.config/nvim/lua/feature_complete/plugins/*.lua => feature_complete/plugins/*
+  -- ~/.config/nvim/lua/feature_complete/plugins/*.lua -> feature_complete/plugins/*
   local relfilename = path:gsub(base_lua_path, ""):gsub(".lua", "")
   require(relfilename)
 end

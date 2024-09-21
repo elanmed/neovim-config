@@ -23,8 +23,8 @@
   3. Options, remaps, and utilities shared between the two
 
 ```
-├── +barebones.lua
-├── +feature_complete.lua
+├── barebones.lua
+├── feature_complete.lua
 ├── coc-settings.json
 ├── lua
 │   ├── barebones
@@ -39,14 +39,10 @@
 │   │   └── remaps.lua
 ```
 
-To run the feature-complete config:
-
-```bash
-nvim -u ~/.config/nvim/+feature_complete.lua
-```
+To run the feature-complete config, use `nvim`
 
 To run the barebones config:
 
 ```bash
-nvim -u ~/.config/nvim/+barebones.lua
+nvim -u ~/.config/nvim/barebones.lua
 ```

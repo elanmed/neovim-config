@@ -19,5 +19,5 @@ h_install_package $1 fd
 
 # increase num allowed open fd
 ulimit -n 1024
-h_cecho --doing "running :Lazy sync"
-nvim --headless "+Lazy! sync" +qa
+h_cecho --doing "running :PlugInstall"
+nvim --headless "+PlugInstall" +qa

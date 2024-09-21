@@ -65,3 +65,27 @@ for _, mode in pairs(modes) do
     end
   end)
 end
+
+local mini_map = require "mini.map"
+
+mini_map.setup({
+  symbols = {
+    encode = mini_map.gen_encode_symbols.dot("4x2"),
+    scroll_line = "▶",
+  }
+})
+
+local function has_split()
+  return vim.api.nvim_win_get_width(0) ~= vim.api.nvim_get_option('columns')
+end
+
+vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
+  pattern = "*",
+  callback = function()
+    if h.table_contains({ "oil", "fugitive", "markdown", "markdown.mdx" }, vim.bo.filetype) or has_split() then
+      mini_map.close()
+    else
+      mini_map.open()
+    end
+  end
+})
