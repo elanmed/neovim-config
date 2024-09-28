@@ -11,7 +11,6 @@ h.set.splitbelow = true         -- when splitting horizontally, open new split b
 h.set.relativenumber = true     -- useful for multiline j, k
 h.set.termguicolors = true      -- needed for modern themes
 h.set.fileencoding = "utf-8"
-h.set.scrolloff = 999           -- scroll with cursor in the middle
 
 -- spell
 h.set.spelllang = "en_us"

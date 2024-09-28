@@ -9,7 +9,6 @@ h_install_package $1 neovim
 if [[ $1 == "--pm=dnf" ]]
 then
   h_install_package $1 python3-neovim
-  h_install_package $1 xdg-open
 fi
 
 h_install_package $1 fzf
