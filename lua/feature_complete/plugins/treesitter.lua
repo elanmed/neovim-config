@@ -1,32 +1,35 @@
 local h = require "shared.helpers"
 
 require("nvim-treesitter.configs").setup({
-  {
-    ensure_installed = {
-      "bash",
-      "comment",
-      "css",
-      "html",
-      "javascript",
-      "json",
-      "json5",
-      "jsonc",
-      "lua",
-      "vim",
-      "markdown",
-      "regex",
-      "ruby",
-      "scss",
-      "tsx",
-      "typescript",
-      "yaml",
-      "vimdoc",
-      "luadoc"
-    },
-    indent = { enable = true },
-    autotag = { enable = true, },
-    endwise = { enable = true, },
+  ensure_installed = {
+    "bash",
+    "comment",
+    "css",
+    "html",
+    "javascript",
+    "json",
+    "json5",
+    "jsonc",
+    "lua",
+    "vim",
+    "markdown",
+    "markdown_inline",
+    "regex",
+    "ruby",
+    "scss",
+    "tsx",
+    "typescript",
+    "yaml",
+    "vimdoc",
+    "luadoc"
   },
+  highlight = {
+    enable = true,
+    additional_vim_regex_highlighting = false,
+  },
+  indent = { enable = true },
+  autotag = { enable = true, },
+  endwise = { enable = true, },
   textobjects = {
     select = {
       enable = true,
@@ -60,7 +63,9 @@ require("ibl").setup({
   }
 })
 
-require("render-markdown").setup({})
+require("render-markdown").setup({
+  latex = { enabled = false }
+})
 
 require("aerial").setup({
   lazy_load = false,

@@ -12,6 +12,9 @@ h.set.relativenumber = true     -- useful for multiline j, k
 h.set.termguicolors = true      -- needed for modern themes
 h.set.fileencoding = "utf-8"
 
+-- ignore checkhealth error
+h.let.loaded_perl_provider = 0
+
 -- spell
 h.set.spelllang = "en_us"
 h.set.spell = false -- TODO: look into
