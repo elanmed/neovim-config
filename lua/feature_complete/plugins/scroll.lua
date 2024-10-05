@@ -82,7 +82,7 @@ end
 vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter" }, {
   pattern = "*",
   callback = function()
-    if h.table_contains({ "oil", "fugitive", "markdown", "markdown.mdx" }, vim.bo.filetype) or has_split() then
+    if h.table_contains({ "oil", "fugitive", "markdown", "markdown.mdx", "man" }, vim.bo.filetype) or has_split() then
       mini_map.close()
     else
       mini_map.open()
