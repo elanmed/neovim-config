@@ -17,7 +17,7 @@ h.let.coc_global_extensions = {
   "coc-stylelint",
   "coc-css",
   "coc-highlight",
-  "coc-pyright"
+  "coc-solargraph"
 }
 
 local function coc_show_docs()

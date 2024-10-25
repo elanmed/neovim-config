@@ -30,5 +30,6 @@
     "borderhighlight": "PmenuBorder",
     "highlight": "Normal"
   },
-  "highlight.colors.enable": true
+  "solargraph.formatting": true,
+  "solargraph.useBundler": true
 }
