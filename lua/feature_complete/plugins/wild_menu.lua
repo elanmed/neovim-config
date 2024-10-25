@@ -1,8 +1,5 @@
-local h = require "shared.helpers"
 local colors = require "feature_complete.plugins.colorscheme"
 
-h.cmap("<Tab>", "")
-h.cmap("<S-Tab>", "")
 local wilder = require('wilder')
 
 wilder.setup({ modes = { ':' }, next_key = "<C-n>", previous_key = "<C-p>" })

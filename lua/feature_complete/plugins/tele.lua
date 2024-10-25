@@ -1,4 +1,3 @@
-local colors = require "feature_complete.plugins.colorscheme"
 local h = require "shared.helpers"
 
 local telescope = require "telescope"
