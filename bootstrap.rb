@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative File.expand_path('~/.dotfiles/helpers.rb')
+require_relative File.expand_path '~/.dotfiles/helpers.rb'
 
 package_manager = get_package_manager_arg
 validate_package_manager package_manager
@@ -21,4 +21,4 @@ end
 # increase num allowed open fd
 `ulimit -n 1024`
 puts 'running :PlugInstall'.doing
-`nvim --headless "+PlugInstall" +qa`
+stream_command 'nvim --headless "+PlugInstall" +qa'
