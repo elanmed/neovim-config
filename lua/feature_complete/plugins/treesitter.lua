@@ -106,8 +106,9 @@ require("Comment").setup({
 })
 require("Comment.ft").lua = { "-- %s", "-- %s" }
 
-h.nmap("zn", h.user_cmd_cb("AerialNext"), { desc = "Go to the next aerial symbol" })
-h.nmap("zp", h.user_cmd_cb("AerialPrev"), { desc = "Go to the prev aerial symbol" })
+-- TODO: better remaps for this
+-- h.nmap("zn", h.user_cmd_cb("AerialNext"), { desc = "Go to the next aerial symbol" })
+-- h.nmap("zp", h.user_cmd_cb("AerialPrev"), { desc = "Go to the prev aerial symbol" })
 h.nmap("<C-g>", h.user_cmd_cb("AerialToggle left"), { desc = "Toggle aerial  window" })
 
 vim.api.nvim_set_hl(0, "AerialLine", { link = "Visual" })

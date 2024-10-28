@@ -6,7 +6,7 @@ local function is_override_filetype()
 end
 
 neoscroll.setup({
-  mappings = { "<C-u>", "<C-d>", "zz", },
+  mappings = { "<C-u>", "<C-d>", },
   hide_cursor = false,
   pre_hook = function()
     if is_override_filetype() then return end
@@ -19,6 +19,7 @@ neoscroll.setup({
     h.set.cursorline = false
   end
 })
+h.nmap("z", function() neoscroll.zz({ half_win_duration = 250 }) end)
 
 local function get_current_line()
   return vim.api.nvim_win_get_cursor(0)[1]
