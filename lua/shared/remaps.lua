@@ -1,8 +1,10 @@
 local h = require "shared.helpers"
 
+-- delay when using h.nmap
 vim.cmd("nnoremap ; :")
+vim.cmd("nnoremap <leader>s :%s/")
 h.nmap(":", function() error "use ; instead!" end)
-h.nmap("<leader>a", "<C-6>", { desc = "alteRnate file" })
+h.nmap("<leader>a", "<C-6>", { desc = "Alternate file" })
 h.nmap("<leader>va", "ggVG", { desc = "Select all" })
 h.nmap("<bs>", "b")
 h.nmap("*", "*N")
@@ -13,7 +15,7 @@ h.nmap("<leader>vs", h.user_cmd_cb "vsplit")
 h.nmap("<leader>o", "o<esc>")
 h.nmap("<leader>O", "O<esc>")
 
-h.nmap("<leader>s", [[viw"_dP]], { desc = "paSte without overwriting the default register" })
+h.nmap("E", [[viw"_dP]], { desc = "pastE without overwriting the default register" })
 h.nmap("<leader>p", h.user_cmd_cb "pu", { desc = "Paste on the line below" })
 h.nmap("<leader>P", h.user_cmd_cb "pu!", { desc = "Paste on the line above" })
 
@@ -73,9 +75,9 @@ h.vmap(alt_k, ":m '<-2<cr>gv=gv", { desc = "Move line up" })
 
 -- search case sensitive, whole word, and both
 vim.cmd([[
-  noremap <leader>/c /\C<left><left>
-  noremap <leader>/w /\<\><left><left>
-  noremap <leader>cw /\<\>\C<left><left><left><left>
+  nnoremap <leader>/c /\C<left><left>
+  nnoremap <leader>/w /\<\><left><left>
+  nnoremap <leader>cw /\<\>\C<left><left><left><left>
 ]])
 vim.cmd([[nnoremap / /\V]]) -- search without regex
 
@@ -116,6 +118,11 @@ h.nmap("@", "@r", { desc = "Replay macro, assuming it's set to `r`" })
 
 -- remaps to figure out in the future:
 -- h.nmap("<C-b>", function() end, { desc = "TODO find a remap" })
+--
+-- h.nmap("B", function() end, { desc = "TODO find a remap" })
+-- h.nmap("K", function() end, { desc = "TODO find a remap" })
+-- h.nmap("W", function() end, { desc = "TODO find a remap" })
+--
 -- h.nmap("<leader>;", function() end, { desc = "TODO find a remap" })
 -- h.nmap("<leader>i", function() end, { desc = "TODO find a remap" })
 -- h.nmap("<leader>x", function() end, { desc = "TODO find a remap" })
