@@ -2,7 +2,9 @@ local h = require "shared.helpers"
 
 -- delay when using h.nmap
 vim.cmd("nnoremap ; :")
-vim.cmd("nnoremap <leader>s :%s/")
+vim.cmd([[
+  nnoremap <leader>s :%s/\<\>\C/<left><left><left><left><left>
+]])
 h.nmap(":", function() error "use ; instead!" end)
 h.nmap("<leader>a", "<C-6>", { desc = "Alternate file" })
 h.nmap("<leader>va", "ggVG", { desc = "Select all" })

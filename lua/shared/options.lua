@@ -1,5 +1,6 @@
 local h = require "shared.helpers"
 
+h.set.colorcolumn = "120"
 h.set.clipboard = "unnamedplus" -- os clipboard
 h.set.number = true             -- line numbers
 h.set.errorbells = false        -- disable error beep
