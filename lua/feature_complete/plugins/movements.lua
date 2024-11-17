@@ -22,7 +22,7 @@ harpoon:setup({
   },
 })
 
-h.nmap("<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_max_width = 80 }) end,
+h.nmap("<C-b>", function() harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_max_width = 80 }) end,
   { desc = "Toggle the harpoon window" })
 h.nmap("<leader>r", function() harpoon:list():add() end, { desc = "Add a haRpoon entry" })
 

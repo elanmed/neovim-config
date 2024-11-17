@@ -14,6 +14,13 @@ h.nmap("<leader>f", "<C-w>w", { desc = "Toggle focus between windows" })
 h.nmap("<leader>e", h.user_cmd_cb "e", { desc = "Reload buffer" })
 h.nmap("<leader>vs", h.user_cmd_cb "vsplit")
 
+
+local modes = { "n", "v", "i" }
+for _, mode in pairs(modes) do
+  h.map(mode, "<C-e>", "<C-o>$")
+  h.map(mode, "<C-a>", "<C-o>0")
+end
+
 h.nmap("<leader>o", "o<esc>")
 h.nmap("<leader>O", "O<esc>")
 
@@ -119,8 +126,6 @@ h.nmap([[<leader>']], [["]], { desc = "Set register" })
 h.nmap("@", "@r", { desc = "Replay macro, assuming it's set to `r`" })
 
 -- remaps to figure out in the future:
--- h.nmap("<C-b>", function() end, { desc = "TODO find a remap" })
---
 -- h.nmap("B", function() end, { desc = "TODO find a remap" })
 -- h.nmap("K", function() end, { desc = "TODO find a remap" })
 -- h.nmap("W", function() end, { desc = "TODO find a remap" })
