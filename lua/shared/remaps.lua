@@ -24,7 +24,7 @@ h.vmap("<C-a>", "0")
 h.nmap("<leader>o", "o<esc>")
 h.nmap("<leader>O", "O<esc>")
 
-h.nmap("E", [[viw"_dP]], { desc = "pastE without overwriting the default register" })
+h.nmap("E", [[viw"_dP]], { desc = "pastE without overwriting the default register" }) -- TODO: find a better remap
 h.nmap("<leader>p", h.user_cmd_cb "pu", { desc = "Paste on the line below" })
 h.nmap("<leader>P", h.user_cmd_cb "pu!", { desc = "Paste on the line above" })
 
