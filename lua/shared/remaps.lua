@@ -14,12 +14,12 @@ h.nmap("<leader>f", "<C-w>w", { desc = "Toggle focus between windows" })
 h.nmap("<leader>e", h.user_cmd_cb "e", { desc = "Reload buffer" })
 h.nmap("<leader>vs", h.user_cmd_cb "vsplit")
 
-
-local modes = { "n", "v", "i" }
-for _, mode in pairs(modes) do
-  h.map(mode, "<C-e>", "<C-o>$")
-  h.map(mode, "<C-a>", "<C-o>0")
-end
+h.imap("<C-e>", "<C-o>$")
+h.nmap("<C-e>", "$")
+h.vmap("<C-e>", "$")
+h.imap("<C-a>", "<C-o>0")
+h.nmap("<C-a>", "0")
+h.vmap("<C-a>", "0")
 
 h.nmap("<leader>o", "o<esc>")
 h.nmap("<leader>O", "O<esc>")

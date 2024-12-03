@@ -225,10 +225,10 @@ telescope.setup({
     mappings         = {
       i = {
         ["<cr>"] = custom_actions.send_selected_and_open,
-        ["<c-a>"] = actions.toggle_all,
+        ["<C-a>"] = actions.toggle_all,
         ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
         ["<s-tab>"] = actions.move_selection_previous + actions.toggle_selection,
-        ["<c-t>"] = actions.toggle_selection,
+        ["<C-t>"] = actions.toggle_selection,
         ["<esc>"] = actions.close,
       }
     }

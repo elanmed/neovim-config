@@ -20,7 +20,6 @@ Plug("nvim-lua/plenary.nvim")
 -- editing (no file)
 Plug("tpope/vim-surround")
 Plug("tpope/vim-repeat")
-Plug("tpope/vim-speeddating")
 Plug("mg979/vim-visual-multi", { commit = "38b0e8d" })
 Plug("jxnblk/vim-mdx-js")
 -- buffers
@@ -71,6 +70,8 @@ Plug("JoosepAlviste/nvim-ts-context-commentstring", { commit = "375c2d8" })
 -- wild_menu
 Plug("gelguy/wilder.nvim", { commit = "679f348", ["do"] = ":UpdateRemotePlugins" })
 Plug("romgrk/fzy-lua-native", { commit = "820f745" })
+-- far
+Plug("MagicDuck/grug-far.nvim", { commit = "9a2f782" })
 
 vim.call("plug#end")
 
