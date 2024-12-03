@@ -3,7 +3,7 @@ local grug = require "grug-far"
 
 h.nmap("<leader>re", function()
   vim.cmd("GrugFar")
-  vim.cmd("vertical resize 125%")
+  vim.cmd("vertical resize 135%")
 end, { desc = "Open the grug-far ui" })
 
 grug.setup({
