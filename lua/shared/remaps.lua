@@ -119,7 +119,7 @@ h.nmap("k", function() return count_based_keymap("k") end, { expr = true },
 h.nmap("<C-y>", function() vim.cmd("tabclose") end, { desc = "Close the current tab" })
 h.nmap("Y", h.user_cmd_cb "silent! bdelete!", { desc = "Close the current buffer" })
 h.nmap("<leader>tw", function() error "use `Y` instead!" end)
-h.nmap("<leader>ta", h.user_cmd_cb "bufdo bdelete", { desc = "Close all buffers" })
+h.nmap("<leader>ta", h.user_cmd_cb "silent! bufdo bdelete", { desc = "Close all buffers" })
 
 -- TODO: use more
 h.nmap([[<leader>']], [["]], { desc = "Set register" })
