@@ -5,3 +5,4 @@ call_arg_parentheses = remove
 align_array_table = false
 align_chain_expr = false
 end_statement_with_semicolon = same_line
+space_after_comment_dash = true

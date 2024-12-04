@@ -6,6 +6,7 @@ gitsigns.setup {
   },
 }
 
+-- https://github.com/lewis6991/gitsigns.nvim?tab=readme-ov-file#keymaps
 h.nmap(")", function()
   if vim.wo.diff then
     vim.cmd.normal { "]c", bang = true, }
