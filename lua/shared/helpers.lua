@@ -8,7 +8,7 @@ local function map(mode, shortcut, command, opts)
     mode,
     shortcut,
     command,
-    vim.tbl_extend("force", { noremap = true, silent = true, nowait = true }, opts)
+    vim.tbl_extend("force", { noremap = true, silent = true, nowait = true, }, opts)
   )
   local desc = opts.desc or ""
   local formatted_mode = mode == "" and " " or mode
@@ -21,7 +21,7 @@ local function map(mode, shortcut, command, opts)
   local formatted_shortcut = shortcut .. string.rep(" ", 10 - get_string_len(shortcut))
   local formatted_command = type(command) == "string" and command or "Function"
 
-  M.remaps[#M.remaps + 1] = table.concat({ formatted_mode, formatted_shortcut, formatted_command, desc },
+  M.remaps[#M.remaps + 1] = table.concat({ formatted_mode, formatted_shortcut, formatted_command, desc, },
     string.rep(" ", 3))
 end
 
@@ -55,7 +55,7 @@ M.vmap = function(shortcut, command, opts)
 end
 
 M.is_mac = function()
-  return vim.fn.has("macunix") == 1
+  return vim.fn.has "macunix" == 1
 end
 
 M.table_contains = function(table, element)
