@@ -1,6 +1,6 @@
 local h = require "shared.helpers"
 
-require("nvim-treesitter.configs").setup({
+require "nvim-treesitter.configs".setup {
   ensure_installed = {
     "bash",
     "comment",
@@ -21,13 +21,13 @@ require("nvim-treesitter.configs").setup({
     "typescript",
     "yaml",
     "vimdoc",
-    "luadoc"
+    "luadoc",
   },
   highlight = {
     enable = true,
     additional_vim_regex_highlighting = false,
   },
-  indent = { enable = true },
+  indent = { enable = true, },
   autotag = { enable = true, },
   endwise = { enable = true, },
   textobjects = {
@@ -35,39 +35,39 @@ require("nvim-treesitter.configs").setup({
       enable = true,
       lookahead = true,
       keymaps = {
-        ["a="] = { query = "@assignment.outer", desc = "Select outer part of an assignment" },
-        ["i="] = { query = "@assignment.inner", desc = "Select inner part of an assignment" },
-        ["l="] = { query = "@assignment.lhs", desc = "Select left hand side of an assignment" },
-        ["r="] = { query = "@assignment.rhs", desc = "Select right hand side of an assignment" },
+        ["a="] = { query = "@assignment.outer", desc = "Select outer part of an assignment", },
+        ["i="] = { query = "@assignment.inner", desc = "Select inner part of an assignment", },
+        ["l="] = { query = "@assignment.lhs", desc = "Select left hand side of an assignment", },
+        ["r="] = { query = "@assignment.rhs", desc = "Select right hand side of an assignment", },
 
-        ["a:"] = { query = "@property.outer", desc = "Select outer part of an object property" },
-        ["i:"] = { query = "@property.inner", desc = "Select inner part of an object property" },
-        ["l:"] = { query = "@property.lhs", desc = "Select left part of an object property" },
-        ["r:"] = { query = "@property.rhs", desc = "Select right part of an object property" },
+        ["a:"] = { query = "@property.outer", desc = "Select outer part of an object property", },
+        ["i:"] = { query = "@property.inner", desc = "Select inner part of an object property", },
+        ["l:"] = { query = "@property.lhs", desc = "Select left part of an object property", },
+        ["r:"] = { query = "@property.rhs", desc = "Select right part of an object property", },
 
-        ["ai"] = { query = "@conditional.outer", desc = "Select outer part of a conditional" },
-        ["ii"] = { query = "@conditional.inner", desc = "Select inner part of a conditional" },
+        ["ai"] = { query = "@conditional.outer", desc = "Select outer part of a conditional", },
+        ["ii"] = { query = "@conditional.inner", desc = "Select inner part of a conditional", },
 
-        ["af"] = { query = "@function.outer", desc = "Select outer part of a method/function definition" },
-        ["if"] = { query = "@function.inner", desc = "Select inner part of a method/function definition" },
+        ["af"] = { query = "@function.outer", desc = "Select outer part of a method/function definition", },
+        ["if"] = { query = "@function.inner", desc = "Select inner part of a method/function definition", },
       },
     },
   },
-})
+}
 
 
-require("ibl").setup({
+require "ibl".setup {
   scope = {
     show_start = false,
-    show_end = false
-  }
-})
+    show_end = false,
+  },
+}
 
-require("render-markdown").setup({
-  latex = { enabled = false }
-})
+require "render-markdown".setup {
+  latex = { enabled = false, },
+}
 
-require("aerial").setup({
+require "aerial".setup {
   lazy_load = false,
   show_guides = true,
   -- use automatic resizing
@@ -79,16 +79,16 @@ require("aerial").setup({
   },
   keymaps = {
     ["<C-b>"] = "actions.close",
-  }
-})
+  },
+}
 
 h.let.skip_ts_context_commentstring_module = true
 
-require("ts_context_commentstring").setup({
-  enable_autocmd = false
-})
-require("Comment").setup({
-  pre_hook = require("ts_context_commentstring.integrations.comment_nvim").create_pre_hook(),
+require "ts_context_commentstring".setup {
+  enable_autocmd = false,
+}
+require "Comment".setup {
+  pre_hook = require "ts_context_commentstring.integrations.comment_nvim".create_pre_hook(),
   toggler = {
     line = "<leader>cc",
     block = "<leader>bb",
@@ -103,12 +103,12 @@ require("Comment").setup({
     extra = false,
     extended = false,
   },
-})
-require("Comment.ft").lua = { "-- %s", "-- %s" }
+}
+require "Comment.ft".lua = { "-- %s", "-- %s", }
 
 -- TODO: better remaps for this
 -- h.nmap("zn", h.user_cmd_cb("AerialNext"), { desc = "Go to the next aerial symbol" })
 -- h.nmap("zp", h.user_cmd_cb("AerialPrev"), { desc = "Go to the prev aerial symbol" })
-h.nmap("<C-b>", h.user_cmd_cb("AerialToggle left"), { desc = "Toggle aerial window" })
+h.nmap("<C-b>", h.user_cmd_cb "AerialToggle left", { desc = "Toggle aerial window", })
 
-vim.api.nvim_set_hl(0, "AerialLine", { link = "Visual" })
+vim.api.nvim_set_hl(0, "AerialLine", { link = "Visual", })

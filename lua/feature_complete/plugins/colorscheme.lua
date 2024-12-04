@@ -17,7 +17,7 @@ local colors = {
   base0C = "#8abeb7",
   base0D = "#81a2be",
   base0E = "#b294bb",
-  base0F = "#a3685a"
+  base0F = "#a3685a",
 }
 base16.setup(colors)
 
@@ -36,7 +36,7 @@ local M = {
   brown = colors.base0F,
 }
 
-vim.api.nvim_set_hl(0, "MatchParen", { fg = nil, bg = M.grey })
-vim.api.nvim_set_hl(0, "PmenuBorder", { fg = M.grey })
+vim.api.nvim_set_hl(0, "MatchParen", { fg = nil, bg = M.grey, })
+vim.api.nvim_set_hl(0, "PmenuBorder", { fg = M.grey, })
 
 return M

@@ -88,7 +88,7 @@ vim.cmd [[
   nnoremap <leader>/w /\<\><left><left>
   nnoremap <leader>cw /\<\>\C<left><left><left><left>
 ]]
-vim.cmd [[nnoremap / /\V]]  -- search without regex
+vim.cmd [[nnoremap / /\V]] -- search without regex
 
 -- keep search result in the middle of the page
 h.nmap("n", "nzz")
