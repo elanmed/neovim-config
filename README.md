@@ -2,30 +2,35 @@
 
 - A minimalish config written in lua, uses:
 
-  - [coc](https://github.com/neoclide/coc.nvim) for completions/linting
-  - treesitter for [t/jsx commenting](https://github.com/JoosepAlviste/nvim-ts-context-commentstring) and
-    [t/jsx pair renaming](https://github.com/windwp/nvim-ts-autotag)
+  - [coc](https://github.com/neoclide/coc.nvim) to handle language servers, completions
+  - [treesitter](https://github.com/nvim-treesitter/nvim-treesitter) for AST-based comments, t/jsx pair renaming, and
+    viewing a file's high-level structure
   - [leap](https://github.com/ggandor/leap.nvim), [flit](https://github.com/ggandor/flit.nvim) and
     [easymotion](https://github.com/easymotion/vim-easymotion) for quicker movements
   - [vim tmux navigator](https://github.com/christoomey/vim-tmux-navigator) for moving between vim and tmux panes
-  - [bqf](https://github.com/kevinhwang91/nvim-bqf) for a better quick-fix list
-  - [telescope](https://github.com/nvim-telescope/telescope.nvim)
-  - [oil](https://github.com/stevearc/oil.nvim) for a better netrw
+  - [harpoon](https://github.com/ThePrimeagen/harpoon/tree/harpoon2) for moving between frequently-used files
+  - [telescope](https://github.com/nvim-telescope/telescope.nvim) for finding files, grepping text, searching through
+    help tags, etc
+  - [grug-far](https://github.com/MagicDuck/grug-far.nvim) for an interactive find and replace interface
   - [bufferline](https://github.com/akinsho/bufferline.nvim) for buffer management
   - [fugitive](https://github.com/tpope/vim-fugitive) and [gitsigns](https://github.com/lewis6991/gitsigns.nvim) for git
     integration
+  - [oil](https://github.com/stevearc/oil.nvim) for a better netrw
+  - [bqf](https://github.com/kevinhwang91/nvim-bqf) for a better quick-fix list
+  - [wilder](https://github.com/gelguy/wilder.nvim) for a better wild menu
 
 ---
 
 - Uses a unique project structure that supports:
   1. A barebones config that requires no external dependencies
-  2. An feature-complete config with plugins managed by [packer](https://github.com/wbthomason/packer.nvim)
+  2. An feature-complete config with plugins managed by [plug](https://github.com/junegunn/vim-plug)
   3. Options, remaps, and utilities shared between the two
 
 ```
 ├── barebones.lua
-├── feature_complete.lua
 ├── coc-settings.json
+├── feature_complete.lua
+├── init.lua -> feature_complete.lua (symlink)
 ├── lua
 │   ├── barebones
 │   │   └── init.lua
@@ -36,7 +41,8 @@
 │   ├── shared
 │   │   ├── helpers.lua
 │   │   ├── options.lua
-│   │   └── remaps.lua
+│   │   ├── remapse.lua
+│   │   └── user_commands.lua
 ```
 
 To run the feature-complete config, use `nvim`
