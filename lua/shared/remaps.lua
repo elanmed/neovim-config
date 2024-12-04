@@ -6,7 +6,7 @@ vim.cmd [[
   nnoremap <leader>s :%s/\<\>\C/<left><left><left><left><left>
 ]]
 h.nmap(":", function() error "use ; instead!" end)
-h.nmap("<leader>a", "<C-6>", { desc = "Alternate file", })
+h.nmap("<leader>af", "<C-6>", { desc = "Alternate file", })
 h.nmap("<leader>va", "ggVG", { desc = "Select all", })
 h.nmap("<bs>", "b")
 h.nmap("*", "*N")
