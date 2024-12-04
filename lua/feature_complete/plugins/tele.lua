@@ -7,10 +7,10 @@ local action_state = require "telescope.actions.state"
 
 local custom_actions = {}
 
-custom_actions.send_all_and_open = function(prompt_bufnr)
-  actions.send_to_qflist(prompt_bufnr)
-  vim.cmd("copen 25")
-end
+-- custom_actions.send_all_and_open = function(prompt_bufnr)
+--   actions.send_to_qflist(prompt_bufnr)
+--   vim.cmd("copen 25")
+-- end
 
 custom_actions.send_selected_and_open = function(prompt_bufnr)
   local function get_table_size(t)
@@ -141,8 +141,7 @@ h.nmap("<leader>lb", function() grep_string_with_search({ whole_word = true, cas
 h.nmap("<leader>lo", function() builtin.grep_string(shared_grep_string_options) end,
   { desc = "Search the currently hovered word with telescope" })
 h.vmap("<leader>lo", grep_string_with_visual, { desc = "Search the current selection with telescope" })
-h.nmap("<leader>le", grep_stripped_filename,
-  { desc = "Search a file name starting with `wf_modules` with telescope" })
+h.nmap("<leader>le", grep_stripped_filename, { desc = "Search a file name starting with `wf_modules` with telescope" })
 h.nmap("<leader>ke", yank_stripped_filename, { desc = "C(K)opy a file name starting with `wf_modules`" })
 h.nmap("<leader>lp", function()
     builtin.planets({
@@ -160,6 +159,7 @@ h.nmap("<leader>lp", function()
 vim.api.nvim_set_hl(0, "TelescopeBorder", { link = "PmenuBorder" })
 vim.api.nvim_set_hl(0, "TelescopeNormal", { link = "Normal" })
 
+-- https://yeripratama.com/blog/customizing-nvim-telescope/
 vim.api.nvim_create_autocmd("User", {
   pattern = "TelescopeFindPre",
   callback = function()
@@ -245,11 +245,9 @@ require("neoclip").setup({
   keys = {
     telescope = {
       i = {
-        paste = "<f1>", -- unbind <C-p>, but this doesn't accept nil or ""
+        paste = false, -- unbind <C-p>
       },
     },
   },
 })
-
 h.nmap("<leader>ye", telescope.extensions.neoclip.default, { desc = "Open neoclip" })
-h.nmap("<leader>yp", [[""p]], { desc = "Paste the last item selected from neoclip" })

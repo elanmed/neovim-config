@@ -13,6 +13,3 @@ require "feature_complete"
 -- TODO:
 -- merge conflicts with fugitive
 -- better git blame
-
--- to generate highlight_groups.txt
--- redir > highlight_groups.txt | silent hi | redir END

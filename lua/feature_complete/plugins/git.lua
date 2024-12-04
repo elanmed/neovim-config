@@ -37,7 +37,11 @@ end, { desc = "Reset the bUffer" })
 h.nmap("<leader>hp", gitsigns.preview_hunk, { desc = "Preview the current hunk" })
 h.nmap("<leader>hl", gitsigns.toggle_current_line_blame, { desc = "Toggle git blame for the current line" })
 h.nmap("<leader>hf", gitsigns.blame, { desc = "Toggle git blame for the current file" })
-h.nmap("<leader>hd", h.user_cmd_cb("Gdiffsplit"), { desc = "Diff the current file" })
+h.nmap("<leader>hd", h.user_cmd_cb("Gdiffsplit"), { desc = "Open the Diff for the current file" })
+h.nmap("<leader>hq", function()
+  vim.cmd "wincmd H"
+  vim.cmd "q"
+end, { desc = "Close the diff for the current file" })
 
 h.nmap("<leader>gs", h.user_cmd_cb("Gedit :"), { desc = "Open the fugitive status in the current tab" })
 h.nmap("<leader>gd", h.user_cmd_cb("Git difftool -y"), { desc = "Open the git diff in different tabs" })
