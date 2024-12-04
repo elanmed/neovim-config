@@ -11,6 +11,7 @@ h.set.splitright = true         -- when splitting vertically, open new split to 
 h.set.splitbelow = true         -- when splitting horizontally, open new split below
 h.set.relativenumber = true     -- useful for multiline j, k
 h.set.termguicolors = true      -- needed for modern themes
+h.set.scrolloff = 8
 h.set.fileencoding = "utf-8"
 
 -- ignore checkhealth error

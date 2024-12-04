@@ -13,3 +13,4 @@ require "feature_complete"
 -- TODO:
 -- merge conflicts with fugitive
 -- better git blame
+-- remap for {, }

@@ -3,8 +3,8 @@
 - A minimalish config written in lua, uses:
 
   - [coc](https://github.com/neoclide/coc.nvim) to handle language servers, completions
-  - [treesitter](https://github.com/nvim-treesitter/nvim-treesitter) for AST-based comments, t/jsx pair renaming, and
-    viewing a file's high-level structure
+  - [treesitter](https://github.com/nvim-treesitter/nvim-treesitter) for language-specific comments, t/jsx pair
+    renaming, and viewing a file's code structure
   - [leap](https://github.com/ggandor/leap.nvim), [flit](https://github.com/ggandor/flit.nvim) and
     [easymotion](https://github.com/easymotion/vim-easymotion) for quicker movements
   - [vim tmux navigator](https://github.com/christoomey/vim-tmux-navigator) for moving between vim and tmux panes

@@ -70,7 +70,6 @@ require "render-markdown".setup {
 require "aerial".setup {
   lazy_load = false,
   show_guides = true,
-  -- use automatic resizing
   layout = {
     resize_to_content = true,
     max_width = 0.4,
@@ -81,6 +80,12 @@ require "aerial".setup {
     ["<C-b>"] = "actions.close",
   },
 }
+-- TODO: better remaps for this
+-- h.nmap("zn", h.user_cmd_cb("AerialNext"), { desc = "Go to the next aerial symbol" })
+-- h.nmap("zp", h.user_cmd_cb("AerialPrev"), { desc = "Go to the prev aerial symbol" })
+h.nmap("<C-b>", h.user_cmd_cb "AerialToggle left", { desc = "Toggle aerial window", })
+
+vim.api.nvim_set_hl(0, "AerialLine", { link = "Visual", })
 
 h.let.skip_ts_context_commentstring_module = true
 
@@ -105,10 +110,3 @@ require "Comment".setup {
   },
 }
 require "Comment.ft".lua = { "-- %s", "-- %s", }
-
--- TODO: better remaps for this
--- h.nmap("zn", h.user_cmd_cb("AerialNext"), { desc = "Go to the next aerial symbol" })
--- h.nmap("zp", h.user_cmd_cb("AerialPrev"), { desc = "Go to the prev aerial symbol" })
-h.nmap("<C-b>", h.user_cmd_cb "AerialToggle left", { desc = "Toggle aerial window", })
-
-vim.api.nvim_set_hl(0, "AerialLine", { link = "Visual", })
