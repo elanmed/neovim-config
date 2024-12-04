@@ -5,8 +5,8 @@ local config_values = config.values
 local make_entry = require "telescope.make_entry"
 
 local function get_visual()
-  local _, ls, cs = unpack(vim.fn.getpos("v"))
-  local _, le, ce = unpack(vim.fn.getpos("."))
+  local _, ls, cs = unpack(vim.fn.getpos "v")
+  local _, le, ce = unpack(vim.fn.getpos ".")
   return vim.api.nvim_buf_get_text(0, ls - 1, cs - 1, le - 1, ce, {})
 end
 
@@ -66,14 +66,14 @@ local function rg_with_args(opts)
     local term = trim(term_and_files[1])
 
     if len(term_and_files) == 1 then
-      print(table.concat(vim.tbl_flatten { args, term }, " "))
-      return vim.tbl_flatten { args, term }
+      print(table.concat(vim.tbl_flatten { args, term, }, " "))
+      return vim.tbl_flatten { args, term, }
     end
 
     local files = term_and_files[2]
 
     local files_split = split(files, ",")
-    local rg_cmd = { term }
+    local rg_cmd = { term, }
 
     for index, file in pairs(files_split) do
       local trimmed = trim(file)
@@ -97,8 +97,8 @@ local function rg_with_args(opts)
     end
 
 
-    print(table.concat(vim.tbl_flatten { args, rg_cmd }, " "))
-    return vim.tbl_flatten { args, rg_cmd }
+    print(table.concat(vim.tbl_flatten { args, rg_cmd, }, " "))
+    return vim.tbl_flatten { args, rg_cmd, }
   end
 
 
@@ -110,20 +110,20 @@ local function rg_with_args(opts)
 end
 
 local function rg_under_cursor()
-  local word_under_cursor = vim.fn.expand("<cword>")
-  rg_with_args({ default_text = word_under_cursor .. " ? " })
+  local word_under_cursor = vim.fn.expand "<cword>"
+  rg_with_args { default_text = word_under_cursor .. " ? ", }
 end
 
 local function rg_visual_selection()
   local visual = get_visual()
   local text = visual[1] or ""
-  rg_with_args({ default_text = text .. " ? " })
+  rg_with_args { default_text = text .. " ? ", }
 end
 
-return require("telescope").register_extension({
+return require "telescope".register_extension {
   exports = {
     rg_with_args = rg_with_args,
     rg_under_cursor = rg_under_cursor,
     rg_visual_selection = rg_visual_selection,
   },
-})
+}
