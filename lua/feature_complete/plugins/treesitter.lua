@@ -28,7 +28,6 @@ require "nvim-treesitter.configs".setup {
     additional_vim_regex_highlighting = false,
   },
   indent = { enable = true, },
-  autotag = { enable = true, },
   endwise = { enable = true, },
   textobjects = {
     select = {
@@ -110,3 +109,4 @@ require "Comment".setup {
   },
 }
 require "Comment.ft".lua = { "-- %s", "-- %s", }
+require "nvim-ts-autotag".setup {}
