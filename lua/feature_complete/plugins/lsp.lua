@@ -44,7 +44,11 @@ h.nmap("gu", "<Plug>(coc-references)", { desc = "Go to uses", })
 h.nmap("ga", "<Plug>(coc-codeaction-cursor)", { desc = "Open code actions", })
 h.nmap("gh", coc_show_docs, { desc = "Hover", })
 
-h.nmap("gl", "<c-w>w:q<cr>", { desc = "Close hover", })
+h.nmap("gl", function()
+  if vim.fn["coc#float#has_float"]() == 1 then
+    vim.fn["coc#float#close_all"]()
+  end
+end, { desc = "Close hover", })
 h.nmap("<leader>cr", h.user_cmd_cb "CocRestart", { desc = "Restart coc", })
 
 h.set.updatetime = 100
