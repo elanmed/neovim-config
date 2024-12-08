@@ -32,7 +32,7 @@ local function coc_show_docs()
 end
 
 h.imap("<C-s>", "coc#refresh()", { expr = true, desc = "Show autocompletion options", })
--- TODO: issues when written in lua
+-- issues when written in lua
 vim.cmd [[
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() :
 	\ "\<CMD>call feedkeys(v:lua.require('nvim-autopairs').autopairs_cr(), 'in')\<CR>"
@@ -63,5 +63,3 @@ vim.api.nvim_create_autocmd({ "CursorHold", }, {
     end
   end,
 })
-vim.api.nvim_set_hl(0, "CocFloating", { link = "Normal", })
-vim.api.nvim_set_hl(0, "CocHighlightText", { bg = "#2e3136", }) -- between base01 and base 02

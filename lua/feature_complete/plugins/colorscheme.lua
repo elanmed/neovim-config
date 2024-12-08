@@ -37,6 +37,11 @@ local M = {
 }
 
 vim.api.nvim_set_hl(0, "MatchParen", { fg = nil, bg = M.grey, })
-vim.api.nvim_set_hl(0, "PmenuBorder", { fg = M.grey, })
+vim.api.nvim_set_hl(0, "CocHighlightText", { bg = "#2e3136", }) -- between base01 and base 02
+
+vim.api.nvim_set_hl(0, "PmenuBorder", { fg = M.light_grey, })
+vim.api.nvim_set_hl(0, "TelescopeBorder", { link = "PmenuBorder", })
+vim.api.nvim_set_hl(0, "FloatBorder", { link = "PmenuBorder", }) -- harpoon border
+vim.api.nvim_set_hl(0, "Pmenu", { link = "Normal", })            -- wildmenu background
 
 return M

@@ -123,7 +123,25 @@ local function yank_stripped_filename()
 end
 
 -- h.nmap("<C-p>", h.user_cmd_cb("Telescope frecency workspace=CWD"), { desc = "Find files with telescope" })
-h.nmap("<C-p>", builtin.find_files, { desc = "Find files with telescope", })
+h.nmap("<C-p>", function()
+  builtin.find_files {
+    border = true,
+    borderchars = {
+      prompt = no_border_borderchars,
+      results = border_borderchars,
+      preview = border_borderchars,
+    },
+    layout_config = {
+      anchor = "N",
+      vertical = {
+        height = 0.7,
+        width = 0.7,
+        prompt_position = "bottom",
+        preview_height = 0,
+      },
+    },
+  }
+end, { desc = "Find files with telescope", })
 h.nmap("<leader>lr", builtin.resume, { desc = "Resume telescope search", })
 h.nmap("<leader>lt", builtin.buffers, { desc = "Search currently open buffers with telescope", })
 h.nmap("<leader>li", builtin.search_history, { desc = "Search search history with telescope", })
@@ -156,14 +174,11 @@ h.nmap("<leader>lp", function()
   end,
   { desc = "Search the planets with telescope", })
 
-vim.api.nvim_set_hl(0, "TelescopeBorder", { link = "PmenuBorder", })
-vim.api.nvim_set_hl(0, "TelescopeNormal", { link = "Normal", })
-
 -- https://yeripratama.com/blog/customizing-nvim-telescope/
 vim.api.nvim_create_autocmd("User", {
   pattern = "TelescopeFindPre",
   callback = function()
-    h.set.showtabline = 0
+    -- h.set.showtabline = 0
     h.set.laststatus = 0
   end,
 })
@@ -173,7 +188,7 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function()
     vim.api.nvim_create_autocmd("BufLeave", {
       callback = function()
-        h.set.laststatus = 2
+        -- h.set.laststatus = 2
         h.set.showtabline = 2
       end,
     })

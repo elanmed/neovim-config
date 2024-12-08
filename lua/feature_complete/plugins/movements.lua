@@ -26,8 +26,6 @@ h.nmap("<C-g>", function() harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_max
   { desc = "Toggle the harpoon window", })
 h.nmap("<leader>ad", function() harpoon:list():add() end, { desc = "Add a haRpoon entry", })
 
--- vim.api.nvim_set_hl(0, "FloatBorder", { fg = colors.orange, bg = colors.black })
-
 require "flit".setup {}
 require "marks".setup {
   excluded_filetypes = { "oil", },
