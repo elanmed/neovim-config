@@ -174,6 +174,8 @@ h.nmap("<leader>lp", function()
   end,
   { desc = "Search the planets with telescope", })
 
+vim.api.nvim_set_hl(0, "TelescopeNormal", { link = "Normal", })
+
 -- https://yeripratama.com/blog/customizing-nvim-telescope/
 vim.api.nvim_create_autocmd("User", {
   pattern = "TelescopeFindPre",

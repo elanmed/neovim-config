@@ -1,7 +1,6 @@
 {
   "coc.preferences.formatOnSave": true,
   "coc.preferences.useQuickfixForLocations": true,
-  // "coc.preferences.maxFileSize": "1MB",
   "coc.preferences.enableMarkdown": true,
   "prettier.proseWrap": "always",
   "prettier.printWidth": 120,
@@ -15,20 +14,8 @@
   "Lua.hint.paramName": "Disable",
   "Lua.hint.arrayIndex": "Disable",
   "Lua.workspace.checkThirdParty": false,
-  "hover.floatConfig": {
-    "border": true,
-    "borderhighlight": "PmenuBorder",
-    "highlight": "Normal"
-  },
-  "suggest.floatConfig": {
-    "border": true,
-    "borderhighlight": "PmenuBorder",
-    "highlight": "Normal"
-  },
-  "diagnostic.floatConfig": {
-    "border": true,
-    "borderhighlight": "PmenuBorder",
-    "highlight": "Normal"
-  },
+  "hover.floatConfig": { "border": true, "borderhighlight": "PmenuBorder" },
+  "suggest.floatConfig": { "border": true, "borderhighlight": "PmenuBorder" },
+  "diagnostic.floatConfig": { "border": true, "borderhighlight": "PmenuBorder" },
   "solargraph.formatting": true
 }
