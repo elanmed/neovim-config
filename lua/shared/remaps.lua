@@ -2,10 +2,14 @@ local h = require "shared.helpers"
 
 -- delay when using h.nmap
 vim.cmd "nnoremap ; :"
+vim.cmd "vnoremap ; :"
+vim.cmd "nnoremap <c-c> :"
+vim.cmd "inoremap <c-c> :"
+vim.cmd "vnoremap <c-c> :"
+
 vim.cmd [[
   nnoremap <leader>s :%s/\<\>\C/<left><left><left><left><left>
 ]]
-h.nmap(":", function() error "use ; instead!" end)
 h.nmap("<leader>af", "<C-6>", { desc = "Alternate file", })
 h.nmap("<leader>va", "ggVG", { desc = "Select all", })
 h.nmap("<bs>", "b")
@@ -126,14 +130,17 @@ h.nmap([[<leader>']], [["]], { desc = "Set register", })
 h.nmap("@", "@r", { desc = "Replay macro, assuming it's set to `r`", })
 
 -- remaps to figure out in the future:
--- h.nmap("B", function() end, { desc = "TODO find a remap" })
--- h.nmap("K", function() end, { desc = "TODO find a remap" })
--- h.nmap("W", function() end, { desc = "TODO find a remap" })
---
--- h.nmap("<leader>;", function() end, { desc = "TODO find a remap" })
--- h.nmap("<leader>i", function() end, { desc = "TODO find a remap" })
--- h.nmap("<leader>x", function() end, { desc = "TODO find a remap" })
--- h.nmap("<leader>b", function() end, { desc = "TODO find a remap" })
--- h.nmap("<leader>n", function() end, { desc = "TODO find a remap" })
--- h.nmap("<leader>,", function() end, { desc = "TODO find a remap" })
--- h.nmap("<leader>.", function() end, { desc = "TODO find a remap" })
+h.nmap("<C-t>", "<nop>", { desc = "TODO find a remap", })
+h.nmap("<C-w>", "<nop>", { desc = "TODO find a remap", })
+h.nmap("<C-x>", "<nop>", { desc = "TODO find a remap", })
+h.nmap("B", "<nop>", { desc = "TODO find a remap", })
+h.nmap("K", "<nop>", { desc = "TODO find a remap", })
+h.nmap("W", "<nop>", { desc = "TODO find a remap", })
+h.nmap("Q", "<nop>", { desc = "TODO find a remap", })
+h.nmap("<leader>;", "<nop>", { desc = "TODO find a remap", })
+h.nmap("<leader>i", "<nop>", { desc = "TODO find a remap", })
+h.nmap("<leader>x", "<nop>", { desc = "TODO find a remap", })
+h.nmap("<leader>b", "<nop>", { desc = "TODO find a remap", })
+h.nmap("<leader>n", "<nop>", { desc = "TODO find a remap", })
+h.nmap("<leader>,", "<nop>", { desc = "TODO find a remap", })
+h.nmap("<leader>.", "<nop>", { desc = "TODO find a remap", })
