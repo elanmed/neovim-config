@@ -2,7 +2,7 @@ local h = require "shared.helpers"
 local neoscroll = require "neoscroll"
 
 local function is_override_filetype()
-  return h.table_contains({ "oil", }, vim.bo.filetype)
+  return h.table_contains_value({ "oil", }, vim.bo.filetype)
 end
 
 neoscroll.setup {
@@ -39,28 +39,28 @@ end
 local modes = { "n", "v", "i", }
 for _, mode in pairs(modes) do
   h.map(mode, "<C-u>", function()
-    h.send_keys "0"
+    h.send_normal_keys "0"
     if is_override_filetype() then
       neoscroll.ctrl_u { duration = 250, }
       return
     end
 
     if is_last_line() then
-      h.send_keys "M"
+      h.send_normal_keys "M"
     else
       neoscroll.ctrl_u { duration = 250, }
     end
   end)
 
   h.map(mode, "<C-d>", function()
-    h.send_keys "0"
+    h.send_normal_keys "0"
     if is_override_filetype() then
       neoscroll.ctrl_d { duration = 250, }
       return
     end
 
     if is_first_line() then
-      h.send_keys "M"
+      h.send_normal_keys "M"
     else
       neoscroll.ctrl_d { duration = 250, }
     end
@@ -83,7 +83,7 @@ end
 vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", }, {
   pattern = "*",
   callback = function()
-    if h.table_contains({ "oil", "fugitive", "markdown", "markdown.mdx", "man", }, vim.bo.filetype) or has_split() then
+    if h.table_contains_value({ "oil", "fugitive", "markdown", "markdown.mdx", "man", }, vim.bo.filetype) or has_split() then
       mini_map.close()
     else
       mini_map.open()

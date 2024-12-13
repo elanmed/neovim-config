@@ -8,7 +8,7 @@ h.let.coc_global_extensions = {
   "coc-prettier",
   "coc-json",
   "coc-eslint",
-  "coc-snippets",
+  -- "coc-snippets",
   "coc-sumneko-lua",
   "coc-sh",
   "@yaegassy/coc-tailwindcss3",
@@ -22,7 +22,7 @@ h.let.coc_global_extensions = {
 
 local function coc_show_docs()
   local cw = vim.fn.expand "<cword>"
-  if h.table_contains({ "vim", "help", }, vim.bo.filetype) then
+  if h.table_contains_value({ "vim", "help", }, vim.bo.filetype) then
     vim.cmd("h " .. cw)
   elseif vim.api.nvim_eval "coc#rpc#ready()" then
     vim.fn.CocActionAsync "doHover"
@@ -58,7 +58,7 @@ vim.api.nvim_create_augroup("CocGroup", {})
 vim.api.nvim_create_autocmd({ "CursorHold", }, {
   group = "CocGroup",
   callback = function()
-    if not h.table_contains({ "qf", "DiffviewFiles", "oil", "harpoon", }, vim.bo.filetype) then
+    if not h.table_contains_value({ "qf", "DiffviewFiles", "oil", "harpoon", }, vim.bo.filetype) then
       vim.cmd "silent call CocActionAsync('highlight')"
     end
   end,

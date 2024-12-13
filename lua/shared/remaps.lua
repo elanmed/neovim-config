@@ -1,11 +1,11 @@
 local h = require "shared.helpers"
 
--- delay when using h.nmap
+-- delay when using h.*map
 vim.cmd "nnoremap ; :"
 vim.cmd "vnoremap ; :"
-vim.cmd "nnoremap <c-c> :"
-vim.cmd "inoremap <c-c> :"
-vim.cmd "vnoremap <c-c> :"
+-- vim.cmd "nnoremap <c-c> :Snippet<space>"
+vim.cmd "inoremap <c-c> <c-o>:Snippet<space>"
+h.nmap("<c-c>", function() print "snippets only supported in insert mode!" end)
 
 vim.cmd [[
   nnoremap <leader>s :%s/\<\>\C/<left><left><left><left><left>
@@ -64,11 +64,11 @@ vim.api.nvim_create_user_command("Lprev", function() gen_circular_next_prev("lpr
 h.nmap("Z", "gJ", { desc = "J without whitespace", })
 h.nmap("J", function()
   vim.cmd "Cnext"
-  h.send_keys "zz"
+  h.send_normal_keys "zz"
 end, { desc = "Move to the next item in the quickfix list", })
 h.nmap("K", function()
   vim.cmd "Cprev"
-  h.send_keys "zz"
+  h.send_normal_keys "zz"
 end, { desc = "Move to the previous item in the quickfix list", })
 h.nmap("gn", "gt", { desc = "Go to the next tab", })
 h.nmap("gp", "gT", { desc = "Go to the prev tab", })

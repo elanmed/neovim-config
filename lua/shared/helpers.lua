@@ -58,17 +58,41 @@ M.is_mac = function()
   return vim.fn.has "macunix" == 1
 end
 
-M.table_contains = function(table, element)
+M.table_contains_value = function(table, target_value)
   for _, value in pairs(table) do
-    if value == element then
+    if value == target_value then
       return true
     end
   end
   return false
 end
 
-M.send_keys = function(keys)
+M.table_contains_key = function(table, target_key)
+  for key in pairs(table) do
+    if key == target_key then
+      return true
+    end
+  end
+  return false
+end
+
+M.send_normal_keys = function(keys)
   vim.api.nvim_command("normal! " .. keys)
+end
+
+-- http://lua-users.org/wiki/SplitJoin
+M.split = function(str, delim)
+  local outResults = {}
+  local theStart = 1
+  local theSplitStart, theSplitEnd = string.find(str, delim,
+    theStart)
+  while theSplitStart do
+    table.insert(outResults, string.sub(str, theStart, theSplitStart - 1))
+    theStart = theSplitEnd + 1
+    theSplitStart, theSplitEnd = string.find(str, delim, theStart)
+  end
+  table.insert(outResults, string.sub(str, theStart))
+  return outResults
 end
 
 return vim.tbl_extend("error", M, {

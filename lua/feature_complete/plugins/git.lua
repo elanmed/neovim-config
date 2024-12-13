@@ -52,6 +52,6 @@ h.nmap("<leader>gl", h.user_cmd_cb "Git pull origin master", { desc = "Git puLl 
 vim.cmd [[nnoremap <leader>ge :Git checkout ]]    -- Git checkout (an Existing branch)
 vim.cmd [[nnoremap <leader>gn :Git checkout -b ]] -- Git checkout -b (a New branch)
 h.nmap("<leader>gq", function()
-  h.send_keys "1gt"
+  h.send_normal_keys "1gt"
   vim.cmd "tabonly"
 end, { desc = "Close the git diff tabs", })
