@@ -1,1 +1,1 @@
-waitFor("", () => );
+await waitFor(() => );
