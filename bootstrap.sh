@@ -2,27 +2,47 @@
 
 source ~/.dotfiles/helpers.sh
 
-h_validate_num_args --num=1 "$@"
-h_validate_package_manager "$1"
+server_flag=0
+package_manager=""
 
-h_install_package "$1" neovim
-if [[ $1 == "--pm=dnf" ]]
+for arg in "$@"
+do 
+  case "$arg" in 
+    --server)
+      server_flag=1
+      shift
+      ;;
+    --pm=*)
+      package_manager="$arg"
+      shift
+      ;;
+    *)
+      h_format_error "--pm={dnf,brew} --server"
+      ;;
+  esac
+done
+
+h_validate_package_manager "$package_manager"
+
+h_install_package "$package_manager" neovim
+h_is_linux && h_install_package "$package_manager" python3-neovim
+
+h_install_package "$package_manager" fzf
+h_install_package "$package_manager" ripgrep
+h_install_package "$package_manager" watchman
+
+if h_is_linux
 then
-  h_install_package "$1" python3-neovim
-fi
-
-h_install_package "$1" fzf
-h_install_package "$1" ripgrep
-h_install_package "$1" watchman
-
-if [[ $1 == "--pm=dnf" ]]
-then
-  h_install_package "$1" fd-find
+  h_install_package "$package_manager" fd-find
 else 
-  h_install_package "$1" fd
+  h_install_package "$package_manager" fd
 fi
 
-# increase num allowed open fd
-ulimit -n 1024
-h_echo --mode=doing "running :PlugInstall"
-nvim --headless "+PlugInstall" +qa
+if [[ $server_flag -eq 1 ]] 
+then 
+  h_echo --mode=noop "SKIPPING: running :PlugInstall"
+else
+  h_echo --mode=doing "running :PlugInstall"
+  nvim --headless "+PlugInstall" +qa
+fi
+
