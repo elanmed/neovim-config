@@ -3,13 +3,13 @@
 
 source ~/.dotfiles/helpers.sh
 
-server_flag=0
+server_flag=false
 package_manager=""
 
 for arg in "$@"; do
   case "$arg" in
     --server)
-      server_flag=1
+      server_flag=true
       shift
       ;;
     --pm=*)
@@ -37,7 +37,7 @@ else
   h_install_package "$package_manager" fd
 fi
 
-if [[ $server_flag -eq 1 ]]; then
+if $server_flag; then
   h_echo --mode=noop "SKIPPING: running :PlugInstall"
 else
   h_echo --mode=doing "running :PlugInstall"
