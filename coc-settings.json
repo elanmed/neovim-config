@@ -19,6 +19,7 @@
   "diagnostic.floatConfig": { "border": true, "borderhighlight": "PmenuBorder" },
   "solargraph.formatting": true,
   "bashIde.shfmt.simplifyCode": true,
+  "bashIde.shfmt.caseIndent": true,
   // https://github.com/koalaman/shellcheck/issues/2652#issuecomment-1925499893
   "bashIde.shellcheckArguments": "--extended-analysis=false"
 }

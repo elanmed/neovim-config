@@ -1,13 +1,13 @@
 #!/bin/bash
+# shellcheck source=/dev/null
 
 source ~/.dotfiles/helpers.sh
 
 server_flag=0
 package_manager=""
 
-for arg in "$@"
-do 
-  case "$arg" in 
+for arg in "$@"; do
+  case "$arg" in
     --server)
       server_flag=1
       shift
@@ -31,18 +31,15 @@ h_install_package "$package_manager" fzf
 h_install_package "$package_manager" ripgrep
 h_install_package "$package_manager" watchman
 
-if h_is_linux
-then
+if h_is_linux; then
   h_install_package "$package_manager" fd-find
-else 
+else
   h_install_package "$package_manager" fd
 fi
 
-if [[ $server_flag -eq 1 ]] 
-then 
+if [[ $server_flag -eq 1 ]]; then
   h_echo --mode=noop "SKIPPING: running :PlugInstall"
 else
   h_echo --mode=doing "running :PlugInstall"
   nvim --headless "+PlugInstall" +qa
 fi
-
