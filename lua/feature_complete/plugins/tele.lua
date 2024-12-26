@@ -58,17 +58,17 @@ local function grep_string_with_search(opts)
   opts = opts or {}
 
   local base_input_text = "Grep for"
-  local additional_args = {}
+  local additional_args = { "--hidden", }
   local word_match
   local input_text
 
   if opts.case_sensitive and opts.whole_word then
     input_text = base_input_text .. " (case sensitive + whole word): "
-    additional_args = { "-s", }
+    table.insert(additional_args, "-s")
     word_match = "-w"
   elseif opts.case_sensitive then
     input_text = base_input_text .. " (case sensitive): "
-    additional_args = { "-s", }
+    table.insert(additional_args, "-s")
   elseif opts.whole_word then
     input_text = base_input_text .. " (whole word): "
     word_match = "-w"
@@ -125,6 +125,7 @@ end
 -- h.nmap("<C-p>", h.user_cmd_cb("Telescope frecency workspace=CWD"), { desc = "Find files with telescope" })
 h.nmap("<C-p>", function()
   builtin.find_files {
+    hidden = true,
     border = true,
     borderchars = {
       prompt = no_border_borderchars,
@@ -222,16 +223,17 @@ telescope.setup {
     },
   },
   defaults = {
-    results_title    = "",
-    layout_strategy  = "vertical",
-    sorting_strategy = "ascending",
-    border           = true,
-    borderchars      = {
+    file_ignore_patterns = { "node_modules", ".git", },
+    results_title        = "",
+    layout_strategy      = "vertical",
+    sorting_strategy     = "ascending",
+    border               = true,
+    borderchars          = {
       prompt = no_border_borderchars,
       results = no_border_borderchars,
       preview = border_borderchars,
     },
-    layout_config    = {
+    layout_config        = {
       vertical = {
         width = { padding = 0, },
         height = { padding = 0, },
@@ -239,7 +241,7 @@ telescope.setup {
         preview_height = 0.35,
       },
     },
-    mappings         = {
+    mappings             = {
       i = {
         ["<cr>"] = custom_actions.send_selected_and_open,
         ["<C-a>"] = actions.toggle_all,
