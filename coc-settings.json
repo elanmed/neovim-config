@@ -17,5 +17,8 @@
   "hover.floatConfig": { "border": true, "borderhighlight": "PmenuBorder" },
   "suggest.floatConfig": { "border": true, "borderhighlight": "PmenuBorder" },
   "diagnostic.floatConfig": { "border": true, "borderhighlight": "PmenuBorder" },
-  "solargraph.formatting": true
+  "solargraph.formatting": true,
+  "bashIde.shfmt.simplifyCode": true,
+  // https://github.com/koalaman/shellcheck/issues/2652#issuecomment-1925499893
+  "bashIde.shellcheckArguments": "--extended-analysis=false"
 }
