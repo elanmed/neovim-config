@@ -131,7 +131,6 @@ h.nmap("@", "@r", { desc = "Replay macro, assuming it's set to `r`", })
 
 -- remaps to figure out in the future:
 h.nmap("<C-t>", "<nop>", { desc = "TODO find a remap", })
-h.nmap("<C-w>", "<nop>", { desc = "TODO find a remap", })
 h.nmap("<C-x>", "<nop>", { desc = "TODO find a remap", })
 h.nmap("B", "<nop>", { desc = "TODO find a remap", })
 h.nmap("W", "<nop>", { desc = "TODO find a remap", })
