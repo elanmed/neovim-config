@@ -45,9 +45,19 @@ h.nmap("<leader>hq", function()
 end, { desc = "Close the diff for the current file", })
 
 h.nmap("<leader>gs", h.user_cmd_cb "Gedit :", { desc = "Open the fugitive status in the current tab", })
+h.nmap("<leader>go", "<cmd>Git log %<cr><c-w>T", { desc = "Open the commits of the current buffer in a new tab", })
+h.nmap("<leader>gl", function()
+    local current_buf = vim.api.nvim_get_current_buf()
+    vim.cmd "Gclog -- %"
+    vim.cmd "cclose"
+    vim.api.nvim_set_current_buf(current_buf)
+    vim.cmd "vsplit"
+    vim.cmd "cc"
+  end,
+  { desc = "Open the commits of the current buffer in the quickfix list", })
 h.nmap("<leader>gd", h.user_cmd_cb "Git difftool -y", { desc = "Open the git diff in different tabs", })
 h.nmap("<leader>gh", h.user_cmd_cb "Git push origin HEAD", { desc = "Git pusH origin HEAD", })
-h.nmap("<leader>gl", h.user_cmd_cb "Git pull origin master", { desc = "Git puLl origin master", })
+-- h.nmap("<leader>gl", h.user_cmd_cb "Git pull origin master", { desc = "Git puLl origin master", })
 -- h.nmap("<leader>ga", h.user_cmd_cb("Git add -A"), { desc = "Git Add -A" })
 vim.cmd [[nnoremap <leader>ge :Git checkout ]]    -- Git checkout (an Existing branch)
 vim.cmd [[nnoremap <leader>gn :Git checkout -b ]] -- Git checkout -b (a New branch)
@@ -55,3 +65,30 @@ h.nmap("<leader>gq", function()
   h.send_normal_keys "1gt"
   vim.cmd "tabonly"
 end, { desc = "Close the git diff tabs", })
+
+h.nmap("W", function()
+  if h.has_split() then
+    h.focus "l"
+    vim.cmd "Cprev"
+  else
+    vim.cmd "vsplit"
+    vim.cmd "cc"
+  end
+end)
+
+h.nmap("Q", function()
+  if h.has_split() then
+    h.focus "l"
+    vim.cmd "Cnext"
+  else
+    vim.cmd "vsplit"
+    vim.cmd "cc"
+  end
+end)
+
+vim.api.nvim_create_autocmd({ "FileType", }, {
+  pattern = "qf",
+  callback = function()
+    -- vim.cmd "nnoremap <buffer> o <cr>jw:Gvdiffsplit <c-r><c-w>^<cr>"
+  end,
+})

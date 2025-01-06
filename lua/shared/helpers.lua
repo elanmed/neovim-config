@@ -38,6 +38,25 @@ M.dump = function(o)
   end
 end
 
+M.has_split = function()
+  local function unsafe_has_split()
+    return vim.api.nvim_win_get_width(0) ~= vim.api.nvim_get_option "columns"
+  end
+
+  local status, retval = pcall(unsafe_has_split)
+  if status then return retval else return false end
+end
+
+M.maybe_close_split = function(direction)
+  if not M.has_split() then return end
+  M.focus(direction)
+  vim.cmd "q"
+end
+
+M.focus = function(direction)
+  vim.cmd("wincmd " .. direction)
+end
+
 M.user_cmd_cb = function(user_cmd)
   return function() vim.cmd(user_cmd) end
 end
@@ -78,6 +97,13 @@ end
 
 M.send_normal_keys = function(keys)
   vim.api.nvim_command("normal! " .. keys)
+
+  -- local keys = vim.api.nvim_replace_termcodes("<c-w>" .. direction, true, false, true)
+  -- vim.api.nvim_feedkeys(keys, "n", false)
+
+  -- or async
+  -- vim.api.nvim_input("<c-w>" .. direction)
+  -- vim.defer_fn(cb, 0)
 end
 
 -- http://lua-users.org/wiki/SplitJoin

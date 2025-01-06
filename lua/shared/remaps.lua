@@ -62,14 +62,9 @@ vim.api.nvim_create_user_command("Lnext", function() gen_circular_next_prev("lne
 vim.api.nvim_create_user_command("Lprev", function() gen_circular_next_prev("lprev", "llast") end, {})
 
 h.nmap("Z", "gJ", { desc = "J without whitespace", })
-h.nmap("J", function()
-  vim.cmd "Cnext"
-  h.send_normal_keys "zz"
-end, { desc = "Move to the next item in the quickfix list", })
-h.nmap("K", function()
-  vim.cmd "Cprev"
-  h.send_normal_keys "zz"
-end, { desc = "Move to the previous item in the quickfix list", })
+h.nmap("J", h.user_cmd_cb "Cnext", { desc = "Move to the next item in the quickfix list", })
+h.nmap("K", h.user_cmd_cb "Cprev", { desc = "Move to the prev item in the quickfix list", })
+
 h.nmap("gn", "gt", { desc = "Go to the next tab", })
 h.nmap("gp", "gT", { desc = "Go to the prev tab", })
 
@@ -133,8 +128,6 @@ h.nmap("@", "@r", { desc = "Replay macro, assuming it's set to `r`", })
 h.nmap("<C-t>", "<nop>", { desc = "TODO find a remap", })
 h.nmap("<C-x>", "<nop>", { desc = "TODO find a remap", })
 h.nmap("B", "<nop>", { desc = "TODO find a remap", })
-h.nmap("W", "<nop>", { desc = "TODO find a remap", })
-h.nmap("Q", "<nop>", { desc = "TODO find a remap", })
 h.nmap("<leader>;", "<nop>", { desc = "TODO find a remap", })
 h.nmap("<leader>i", "<nop>", { desc = "TODO find a remap", })
 h.nmap("<leader>x", "<nop>", { desc = "TODO find a remap", })

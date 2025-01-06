@@ -5,15 +5,33 @@ bqf.setup {
   auto_resize_height = true,
   func_map = {
     openc = "<cr>",
+    open = "o",
   },
   preview = {
     winblend = 0,
+    -- https://github.com/kevinhwang91/nvim-bqf?tab=readme-ov-file#customize-configuration
+    should_preview_cb = function(bufnr)
+      local ret = true
+      local bufname = vim.api.nvim_buf_get_name(bufnr)
+      local fsize = vim.fn.getfsize(bufname)
+      -- file size greater than 100k
+      if fsize > 100 * 1024 then
+        ret = false
+      elseif bufname:match "^fugitive://" then
+        ret = false
+      end
+      return ret
+    end,
   },
 }
 
 -- TODO: figure out a way to clear only one list, not all
 -- delete all quickfix lists
 h.nmap("gc", h.user_cmd_cb "cex \"\"", { desc = "Clear all quickfix lists", })
+
+-- require "bqf.qfwin.handler".open(true, "vsplit")
+-- require "bqf.qfwin.handler".navFile(true)
+-- require "bqf.qfwin.handler".open(false)
 
 vim.api.nvim_create_autocmd({ "BufEnter", }, {
   pattern = "*",
