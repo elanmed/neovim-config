@@ -45,16 +45,7 @@ h.nmap("<leader>hq", function()
 end, { desc = "Close the diff for the current file", })
 
 h.nmap("<leader>gs", h.user_cmd_cb "Gedit :", { desc = "Open the fugitive status in the current tab", })
-h.nmap("<leader>go", "<cmd>Git log %<cr><c-w>T", { desc = "Open the commits of the current buffer in a new tab", })
-h.nmap("<leader>gl", function()
-    local current_buf = vim.api.nvim_get_current_buf()
-    vim.cmd "Gclog -- %"
-    vim.cmd "cclose"
-    vim.api.nvim_set_current_buf(current_buf)
-    vim.cmd "vsplit"
-    vim.cmd "cc"
-  end,
-  { desc = "Open the commits of the current buffer in the quickfix list", })
+h.nmap("<leader>gl", "<cmd>Git log %<cr><c-w>T", { desc = "Open the commits of the current buffer in a new tab", })
 h.nmap("<leader>gd", h.user_cmd_cb "Git difftool -y", { desc = "Open the git diff in different tabs", })
 h.nmap("<leader>gh", h.user_cmd_cb "Git push origin HEAD", { desc = "Git pusH origin HEAD", })
 -- h.nmap("<leader>gl", h.user_cmd_cb "Git pull origin master", { desc = "Git puLl origin master", })
@@ -66,29 +57,39 @@ h.nmap("<leader>gq", function()
   vim.cmd "tabonly"
 end, { desc = "Close the git diff tabs", })
 
-h.nmap("W", function()
-  if h.has_split() then
-    h.focus "l"
-    vim.cmd "Cprev"
-  else
+h.nmap("<leader>go", function()
+    local current_buf = vim.api.nvim_get_current_buf()
+    vim.cmd "Gclog -n 20 %"
+    vim.cmd "cclose"
+    vim.api.nvim_set_current_buf(current_buf)
     vim.cmd "vsplit"
     vim.cmd "cc"
-  end
-end)
-
-h.nmap("Q", function()
-  if h.has_split() then
-    h.focus "l"
-    vim.cmd "Cnext"
-  else
-    vim.cmd "vsplit"
-    vim.cmd "cc"
-  end
-end)
-
-vim.api.nvim_create_autocmd({ "FileType", }, {
-  pattern = "qf",
-  callback = function()
-    -- vim.cmd "nnoremap <buffer> o <cr>jw:Gvdiffsplit <c-r><c-w>^<cr>"
   end,
-})
+  { desc = "open the cOmmits of the current buffer in the quickfix list", })
+
+local function go_to_commit(qf_cmd)
+  if h.has_split() then
+    h.focus "l"
+    vim.cmd(qf_cmd)
+  else
+    vim.cmd "vsplit"
+    vim.cmd "cc"
+  end
+end
+h.nmap("W", function()
+  go_to_commit "Cprev"
+end)
+h.nmap("Q", function()
+  go_to_commit "Cnext"
+end)
+
+h.nmap("<leader>gp", function()
+  h.focus "l"
+  h.send_normal_keys "2G0w"
+  local commit = vim.fn.expand "<cword>"
+  h.focus "h"
+  local current_buf = vim.api.nvim_get_current_buf()
+  vim.cmd "tabnew"
+  vim.api.nvim_set_current_buf(current_buf)
+  vim.cmd("Gvdiffsplit " .. commit .. "^")
+end, { desc = "create a new tab with a side-by-side sPlit", })

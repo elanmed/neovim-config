@@ -11,16 +11,13 @@ bqf.setup {
     winblend = 0,
     -- https://github.com/kevinhwang91/nvim-bqf?tab=readme-ov-file#customize-configuration
     should_preview_cb = function(bufnr)
-      local ret = true
       local bufname = vim.api.nvim_buf_get_name(bufnr)
       local fsize = vim.fn.getfsize(bufname)
       -- file size greater than 100k
       if fsize > 100 * 1024 then
-        ret = false
-      elseif bufname:match "^fugitive://" then
-        ret = false
+        return false
       end
-      return ret
+      return true
     end,
   },
 }
