@@ -34,13 +34,13 @@ h.set.shiftwidth = 2   -- number of spaces to insert/delete when in insert mode
 
 -- search
 h.set.ignorecase = true
-h.nmap("<leader>/t", h.user_cmd_cb "noh", { desc = "Turn off highlighting", })
+h.map({ "n", }, "<leader>/t", h.user_cmd_cb "noh", { desc = "Turn off highlighting", })
 
 -- folding
 h.set.foldmethod = "expr"
-h.set.foldcolumn = "0"                               -- disable fold symbols in left column
-h.set.foldlevelstart = 99                            -- open folds by default
-h.nmap("<leader>u", "za", { desc = "Toggle fold", }) -- toggle fold
+h.set.foldcolumn = "0"                                        -- disable fold symbols in left column
+h.set.foldlevelstart = 99                                     -- open folds by default
+h.map({ "n", }, "<leader>u", "za", { desc = "Toggle fold", }) -- toggle fold
 
 h.set.foldexpr = "v:lua.GetFold(v:lnum)"
 

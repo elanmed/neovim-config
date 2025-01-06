@@ -1,7 +1,7 @@
 local h = require "shared.helpers"
 
-h.nmap("<C-f>", h.user_cmd_cb "Oil", { desc = "Toggle oil", })
-h.nmap("<leader>ne", h.user_cmd_cb "NERDTreeFind", { desc = "Open NERDTree", })
+h.map({ "n", "v", }, "<C-f>", h.user_cmd_cb "Oil", { desc = "Toggle oil", })
+h.map({ "n", }, "<leader>ne", h.user_cmd_cb "NERDTreeFind", { desc = "Open NERDTree", })
 
 require "oil".setup {
   default_file_explorer = true,

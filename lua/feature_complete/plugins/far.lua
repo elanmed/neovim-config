@@ -1,7 +1,7 @@
 local h = require "shared.helpers"
 local grug = require "grug-far"
 
-h.nmap("<leader>re", function()
+h.map({ "n", }, "<leader>re", function()
   vim.cmd "GrugFar"
   vim.cmd "vertical resize 135%"
 end, { desc = "Open the grug-far ui", })

@@ -24,7 +24,7 @@ bqf.setup {
 
 -- TODO: figure out a way to clear only one list, not all
 -- delete all quickfix lists
-h.nmap("gc", h.user_cmd_cb "cex \"\"", { desc = "Clear all quickfix lists", })
+h.map({ "n", }, "gc", h.user_cmd_cb "cex \"\"", { desc = "Clear all quickfix lists", })
 
 -- require "bqf.qfwin.handler".open(true, "vsplit")
 -- require "bqf.qfwin.handler".navFile(true)

@@ -31,25 +31,25 @@ local function coc_show_docs()
   end
 end
 
-h.imap("<C-s>", "coc#refresh()", { expr = true, desc = "Show autocompletion options", })
+h.map({ "i", }, "<C-s>", "coc#refresh()", { expr = true, desc = "Show autocompletion options", })
 -- issues when written in lua
 vim.cmd [[
 inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() :
 	\ "\<CMD>call feedkeys(v:lua.require('nvim-autopairs').autopairs_cr(), 'in')\<CR>"
 ]]
 
-h.nmap("gd", "<Plug>(coc-definition)zz", { desc = "Go to definition", })
-h.nmap("gy", "<Plug>(coc-type-definition)", { desc = "Go to type definition", })
-h.nmap("gu", "<Plug>(coc-references)", { desc = "Go to uses", })
-h.nmap("ga", "<Plug>(coc-codeaction-cursor)", { desc = "Open code actions", })
-h.nmap("gh", coc_show_docs, { desc = "Hover", })
+h.map({ "n", }, "gd", "<Plug>(coc-definition)zz", { desc = "Go to definition", })
+h.map({ "n", }, "gy", "<Plug>(coc-type-definition)", { desc = "Go to type definition", })
+h.map({ "n", }, "gu", "<Plug>(coc-references)", { desc = "Go to uses", })
+h.map({ "n", }, "ga", "<Plug>(coc-codeaction-cursor)", { desc = "Open code actions", })
+h.map({ "n", }, "gh", coc_show_docs, { desc = "Hover", })
 
-h.nmap("gl", function()
+h.map({ "n", }, "gl", function()
   if vim.fn["coc#float#has_float"]() == 1 then
     vim.fn["coc#float#close_all"]()
   end
 end, { desc = "Close hover", })
-h.nmap("<leader>cr", h.user_cmd_cb "CocRestart", { desc = "Restart coc", })
+h.map({ "n", }, "<leader>cr", h.user_cmd_cb "CocRestart", { desc = "Restart coc", })
 
 h.set.updatetime = 100
 h.set.signcolumn = "yes" -- needed for linting symbols

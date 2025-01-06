@@ -19,7 +19,7 @@ neoscroll.setup {
     h.set.cursorline = false
   end,
 }
-h.nmap("z", function() neoscroll.zz { half_win_duration = 250, } end)
+h.map({ "n", }, "z", function() neoscroll.zz { half_win_duration = 250, } end)
 
 local function get_current_line()
   return vim.api.nvim_win_get_cursor(0)[1]
@@ -36,36 +36,33 @@ local function is_last_line()
   return current_line == last_line
 end
 
-local modes = { "n", "v", "i", }
-for _, mode in pairs(modes) do
-  h.map(mode, "<C-u>", function()
-    h.send_normal_keys "0"
-    if is_neoscroll_override_filetype() then
-      neoscroll.ctrl_u { duration = 250, }
-      return
-    end
+h.map({ "n", "v", "i", }, "<C-u>", function()
+  h.send_normal_keys "0"
+  if is_neoscroll_override_filetype() then
+    neoscroll.ctrl_u { duration = 250, }
+    return
+  end
 
-    if is_last_line() then
-      h.send_normal_keys "M"
-    else
-      neoscroll.ctrl_u { duration = 250, }
-    end
-  end)
+  if is_last_line() then
+    h.send_normal_keys "M"
+  else
+    neoscroll.ctrl_u { duration = 250, }
+  end
+end)
 
-  h.map(mode, "<C-d>", function()
-    h.send_normal_keys "0"
-    if is_neoscroll_override_filetype() then
-      neoscroll.ctrl_d { duration = 250, }
-      return
-    end
+h.map({ "n", "v", "i", }, "<C-d>", function()
+  h.send_normal_keys "0"
+  if is_neoscroll_override_filetype() then
+    neoscroll.ctrl_d { duration = 250, }
+    return
+  end
 
-    if is_first_line() then
-      h.send_normal_keys "M"
-    else
-      neoscroll.ctrl_d { duration = 250, }
-    end
-  end)
-end
+  if is_first_line() then
+    h.send_normal_keys "M"
+  else
+    neoscroll.ctrl_d { duration = 250, }
+  end
+end)
 
 local mini_map = require "mini.map"
 

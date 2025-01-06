@@ -2,7 +2,7 @@ local M = {}
 
 M.remaps = {}
 
-local function map(mode, shortcut, command, opts)
+local function keymap(mode, shortcut, command, opts)
   opts = opts or {}
   vim.keymap.set(
     mode,
@@ -57,16 +57,10 @@ M.user_cmd_cb = function(user_cmd)
   return function() vim.cmd(user_cmd) end
 end
 
-M.nmap = function(shortcut, command, opts)
-  map("n", shortcut, command, opts)
-end
-
-M.imap = function(shortcut, command, opts)
-  map("i", shortcut, command, opts)
-end
-
-M.vmap = function(shortcut, command, opts)
-  map("v", shortcut, command, opts)
+M.map = function(modes, shortcut, command, opts)
+  for _, mode in pairs(modes) do
+    keymap(mode, shortcut, command, opts)
+  end
 end
 
 M.is_mac = function()
@@ -120,5 +114,4 @@ end
 return vim.tbl_extend("error", M, {
   set = vim.opt,
   let = vim.g,
-  map = map,
 })

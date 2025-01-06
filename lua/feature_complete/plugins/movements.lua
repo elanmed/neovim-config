@@ -1,6 +1,7 @@
 local h = require "shared.helpers"
 
-vim.api.nvim_set_var("VM_maps", { ["Add Cursor Down"] = "<C-t>", })
+-- TODO
+-- vim.api.nvim_set_var("VM_maps", { ["Add Cursor Down"] = "<C-t>", })
 
 vim.api.nvim_create_autocmd({ "User", }, {
   pattern = "EasyMotionPromptBegin",
@@ -22,9 +23,9 @@ harpoon:setup {
   },
 }
 
-h.nmap("<C-g>", function() harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_max_width = 80, }) end,
+h.map({ "n", "v", }, "<C-g>", function() harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_max_width = 80, }) end,
   { desc = "Toggle the harpoon window", })
-h.nmap("<leader>ad", function() harpoon:list():add() end, { desc = "Add a haRpoon entry", })
+h.map({ "n", }, "<leader>ad", function() harpoon:list():add() end, { desc = "Add a haRpoon entry", })
 
 require "flit".setup {}
 require "marks".setup {
