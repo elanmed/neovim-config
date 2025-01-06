@@ -3,8 +3,7 @@ local h = require "shared.helpers"
 -- delay when using h.*map
 vim.cmd "nnoremap ; :"
 vim.cmd "vnoremap ; :"
--- vim.cmd "nnoremap <c-c> :Snippet<space>"
-vim.cmd "inoremap <c-c> <c-o>:Snippet<space>"
+vim.cmd "inoremap <c-t> <c-o>:Snippet<space>"
 h.nmap("<c-c>", function() print "snippets only supported in insert mode!" end)
 
 vim.cmd [[
@@ -124,9 +123,12 @@ h.nmap("<leader>ta", h.user_cmd_cb "silent! bufdo bdelete", { desc = "Close all 
 h.nmap([[<leader>']], [["]], { desc = "Set register", })
 h.nmap("@", "@r", { desc = "Replay macro, assuming it's set to `r`", })
 
+h.nmap("<c-x>", "{")
+h.imap("<c-x>", "{")
+h.nmap("<c-c>", "}")
+h.imap("<c-c>", "}")
+
 -- remaps to figure out in the future:
-h.nmap("<C-t>", "<nop>", { desc = "TODO find a remap", })
-h.nmap("<C-x>", "<nop>", { desc = "TODO find a remap", })
 h.nmap("B", "<nop>", { desc = "TODO find a remap", })
 h.nmap("<leader>;", "<nop>", { desc = "TODO find a remap", })
 h.nmap("<leader>i", "<nop>", { desc = "TODO find a remap", })

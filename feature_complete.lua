@@ -12,5 +12,3 @@ require "feature_complete"
 
 -- TODO:
 -- merge conflicts with fugitive
--- diff file from previous at different commits
--- remap for {, }

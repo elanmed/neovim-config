@@ -53,6 +53,11 @@ h.nmap("<leader>gq", function()
   h.send_normal_keys "1gt"
   vim.cmd "tabonly"
 end, { desc = "Close the git diff tabs", })
+
+h.nmap("<leader>ga", function()
+  vim.cmd "Git blame"
+  vim.api.nvim_input "A"
+end, { desc = "open git blame", })
 h.nmap("<leader>gl", function()
   local current_buf = vim.api.nvim_get_current_buf()
   vim.cmd "tabnew"
@@ -60,7 +65,6 @@ h.nmap("<leader>gl", function()
   vim.cmd "Git log %"
   vim.cmd "wincmd o"
 end, { desc = "Open the commits of the current buffer in a new tab", })
-
 h.nmap("<leader>go", function()
     local current_buf = vim.api.nvim_get_current_buf()
     vim.cmd "Gclog -n 20 %"
@@ -88,6 +92,7 @@ h.nmap("Q", function()
 end)
 
 h.nmap("<leader>gp", function()
+  vim.cmd "wincmd j"
   vim.cmd "wincmd l"
   h.send_normal_keys "2G0w"
   local commit = vim.fn.expand "<cword>"
