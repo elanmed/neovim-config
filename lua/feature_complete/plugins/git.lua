@@ -6,6 +6,7 @@ gitsigns.setup {
   },
 }
 
+-- gitsigns
 -- https://github.com/lewis6991/gitsigns.nvim?tab=readme-ov-file#keymaps
 h.nmap(")", function()
   if vim.wo.diff then
@@ -14,7 +15,6 @@ h.nmap(")", function()
     gitsigns.nav_hunk "next"
   end
 end, { desc = "Go to the next git hunk", })
-
 h.nmap("(", function()
   if vim.wo.diff then
     vim.cmd.normal { "[c", bang = true, }
@@ -22,7 +22,6 @@ h.nmap("(", function()
     gitsigns.nav_hunk "prev"
   end
 end, { desc = "Go to the prev git hunk", })
-
 h.nmap("<leader>hr", function()
   gitsigns.reset_hunk()
   vim.cmd "w"
@@ -44,18 +43,23 @@ h.nmap("<leader>hq", function()
   vim.cmd "q"
 end, { desc = "Close the diff for the current file", })
 
+-- fugitive
 h.nmap("<leader>gs", h.user_cmd_cb "Gedit :", { desc = "Open the fugitive status in the current tab", })
-h.nmap("<leader>gl", "<cmd>Git log %<cr><c-w>T", { desc = "Open the commits of the current buffer in a new tab", })
 h.nmap("<leader>gd", h.user_cmd_cb "Git difftool -y", { desc = "Open the git diff in different tabs", })
 h.nmap("<leader>gh", h.user_cmd_cb "Git push origin HEAD", { desc = "Git pusH origin HEAD", })
--- h.nmap("<leader>gl", h.user_cmd_cb "Git pull origin master", { desc = "Git puLl origin master", })
--- h.nmap("<leader>ga", h.user_cmd_cb("Git add -A"), { desc = "Git Add -A" })
 vim.cmd [[nnoremap <leader>ge :Git checkout ]]    -- Git checkout (an Existing branch)
 vim.cmd [[nnoremap <leader>gn :Git checkout -b ]] -- Git checkout -b (a New branch)
 h.nmap("<leader>gq", function()
   h.send_normal_keys "1gt"
   vim.cmd "tabonly"
 end, { desc = "Close the git diff tabs", })
+h.nmap("<leader>gl", function()
+  local current_buf = vim.api.nvim_get_current_buf()
+  vim.cmd "tabnew"
+  vim.api.nvim_set_current_buf(current_buf)
+  vim.cmd "Git log %"
+  vim.cmd "wincmd o"
+end, { desc = "Open the commits of the current buffer in a new tab", })
 
 h.nmap("<leader>go", function()
     local current_buf = vim.api.nvim_get_current_buf()
@@ -69,7 +73,7 @@ h.nmap("<leader>go", function()
 
 local function go_to_commit(qf_cmd)
   if h.has_split() then
-    h.focus "l"
+    vim.cmd "wincmd l"
     vim.cmd(qf_cmd)
   else
     vim.cmd "vsplit"
@@ -84,10 +88,9 @@ h.nmap("Q", function()
 end)
 
 h.nmap("<leader>gp", function()
-  h.focus "l"
+  vim.cmd "wincmd l"
   h.send_normal_keys "2G0w"
   local commit = vim.fn.expand "<cword>"
-  h.focus "h"
   local current_buf = vim.api.nvim_get_current_buf()
   vim.cmd "tabnew"
   vim.api.nvim_set_current_buf(current_buf)

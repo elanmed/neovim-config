@@ -49,12 +49,8 @@ end
 
 M.maybe_close_split = function(direction)
   if not M.has_split() then return end
-  M.focus(direction)
-  vim.cmd "q"
-end
-
-M.focus = function(direction)
   vim.cmd("wincmd " .. direction)
+  vim.cmd "q"
 end
 
 M.user_cmd_cb = function(user_cmd)
@@ -98,7 +94,7 @@ end
 M.send_normal_keys = function(keys)
   vim.api.nvim_command("normal! " .. keys)
 
-  -- local keys = vim.api.nvim_replace_termcodes("<c-w>" .. direction, true, false, true)
+  -- local keys = vim.api.nvim_replace_termcodes(keys, true, false, true)
   -- vim.api.nvim_feedkeys(keys, "n", false)
 
   -- or async
