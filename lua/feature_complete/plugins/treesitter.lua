@@ -80,9 +80,9 @@ require "aerial".setup {
   },
 }
 -- TODO: better remaps for this
--- h.map({ "n", }, "zn", h.user_cmd_cb "AerialNext", { desc = "Go to the next aerial symbol", })
--- h.map({ "n", }, "zp", h.user_cmd_cb "AerialPrev", { desc = "Go to the prev aerial symbol", })
-h.map({ "n", "i", "v", }, "<C-b>", h.user_cmd_cb "AerialToggle left", { desc = "Toggle aerial window", })
+-- h.keys.map({ "n", }, "zn", h.keys.user_cmd_cb "AerialNext", { desc = "Go to the next aerial symbol", })
+-- h.keys.map({ "n", }, "zp", h.keys.user_cmd_cb "AerialPrev", { desc = "Go to the prev aerial symbol", })
+h.keys.map({ "n", "i", "v", }, "<C-b>", h.keys.user_cmd_cb "AerialToggle left", { desc = "Toggle aerial window", })
 
 vim.api.nvim_set_hl(0, "AerialLine", { link = "Visual", })
 

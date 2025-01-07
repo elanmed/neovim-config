@@ -1,7 +1,7 @@
 local h = require "shared.helpers"
 
 -- remap leader before importing remaps that use it
-h.map({ "n", "i", "v", }, "<space>", "<nop>")
+h.keys.map({ "n", "i", "v", }, "<space>", "<nop>")
 h.let.mapleader = " "
 h.let.maplocalleader = " "
 

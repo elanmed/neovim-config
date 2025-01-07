@@ -122,8 +122,8 @@ local function yank_stripped_filename()
   vim.fn.setreg("+", stripped_filename)
 end
 
--- h.map({ "n", }, "<C-p>", h.user_cmd_cb "Telescope frecency workspace=CWD", { desc = "Find files with telescope", })
-h.map({ "n", "i", "v", }, "<C-p>", function()
+-- h.keys.map({ "n", }, "<C-p>", h.keys.user_cmd_cb "Telescope frecency workspace=CWD", { desc = "Find files with telescope", })
+h.keys.map({ "n", "i", "v", }, "<C-p>", function()
   builtin.find_files {
     hidden = true,
     border = true,
@@ -143,27 +143,27 @@ h.map({ "n", "i", "v", }, "<C-p>", function()
     },
   }
 end, { desc = "Find files with telescope", })
-h.map({ "n", }, "<leader>lr", builtin.resume, { desc = "Resume telescope search", })
-h.map({ "n", }, "<leader>lt", builtin.buffers, { desc = "Search currently open buffers with telescope", })
-h.map({ "n", }, "<leader>li", builtin.search_history, { desc = "Search search history with telescope", })
-h.map({ "n", }, "<leader>lh", builtin.help_tags, { desc = "Search help tags with telescope", })
-h.map({ "n", }, "<leader>l;", builtin.command_history, { desc = "Search command history with telescope", })
-h.map({ "n", }, "<leader>lf", builtin.current_buffer_fuzzy_find, { desc = "Search in the current file with telescope", })
-h.map({ "n", }, "<leader>ld", h.user_cmd_cb "Telescope coc diagnostics", { desc = "Open diagnostics with telescope", })
-h.map({ "n", }, "<leader>lg", grep_string_with_search, { desc = "Search globally with telescope", })
-h.map({ "n", }, "<leader>lc", function() grep_string_with_search { case_sensitive = true, } end,
+h.keys.map({ "n", }, "<leader>lr", builtin.resume, { desc = "Resume telescope search", })
+h.keys.map({ "n", }, "<leader>lt", builtin.buffers, { desc = "Search currently open buffers with telescope", })
+h.keys.map({ "n", }, "<leader>li", builtin.search_history, { desc = "Search search history with telescope", })
+h.keys.map({ "n", }, "<leader>lh", builtin.help_tags, { desc = "Search help tags with telescope", })
+h.keys.map({ "n", }, "<leader>l;", builtin.command_history, { desc = "Search command history with telescope", })
+h.keys.map({ "n", }, "<leader>lf", builtin.current_buffer_fuzzy_find, { desc = "Search in the current file with telescope", })
+h.keys.map({ "n", }, "<leader>ld", h.keys.user_cmd_cb "Telescope coc diagnostics", { desc = "Open diagnostics with telescope", })
+h.keys.map({ "n", }, "<leader>lg", grep_string_with_search, { desc = "Search globally with telescope", })
+h.keys.map({ "n", }, "<leader>lc", function() grep_string_with_search { case_sensitive = true, } end,
   { desc = "Search globally (case-sensitive) with telescope", })
-h.map({ "n", }, "<leader>lw", function() grep_string_with_search { whole_word = true, } end,
+h.keys.map({ "n", }, "<leader>lw", function() grep_string_with_search { whole_word = true, } end,
   { desc = "Search globally (whole-word) with telescope", })
-h.map({ "n", }, "<leader>lb", function() grep_string_with_search { whole_word = true, case_sensitive = true, } end,
+h.keys.map({ "n", }, "<leader>lb", function() grep_string_with_search { whole_word = true, case_sensitive = true, } end,
   { desc = "Search globally (case-sensitive and whole-word) with telescope", })
-h.map({ "n", }, "<leader>lo", function() builtin.grep_string(shared_grep_string_options) end,
+h.keys.map({ "n", }, "<leader>lo", function() builtin.grep_string(shared_grep_string_options) end,
   { desc = "Search the currently hovered word with telescope", })
-h.map({ "v", }, "<leader>lo", grep_string_with_visual, { desc = "Search the current selection with telescope", })
-h.map({ "n", }, "<leader>le", grep_stripped_filename,
+h.keys.map({ "v", }, "<leader>lo", grep_string_with_visual, { desc = "Search the current selection with telescope", })
+h.keys.map({ "n", }, "<leader>le", grep_stripped_filename,
   { desc = "Search a file name starting with `wf_modules` with telescope", })
-h.map({ "n", }, "<leader>ke", yank_stripped_filename, { desc = "C(K)opy a file name starting with `wf_modules`", })
-h.map({ "n", }, "<leader>lp", function()
+h.keys.map({ "n", }, "<leader>ke", yank_stripped_filename, { desc = "C(K)opy a file name starting with `wf_modules`", })
+h.keys.map({ "n", }, "<leader>lp", function()
     builtin.planets {
       layout_strategy = "horizontal",
       border = true,
@@ -270,4 +270,4 @@ require "neoclip".setup {
     },
   },
 }
-h.map({ "n", }, "<leader>ye", telescope.extensions.neoclip.default, { desc = "Open neoclip", })
+h.keys.map({ "n", }, "<leader>ye", telescope.extensions.neoclip.default, { desc = "Open neoclip", })

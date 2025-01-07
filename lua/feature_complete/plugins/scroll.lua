@@ -2,7 +2,7 @@ local h = require "shared.helpers"
 local neoscroll = require "neoscroll"
 
 local function is_neoscroll_override_filetype()
-  return h.table_contains_value({ "oil", }, vim.bo.filetype)
+  return h.tbl.table_contains_value({ "oil", }, vim.bo.filetype)
 end
 
 neoscroll.setup {
@@ -19,7 +19,7 @@ neoscroll.setup {
     h.set.cursorline = false
   end,
 }
-h.map({ "n", }, "z", function() neoscroll.zz { half_win_duration = 250, } end)
+h.keys.map({ "n", }, "z", function() neoscroll.zz { half_win_duration = 250, } end)
 
 local function get_current_line()
   return vim.api.nvim_win_get_cursor(0)[1]
@@ -36,29 +36,29 @@ local function is_last_line()
   return current_line == last_line
 end
 
-h.map({ "n", "v", "i", }, "<C-u>", function()
-  h.send_normal_keys "0"
+h.keys.map({ "n", "v", "i", }, "<C-u>", function()
+  h.keys.send_normal_keys "0"
   if is_neoscroll_override_filetype() then
     neoscroll.ctrl_u { duration = 250, }
     return
   end
 
   if is_last_line() then
-    h.send_normal_keys "M"
+    h.keys.send_normal_keys "M"
   else
     neoscroll.ctrl_u { duration = 250, }
   end
 end)
 
-h.map({ "n", "v", "i", }, "<C-d>", function()
-  h.send_normal_keys "0"
+h.keys.map({ "n", "v", "i", }, "<C-d>", function()
+  h.keys.send_normal_keys "0"
   if is_neoscroll_override_filetype() then
     neoscroll.ctrl_d { duration = 250, }
     return
   end
 
   if is_first_line() then
-    h.send_normal_keys "M"
+    h.keys.send_normal_keys "M"
   else
     neoscroll.ctrl_d { duration = 250, }
   end
@@ -73,11 +73,15 @@ mini_map.setup {
   },
 }
 
+local function has_split()
+  return vim.api.nvim_win_get_width(0) ~= vim.api.nvim_get_option "columns"
+end
+
 -- opening/closing a split triggers WinEnter, not BufEnter
 vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", }, {
   pattern = "*",
   callback = function()
-    if h.table_contains_value({ "oil", "fugitive", "markdown", "markdown.mdx", }, vim.bo.filetype) or h.has_split() then
+    if h.tbl.table_contains_value({ "oil", "fugitive", "markdown", "markdown.mdx", }, vim.bo.filetype) or has_split() then
       mini_map.close()
     else
       mini_map.open()

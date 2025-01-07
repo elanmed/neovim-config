@@ -1,8 +1,8 @@
-local M = {}
+local remaps = {}
+local keys = {}
+local tbl = {}
 
-M.remaps = {}
-
-local function keymap(mode, shortcut, command, opts)
+local function remap(mode, shortcut, command, opts)
   opts = opts or {}
   vim.keymap.set(
     mode,
@@ -21,72 +21,26 @@ local function keymap(mode, shortcut, command, opts)
   local formatted_shortcut = shortcut .. string.rep(" ", 10 - get_string_len(shortcut))
   local formatted_command = type(command) == "string" and command or "Function"
 
-  M.remaps[#M.remaps + 1] = table.concat({ formatted_mode, formatted_shortcut, formatted_command, desc, },
+  remaps[#remaps + 1] = table.concat({ formatted_mode, formatted_shortcut, formatted_command, desc, },
     string.rep(" ", 3))
 end
 
-M.dump = function(o)
-  if type(o) == "table" then
-    local s = "{ "
-    for k, v in pairs(o) do
-      if type(k) ~= "number" then k = '"' .. k .. '"' end
-      s = s .. "[" .. k .. "] = " .. M.dump(v)
-    end
-    return s .. "} "
-  else
-    return tostring(o)
-  end
-end
-
-M.has_split = function()
-  local function unsafe_has_split()
-    return vim.api.nvim_win_get_width(0) ~= vim.api.nvim_get_option "columns"
-  end
-
-  local status, retval = pcall(unsafe_has_split)
-  if status then return retval else return false end
-end
-
-M.maybe_close_split = function(direction)
-  if not M.has_split() then return end
-  vim.cmd("wincmd " .. direction)
-  vim.cmd "q"
-end
-
-M.user_cmd_cb = function(user_cmd)
+keys.user_cmd_cb = function(user_cmd)
   return function() vim.cmd(user_cmd) end
 end
 
-M.map = function(modes, shortcut, command, opts)
+keys.map = function(modes, shortcut, command, opts)
   for _, mode in pairs(modes) do
-    keymap(mode, shortcut, command, opts)
+    remap(mode, shortcut, command, opts)
   end
 end
 
-M.is_mac = function()
+keys.is_mac = function()
   return vim.fn.has "macunix" == 1
 end
 
-M.table_contains_value = function(table, target_value)
-  for _, value in pairs(table) do
-    if value == target_value then
-      return true
-    end
-  end
-  return false
-end
-
-M.table_contains_key = function(table, target_key)
-  for key in pairs(table) do
-    if key == target_key then
-      return true
-    end
-  end
-  return false
-end
-
-M.send_normal_keys = function(keys)
-  vim.api.nvim_command("normal! " .. keys)
+keys.send_normal_keys = function(normal_keys)
+  vim.api.nvim_command("normal! " .. normal_keys)
 
   -- local keys = vim.api.nvim_replace_termcodes(keys, true, false, true)
   -- vim.api.nvim_feedkeys(keys, "n", false)
@@ -96,22 +50,42 @@ M.send_normal_keys = function(keys)
   -- vim.defer_fn(cb, 0)
 end
 
--- http://lua-users.org/wiki/SplitJoin
-M.split = function(str, delim)
-  local outResults = {}
-  local theStart = 1
-  local theSplitStart, theSplitEnd = string.find(str, delim,
-    theStart)
-  while theSplitStart do
-    table.insert(outResults, string.sub(str, theStart, theSplitStart - 1))
-    theStart = theSplitEnd + 1
-    theSplitStart, theSplitEnd = string.find(str, delim, theStart)
+
+tbl.table_contains_value = function(table, target_value)
+  for _, value in pairs(table) do
+    if value == target_value then
+      return true
+    end
   end
-  table.insert(outResults, string.sub(str, theStart))
-  return outResults
+  return false
 end
 
-return vim.tbl_extend("error", M, {
+tbl.table_contains_key = function(table, target_key)
+  for key in pairs(table) do
+    if key == target_key then
+      return true
+    end
+  end
+  return false
+end
+
+tbl.dump = function(o)
+  if type(o) == "table" then
+    local s = "{ "
+    for k, v in pairs(o) do
+      if type(k) ~= "number" then k = '"' .. k .. '"' end
+      s = s .. "[" .. k .. "] = " .. tbl.dump(v)
+    end
+    return s .. "} "
+  else
+    return tostring(o)
+  end
+end
+
+return {
   set = vim.opt,
   let = vim.g,
-})
+  keys = keys,
+  tbl = tbl,
+  remaps = remaps,
+}
