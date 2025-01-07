@@ -111,7 +111,7 @@ h.keys.map({ "n", }, "j", function() return count_based_keymap "j" end, { expr =
 h.keys.map({ "n", }, "k", function() return count_based_keymap "k" end, { expr = true, },
   { desc = "Move up a line, but respect lines that wrap", })
 
-h.keys.map({ "n", "i", "v", }, "<C-y>", function() vim.cmd "tabclose" end, { desc = "Close the current tab", })
+h.keys.map({ "n", }, "<C-y>", function() vim.cmd "tabclose" end, { desc = "Close the current tab", })
 h.keys.map({ "n", }, "Y", h.keys.user_cmd_cb "silent! bdelete!", { desc = "Close the current buffer", })
 h.keys.map({ "n", }, "<leader>tw", function() error "use `Y` instead!" end)
 h.keys.map({ "n", }, "<leader>ta", h.keys.user_cmd_cb "silent! bufdo bdelete", { desc = "Close all buffers", })
@@ -120,8 +120,8 @@ h.keys.map({ "n", }, "<leader>ta", h.keys.user_cmd_cb "silent! bufdo bdelete", {
 h.keys.map({ "n", }, [[<leader>']], [["]], { desc = "Set register", })
 h.keys.map({ "n", }, "@", "@r", { desc = "Replay macro, assuming it's set to `r`", })
 
-h.keys.map({ "n", "v", }, "<c-x>", "{")
-h.keys.map({ "n", "v", }, "<c-c>", "}")
+h.keys.map({ "n", }, "<c-x>", "{")
+h.keys.map({ "n", }, "<c-c>", "}")
 
 -- remaps to figure out in the future:
 h.keys.map({ "n", }, "B", "<nop>", { desc = "TODO find a remap", })

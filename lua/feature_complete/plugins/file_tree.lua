@@ -1,6 +1,6 @@
 local h = require "shared.helpers"
 
-h.keys.map({ "n", "v", }, "<C-f>", h.keys.user_cmd_cb "Oil", { desc = "Toggle oil", })
+h.keys.map({ "n", }, "<C-f>", h.keys.user_cmd_cb "Oil", { desc = "Toggle oil", })
 h.keys.map({ "n", }, "<leader>ne", h.keys.user_cmd_cb "NERDTreeFind", { desc = "Open NERDTree", })
 
 require "oil".setup {

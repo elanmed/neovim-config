@@ -23,7 +23,7 @@ harpoon:setup {
   },
 }
 
-h.keys.map({ "n", "v", }, "<C-g>", function() harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_max_width = 80, }) end,
+h.keys.map({ "n", }, "<C-g>", function() harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_max_width = 80, }) end,
   { desc = "Toggle the harpoon window", })
 h.keys.map({ "n", }, "<leader>ad", function() harpoon:list():add() end, { desc = "Add a haRpoon entry", })
 

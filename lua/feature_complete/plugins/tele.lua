@@ -123,7 +123,7 @@ local function yank_stripped_filename()
 end
 
 -- h.keys.map({ "n", }, "<C-p>", h.keys.user_cmd_cb "Telescope frecency workspace=CWD", { desc = "Find files with telescope", })
-h.keys.map({ "n", "i", "v", }, "<C-p>", function()
+h.keys.map({ "n", }, "<C-p>", function()
   builtin.find_files {
     hidden = true,
     border = true,
@@ -148,8 +148,10 @@ h.keys.map({ "n", }, "<leader>lt", builtin.buffers, { desc = "Search currently o
 h.keys.map({ "n", }, "<leader>li", builtin.search_history, { desc = "Search search history with telescope", })
 h.keys.map({ "n", }, "<leader>lh", builtin.help_tags, { desc = "Search help tags with telescope", })
 h.keys.map({ "n", }, "<leader>l;", builtin.command_history, { desc = "Search command history with telescope", })
-h.keys.map({ "n", }, "<leader>lf", builtin.current_buffer_fuzzy_find, { desc = "Search in the current file with telescope", })
-h.keys.map({ "n", }, "<leader>ld", h.keys.user_cmd_cb "Telescope coc diagnostics", { desc = "Open diagnostics with telescope", })
+h.keys.map({ "n", }, "<leader>lf", builtin.current_buffer_fuzzy_find,
+  { desc = "Search in the current file with telescope", })
+h.keys.map({ "n", }, "<leader>ld", h.keys.user_cmd_cb "Telescope coc diagnostics",
+  { desc = "Open diagnostics with telescope", })
 h.keys.map({ "n", }, "<leader>lg", grep_string_with_search, { desc = "Search globally with telescope", })
 h.keys.map({ "n", }, "<leader>lc", function() grep_string_with_search { case_sensitive = true, } end,
   { desc = "Search globally (case-sensitive) with telescope", })
