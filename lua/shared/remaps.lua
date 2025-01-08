@@ -92,10 +92,10 @@ h.keys.map({ "n", "v", }, "n", "nzz")
 h.keys.map({ "n", "v", }, "N", "Nzz")
 
 -- prevent x, c from overwriting the clipboard
-h.keys.map({ "n", "v", "i", }, "x", [["_x]])
-h.keys.map({ "n", "v", "i", }, "X", [["_X]])
-h.keys.map({ "n", "v", }, "c", [["_c]])
-h.keys.map({ "n", "v", }, "C", [["_C]])
+h.keys.map({ "", }, "x", [["_x]])
+h.keys.map({ "", }, "X", [["_X]])
+h.keys.map({ "", }, "c", [["_c]])
+h.keys.map({ "", }, "C", [["_C]])
 
 local function count_based_keymap(movement)
   local count = vim.v.count
