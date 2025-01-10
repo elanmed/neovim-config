@@ -35,7 +35,8 @@ h.keys.map({ "n", }, "<leader>hb", function()
   vim.cmd "w"
 end, { desc = "Reset the bUffer", })
 h.keys.map({ "n", }, "<leader>hp", gitsigns.preview_hunk, { desc = "Preview the current hunk", })
-h.keys.map({ "n", }, "<leader>hl", gitsigns.toggle_current_line_blame, { desc = "Toggle git blame for the current line", })
+h.keys.map({ "n", }, "<leader>hl", gitsigns.toggle_current_line_blame,
+  { desc = "Toggle git blame for the current line", })
 h.keys.map({ "n", }, "<leader>hf", gitsigns.blame, { desc = "Toggle git blame for the current file", })
 h.keys.map({ "n", }, "<leader>hd", h.keys.user_cmd_cb "Gdiffsplit", { desc = "Open the Diff for the current file", })
 h.keys.map({ "n", }, "<leader>hq", function()
@@ -44,8 +45,10 @@ h.keys.map({ "n", }, "<leader>hq", function()
 end, { desc = "Close the diff for the current file", })
 
 -- fugitive
-h.keys.map({ "n", }, "<leader>gs", h.keys.user_cmd_cb "Gedit :", { desc = "Open the fugitive status in the current tab", })
-h.keys.map({ "n", }, "<leader>gd", h.keys.user_cmd_cb "Git difftool -y", { desc = "Open the git diff in different tabs", })
+h.keys.map({ "n", }, "<leader>gs", h.keys.user_cmd_cb "Gedit :",
+  { desc = "Open the fugitive status in the current tab", })
+h.keys.map({ "n", }, "<leader>gd", h.keys.user_cmd_cb "Git difftool -y",
+  { desc = "Open the git diff in different tabs", })
 h.keys.map({ "n", }, "<leader>gh", h.keys.user_cmd_cb "Git push origin HEAD", { desc = "Git pusH origin HEAD", })
 vim.cmd [[nnoremap <leader>ge :Git checkout ]]    -- Git checkout (an Existing branch)
 vim.cmd [[nnoremap <leader>gn :Git checkout -b ]] -- Git checkout -b (a New branch)
@@ -76,7 +79,7 @@ h.keys.map({ "n", }, "<leader>go", function()
   { desc = "open the cOmmits of the current buffer in the quickfix list", })
 
 local function go_to_commit(qf_cmd)
-  if h.has_split() then
+  if h.screen.has_split() then
     vim.cmd "wincmd l"
     vim.cmd(qf_cmd)
   else
@@ -94,7 +97,7 @@ end)
 h.keys.map({ "n", }, "<leader>gp", function()
   vim.cmd "wincmd j"
   vim.cmd "wincmd l"
-  h.send_normal_keys "2G0w"
+  h.keys.send_normal_keys "2G0w"
   local commit = vim.fn.expand "<cword>"
   local current_buf = vim.api.nvim_get_current_buf()
   vim.cmd "tabnew"

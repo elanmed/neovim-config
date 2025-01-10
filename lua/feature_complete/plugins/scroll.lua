@@ -73,15 +73,11 @@ mini_map.setup {
   },
 }
 
-local function has_split()
-  return vim.api.nvim_win_get_width(0) ~= vim.api.nvim_get_option "columns"
-end
-
 -- opening/closing a split triggers WinEnter, not BufEnter
 vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", }, {
   pattern = "*",
   callback = function()
-    if h.tbl.table_contains_value({ "oil", "fugitive", "markdown", "markdown.mdx", }, vim.bo.filetype) or has_split() then
+    if h.tbl.table_contains_value({ "oil", "fugitive", "markdown", "markdown.mdx", }, vim.bo.filetype) or h.screen.has_split() then
       mini_map.close()
     else
       mini_map.open()

@@ -1,6 +1,7 @@
 local remaps = {}
 local keys = {}
 local tbl = {}
+local screen = {}
 
 local function remap(mode, shortcut, command, opts)
   opts = opts or {}
@@ -82,10 +83,16 @@ tbl.dump = function(o)
   end
 end
 
+screen.has_split = function()
+  return vim.api.nvim_win_get_width(0) ~= vim.api.nvim_get_option "columns"
+end
+
+
 return {
   set = vim.opt,
   let = vim.g,
   keys = keys,
   tbl = tbl,
   remaps = remaps,
+  screen = screen,
 }
