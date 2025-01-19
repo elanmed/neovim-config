@@ -13,6 +13,7 @@ h.set.relativenumber = true     -- useful for multiline j, k
 h.set.termguicolors = true      -- needed for modern themes
 h.set.scrolloff = 8
 h.set.fileencoding = "utf-8"
+h.set.conceallevel = 0 -- keep quotes keys in normal mode
 
 -- ignore checkhealth error
 h.let.loaded_perl_provider = 0
@@ -38,8 +39,8 @@ h.keys.map({ "n", }, "<leader>/t", h.keys.user_cmd_cb "noh", { desc = "Turn off 
 
 -- folding
 h.set.foldmethod = "expr"
-h.set.foldcolumn = "0"                                        -- disable fold symbols in left column
-h.set.foldlevelstart = 99                                     -- open folds by default
+h.set.foldcolumn = "0"                                             -- disable fold symbols in left column
+h.set.foldlevelstart = 99                                          -- open folds by default
 h.keys.map({ "n", }, "<leader>u", "za", { desc = "Toggle fold", }) -- toggle fold
 
 h.set.foldexpr = "v:lua.GetFold(v:lnum)"
