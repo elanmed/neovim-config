@@ -33,6 +33,7 @@ require "nvim-treesitter.configs".setup {
     select = {
       enable = true,
       lookahead = true,
+      -- TODO: use these more
       keymaps = {
         ["a="] = { query = "@assignment.outer", desc = "Select outer part of an assignment", },
         ["i="] = { query = "@assignment.inner", desc = "Select inner part of an assignment", },
@@ -54,7 +55,6 @@ require "nvim-treesitter.configs".setup {
   },
 }
 
-
 require "ibl".setup {
   scope = {
     show_start = false,
@@ -63,7 +63,8 @@ require "ibl".setup {
 }
 
 require "render-markdown".setup {
-  latex = { enabled = false, },
+  -- https://github.com/MeanderingProgrammer/render-markdown.nvim/wiki#render-modes
+  render_modes = true,
 }
 
 require "aerial".setup {

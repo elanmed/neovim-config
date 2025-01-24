@@ -4,7 +4,7 @@ local h = require "shared.helpers"
 vim.cmd "nnoremap ; :"
 vim.cmd "vnoremap ; :"
 vim.cmd "inoremap <c-t> <c-o>:Snippet<space>"
-h.keys.map({ "n", "v", }, "<c-c>", function() print "snippets only supported in insert mode!" end)
+h.keys.map({ "n", "v", }, "<c-t>", function() print "snippets only supported in insert mode!" end)
 
 vim.cmd [[
   nnoremap <leader>s :%s/\<\>\C/<left><left><left><left><left>
