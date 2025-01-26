@@ -127,7 +127,7 @@ h.keys.map({ "n", }, "@", "@r", { desc = "Replay macro, assuming it's set to `r`
 h.keys.map({ "i", }, "<C-x>", "<C-o>{")
 h.keys.map({ "n", "v", }, "<c-x>", "{")
 h.keys.map({ "i", }, "<C-c>", "<C-o>}")
-h.keys.map({ "n", "v", }, "<c-c>", "}")
+h.keys.map({ "n", "v", }, "<C-c>", "}")
 
 -- remaps to figure out in the future:
 h.keys.map({ "n", }, "B", "<nop>", { desc = "TODO find a remap", })
