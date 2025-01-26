@@ -28,14 +28,18 @@ h.keys.map({ "n", }, "<C-f>", function()
     vim.cmd "Explore %:p:h"
   end
 end, { desc = "Toggle netrw, focusing the current file", })
-vim.opt.path:append "**" -- search in subfolder
+vim.opt.path:append "**"               -- search in subfolder
 vim.cmd "nnoremap <C-p> :find<space>"
--- vim.cmd "inoremap <C-p> :find<space>"
--- vim.cmd "vnoremap <C-p> :find<space>"
 h.keys.map({ "i", }, "<C-s>", "<C-n>") -- autocomplete
 vim.cmd "nnoremap <C-g> :buffer<space>"
--- vim.cmd "vnoremap <C-g> :buffer<space>"
 vim.cmd "nnoremap <leader>lg :grep<space>"
+h.keys.map({ "c", }, "/", function()
+  if vim.fn.wildmenumode() == 1 then
+    return "<C-y>"
+  else
+    return "/"
+  end
+end, { expr = true, })
 
 h.keys.map({ "n", }, "gd", "<nop>")
 h.keys.map({ "n", }, "gh", "<nop>")
