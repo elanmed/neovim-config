@@ -3,6 +3,10 @@ local keys = {}
 local tbl = {}
 local screen = {}
 
+--- @param mode string|string[]
+--- @param shortcut string
+--- @param command string|function
+--- @param opts? vim.keymap.set.Opts
 local function remap(mode, shortcut, command, opts)
   opts = opts or {}
   vim.keymap.set(
@@ -26,32 +30,57 @@ local function remap(mode, shortcut, command, opts)
     string.rep(" ", 3))
 end
 
+--- returns a function that calls vim.cmd(user_cmd)
+--- @param user_cmd string
+--- @return function
 keys.user_cmd_cb = function(user_cmd)
   return function() vim.cmd(user_cmd) end
 end
 
+--- @param modes string[]
+--- @param shortcut string
+--- @param command string|function
+--- @param opts? vim.keymap.set.Opts
 keys.map = function(modes, shortcut, command, opts)
   for _, mode in pairs(modes) do
     remap(mode, shortcut, command, opts)
   end
 end
 
-keys.is_mac = function()
-  return vim.fn.has "macunix" == 1
+-- https://stackoverflow.com/a/326715
+--- @param cmd string
+local function os_capture(cmd)
+  local f = assert(io.popen(cmd, "r"))
+  local s = assert(f:read "*a")
+  f:close()
+  s = string.gsub(s, "^%s+", "")
+  s = string.gsub(s, "%s+$", "")
+  s = string.gsub(s, "[\n\r]+", " ")
+  return s
 end
 
-keys.send_normal_keys = function(normal_keys)
-  vim.api.nvim_command("normal! " .. normal_keys)
+keys.is_linux = function()
+  return os_capture "uname -s" == "Linux"
+end
+
+--- @param mode 'n' | 'v' | 'i'
+--- @param keys_to_send string
+keys.send_keys = function(mode, keys_to_send)
+  local modeToExpanded = {
+    ["n"] = "normal",
+    ["i"] = "insert",
+    ["v"] = "visual",
+  }
+  vim.cmd(modeToExpanded[mode] .. "! " .. keys_to_send)
 
   -- local keys = vim.api.nvim_replace_termcodes(keys, true, false, true)
   -- vim.api.nvim_feedkeys(keys, "n", false)
-
-  -- or async
-  -- vim.api.nvim_input("<c-w>" .. direction)
-  -- vim.defer_fn(cb, 0)
 end
 
 
+--- @param table table
+--- @param target_value any
+--- @return boolean
 tbl.table_contains_value = function(table, target_value)
   for _, value in pairs(table) do
     if value == target_value then
@@ -61,6 +90,9 @@ tbl.table_contains_value = function(table, target_value)
   return false
 end
 
+--- @param table table
+--- @param target_key any
+--- @return boolean
 tbl.table_contains_key = function(table, target_key)
   for key in pairs(table) do
     if key == target_key then
@@ -70,6 +102,8 @@ tbl.table_contains_key = function(table, target_key)
   return false
 end
 
+--- @param o table
+--- @return string
 tbl.dump = function(o)
   if type(o) == "table" then
     local s = "{ "

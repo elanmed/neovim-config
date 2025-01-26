@@ -7,11 +7,6 @@ local action_state = require "telescope.actions.state"
 
 local custom_actions = {}
 
--- custom_actions.send_all_and_open = function(prompt_bufnr)
---   actions.send_to_qflist(prompt_bufnr)
---   vim.cmd("copen 25")
--- end
-
 custom_actions.send_selected_and_open = function(prompt_bufnr)
   local function get_table_size(t)
     local count = 0
@@ -26,8 +21,7 @@ custom_actions.send_selected_and_open = function(prompt_bufnr)
 
   if num_selections > 1 then
     actions.send_selected_to_qflist(prompt_bufnr)
-    vim.cmd "copen 25"
-    actions.open_qflist()
+    vim.cmd "copen 15"
   else
     actions.select_default(prompt_bufnr)
   end
@@ -36,21 +30,16 @@ end
 local border_borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└", }
 local no_border_borderchars = { " ", }
 
--- custom_actions.send_all_and_open_with_fzf = function(prompt_bufnr)
---   custom_actions.send_all_and_open(prompt_bufnr)
---   require("bqf.filter.fzf").run()
--- end
-
--- custom_actions.send_selected_and_open_with_fzf = function(prompt_bufnr)
---   custom_actions.send_selected_and_open(prompt_bufnr)
---   require("bqf.filter.fzf").run()
--- end
+custom_actions.send_selected_and_open_with_fzf = function(prompt_bufnr)
+  custom_actions.send_selected_and_open(prompt_bufnr)
+  require "bqf.filter.fzf".run()
+  h.keys.send_keys("n", "i")
+end
 
 telescope.load_extension "fzf"
 telescope.load_extension "neoclip"
 telescope.load_extension "coc"
 -- telescope.load_extension "frecency"
--- telescope.load_extension("rg_with_args")
 
 local shared_grep_string_options = { only_sort_text = true, }
 
@@ -86,9 +75,9 @@ local function grep_string_with_search(opts)
 end
 
 local function grep_string_with_visual()
-  local _, ls, cs = unpack(vim.fn.getpos "v")
-  local _, le, ce = unpack(vim.fn.getpos ".")
-  local visual = vim.api.nvim_buf_get_text(0, ls - 1, cs - 1, le - 1, ce, {})
+  local _, line_start, col_start = table.unpack(vim.fn.getpos "v")
+  local _, line_end, col_end = table.unpack(vim.fn.getpos ".")
+  local visual = vim.api.nvim_buf_get_text(0, line_start - 1, col_start - 1, line_end - 1, col_end, {})
   local selected_text = visual[1] or ""
 
   local grep_string_options = vim.tbl_extend("error", shared_grep_string_options, { search = selected_text, })
@@ -180,27 +169,6 @@ h.keys.map({ "n", }, "<leader>lp", function()
 
 vim.api.nvim_set_hl(0, "TelescopeNormal", { link = "Normal", })
 
--- https://yeripratama.com/blog/customizing-nvim-telescope/
-vim.api.nvim_create_autocmd("User", {
-  pattern = "TelescopeFindPre",
-  callback = function()
-    -- h.set.showtabline = 0
-    h.set.laststatus = 0
-  end,
-})
-
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "TelescopePrompt",
-  callback = function()
-    vim.api.nvim_create_autocmd("BufLeave", {
-      callback = function()
-        -- h.set.laststatus = 2
-        h.set.showtabline = 2
-      end,
-    })
-  end,
-})
-
 telescope.setup {
   pickers = {
     find_files = {
@@ -247,6 +215,7 @@ telescope.setup {
     mappings             = {
       i = {
         ["<cr>"] = custom_actions.send_selected_and_open,
+        ["<C-f>"] = custom_actions.send_selected_and_open_with_fzf,
         ["<C-a>"] = actions.toggle_all,
         ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
         ["<s-tab>"] = actions.move_selection_previous + actions.toggle_selection,
@@ -272,4 +241,5 @@ require "neoclip".setup {
     },
   },
 }
+-- TODO: figure this out
 h.keys.map({ "n", }, "<leader>ye", telescope.extensions.neoclip.default, { desc = "Open neoclip", })

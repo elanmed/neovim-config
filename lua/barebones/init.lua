@@ -1,13 +1,8 @@
 local h = require "shared.helpers"
 
-h.let.netrw_banner = 0 -- removes banner at the top
-
-vim.api.nvim_create_autocmd({ "FileType", }, {
-  pattern = "netrw",
-  callback = function()
-    h.keys.map({ "n", }, "-", "-^") -- go up a directory
-  end,
-})
+-- removing banner causes a bug where the terminal flickers, no idea why
+-- h.let.netrw_banner = 0 -- removes banner at the top
+h.let.netrw_liststyle = 3 -- tree view
 
 vim.api.nvim_create_autocmd({ "FileType", }, {
   pattern = "wildmenu",
@@ -18,6 +13,12 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
 })
 
 h.keys.map({ "n", }, "z", "zz")
+h.keys.map({ "n", }, "<leader>ta", h.keys.user_cmd_cb "%bd")
+h.keys.map({ "n", }, "<leader>to", function()
+  vim.cmd "%bd"
+  vim.cmd "e#" -- open the last buffer
+end)
+
 h.keys.map({ "n", }, "L", h.keys.user_cmd_cb "bnext", { desc = "Next buffer", })
 h.keys.map({ "n", }, "H", h.keys.user_cmd_cb "bprev", { desc = "Previous buffer", })
 h.keys.map({ "n", }, "<C-f>", function()

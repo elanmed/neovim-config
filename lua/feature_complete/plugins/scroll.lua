@@ -37,28 +37,28 @@ local function is_last_line()
 end
 
 h.keys.map({ "n", "v", "i", }, "<C-u>", function()
-  h.keys.send_normal_keys "0"
+  h.keys.send_keys("n", "0")
   if is_neoscroll_override_filetype() then
     neoscroll.ctrl_u { duration = 250, }
     return
   end
 
   if is_last_line() then
-    h.keys.send_normal_keys "M"
+    h.keys.send_keys("n", "M")
   else
     neoscroll.ctrl_u { duration = 250, }
   end
 end)
 
 h.keys.map({ "n", "v", "i", }, "<C-d>", function()
-  h.keys.send_normal_keys "0"
+  h.keys.send_keys("n", "0")
   if is_neoscroll_override_filetype() then
     neoscroll.ctrl_d { duration = 250, }
     return
   end
 
   if is_first_line() then
-    h.keys.send_normal_keys "M"
+    h.keys.send_keys("n", "M")
   else
     neoscroll.ctrl_d { duration = 250, }
   end

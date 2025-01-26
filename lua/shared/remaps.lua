@@ -63,14 +63,18 @@ h.keys.map({ "n", }, "Z", "gJ", { desc = "J without whitespace", })
 h.keys.map({ "n", }, "J", h.keys.user_cmd_cb "Cnext", { desc = "Move to the next item in the quickfix list", })
 h.keys.map({ "n", }, "K", h.keys.user_cmd_cb "Cprev", { desc = "Move to the prev item in the quickfix list", })
 
+-- TODO: figure out a way to clear only one list, not all
+-- delete all quickfix lists
+h.keys.map({ "n", }, "gc", h.keys.user_cmd_cb "cex \"\"", { desc = "Clear all quickfix lists", })
+
 h.keys.map({ "n", }, "gn", "gt", { desc = "Go to the next tab", })
 h.keys.map({ "n", }, "gp", "gT", { desc = "Go to the prev tab", })
 
 h.keys.map({ "n", }, "ge", h.keys.user_cmd_cb "copen 25", { desc = "Open the quickfix list", })
 h.keys.map({ "n", }, "gq", h.keys.user_cmd_cb "cclose", { desc = "Close the quickfix list", })
 
-local alt_j = h.keys.is_mac() and "∆" or "<A-j>"
-local alt_k = h.keys.is_mac() and "˚" or "<A-k>"
+local alt_j = h.keys.is_linux() and "<A-j>" or "∆"
+local alt_k = h.keys.is_linux() and "<A-k>" or "˚"
 
 h.keys.map({ "n", }, alt_j, ":m .+1<cr>==", { desc = "Move line down", })
 h.keys.map({ "n", }, alt_k, ":m .-2<cr>==", { desc = "Move line up", })

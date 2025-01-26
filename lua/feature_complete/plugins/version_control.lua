@@ -40,7 +40,7 @@ h.keys.map({ "n", }, "<leader>hl", gitsigns.toggle_current_line_blame,
 h.keys.map({ "n", }, "<leader>hf", gitsigns.blame, { desc = "Toggle git blame for the current file", })
 h.keys.map({ "n", }, "<leader>hd", h.keys.user_cmd_cb "Gdiffsplit", { desc = "Open the Diff for the current file", })
 h.keys.map({ "n", }, "<leader>hq", function()
-  vim.cmd "wincmd H"
+  vim.cmd "wincmd h"
   vim.cmd "q"
 end, { desc = "Close the diff for the current file", })
 
@@ -53,7 +53,7 @@ h.keys.map({ "n", }, "<leader>gh", h.keys.user_cmd_cb "Git push origin HEAD", { 
 vim.cmd [[nnoremap <leader>ge :Git checkout ]]    -- Git checkout (an Existing branch)
 vim.cmd [[nnoremap <leader>gn :Git checkout -b ]] -- Git checkout -b (a New branch)
 h.keys.map({ "n", }, "<leader>gq", function()
-  h.send_normal_keys "1gt"
+  h.keys.send_keys("n", "1gt")
   vim.cmd "tabonly"
 end, { desc = "Close the git diff tabs", })
 
@@ -97,7 +97,7 @@ end)
 h.keys.map({ "n", }, "<leader>gp", function()
   vim.cmd "wincmd j"
   vim.cmd "wincmd l"
-  h.keys.send_normal_keys "2G0w"
+  h.keys.send_keys("n", "2G0w")
   local commit = vim.fn.expand "<cword>"
   local current_buf = vim.api.nvim_get_current_buf()
   vim.cmd "tabnew"
