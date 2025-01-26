@@ -37,7 +37,6 @@ custom_actions.send_selected_and_open_with_fzf = function(prompt_bufnr)
 end
 
 telescope.load_extension "fzf"
-telescope.load_extension "neoclip"
 telescope.load_extension "coc"
 -- telescope.load_extension "frecency"
 
@@ -230,16 +229,3 @@ telescope.setup {
     },
   },
 }
-
-require "neoclip".setup {
-  history = 25,
-  keys = {
-    telescope = {
-      i = {
-        paste = false, -- unbind <C-p>
-      },
-    },
-  },
-}
--- TODO: figure this out
-h.keys.map({ "n", }, "<leader>ye", telescope.extensions.neoclip.default, { desc = "Open neoclip", })

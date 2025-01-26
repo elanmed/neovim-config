@@ -56,7 +56,6 @@ Plug("nvim-lualine/lualine.nvim", { commit = "b431d22", })
 Plug("nvim-telescope/telescope.nvim", { commit = "a0bbec2", })
 Plug("nvim-telescope/telescope-fzf-native.nvim", { commit = "cf48d4d", ["do"] = "Make", })
 Plug("fannheyward/telescope-coc.nvim", { commit = "b305a2c", })
-Plug("AckslD/nvim-neoclip.lua", { commit = "709c97f", })
 -- treesitter
 Plug("nvim-treesitter/nvim-treesitter", { commit = "7a64148", ["do"] = h.keys.user_cmd_cb "TSUpdate", })
 Plug("stevearc/aerial.nvim", { commit = "92f93f4", })
