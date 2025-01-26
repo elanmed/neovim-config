@@ -3,8 +3,8 @@ local h = require "shared.helpers"
 -- delay when using h.*map
 vim.cmd "nnoremap ; :"
 vim.cmd "vnoremap ; :"
-vim.cmd "inoremap <c-t> <c-o>:Snippet<space>"
-h.keys.map({ "n", "v", }, "<c-t>", function() print "snippets only supported in insert mode!" end)
+vim.cmd "inoremap <C-t> <C-o>:Snippet<space>"
+h.keys.map({ "n", "v", }, "<C-t>", function() print "snippets only supported in insert mode!" end)
 
 vim.cmd [[
   nnoremap <leader>s :%s/\<\>\C/<left><left><left><left><left>
@@ -70,7 +70,7 @@ h.keys.map({ "n", }, "gc", h.keys.user_cmd_cb "cex \"\"", { desc = "Clear all qu
 h.keys.map({ "n", }, "gn", "gt", { desc = "Go to the next tab", })
 h.keys.map({ "n", }, "gp", "gT", { desc = "Go to the prev tab", })
 
-h.keys.map({ "n", }, "ge", h.keys.user_cmd_cb "copen 25", { desc = "Open the quickfix list", })
+h.keys.map({ "n", }, "ge", h.keys.user_cmd_cb "copen 15", { desc = "Open the quickfix list", })
 h.keys.map({ "n", }, "gq", h.keys.user_cmd_cb "cclose", { desc = "Close the quickfix list", })
 
 local alt_j = h.keys.is_linux() and "<A-j>" or "∆"
@@ -115,7 +115,7 @@ h.keys.map({ "n", }, "j", function() return count_based_keymap "j" end, { expr =
 h.keys.map({ "n", }, "k", function() return count_based_keymap "k" end, { expr = true, },
   { desc = "Move up a line, but respect lines that wrap", })
 
-h.keys.map({ "n", }, "<C-y>", function() vim.cmd "tabclose" end, { desc = "Close the current tab", })
+h.keys.map({ "n", "v", "i", }, "<C-y>", function() vim.cmd "tabclose" end, { desc = "Close the current tab", })
 h.keys.map({ "n", }, "Y", h.keys.user_cmd_cb "silent! bdelete!", { desc = "Close the current buffer", })
 h.keys.map({ "n", }, "<leader>tw", function() error "use `Y` instead!" end)
 h.keys.map({ "n", }, "<leader>ta", h.keys.user_cmd_cb "silent! bufdo bdelete", { desc = "Close all buffers", })
@@ -124,8 +124,10 @@ h.keys.map({ "n", }, "<leader>ta", h.keys.user_cmd_cb "silent! bufdo bdelete", {
 h.keys.map({ "n", }, [[<leader>']], [["]], { desc = "Set register", })
 h.keys.map({ "n", }, "@", "@r", { desc = "Replay macro, assuming it's set to `r`", })
 
-h.keys.map({ "n", }, "<c-x>", "{")
-h.keys.map({ "n", }, "<c-c>", "}")
+h.keys.map({ "i", }, "<C-x>", "<C-o>{")
+h.keys.map({ "n", "v", }, "<c-x>", "{")
+h.keys.map({ "i", }, "<C-c>", "<C-o>}")
+h.keys.map({ "n", "v", }, "<c-c>", "}")
 
 -- remaps to figure out in the future:
 h.keys.map({ "n", }, "B", "<nop>", { desc = "TODO find a remap", })

@@ -9,7 +9,12 @@ require "lualine".setup {
   },
   sections = {
     lualine_a = { "mode", },
-    lualine_b = { "filename", },
+    lualine_b = {
+      {
+        "filename",
+        path = 3, -- absolute path, with tilde as the home directory
+      },
+    },
     lualine_c = {},
     lualine_x = {},
     lualine_y = { "branch", },
