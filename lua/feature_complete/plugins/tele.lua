@@ -169,29 +169,6 @@ h.keys.map({ "n", }, "<leader>lp", function()
 vim.api.nvim_set_hl(0, "TelescopeNormal", { link = "Normal", })
 
 telescope.setup {
-  pickers = {
-    find_files = {
-      preview_title = "",
-    },
-    buffers = {
-      preview_title = "",
-    },
-    search_history = {
-      preview_title = "",
-    },
-    help_tags = {
-      preview_title = "",
-    },
-    command_history = {
-      preview_title = "",
-    },
-    current_buffer_fuzzy_find = {
-      preview_title = "",
-    },
-    grep_string = {
-      preview_title = "",
-    },
-  },
   defaults = {
     file_ignore_patterns = { "node_modules", ".git", },
     results_title        = "",

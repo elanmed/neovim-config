@@ -28,7 +28,7 @@ Plug("vim-scripts/BufOnly.vim", { cmd = "BufOnly", commit = "43dd923", })
 -- colorscheme
 Plug("RRethy/nvim-base16", { commit = "6ac181b", })
 -- file_tree
-Plug("preservim/nerdtree", { commit = "9b465ac", })
+-- Plug("preservim/nerdtree", { commit = "9b465ac", })
 Plug("stevearc/oil.nvim", { commit = "30e0438", })
 Plug("kyazdani42/nvim-web-devicons", { commit = "3722e3d", })
 -- git
@@ -40,7 +40,6 @@ Plug("windwp/nvim-autopairs", { commit = "19606af", })
 -- movements
 Plug("ThePrimeagen/harpoon", { branch = "harpoon2", commit = "0378a6c", })
 Plug("ggandor/leap.nvim", { commit = "c6bfb19", })
-Plug("ggandor/flit.nvim", { commit = "1ef72de", })
 Plug("easymotion/vim-easymotion", { commit = "b3cfab2", })
 Plug("chentoast/marks.nvim", { commit = "74e8d01", })
 Plug("christoomey/vim-tmux-navigator", { commit = "5b3c701", })

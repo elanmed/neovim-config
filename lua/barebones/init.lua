@@ -1,9 +1,5 @@
 local h = require "shared.helpers"
 
--- removing banner causes a bug where the terminal flickers, no idea why
--- h.let.netrw_banner = 0 -- removes banner at the top
-h.let.netrw_liststyle = 3 -- tree view
-
 vim.api.nvim_create_autocmd({ "FileType", }, {
   pattern = "wildmenu",
   callback = function()

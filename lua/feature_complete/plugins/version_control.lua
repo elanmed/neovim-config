@@ -22,18 +22,22 @@ h.keys.map({ "n", }, "(", function()
     gitsigns.nav_hunk "prev"
   end
 end, { desc = "Go to the prev git hunk", })
+
 h.keys.map({ "n", }, "<leader>hr", function()
   gitsigns.reset_hunk()
   vim.cmd "w"
 end, { desc = "Reset the Hunk", })
+
 h.keys.map({ "v", }, "<leader>hr", function()
   gitsigns.reset_hunk { vim.fn.line ".", vim.fn.line "v", }
   vim.cmd "w"
 end, { desc = "Reset the Hunk", })
+
 h.keys.map({ "n", }, "<leader>hb", function()
   gitsigns.reset_buffer()
   vim.cmd "w"
 end, { desc = "Reset the bUffer", })
+
 h.keys.map({ "n", }, "<leader>hp", gitsigns.preview_hunk, { desc = "Preview the current hunk", })
 h.keys.map({ "n", }, "<leader>hl", gitsigns.toggle_current_line_blame,
   { desc = "Toggle git blame for the current line", })
@@ -57,10 +61,6 @@ h.keys.map({ "n", }, "<leader>gq", function()
   vim.cmd "tabonly"
 end, { desc = "Close the git diff tabs", })
 
-h.keys.map({ "n", }, "<leader>ga", function()
-  vim.cmd "Git blame"
-  vim.api.nvim_input "A"
-end, { desc = "open git blame", })
 h.keys.map({ "n", }, "<leader>gl", function()
   local current_buf = vim.api.nvim_get_current_buf()
   vim.cmd "tabnew"

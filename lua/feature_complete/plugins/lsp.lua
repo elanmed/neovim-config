@@ -33,8 +33,7 @@ end
 h.keys.map({ "i", }, "<C-s>", "coc#refresh()", { expr = true, desc = "Show autocompletion options", })
 -- issues when written in lua
 vim.cmd [[
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() :
-	\ "\<CMD>call feedkeys(v:lua.require('nvim-autopairs').autopairs_cr(), 'in')\<CR>"
+inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CMD>call feedkeys(v:lua.require('nvim-autopairs').autopairs_cr(), 'in')\<CR>"
 ]]
 
 h.keys.map({ "n", }, "gd", "<Plug>(coc-definition)zz", { desc = "Go to definition", })

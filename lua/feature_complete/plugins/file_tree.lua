@@ -1,10 +1,11 @@
 local h = require "shared.helpers"
 
 h.keys.map({ "n", }, "<C-f>", h.keys.user_cmd_cb "Oil", { desc = "Toggle oil", })
-h.keys.map({ "n", }, "<leader>ne", h.keys.user_cmd_cb "NERDTreeFind", { desc = "Open NERDTree", })
+h.keys.map({ "n", }, "<leader>ne", h.keys.user_cmd_cb "Lexplore %:p:h", { desc = "Open netrw as a tree to the side", })
+h.let.netrw_winsize = 50
 
 require "oil".setup {
-  default_file_explorer = true,
+  default_file_explorer = false,
   delete_to_trash = true,
   view_options = {
     show_hidden = true,
@@ -18,5 +19,3 @@ require "oil".setup {
     ["g."] = "actions.toggle_hidden",
   },
 }
-
-vim.api.nvim_set_var("NERDTreeWinSize", 100)

@@ -1,6 +1,6 @@
 local h = require "shared.helpers"
 
--- TODO
+-- TODO: find a new remap
 -- vim.api.nvim_set_var("VM_maps", { ["Add Cursor Down"] = "<C-t>", })
 
 vim.api.nvim_create_autocmd({ "User", }, {
@@ -32,7 +32,6 @@ h.keys.map({ "n", }, "<leader>ad", function()
   harpoon:list():add()
 end, { desc = "Add a haRpoon entry", })
 
-require "flit".setup {}
 require "marks".setup {
   excluded_filetypes = { "oil", },
   default_mappings = false,
