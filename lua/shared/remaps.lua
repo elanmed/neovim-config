@@ -1,8 +1,6 @@
 local h = require "shared.helpers"
 
 -- delay when using h.*map
-vim.cmd "nnoremap ; :"
-vim.cmd "vnoremap ; :"
 vim.cmd "inoremap <C-t> <C-o>:Snippet<space>"
 h.keys.map({ "n", "v", }, "<C-t>", function() print "snippets only supported in insert mode!" end)
 
@@ -110,10 +108,10 @@ local function count_based_keymap(movement)
   end
 end
 
-h.keys.map({ "n", }, "j", function() return count_based_keymap "j" end, { expr = true, },
-  { desc = "Move down a line, but respect lines that wrap", })
-h.keys.map({ "n", }, "k", function() return count_based_keymap "k" end, { expr = true, },
-  { desc = "Move up a line, but respect lines that wrap", })
+h.keys.map({ "n", }, "j", function() return count_based_keymap "j" end,
+  { expr = true, desc = "j, but respect lines that wrap", })
+h.keys.map({ "n", }, "k", function() return count_based_keymap "k" end,
+  { expr = true, desc = "k, but respect lines that wrap", })
 
 h.keys.map({ "n", "v", "i", }, "<C-y>", function() vim.cmd "tabclose" end, { desc = "Close the current tab", })
 h.keys.map({ "n", }, "Y", h.keys.user_cmd_cb "silent! bdelete!", { desc = "Close the current buffer", })
