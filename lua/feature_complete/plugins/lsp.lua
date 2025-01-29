@@ -1,4 +1,6 @@
 local h = require "shared.helpers"
+
+-- coc-pairs has issues with deleting a paired "
 local autopairs = require "nvim-autopairs"
 autopairs.setup { map_cr = false, }
 

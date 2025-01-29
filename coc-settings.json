@@ -4,8 +4,6 @@
   "coc.preferences.enableMarkdown": true,
   "prettier.proseWrap": "always",
   "prettier.printWidth": 120,
-  // "snippets.textmateSnippetsRoots": ["/Users/elanmedoff/.config/nvim/snippets"],
-  // "snippets.loadFromExtensions": false,
   "typescript.suggest.completeFunctionCalls": false,
   "javascript.suggest.completeFunctionCalls": false,
   "diagnostic.checkCurrentLine": true,

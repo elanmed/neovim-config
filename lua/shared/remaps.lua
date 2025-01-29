@@ -9,7 +9,6 @@ vim.cmd [[
 ]]
 h.keys.map({ "n", }, "<leader>af", "<C-6>", { desc = "Alternate file", })
 h.keys.map({ "n", }, "<leader>va", "ggVG", { desc = "Select all", })
-h.keys.map({ "n", }, "<bs>", "b")
 h.keys.map({ "n", }, "*", "*N")
 h.keys.map({ "n", }, "<leader>f", "<C-w>w", { desc = "Toggle focus between windows", })
 h.keys.map({ "n", }, "<leader>e", h.keys.user_cmd_cb "e", { desc = "Reload buffer", })
