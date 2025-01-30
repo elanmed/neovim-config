@@ -34,7 +34,7 @@ end, { nargs = 1, })
 
 vim.api.nvim_create_user_command("Snippet", function(opts)
   local snippet_trigger_to_file_mapping = {
-    bef = { file = "before.ts", movement = 'f"l', },
+    bef = { file = "before.ts", movement = "ji\t", },
     des = { file = "describe.ts", movement = 'f"l', },
     fin = { file = "findBy.ts", movement = "f;", },
     it = { file = "it.ts", movement = 'f"l', },

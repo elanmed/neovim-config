@@ -16,10 +16,6 @@ h.set.fileencoding   = "utf-8"
 h.set.conceallevel   = 0     -- keep quotes keys in normal mode
 vim.cmd "set wildchar=<C-n>" -- TODO: issues setting in lua
 
--- removing banner causes a bug where the terminal flickers
--- h.let.netrw_banner = 0 -- removes banner at the top
-h.let.netrw_liststyle      = 3 -- tree view
-
 -- ignore checkhealth error
 h.let.loaded_perl_provider = 0
 

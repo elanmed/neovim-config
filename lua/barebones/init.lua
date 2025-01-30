@@ -17,6 +17,10 @@ end)
 
 h.keys.map({ "n", }, "L", h.keys.user_cmd_cb "bnext", { desc = "Next buffer", })
 h.keys.map({ "n", }, "H", h.keys.user_cmd_cb "bprev", { desc = "Previous buffer", })
+
+-- removing banner causes a bug where the terminal flickers
+-- h.let.netrw_banner = 0 -- removes banner at the top
+h.let.netrw_liststyle = 3 -- tree view
 h.keys.map({ "n", }, "<C-f>", function()
   if vim.bo.filetype == "netrw" then
     vim.cmd "Rex"
