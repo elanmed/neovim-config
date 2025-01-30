@@ -31,6 +31,7 @@ Plug("RRethy/nvim-base16", { commit = "6ac181b", })
 Plug("preservim/nerdtree", { commit = "9b465ac", })
 Plug("stevearc/oil.nvim", { commit = "30e0438", })
 Plug("kyazdani42/nvim-web-devicons", { commit = "3722e3d", })
+Plug "simnalamburt/vim-mundo"
 -- git
 Plug "tpope/vim-fugitive"
 Plug("lewis6991/gitsigns.nvim", { commit = "899e993", })

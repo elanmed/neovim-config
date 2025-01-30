@@ -1,6 +1,6 @@
 local h = require "shared.helpers"
 
--- delay when using h.*map
+-- delay when using h.keys.map
 vim.cmd "inoremap <C-t> <C-o>:Snippet<space>"
 h.keys.map({ "n", "v", }, "<C-t>", function() print "snippets only supported in insert mode!" end)
 
@@ -13,6 +13,7 @@ h.keys.map({ "n", }, "*", "*N")
 h.keys.map({ "n", }, "<leader>f", "<C-w>w", { desc = "Toggle focus between windows", })
 h.keys.map({ "n", }, "<leader>e", h.keys.user_cmd_cb "e", { desc = "Reload buffer", })
 h.keys.map({ "n", }, "<leader>vs", h.keys.user_cmd_cb "vsplit")
+h.keys.map({ "n", }, "<bs>", "b")
 
 h.keys.map({ "i", }, "<C-e>", "<C-o>$")
 h.keys.map({ "n", "v", }, "<C-e>", "$")
@@ -41,13 +42,12 @@ h.keys.map({ "n", }, "<leader>kr", function() vim.fn.setreg("+", vim.fn.expand "
 h.keys.map({ "v", }, "<", "<gv", { desc = "Outdent, while keeping selection", })
 h.keys.map({ "v", }, ">", ">gv", { desc = "Indent, while keeping selection", })
 
+--- @param try string
+--- @param catch string
 local function gen_circular_next_prev(try, catch)
   local success, _ = pcall(vim.cmd, try)
   if not success then
-    success, _ = pcall(vim.cmd, catch)
-    if not success then
-      return
-    end
+    pcall(vim.cmd, catch)
   end
 end
 
@@ -88,7 +88,6 @@ vim.cmd [[
 ]]
 vim.cmd [[nnoremap / /\V]] -- search without regex
 
--- keep search result in the middle of the page
 h.keys.map({ "n", "v", }, "n", "nzz")
 h.keys.map({ "n", "v", }, "N", "Nzz")
 

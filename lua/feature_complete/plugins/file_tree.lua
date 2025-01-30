@@ -20,3 +20,5 @@ require "oil".setup {
     ["g."] = "actions.toggle_hidden",
   },
 }
+
+h.keys.map({ "n", }, "<leader>me", h.keys.user_cmd_cb "MundoToggle", { desc = "Toggle mundo", })
