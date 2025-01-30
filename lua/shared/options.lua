@@ -14,7 +14,7 @@ h.set.termguicolors  = true          -- needed for modern themes
 h.set.scrolloff      = 8
 h.set.fileencoding   = "utf-8"
 h.set.conceallevel   = 0     -- keep quotes keys in normal mode
-h.set.undofile       = true
+h.set.undofile       = true  -- persist undo tree across sessions
 vim.cmd "set wildchar=<C-n>" -- TODO: issues setting in lua
 
 -- ignore checkhealth error
