@@ -1,12 +1,14 @@
 local h = require "shared.helpers"
 local bqf = require "bqf"
 
+--- @diagnostic disable-next-line: missing-fields
 bqf.setup {
   auto_resize_height = true,
   func_map = {
     openc = "<cr>",
     open = "o",
   },
+  --- @diagnostic disable-next-line: missing-fields
   preview = {
     winblend = 0,
   },

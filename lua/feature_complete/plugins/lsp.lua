@@ -1,6 +1,6 @@
 local h = require "shared.helpers"
 
-vim.opt.signcolumn = "yes" -- Reserve a space in the gutter
+vim.opt.signcolumn = "yes" -- reserve a space in the gutter
 
 require "mason".setup()
 require "mason-lspconfig".setup {
@@ -140,9 +140,6 @@ require "lspconfig".stylelint_lsp.setup {}
 require "lspconfig".tailwindcss.setup {}
 require "lspconfig".solargraph.setup {}
 
---- @diagnostic disable-next-line: missing-fields
-require "lazydev".setup {}
-
 local cmp = require "cmp"
 cmp.setup {
   sources = {
@@ -161,4 +158,6 @@ cmp.setup {
   },
 }
 
+--- @diagnostic disable-next-line: missing-fields
+require "lazydev".setup {}
 require "nvim-autopairs".setup {}
