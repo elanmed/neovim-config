@@ -17,7 +17,6 @@ vim.api.nvim_create_autocmd({ "BufEnter", }, {
   callback = function()
     if h.tbl.table_contains_value({ "qf", "aerial", }, vim.bo.filetype) then
       h.set.cursorline = true
-      vim.api.nvim_set_hl(0, "CursorLine", { link = "Visual", })
     else
       h.set.cursorline = false
     end

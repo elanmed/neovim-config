@@ -35,9 +35,7 @@ Plug "simnalamburt/vim-mundo"
 -- git
 Plug "tpope/vim-fugitive"
 Plug("lewis6991/gitsigns.nvim", { commit = "899e993", })
-
 -- lsp
--- Plug("neoclide/coc.nvim", { branch = "release", commit = "ae1a557", })
 Plug "neovim/nvim-lspconfig"
 Plug "hrsh7th/nvim-cmp"
 Plug "hrsh7th/cmp-buffer"
@@ -45,9 +43,8 @@ Plug "hrsh7th/cmp-nvim-lsp"
 Plug "williamboman/mason.nvim"
 Plug "williamboman/mason-lspconfig.nvim"
 Plug "folke/lazydev.nvim"
-
+-- Plug "lukas-reineke/lsp-format.nvim"
 Plug("windwp/nvim-autopairs", { commit = "19606af", })
-
 -- movements
 Plug("ThePrimeagen/harpoon", { branch = "harpoon2", commit = "0378a6c", })
 Plug("ggandor/leap.nvim", { commit = "c6bfb19", })

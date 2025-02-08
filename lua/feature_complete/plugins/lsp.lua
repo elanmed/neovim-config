@@ -19,19 +19,24 @@ require "mason-lspconfig".setup {
   },
 }
 
--- vim.diagnostic.config {
---   virtual_text = false,
--- }
--- vim.o.updatetime = 250
--- vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
---   pattern = "*",
---   callback = function()
---     vim.diagnostic.open_float(nil, { focus = false, border = "single", })
---     h.keys.map({ "n", }, "gh", function()
---       vim.lsp.buf.hover()
---     end)
---   end,
--- })
+vim.diagnostic.config {
+  virtual_text = false,
+}
+local last_cursor = { nil, nil, }
+vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
+  pattern = "*",
+  callback = function()
+    local current_cursor = vim.api.nvim_win_get_cursor(0)
+
+    -- when holding, don't force open the diagnostics unless the cursor has moved
+    -- allows opening another float with hover
+    if not (current_cursor[1] == last_cursor[1] and current_cursor[2] == last_cursor[2]) then
+      vim.diagnostic.open_float { border = "single", focus = false, scope = "line", }
+    end
+
+    last_cursor = current_cursor
+  end,
+})
 
 local cmp_capabilities = require "cmp_nvim_lsp".default_capabilities()
 cmp_capabilities.textDocument.completion.completionItem.snippetSupport = false
@@ -59,20 +64,39 @@ vim.api.nvim_create_autocmd("LspAttach", {
         end,
       })
     end
+
+    if client.supports_method "textDocument/documentHighlight" then
+      vim.o.updatetime = 250 -- how long until the cursor events fire
+      vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
+        buffer = 0,
+        callback = function()
+          if not h.tbl.table_contains_value({ "qf", "DiffviewFiles", "oil", "harpoon", }, vim.bo.filetype) then
+            vim.lsp.buf.document_highlight()
+          end
+        end,
+      })
+
+      vim.api.nvim_create_autocmd({ "CursorMoved", }, {
+        buffer = 0,
+        callback = function()
+          vim.lsp.buf.clear_references()
+        end,
+      })
+    end
   end,
 })
 
-h.keys.map({ "n", }, "gh", function()
-  vim.lsp.buf.hover()
-end)
+h.keys.map({ "n", }, "gh", vim.lsp.buf.hover)
 h.keys.map({ "n", }, "gd", vim.lsp.buf.definition)
 h.keys.map({ "n", }, "gy", vim.lsp.buf.type_definition)
 h.keys.map({ "n", }, "gu", vim.lsp.buf.references)
 h.keys.map({ "n", }, "ga", vim.lsp.buf.code_action)
-h.keys.map({ "n", }, "gs", vim.lsp.buf.format)
-h.keys.map({ "n", }, "gl", "jk")
-
-elan = {}
+h.keys.map({ "n", }, "gs", function()
+  vim.lsp.buf.format { async = false, }
+  vim.diagnostic.enable()
+end)
+h.keys.map({ "n", }, "gl", "jkkjhllh") -- TODO: find a better way to do this
+h.keys.map({ "n", }, "<leader>ld", vim.diagnostic.setloclist, { desc = "Open diagnostics with the quickfix list", })
 
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
   border = "single",
@@ -104,6 +128,7 @@ require "lspconfig".stylelint_lsp.setup {}
 require "lspconfig".tailwindcss.setup {}
 require "lspconfig".solargraph.setup {}
 
+--- @diagnostic disable-next-line: missing-fields
 require "lazydev".setup {}
 
 local cmp = require "cmp"
@@ -127,13 +152,3 @@ cmp.setup {
 
 local autopairs = require "nvim-autopairs"
 autopairs.setup {}
-
--- vim.api.nvim_create_augroup("CocGroup", {})
--- vim.api.nvim_create_autocmd({ "CursorHold", }, {
---   group = "CocGroup",
---   callback = function()
---     if not h.tbl.table_contains_value({ "qf", "DiffviewFiles", "oil", "harpoon", }, vim.bo.filetype) then
---       vim.cmd "silent call CocActionAsync('highlight')"
---     end
---   end,
--- })

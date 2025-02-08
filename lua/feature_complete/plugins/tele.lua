@@ -139,7 +139,6 @@ h.keys.map({ "n", }, "<leader>lh", builtin.help_tags, { desc = "Search help tags
 h.keys.map({ "n", }, "<leader>l;", builtin.command_history, { desc = "Search command history with telescope", })
 h.keys.map({ "n", }, "<leader>lf", builtin.current_buffer_fuzzy_find,
   { desc = "Search in the current file with telescope", })
-h.keys.map({ "n", }, "<leader>ld", builtin.diagnostics, { desc = "Open diagnostics with telescope", })
 h.keys.map({ "n", }, "<leader>lg", grep_string_with_search, { desc = "Search globally with telescope", })
 h.keys.map({ "n", }, "<leader>lc", function() grep_string_with_search { case_sensitive = true, } end,
   { desc = "Search globally (case-sensitive) with telescope", })
@@ -166,7 +165,7 @@ h.keys.map({ "n", }, "<leader>lp", function()
   end,
   { desc = "Search the planets with telescope", })
 
-vim.api.nvim_set_hl(0, "TelescopeNormal", { link = "Normal", })
+-- vim.api.nvim_set_hl(0, "TelescopeNormal", { link = "Normal", })
 
 telescope.setup {
   defaults = {

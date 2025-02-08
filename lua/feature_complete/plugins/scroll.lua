@@ -10,9 +10,7 @@ neoscroll.setup {
   hide_cursor = false,
   pre_hook = function()
     if is_neoscroll_override_filetype() then return end
-
     h.set.cursorline = true
-    vim.api.nvim_set_hl(0, "CursorLine", { link = "Visual", })
   end,
   post_hook = function()
     if is_neoscroll_override_filetype() then return end
