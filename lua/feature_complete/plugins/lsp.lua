@@ -48,8 +48,10 @@ vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
 })
 
 local cmp_capabilities = require "cmp_nvim_lsp".default_capabilities()
+-- https://github.com/hrsh7th/nvim-cmp/discussions/759
 cmp_capabilities.textDocument.completion.completionItem.snippetSupport = false
 
+-- https://lsp-zero.netlify.app/docs/getting-started.html#extend-nvim-lspconfig
 local lspconfig_defaults = require "lspconfig".util.default_config
 lspconfig_defaults.capabilities = vim.tbl_deep_extend(
   "force",
