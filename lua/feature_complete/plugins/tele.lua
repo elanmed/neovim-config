@@ -36,8 +36,7 @@ custom_actions.send_selected_and_open_with_fzf = function(prompt_bufnr)
   h.keys.send_keys("n", "i")
 end
 
--- telescope.load_extension "fzf"
--- telescope.load_extension "coc"
+telescope.load_extension "fzf"
 -- telescope.load_extension "frecency"
 
 local shared_grep_string_options = { only_sort_text = true, }

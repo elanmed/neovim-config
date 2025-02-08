@@ -63,8 +63,7 @@ Plug("echasnovski/mini.map", { commit = "8baf542", })
 Plug("nvim-lualine/lualine.nvim", { commit = "b431d22", })
 -- tele
 Plug("nvim-telescope/telescope.nvim", { commit = "a0bbec2", })
--- Plug("nvim-telescope/telescope-fzf-native.nvim", { commit = "cf48d4d", ["do"] = "Make", })
-Plug("nvim-telescope/telescope-fzy-native.nvim", { commit = "282f069", })
+Plug("nvim-telescope/telescope-fzf-native.nvim", { commit = "dae2eac", ["do"] = "make", })
 -- treesitter
 Plug("nvim-treesitter/nvim-treesitter", { commit = "7a64148", ["do"] = h.keys.user_cmd_cb "TSUpdate", })
 Plug("stevearc/aerial.nvim", { commit = "92f93f4", })
