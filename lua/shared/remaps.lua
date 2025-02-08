@@ -115,6 +115,23 @@ h.keys.map({ "n", "v", "i", }, "<C-y>", function() vim.cmd "tabclose" end, { des
 h.keys.map({ "n", }, "Y", h.keys.user_cmd_cb "silent! bdelete!", { desc = "Close the current buffer", })
 h.keys.map({ "n", }, "<leader>tw", function() error "use `Y` instead!" end)
 h.keys.map({ "n", }, "<leader>ta", h.keys.user_cmd_cb "silent! bufdo bdelete", { desc = "Close all buffers", })
+-- https://github.com/vim/vim/issues/1016#issuecomment-1226200584
+local function clean_empty_bufs()
+  for _, buf in pairs(vim.api.nvim_list_bufs()) do
+    if
+        vim.api.nvim_buf_get_name(buf) == ""
+        and not vim.api.nvim_get_option_value("modified", {
+          buf = buf,
+        })
+        and vim.api.nvim_buf_is_loaded(buf)
+    then
+      local opts = {}
+      vim.api.nvim_buf_delete(buf, opts)
+    end
+  end
+end
+h.keys.map({ "n", }, "<leader>te", clean_empty_bufs, { desc = "Close all empty buffers", })
+
 
 -- TODO: use more
 h.keys.map({ "n", }, [[<leader>']], [["]], { desc = "Set register", })
