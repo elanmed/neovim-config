@@ -82,10 +82,7 @@ require "aerial".setup {
 }
 h.keys.map({ "n", }, "<C-b>", h.keys.user_cmd_cb "AerialToggle left", { desc = "Toggle aerial window", })
 
-vim.api.nvim_set_hl(0, "AerialLine", { link = "Visual", })
-
 h.let.skip_ts_context_commentstring_module = true
-
 require "ts_context_commentstring".setup {
   enable_autocmd = false,
 }

@@ -1,5 +1,4 @@
 local h = require "shared.helpers"
-local colors = require "feature_complete.plugins.colorscheme"
 local bufferline = require "bufferline"
 bufferline.setup {
   options = {
@@ -12,7 +11,6 @@ bufferline.setup {
     },
   },
 }
-vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { fg = colors.cyan, underline = true, })
 
 h.keys.map({ "n", }, "<leader>tp", h.keys.user_cmd_cb "BufferLinePick", { desc = "Pick a buffer", })
 h.keys.map({ "n", }, "<leader>ti", h.keys.user_cmd_cb "BufferLineTogglePin", { desc = "Pin a buffer", })

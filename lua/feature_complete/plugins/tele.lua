@@ -153,8 +153,6 @@ h.keys.map({ "n", }, "<leader>lp", function()
   end,
   { desc = "Search the planets with telescope", })
 
--- vim.api.nvim_set_hl(0, "TelescopeNormal", { link = "Normal", })
-
 telescope.setup {
   defaults = {
     file_ignore_patterns = { "node_modules", ".git", },
