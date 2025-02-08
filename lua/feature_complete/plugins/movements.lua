@@ -3,14 +3,14 @@ local h = require "shared.helpers"
 -- TODO: find a new remap
 -- vim.api.nvim_set_var("VM_maps", { ["Add Cursor Down"] = "<C-t>", })
 
-vim.api.nvim_create_autocmd({ "User", }, {
-  pattern = "EasyMotionPromptBegin",
-  callback = function() vim.b.coc_diagnostic_disable = 1 end,
-})
-vim.api.nvim_create_autocmd({ "User", }, {
-  pattern = "EasyMotionPromptEnd",
-  callback = function() vim.b.coc_diagnostic_disable = 0 end,
-})
+-- vim.api.nvim_create_autocmd({ "User", }, {
+--   pattern = "EasyMotionPromptBegin",
+--   callback = function() vim.diagnostic.enable(false) end,
+-- })
+-- vim.api.nvim_create_autocmd({ "User", }, {
+--   pattern = "EasyMotionPromptEnd",
+--   callback = function() vim.diagnostic.enable() end,
+-- })
 
 local leap = require "leap"
 leap.create_default_mappings()

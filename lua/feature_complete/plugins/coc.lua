@@ -1,65 +1,139 @@
 local h = require "shared.helpers"
 
--- coc-pairs has issues with deleting a paired "
-local autopairs = require "nvim-autopairs"
-autopairs.setup { map_cr = false, }
+vim.opt.signcolumn = "yes" -- Reserve a space in the gutter
 
--- https://github.com/samhvw8/mvim/blob/master/lua/core/coc.lua
-h.let.coc_global_extensions = {
-  "coc-tsserver",
-  "coc-prettier",
-  "coc-json",
-  "coc-eslint",
-  "coc-sumneko-lua",
-  "coc-sh",
-  "@yaegassy/coc-tailwindcss3",
-  "coc-cssmodules",
-  "coc-deno",
-  "coc-stylelint",
-  "coc-css",
-  "coc-highlight",
-  "coc-solargraph",
+require "mason".setup()
+require "mason-lspconfig".setup {
+  ensure_installed = {
+    "ts_ls",
+    "eslint",
+    "jsonls",
+    "lua_ls",
+    "bashls",
+    "css_variables",
+    "cssls",
+    "cssmodules_ls",
+    "stylelint_lsp",
+    "tailwindcss",
+    -- "solargraph"
+  },
 }
 
-local function coc_show_docs()
-  local cw = vim.fn.expand "<cword>"
-  if h.tbl.table_contains_value({ "vim", "help", }, vim.bo.filetype) then
-    vim.cmd("h " .. cw)
-  elseif vim.api.nvim_eval "coc#rpc#ready()" then
-    vim.fn.CocActionAsync "doHover"
-  else
-    vim.cmd("!" .. vim.o.keywordprg .. " " .. cw)
-  end
-end
+-- vim.diagnostic.config {
+--   virtual_text = false,
+-- }
+-- vim.o.updatetime = 250
+-- vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
+--   pattern = "*",
+--   callback = function()
+--     vim.diagnostic.open_float(nil, { focus = false, border = "single", })
+--     h.keys.map({ "n", }, "gh", function()
+--       vim.lsp.buf.hover()
+--     end)
+--   end,
+-- })
 
-h.keys.map({ "i", }, "<C-s>", "coc#refresh()", { expr = true, desc = "Show autocompletion options", })
--- issues when written in lua
-vim.cmd [[
-inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm() : "\<CMD>call feedkeys(v:lua.require('nvim-autopairs').autopairs_cr(), 'in')\<CR>"
-]]
+local cmp_capabilities = require "cmp_nvim_lsp".default_capabilities()
+cmp_capabilities.textDocument.completion.completionItem.snippetSupport = false
 
-h.keys.map({ "n", }, "gd", "<Plug>(coc-definition)zz", { desc = "Go to definition", })
-h.keys.map({ "n", }, "gy", "<Plug>(coc-type-definition)", { desc = "Go to type definition", })
-h.keys.map({ "n", }, "gu", "<Plug>(coc-references)", { desc = "Go to uses", })
-h.keys.map({ "n", }, "ga", "<Plug>(coc-codeaction-cursor)", { desc = "Open code actions", })
-h.keys.map({ "n", }, "gh", coc_show_docs, { desc = "Hover", })
+local lspconfig_defaults = require "lspconfig".util.default_config
+lspconfig_defaults.capabilities = vim.tbl_deep_extend(
+  "force",
+  lspconfig_defaults.capabilities,
+  cmp_capabilities
+)
 
-h.keys.map({ "n", }, "gl", function()
-  if vim.fn["coc#float#has_float"]() == 1 then
-    vim.fn["coc#float#close_all"]()
-  end
-end, { desc = "Close hover", })
-h.keys.map({ "n", }, "<leader>cr", h.keys.user_cmd_cb "CocRestart", { desc = "Restart coc", })
+vim.api.nvim_create_autocmd("LspAttach", {
+  desc = "LSP actions",
+  callback = function(args)
+    local client = vim.lsp.get_client_by_id(args.data.client_id)
+    if not client then return end
 
-h.set.updatetime = 100
-h.set.signcolumn = "yes" -- needed for linting symbols
-
-vim.api.nvim_create_augroup("CocGroup", {})
-vim.api.nvim_create_autocmd({ "CursorHold", }, {
-  group = "CocGroup",
-  callback = function()
-    if not h.tbl.table_contains_value({ "qf", "DiffviewFiles", "oil", "harpoon", }, vim.bo.filetype) then
-      vim.cmd "silent call CocActionAsync('highlight')"
+    if client.supports_method "textDocument/formatting" then
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        buffer = args.buf,
+        callback = function()
+          vim.lsp.buf.format { id = client.id, bufnr = args.buf, async = false, }
+          -- https://github.com/neovim/neovim/issues/25014#issuecomment-2312672119
+          vim.diagnostic.enable(args.buf)
+        end,
+      })
     end
   end,
 })
+
+h.keys.map({ "n", }, "gh", function()
+  vim.lsp.buf.hover()
+end)
+h.keys.map({ "n", }, "gd", vim.lsp.buf.definition)
+h.keys.map({ "n", }, "gy", vim.lsp.buf.type_definition)
+h.keys.map({ "n", }, "gu", vim.lsp.buf.references)
+h.keys.map({ "n", }, "ga", vim.lsp.buf.code_action)
+h.keys.map({ "n", }, "gs", vim.lsp.buf.format)
+h.keys.map({ "n", }, "gl", "jk")
+
+elan = {}
+
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
+  border = "single",
+})
+
+require "lspconfig".ts_ls.setup {}
+require "lspconfig".eslint.setup {}
+require "lspconfig".jsonls.setup {}
+require "lspconfig".lua_ls.setup {
+  settings = {
+    Lua = { diagnostics = { globals = { "vim", }, }, },
+  },
+}
+require "lspconfig".bashls.setup {
+  settings = {
+    bashIde = {
+      shellcheckArguments = "--extended-analysis=false",
+      shfmt = {
+        simplifyCode = true,
+        caseIndent = true,
+      },
+    },
+  },
+}
+require "lspconfig".css_variables.setup {}
+require "lspconfig".cssls.setup {}
+require "lspconfig".cssmodules_ls.setup {}
+require "lspconfig".stylelint_lsp.setup {}
+require "lspconfig".tailwindcss.setup {}
+require "lspconfig".solargraph.setup {}
+
+require "lazydev".setup {}
+
+local cmp = require "cmp"
+
+cmp.setup {
+  sources = {
+    { name = "nvim_lsp", },
+    { name = "buffer", },
+    { name = "lazydev", group_index = 0, },
+  },
+  window = {
+    completion = cmp.config.window.bordered(),
+    documentation = cmp.config.window.bordered(),
+  },
+  mapping = cmp.mapping.preset.insert {
+    ["<C-s>"] = cmp.mapping.complete(),
+    ["<C-e>"] = cmp.mapping.abort(),
+    ["<CR>"] = cmp.mapping.confirm { select = true, },
+  },
+}
+
+local autopairs = require "nvim-autopairs"
+autopairs.setup {}
+
+-- vim.api.nvim_create_augroup("CocGroup", {})
+-- vim.api.nvim_create_autocmd({ "CursorHold", }, {
+--   group = "CocGroup",
+--   callback = function()
+--     if not h.tbl.table_contains_value({ "qf", "DiffviewFiles", "oil", "harpoon", }, vim.bo.filetype) then
+--       vim.cmd "silent call CocActionAsync('highlight')"
+--     end
+--   end,
+-- })

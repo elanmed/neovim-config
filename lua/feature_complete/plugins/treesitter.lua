@@ -62,10 +62,10 @@ require "ibl".setup {
   },
 }
 
-require "render-markdown".setup {
+--require "render-markdown".setup {
   -- https://github.com/MeanderingProgrammer/render-markdown.nvim/wiki#render-modes
-  render_modes = true,
-}
+ -- render_modes = true,
+--}
 
 require "aerial".setup {
   lazy_load = false,

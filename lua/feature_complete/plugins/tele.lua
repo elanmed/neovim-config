@@ -36,8 +36,8 @@ custom_actions.send_selected_and_open_with_fzf = function(prompt_bufnr)
   h.keys.send_keys("n", "i")
 end
 
-telescope.load_extension "fzf"
-telescope.load_extension "coc"
+-- telescope.load_extension "fzf"
+-- telescope.load_extension "coc"
 -- telescope.load_extension "frecency"
 
 local shared_grep_string_options = { only_sort_text = true, }
@@ -122,10 +122,11 @@ h.keys.map({ "n", }, "<C-p>", function()
     },
     layout_config = {
       anchor = "N",
+      -- anchor_padding = 0,
       vertical = {
         height = 0.7,
         width = 0.7,
-        prompt_position = "bottom",
+        prompt_position = "top",
         preview_height = 0,
       },
     },
@@ -138,8 +139,7 @@ h.keys.map({ "n", }, "<leader>lh", builtin.help_tags, { desc = "Search help tags
 h.keys.map({ "n", }, "<leader>l;", builtin.command_history, { desc = "Search command history with telescope", })
 h.keys.map({ "n", }, "<leader>lf", builtin.current_buffer_fuzzy_find,
   { desc = "Search in the current file with telescope", })
-h.keys.map({ "n", }, "<leader>ld", h.keys.user_cmd_cb "Telescope coc diagnostics",
-  { desc = "Open diagnostics with telescope", })
+h.keys.map({ "n", }, "<leader>ld", builtin.diagnostics, { desc = "Open diagnostics with telescope", })
 h.keys.map({ "n", }, "<leader>lg", grep_string_with_search, { desc = "Search globally with telescope", })
 h.keys.map({ "n", }, "<leader>lc", function() grep_string_with_search { case_sensitive = true, } end,
   { desc = "Search globally (case-sensitive) with telescope", })
@@ -200,9 +200,9 @@ telescope.setup {
       },
     },
   },
-  extensions = {
-    coc = {
-      timeout = 3000, -- timeout for coc commands
-    },
-  },
+  -- extensions = {
+  --   coc = {
+  --     timeout = 3000, -- timeout for coc commands
+  --   },
+  -- },
 }
