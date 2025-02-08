@@ -4,6 +4,7 @@ local telescope = require "telescope"
 local actions = require "telescope.actions"
 local builtin = require "telescope.builtin"
 local action_state = require "telescope.actions.state"
+local themes = require "telescope.themes"
 
 local custom_actions = {}
 
@@ -111,25 +112,13 @@ end
 
 -- h.keys.map({ "n", }, "<C-p>", h.keys.user_cmd_cb "Telescope frecency workspace=CWD", { desc = "Find files with telescope", })
 h.keys.map({ "n", }, "<C-p>", function()
-  builtin.find_files {
+  builtin.find_files(themes.get_ivy {
     hidden = true,
-    border = true,
-    borderchars = {
-      prompt = no_border_borderchars,
-      results = border_borderchars,
-      preview = border_borderchars,
-    },
     layout_config = {
-      anchor = "N",
-      -- anchor_padding = 0,
-      vertical = {
-        height = 0.7,
-        width = 0.7,
-        prompt_position = "top",
-        preview_height = 0,
-      },
+      height = 0.4,
+      preview_width = 0,
     },
-  }
+  })
 end, { desc = "Find files with telescope", })
 h.keys.map({ "n", }, "<leader>lr", builtin.resume, { desc = "Resume telescope search", })
 h.keys.map({ "n", }, "<leader>lt", builtin.buffers, { desc = "Search currently open buffers with telescope", })
@@ -198,9 +187,4 @@ telescope.setup {
       },
     },
   },
-  -- extensions = {
-  --   coc = {
-  --     timeout = 3000, -- timeout for coc commands
-  --   },
-  -- },
 }
