@@ -46,8 +46,8 @@ vim.api.nvim_set_hl(0, "TelescopeBorder", { link = "PmenuBorder", })
 vim.api.nvim_set_hl(0, "FloatBorder", { link = "PmenuBorder", }) -- harpoon border
 vim.api.nvim_set_hl(0, "CursorLine", { link = "Visual", })
 vim.api.nvim_set_hl(0, "AerialLine", { link = "Visual", })
-vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { fg = M.cyan, underline = true, bold = true, })
+vim.api.nvim_set_hl(0, "BufferLineBufferSelected", { fg = M.yellow, underline = true, bold = true, })
 vim.api.nvim_set_hl(0, "WilderAccent", { fg = M.orange, })
-vim.api.nvim_set_hl(0, "WildMenu", { fg = M.cyan, underline = true, bold = true, })
+vim.api.nvim_set_hl(0, "WildMenu", { fg = M.yellow, underline = true, bold = true, })
 
 return M
