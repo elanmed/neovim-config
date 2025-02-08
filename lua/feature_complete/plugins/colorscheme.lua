@@ -37,10 +37,13 @@ local M = {
 }
 
 vim.api.nvim_set_hl(0, "MatchParen", { fg = nil, bg = M.grey, })
-vim.api.nvim_set_hl(0, "CocHighlightText", { bg = "#2e3136", }) -- between base01 and base 02
+vim.api.nvim_set_hl(0, "LspReferenceRead", { bg = "#2e3136", })  -- between base01 and base 02
+vim.api.nvim_set_hl(0, "LspReferenceText", { bg = "#2e3136", })  -- between base01 and base 02
+vim.api.nvim_set_hl(0, "LspReferenceWrite", { bg = "#2e3136", }) -- between base01 and base 02
 
 vim.api.nvim_set_hl(0, "PmenuBorder", { fg = M.light_grey, })
 vim.api.nvim_set_hl(0, "TelescopeBorder", { link = "PmenuBorder", })
 vim.api.nvim_set_hl(0, "FloatBorder", { link = "PmenuBorder", }) -- harpoon border
+vim.api.nvim_set_hl(0, "CursorLine", { link = "Visual", })
 
 return M

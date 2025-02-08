@@ -3,7 +3,7 @@ local colors = require "feature_complete.plugins.colorscheme"
 local bufferline = require "bufferline"
 bufferline.setup {
   options = {
-    diagnostics = "coc",
+    diagnostics = "nvim_lsp",
     style_preset = bufferline.style_preset.no_italic,
     right_mouse_command = nil,
     left_mouse_command = nil,

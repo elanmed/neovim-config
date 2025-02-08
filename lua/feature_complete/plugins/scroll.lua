@@ -10,9 +10,7 @@ neoscroll.setup {
   hide_cursor = false,
   pre_hook = function()
     if is_neoscroll_override_filetype() then return end
-
     h.set.cursorline = true
-    vim.api.nvim_set_hl(0, "CursorLine", { link = "Visual", })
   end,
   post_hook = function()
     if is_neoscroll_override_filetype() then return end
@@ -22,7 +20,7 @@ neoscroll.setup {
 h.keys.map({ "n", }, "z", function() neoscroll.zz { half_win_duration = 250, } end)
 
 local function get_current_line()
-  return vim.api.nvim_win_get_cursor(0)[1]
+  return vim.cmd ".="
 end
 
 local function is_first_line()

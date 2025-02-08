@@ -6,7 +6,10 @@ if vim.fn.empty(vim.fn.glob(data_dir .. "/site/autoload/plug.vim")) == 1 then
     data_dir ..
     "/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim")
   vim.o.runtimepath = vim.o.runtimepath
-  vim.api.nvim_create_autocmd({ "VimEnter", }, { pattern = "*", callback = h.keys.user_cmd_cb "PlugInstall --sync", })
+  vim.api.nvim_create_autocmd({ "VimEnter", }, {
+    pattern = "*",
+    callback = h.keys.user_cmd_cb "PlugInstall --sync",
+  })
 end
 
 local vim = vim
@@ -21,7 +24,7 @@ Plug "nvim-lua/plenary.nvim"
 Plug "tpope/vim-surround"
 Plug "tpope/vim-repeat"
 Plug("mg979/vim-visual-multi", { commit = "38b0e8d", })
-Plug "jxnblk/vim-mdx-js"
+Plug("jxnblk/vim-mdx-js", { commit = "17179d7", })
 -- buffers
 Plug("akinsho/bufferline.nvim", { commit = "0b2fd86", })
 Plug("vim-scripts/BufOnly.vim", { cmd = "BufOnly", commit = "43dd923", })
@@ -31,12 +34,18 @@ Plug("RRethy/nvim-base16", { commit = "6ac181b", })
 Plug("preservim/nerdtree", { commit = "9b465ac", })
 Plug("stevearc/oil.nvim", { commit = "30e0438", })
 Plug("kyazdani42/nvim-web-devicons", { commit = "3722e3d", })
-Plug "simnalamburt/vim-mundo"
+Plug("mbbill/undotree", { commit = "2556c68", })
 -- git
 Plug "tpope/vim-fugitive"
 Plug("lewis6991/gitsigns.nvim", { commit = "899e993", })
 -- lsp
-Plug("neoclide/coc.nvim", { branch = "release", commit = "ae1a557", })
+Plug "neovim/nvim-lspconfig"
+Plug "hrsh7th/nvim-cmp"
+Plug "hrsh7th/cmp-buffer"
+Plug "hrsh7th/cmp-nvim-lsp"
+Plug "williamboman/mason.nvim"
+Plug "williamboman/mason-lspconfig.nvim"
+Plug("folke/lazydev.nvim", { commit = "a1b78b2", })
 Plug("windwp/nvim-autopairs", { commit = "19606af", })
 -- movements
 Plug("ThePrimeagen/harpoon", { branch = "harpoon2", commit = "0378a6c", })
@@ -54,12 +63,11 @@ Plug("echasnovski/mini.map", { commit = "8baf542", })
 Plug("nvim-lualine/lualine.nvim", { commit = "b431d22", })
 -- tele
 Plug("nvim-telescope/telescope.nvim", { commit = "a0bbec2", })
-Plug("nvim-telescope/telescope-fzf-native.nvim", { commit = "cf48d4d", ["do"] = "Make", })
-Plug("fannheyward/telescope-coc.nvim", { commit = "b305a2c", })
+Plug("nvim-telescope/telescope-fzf-native.nvim", { commit = "dae2eac", ["do"] = "make", })
 -- treesitter
 Plug("nvim-treesitter/nvim-treesitter", { commit = "7a64148", ["do"] = h.keys.user_cmd_cb "TSUpdate", })
 Plug("stevearc/aerial.nvim", { commit = "92f93f4", })
-Plug("MeanderingProgrammer/markdown.nvim", { commit = "8c67dbc", })
+Plug("MeanderingProgrammer/markdown.nvim", { commit = "17a7746", })
 Plug("nvim-treesitter/nvim-treesitter-textobjects", { commit = "bf8d2ad", })
 Plug("windwp/nvim-ts-autotag", { commit = "e239a56", })
 Plug("RRethy/nvim-treesitter-endwise", { commit = "8b34305", })

@@ -1,12 +1,14 @@
 local h = require "shared.helpers"
 local bqf = require "bqf"
 
+--- @diagnostic disable-next-line: missing-fields
 bqf.setup {
   auto_resize_height = true,
   func_map = {
     openc = "<cr>",
     open = "o",
   },
+  --- @diagnostic disable-next-line: missing-fields
   preview = {
     winblend = 0,
   },
@@ -17,7 +19,6 @@ vim.api.nvim_create_autocmd({ "BufEnter", }, {
   callback = function()
     if h.tbl.table_contains_value({ "qf", "aerial", }, vim.bo.filetype) then
       h.set.cursorline = true
-      vim.api.nvim_set_hl(0, "CursorLine", { link = "Visual", })
     else
       h.set.cursorline = false
     end
