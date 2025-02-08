@@ -39,8 +39,8 @@ vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
   callback = function()
     local current_cursor = vim.api.nvim_win_get_cursor(h.curr.window)
 
-    -- when holding, don't force open the diagnostics unless the cursor has moved
-    -- allows opening another float with hover
+    -- when holding, don't force open the diagnostics unless the cursor has also moved
+    -- allows opening another float i.e. hover
     if not (current_cursor[1] == last_cursor[1] and current_cursor[2] == last_cursor[2]) then
       vim.diagnostic.open_float { border = "single", focus = false, scope = "line", }
     end
@@ -106,10 +106,11 @@ h.keys.map({ "n", }, "gu", vim.lsp.buf.references, { desc = "LSP go to reference
 h.keys.map({ "n", }, "ga", vim.lsp.buf.code_action, { desc = "LSP code action", })
 h.keys.map({ "n", }, "<leader>ld", vim.diagnostic.setloclist, { desc = "Open LSP diagnostics with the quickfix list", })
 h.keys.map({ "n", }, "gl", function()
-  -- https://www.reddit.com/r/neovim/comments/1335pfc/comment/ji918lo/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
   for _, win in ipairs(vim.api.nvim_list_wins()) do
+    -- https://neovim.io/doc/user/api.html#floating-windows
     if vim.api.nvim_win_get_config(win).relative == "win" then
-      vim.api.nvim_win_close(win, false)
+      local force = false
+      vim.api.nvim_win_close(win, force)
     end
   end
 end)

@@ -117,6 +117,16 @@ tbl.dump = function(o)
   end
 end
 
+--- @param table table
+--- @return number
+tbl.size = function(table)
+  local count = 0
+  for _ in pairs(table) do
+    count = count + 1
+  end
+  return count
+end
+
 -- sugar to avoid magic numbers
 local curr = {
   buffer = 0,
@@ -125,7 +135,9 @@ local curr = {
 }
 
 screen.has_split = function()
-  return vim.api.nvim_win_get_width(curr.window) ~= vim.o.columns
+  local screen_cols = vim.o.columns
+  local window_cols = vim.api.nvim_win_get_width(curr.window)
+  return screen_cols ~= window_cols
 end
 
 

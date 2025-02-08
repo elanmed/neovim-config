@@ -15,7 +15,7 @@ bqf.setup {
 vim.api.nvim_create_autocmd({ "BufEnter", }, {
   pattern = "*",
   callback = function()
-    if h.tbl.table_contains_value({ "qf", "aerial", }, vim.bo.filetype) then
+    if h.tbl.table_contains_value({ "qf", "aerial", "undotree", }, vim.bo.filetype) then
       h.set.cursorline = true
     else
       h.set.cursorline = false

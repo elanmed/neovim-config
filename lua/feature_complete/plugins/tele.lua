@@ -9,16 +9,8 @@ local themes = require "telescope.themes"
 local custom_actions = {}
 
 custom_actions.send_selected_and_open = function(prompt_bufnr)
-  local function get_table_size(t)
-    local count = 0
-    for _ in pairs(t) do
-      count = count + 1
-    end
-    return count
-  end
-
   local picker = action_state.get_current_picker(prompt_bufnr)
-  local num_selections = get_table_size(picker:get_multi_selection())
+  local num_selections = h.tbl.size(picker:get_multi_selection())
 
   if num_selections > 1 then
     actions.send_selected_to_qflist(prompt_bufnr)
@@ -76,7 +68,8 @@ end
 local function grep_string_with_visual()
   local _, line_start, col_start = table.unpack(vim.fn.getpos "v")
   local _, line_end, col_end = table.unpack(vim.fn.getpos ".")
-  local visual = vim.api.nvim_buf_get_text(h.curr.buffer, line_start - 1, col_start - 1, line_end - 1, col_end, {})
+  local opts = {}
+  local visual = vim.api.nvim_buf_get_text(h.curr.buffer, line_start - 1, col_start - 1, line_end - 1, col_end, opts)
   local selected_text = visual[1] or ""
 
   local grep_string_options = vim.tbl_extend("error", shared_grep_string_options, { search = selected_text, })
