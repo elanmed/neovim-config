@@ -100,8 +100,15 @@ h.keys.map({ "n", }, "gd", vim.lsp.buf.definition, { desc = "LSP go to definitio
 h.keys.map({ "n", }, "gy", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
 h.keys.map({ "n", }, "gu", vim.lsp.buf.references, { desc = "LSP go to references", })
 h.keys.map({ "n", }, "ga", vim.lsp.buf.code_action, { desc = "LSP code action", })
-h.keys.map({ "n", }, "gl", "jkkjhllh") -- TODO: find a better way to do this
 h.keys.map({ "n", }, "<leader>ld", vim.diagnostic.setloclist, { desc = "Open LSP diagnostics with the quickfix list", })
+h.keys.map({ "n", }, "gl", function()
+  -- https://www.reddit.com/r/neovim/comments/1335pfc/comment/ji918lo/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    if vim.api.nvim_win_get_config(win).relative == "win" then
+      vim.api.nvim_win_close(win, false)
+    end
+  end
+end)
 
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
   border = "single",
@@ -132,8 +139,6 @@ require "lspconfig".cssmodules_ls.setup {}
 require "lspconfig".stylelint_lsp.setup {}
 require "lspconfig".tailwindcss.setup {}
 require "lspconfig".solargraph.setup {}
-
-
 
 --- @diagnostic disable-next-line: missing-fields
 require "lazydev".setup {}
