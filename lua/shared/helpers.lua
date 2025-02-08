@@ -117,8 +117,15 @@ tbl.dump = function(o)
   end
 end
 
+-- sugar to avoid magic numbers
+local curr = {
+  buffer = 0,
+  window = 0,
+  namespace = 0,
+}
+
 screen.has_split = function()
-  return vim.api.nvim_win_get_width(0) ~= vim.api.nvim_get_option "columns"
+  return vim.api.nvim_win_get_width(curr.window) ~= vim.o.columns
 end
 
 
@@ -129,4 +136,5 @@ return {
   tbl = tbl,
   remaps = remaps,
   screen = screen,
+  curr = curr,
 }

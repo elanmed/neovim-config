@@ -20,7 +20,8 @@ neoscroll.setup {
 h.keys.map({ "n", }, "z", function() neoscroll.zz { half_win_duration = 250, } end)
 
 local function get_current_line()
-  return vim.api.nvim_win_get_cursor(0)[1]
+  local row = table.unpack(vim.api.nvim_win_get_cursor(h.curr.window))
+  return row
 end
 
 local function is_first_line()

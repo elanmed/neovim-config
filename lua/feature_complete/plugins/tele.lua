@@ -76,7 +76,7 @@ end
 local function grep_string_with_visual()
   local _, line_start, col_start = table.unpack(vim.fn.getpos "v")
   local _, line_end, col_end = table.unpack(vim.fn.getpos ".")
-  local visual = vim.api.nvim_buf_get_text(0, line_start - 1, col_start - 1, line_end - 1, col_end, {})
+  local visual = vim.api.nvim_buf_get_text(h.curr.buffer, line_start - 1, col_start - 1, line_end - 1, col_end, {})
   local selected_text = visual[1] or ""
 
   local grep_string_options = vim.tbl_extend("error", shared_grep_string_options, { search = selected_text, })

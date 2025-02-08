@@ -37,7 +37,7 @@ local last_cursor = { nil, nil, }
 vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
   pattern = "*",
   callback = function()
-    local current_cursor = vim.api.nvim_win_get_cursor(0)
+    local current_cursor = vim.api.nvim_win_get_cursor(h.curr.window)
 
     -- when holding, don't force open the diagnostics unless the cursor has moved
     -- allows opening another float with hover
@@ -81,7 +81,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     if client.supports_method "textDocument/documentHighlight" then
       vim.o.updatetime = 100 -- how long until the cursor events fire
       vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
-        buffer = 0,
+        buffer = h.curr.buffer,
         callback = function()
           if not h.tbl.table_contains_value({ "qf", "DiffviewFiles", "oil", "harpoon", }, vim.bo.filetype) then
             vim.lsp.buf.document_highlight()
@@ -90,7 +90,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
       })
 
       vim.api.nvim_create_autocmd({ "CursorMoved", }, {
-        buffer = 0,
+        buffer = h.curr.buffer,
         callback = function()
           vim.lsp.buf.clear_references()
         end,
