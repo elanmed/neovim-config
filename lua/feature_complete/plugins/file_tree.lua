@@ -20,4 +20,4 @@ require "oil".setup {
   },
 }
 
-h.keys.map({ "n", }, "<leader>me", h.keys.user_cmd_cb "MundoToggle", { desc = "Toggle mundo", })
+h.keys.map({ "n", }, "<leader>me", h.keys.user_cmd_cb "UndotreeToggle", { desc = "Toggle undotree", })

@@ -21,7 +21,16 @@ require "mason-lspconfig".setup {
 
 vim.diagnostic.config {
   virtual_text = false,
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = "",
+      [vim.diagnostic.severity.INFO] = "",
+      [vim.diagnostic.severity.WARN] = "",
+      [vim.diagnostic.severity.HINT] = "",
+    },
+  },
 }
+
 local last_cursor = { nil, nil, }
 vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
   pattern = "*",
@@ -86,17 +95,13 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
-h.keys.map({ "n", }, "gh", vim.lsp.buf.hover)
-h.keys.map({ "n", }, "gd", vim.lsp.buf.definition)
-h.keys.map({ "n", }, "gy", vim.lsp.buf.type_definition)
-h.keys.map({ "n", }, "gu", vim.lsp.buf.references)
-h.keys.map({ "n", }, "ga", vim.lsp.buf.code_action)
-h.keys.map({ "n", }, "gs", function()
-  vim.lsp.buf.format { async = false, }
-  vim.diagnostic.enable()
-end)
+h.keys.map({ "n", }, "gh", vim.lsp.buf.hover, { desc = "LSP hover", })
+h.keys.map({ "n", }, "gd", vim.lsp.buf.definition, { desc = "LSP go to definition", })
+h.keys.map({ "n", }, "gy", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
+h.keys.map({ "n", }, "gu", vim.lsp.buf.references, { desc = "LSP go to references", })
+h.keys.map({ "n", }, "ga", vim.lsp.buf.code_action, { desc = "LSP code action", })
 h.keys.map({ "n", }, "gl", "jkkjhllh") -- TODO: find a better way to do this
-h.keys.map({ "n", }, "<leader>ld", vim.diagnostic.setloclist, { desc = "Open diagnostics with the quickfix list", })
+h.keys.map({ "n", }, "<leader>ld", vim.diagnostic.setloclist, { desc = "Open LSP diagnostics with the quickfix list", })
 
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
   border = "single",
@@ -128,11 +133,12 @@ require "lspconfig".stylelint_lsp.setup {}
 require "lspconfig".tailwindcss.setup {}
 require "lspconfig".solargraph.setup {}
 
+
+
 --- @diagnostic disable-next-line: missing-fields
 require "lazydev".setup {}
 
 local cmp = require "cmp"
-
 cmp.setup {
   sources = {
     { name = "nvim_lsp", },
@@ -150,5 +156,4 @@ cmp.setup {
   },
 }
 
-local autopairs = require "nvim-autopairs"
-autopairs.setup {}
+require "nvim-autopairs".setup {}
