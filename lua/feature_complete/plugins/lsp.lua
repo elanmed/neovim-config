@@ -164,6 +164,5 @@ cmp.setup {
   },
 }
 
---- @diagnostic disable-next-line: missing-fields
 require "lazydev".setup {}
 require "nvim-autopairs".setup {}
