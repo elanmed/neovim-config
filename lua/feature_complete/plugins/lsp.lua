@@ -149,7 +149,6 @@ require "lspconfig".denols.setup {
 }
 require "lspconfig".vimls.setup {}
 
-
 local cmp = require "cmp"
 cmp.setup {
   sources = {

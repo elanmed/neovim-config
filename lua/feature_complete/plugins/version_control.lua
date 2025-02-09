@@ -67,7 +67,9 @@ h.keys.map({ "n", }, "<leader>gl", function()
   vim.api.nvim_set_current_buf(current_buf)
   vim.cmd "Git log %"
   vim.cmd "wincmd o"
-end, { desc = "Open the commits of the current buffer in a new tab", })
+end, { desc = "Open the git Log of the current buffer in a new tab", })
+
+-- TODO: narrow down the diff to show just the current buffer
 h.keys.map({ "n", }, "<leader>go", function()
     local current_buf = vim.api.nvim_get_current_buf()
     vim.cmd "Gclog -n 20 %"

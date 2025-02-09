@@ -82,26 +82,9 @@ require "aerial".setup {
 }
 h.keys.map({ "n", }, "<C-b>", h.keys.user_cmd_cb "AerialToggle left", { desc = "Toggle aerial window", })
 
-h.let.skip_ts_context_commentstring_module = true
-require "ts_context_commentstring".setup {
-  enable_autocmd = false,
-}
-require "Comment".setup {
-  pre_hook = require "ts_context_commentstring.integrations.comment_nvim".create_pre_hook(),
-  toggler = {
-    line = "<leader>cc",
-    block = "<leader>bb",
-  },
-  -- multiple lines
-  opleader = {
-    line = "<leader>mc",
-    block = "<leader>mb",
-  },
-  mappings = {
-    basic = true,
-    extra = false,
-    extended = false,
-  },
-}
-require "Comment.ft".lua = { "-- %s", "-- %s", }
+require "ts_context_commentstring".setup {}
 require "nvim-ts-autotag".setup {}
+
+h.keys.map({ "i", }, "<C-_>", "<C-o><Plug>ContextCommentaryLine")
+h.keys.map({ "n", }, "<C-_>", "<Plug>ContextCommentaryLine")
+h.keys.map({ "v", }, "<C-_>", "<Plug>ContextCommentarygv")

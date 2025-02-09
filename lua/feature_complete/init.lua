@@ -23,6 +23,8 @@ Plug "nvim-lua/plenary.nvim"
 -- editing (no file)
 Plug "tpope/vim-surround"
 Plug "tpope/vim-repeat"
+Plug "tpope/vim-afterimage"
+Plug "tpope/vim-commentary"
 Plug("mg979/vim-visual-multi", { commit = "38b0e8d", })
 Plug("jxnblk/vim-mdx-js", { commit = "17179d7", })
 -- buffers
@@ -50,7 +52,6 @@ Plug("windwp/nvim-autopairs", { commit = "19606af", })
 -- movements
 Plug("ThePrimeagen/harpoon", { branch = "harpoon2", commit = "0378a6c", })
 Plug("ggandor/leap.nvim", { commit = "c6bfb19", })
-Plug("easymotion/vim-easymotion", { commit = "b3cfab2", })
 Plug("chentoast/marks.nvim", { commit = "74e8d01", })
 Plug("christoomey/vim-tmux-navigator", { commit = "5b3c701", })
 -- quickfix_list
@@ -72,7 +73,6 @@ Plug("nvim-treesitter/nvim-treesitter-textobjects", { commit = "bf8d2ad", })
 Plug("windwp/nvim-ts-autotag", { commit = "e239a56", })
 Plug("RRethy/nvim-treesitter-endwise", { commit = "8b34305", })
 Plug("lukas-reineke/indent-blankline.nvim", { commit = "18603eb", })
-Plug("numToStr/Comment.nvim", { commit = "e30b7f2", })
 Plug("JoosepAlviste/nvim-ts-context-commentstring", { commit = "375c2d8", })
 -- wild_menu
 Plug("gelguy/wilder.nvim", { commit = "679f348", ["do"] = ":UpdateRemotePlugins", })

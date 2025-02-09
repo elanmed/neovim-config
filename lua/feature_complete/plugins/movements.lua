@@ -3,15 +3,6 @@ local h = require "shared.helpers"
 -- TODO: find a new remap
 -- vim.api.nvim_set_var("VM_maps", { ["Add Cursor Down"] = "<C-t>", })
 
--- vim.api.nvim_create_autocmd({ "User", }, {
---   pattern = "EasyMotionPromptBegin",
---   callback = function() vim.diagnostic.enable(false) end,
--- })
--- vim.api.nvim_create_autocmd({ "User", }, {
---   pattern = "EasyMotionPromptEnd",
---   callback = function() vim.diagnostic.enable() end,
--- })
-
 local leap = require "leap"
 leap.create_default_mappings()
 leap.opts.highlight_unlabeled_phase_one_targets = true
