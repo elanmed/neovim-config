@@ -49,16 +49,11 @@ vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
   end,
 })
 
-local cmp_capabilities = require "cmp_nvim_lsp".default_capabilities()
--- https://github.com/hrsh7th/nvim-cmp/discussions/759
-cmp_capabilities.textDocument.completion.completionItem.snippetSupport = false
-
--- https://lsp-zero.netlify.app/docs/getting-started.html#extend-nvim-lspconfig
 local lspconfig_defaults = require "lspconfig".util.default_config
 lspconfig_defaults.capabilities = vim.tbl_deep_extend(
   "force",
   lspconfig_defaults.capabilities,
-  cmp_capabilities
+  require "cmp_nvim_lsp".default_capabilities()
 )
 
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -154,10 +149,17 @@ require "lspconfig".denols.setup {
 }
 require "lspconfig".vimls.setup {}
 
+
 local cmp = require "cmp"
 cmp.setup {
   sources = {
-    { name = "nvim_lsp", },
+    {
+      name = "nvim_lsp",
+      -- https://github.com/hrsh7th/nvim-cmp/discussions/759#discussioncomment-9875581
+      entry_filter = function(entry)
+        return entry:get_kind() ~= cmp.lsp.CompletionItemKind.Snippet
+      end,
+    },
     { name = "buffer", },
     { name = "lazydev", group_index = 0, },
   },
