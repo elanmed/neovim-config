@@ -144,7 +144,14 @@ require "lspconfig".cssmodules_ls.setup {}
 require "lspconfig".stylelint_lsp.setup {}
 require "lspconfig".tailwindcss.setup {}
 require "lspconfig".solargraph.setup {}
-require "lspconfig".denols.setup {}
+require "lspconfig".denols.setup {
+  settings = {
+    deno = {
+      -- TODO: enable this based on a local file i.e .deno-enable-lsp
+      enable = false,
+    },
+  },
+}
 require "lspconfig".vimls.setup {}
 
 local cmp = require "cmp"
