@@ -203,6 +203,8 @@ local function grep(opts)
   local cmd = "grep! --no-messages "
   cmd = cmd .. "-glob '!node_modules/' "
   cmd = cmd .. "-glob '!.git/' "
+  cmd = cmd .. "-glob '!dist/' "
+
   if opts.whole_word then
     cmd = cmd .. "--word-regexp "
   end
@@ -212,6 +214,7 @@ local function grep(opts)
   else
     cmd = cmd .. "--ignore-case "
   end
+
   cmd = cmd .. term .. " *"
 
   -- print(cmd)
