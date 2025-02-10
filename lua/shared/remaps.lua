@@ -132,6 +132,10 @@ local function clean_empty_bufs()
   end
 end
 h.keys.map({ "n", }, "<leader>te", clean_empty_bufs, { desc = "Close all empty buffers", })
+h.keys.map({ "n", }, "<leader>to", function()
+  vim.cmd "%bdelete" -- delete all buffers
+  vim.cmd "e#"       -- open the last buffer
+end)
 
 -- TODO: use more
 h.keys.map({ "n", }, [[<leader>']], [["]], { desc = "Set register", })

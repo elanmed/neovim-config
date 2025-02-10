@@ -18,4 +18,3 @@ h.keys.map({ "n", }, "<leader>tl", h.keys.user_cmd_cb "BufferLineMoveNext", { de
 h.keys.map({ "n", }, "<leader>th", h.keys.user_cmd_cb "BufferLineMovePrev", { desc = "Move a buffer to the right", })
 h.keys.map({ "n", }, "L", h.keys.user_cmd_cb "BufferLineCycleNext", { desc = "Move to the buffer to the right", })
 h.keys.map({ "n", }, "H", h.keys.user_cmd_cb "BufferLineCyclePrev", { desc = "Move to the buffer to the left", })
-h.keys.map({ "n", }, "<leader>to", h.keys.user_cmd_cb "BufOnly", { desc = "Close all buffers, except the open one", })

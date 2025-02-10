@@ -9,11 +9,6 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
 })
 
 h.keys.map({ "n", }, "z", "zz")
-h.keys.map({ "n", }, "<leader>ta", h.keys.user_cmd_cb "%bd")
-h.keys.map({ "n", }, "<leader>to", function()
-  vim.cmd "%bd"
-  vim.cmd "e#" -- open the last buffer
-end)
 
 h.keys.map({ "n", }, "L", h.keys.user_cmd_cb "bnext", { desc = "Next buffer", })
 h.keys.map({ "n", }, "H", h.keys.user_cmd_cb "bprev", { desc = "Previous buffer", })
