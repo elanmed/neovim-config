@@ -23,58 +23,23 @@ end
 local border_borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└", }
 local no_border_borderchars = { " ", }
 
-custom_actions.send_selected_and_open_with_fzf = function(prompt_bufnr)
-  custom_actions.send_selected_and_open(prompt_bufnr)
-  require "bqf.filter.fzf".run()
-  h.keys.send_keys("n", "i")
-end
+-- custom_actions.send_selected_and_open_with_fzf = function(prompt_bufnr)
+--   custom_actions.send_selected_and_open(prompt_bufnr)
+--   require "bqf.filter.fzf".run()
+--   h.keys.send_keys("n", "i")
+-- end
 
 telescope.load_extension "fzf"
 -- telescope.load_extension "frecency"
 
 local shared_grep_string_options = { only_sort_text = true, }
 
---- @param opts { case_sensitive: boolean, whole_word: boolean  }
-local function grep_string_with_search(opts)
-  opts = opts or {}
-
-  local base_input_text = "Grep for"
-  local additional_args = { "--hidden", }
-  local word_match
-  local input_text
-
-  if opts.case_sensitive and opts.whole_word then
-    input_text = base_input_text .. " (case sensitive + whole word): "
-    table.insert(additional_args, "-s")
-    word_match = "-w"
-  elseif opts.case_sensitive then
-    input_text = base_input_text .. " (case sensitive): "
-    table.insert(additional_args, "-s")
-  elseif opts.whole_word then
-    input_text = base_input_text .. " (whole word): "
-    word_match = "-w"
-  else
-    input_text = base_input_text .. ": "
-    word_match = nil
-  end
-
-  local term = vim.fn.input(input_text)
-  if term == "" then return end
-
-  local grep_string_options = vim.tbl_extend("error", shared_grep_string_options,
-    { search = term, word_match = word_match, additional_args = additional_args, })
-  builtin.grep_string(grep_string_options)
-end
-
-local function grep_string_with_visual()
+local function get_visual_selection()
   local _, line_start, col_start = table.unpack(vim.fn.getpos "v")
   local _, line_end, col_end = table.unpack(vim.fn.getpos ".")
   local opts = {}
   local visual = vim.api.nvim_buf_get_text(h.curr.buffer, line_start - 1, col_start - 1, line_end - 1, col_end, opts)
-  local selected_text = visual[1] or ""
-
-  local grep_string_options = vim.tbl_extend("error", shared_grep_string_options, { search = selected_text, })
-  builtin.grep_string(grep_string_options)
+  return visual[1] or ""
 end
 
 local function get_stripped_filename()
@@ -121,6 +86,7 @@ h.keys.map({ "n", }, "<leader>lh", builtin.help_tags, { desc = "Search help tags
 h.keys.map({ "n", }, "<leader>l;", builtin.command_history, { desc = "Search command history with telescope", })
 h.keys.map({ "n", }, "<leader>lf", builtin.current_buffer_fuzzy_find,
   { desc = "Search in the current file with telescope", })
+
 -- h.keys.map({ "n", }, "<leader>lg", grep_string_with_search, { desc = "Search globally with telescope", })
 -- h.keys.map({ "n", }, "<leader>lc", function() grep_string_with_search { case_sensitive = true, } end,
 --   { desc = "Search globally (case-sensitive) with telescope", })
@@ -128,9 +94,10 @@ h.keys.map({ "n", }, "<leader>lf", builtin.current_buffer_fuzzy_find,
 --   { desc = "Search globally (whole-word) with telescope", })
 -- h.keys.map({ "n", }, "<leader>lb", function() grep_string_with_search { whole_word = true, case_sensitive = true, } end,
 --   { desc = "Search globally (case-sensitive and whole-word) with telescope", })
-h.keys.map({ "n", }, "<leader>lo", function() builtin.grep_string() end,
-  { desc = "Search the currently hovered word with telescope", })
-h.keys.map({ "v", }, "<leader>lo", grep_string_with_visual, { desc = "Search the current selection with telescope", })
+-- h.keys.map({ "n", }, "<leader>lo", function() builtin.grep_string() end,
+--   { desc = "Search the currently hovered word with telescope", })
+-- h.keys.map({ "v", }, "<leader>lo", grep_string_with_visual, { desc = "Search the current selection with telescope", })
+
 h.keys.map({ "n", }, "<leader>le", grep_stripped_filename,
   { desc = "Search a file name starting with `wf_modules` with telescope", })
 h.keys.map({ "n", }, "<leader>ke", yank_stripped_filename, { desc = "C(K)opy a file name starting with `wf_modules`", })
@@ -170,8 +137,8 @@ telescope.setup {
     mappings             = {
       i = {
         ["<cr>"] = custom_actions.send_selected_and_open,
-        ["<C-f>"] = custom_actions.send_selected_and_open_with_fzf,
-        ["<C-a>"] = actions.toggle_all,
+        -- ["<C-f>"] = custom_actions.send_selected_and_open_with_fzf,
+        -- ["<C-a>"] = actions.toggle_all,
         ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
         ["<s-tab>"] = actions.move_selection_previous + actions.toggle_selection,
         ["<C-t>"] = actions.toggle_selection,
@@ -181,52 +148,71 @@ telescope.setup {
   },
 }
 
---- @param opts { case_sensitive: boolean, whole_word: boolean  }
-local function grep(opts)
-  opts = opts or {}
-  local base_input_text = "Grep for"
-  local input_text
+h.keys.map({ "v", }, "<leader>lo", function()
+  local visual_selection = get_visual_selection()
+  if visual_selection == "" then return end
 
-  if opts.case_sensitive and opts.whole_word then
-    input_text = base_input_text .. " (case sensitive + whole word): "
-  elseif opts.case_sensitive then
-    input_text = base_input_text .. " (case sensitive): "
-  elseif opts.whole_word then
-    input_text = base_input_text .. " (whole word): "
-  else
-    input_text = base_input_text .. ": "
-  end
+  require "grug-far".open {
+    prefills = {
+      search = visual_selection,
+    },
+  }
+end, { desc = "Search the current selection with telescope", })
+h.keys.map({ "n", }, "<leader>lo", function()
+    require "grug-far".open {
+      prefills = {
+        search = vim.fn.expand "<cword>",
+      },
+    }
+  end,
+  { desc = "Search the currently hovered word with telescope", })
 
-  local term = vim.fn.input(input_text)
-  if term == "" then return end
+h.keys.map({ "n", }, "<leader>lg", function()
+  local search = vim.fn.input "Grep for: "
+  if search == "" then return end
 
-  local cmd = "grep! --no-messages "
-  cmd = cmd .. "-g '!node_modules/' "
-  cmd = cmd .. "-g '!.git/' "
-  cmd = cmd .. "-g '!dist/' "
+  require "grug-far".open {
+    prefills = {
+      search = search,
+    },
+  }
+end, { desc = "Search globally with grug", })
 
-  if opts.whole_word then
-    cmd = cmd .. "--word-regexp "
-  end
+h.keys.map({ "n", }, "<leader>lc", function()
+    local search = vim.fn.input "Grep for: "
+    if search == "" then return end
 
-  if opts.case_sensitive then
-    cmd = cmd .. "--case-sensitive "
-  else
-    cmd = cmd .. "--ignore-case "
-  end
+    require "grug-far".open {
+      prefills = {
+        search = search,
+        flags = "--case-sensitive",
+      },
+    }
+  end,
+  { desc = "Search globally (case-sensitive) with grug", })
 
-  cmd = cmd .. term .. " *"
+h.keys.map({ "n", }, "<leader>lw", function()
+    local search = vim.fn.input "Grep for: "
+    if search == "" then return end
 
-  -- print(cmd)
-  vim.cmd(cmd)
-  vim.cmd "copen"
-end
+    require "grug-far".open {
+      prefills = {
+        search = search,
+        flags = "--word-regexp",
+      },
+    }
+  end,
+  { desc = "Search globally (whole-word) with grug", })
 
+h.keys.map({ "n", }, "<leader>lb", function()
+    local search = vim.fn.input "Grep for: "
+    if search == "" then return end
 
-h.keys.map({ "n", }, "<leader>lg", grep, { desc = "Search globally with grep", })
-h.keys.map({ "n", }, "<leader>lc", function() grep { case_sensitive = true, } end,
-  { desc = "Search globally (case-sensitive) with grep", })
-h.keys.map({ "n", }, "<leader>lw", function() grep { whole_word = true, } end,
-  { desc = "Search globally (whole-word) with grep", })
-h.keys.map({ "n", }, "<leader>lb", function() grep { whole_word = true, case_sensitive = true, } end,
-  { desc = "Search globally (case-sensitive and whole-word) with grep", })
+    require "grug-far".open {
+      prefills = {
+        search = search,
+        flags = "--case-sensitive --word-regexp",
+      },
+    }
+  end,
+  { desc = "Search globally (case-sensitive and whole-word) with grug", })
