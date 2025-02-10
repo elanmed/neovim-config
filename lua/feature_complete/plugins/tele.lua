@@ -128,7 +128,7 @@ h.keys.map({ "n", }, "<leader>lf", builtin.current_buffer_fuzzy_find,
 --   { desc = "Search globally (whole-word) with telescope", })
 -- h.keys.map({ "n", }, "<leader>lb", function() grep_string_with_search { whole_word = true, case_sensitive = true, } end,
 --   { desc = "Search globally (case-sensitive and whole-word) with telescope", })
-h.keys.map({ "n", }, "<leader>lo", function() builtin.grep_string(shared_grep_string_options) end,
+h.keys.map({ "n", }, "<leader>lo", function() builtin.grep_string() end,
   { desc = "Search the currently hovered word with telescope", })
 h.keys.map({ "v", }, "<leader>lo", grep_string_with_visual, { desc = "Search the current selection with telescope", })
 h.keys.map({ "n", }, "<leader>le", grep_stripped_filename,
@@ -201,9 +201,9 @@ local function grep(opts)
   if term == "" then return end
 
   local cmd = "grep! --no-messages "
-  cmd = cmd .. "-glob '!node_modules/' "
-  cmd = cmd .. "-glob '!.git/' "
-  cmd = cmd .. "-glob '!dist/' "
+  cmd = cmd .. "-g '!node_modules/' "
+  cmd = cmd .. "-g '!.git/' "
+  cmd = cmd .. "-g '!dist/' "
 
   if opts.whole_word then
     cmd = cmd .. "--word-regexp "
