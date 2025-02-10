@@ -54,7 +54,7 @@ Plug("ggandor/leap.nvim", { commit = "c6bfb19", })
 Plug("chentoast/marks.nvim", { commit = "74e8d01", })
 Plug("christoomey/vim-tmux-navigator", { commit = "5b3c701", })
 -- quickfix_list
-Plug("kevinhwang91/nvim-bqf", { commit = "1b24dc6", })
+Plug("kevinhwang91/nvim-bqf", { commit = "ebb6d26", })
 Plug("junegunn/fzf", { commit = "a09c6e9", ["do"] = "./install --bin", })
 -- scroll
 Plug("karb94/neoscroll.nvim", { commit = "532dcc8", })
