@@ -34,6 +34,7 @@ telescope.load_extension "fzf"
 
 local shared_grep_string_options = { only_sort_text = true, }
 
+--- @param opts { case_sensitive: boolean, whole_word: boolean  }
 local function grep_string_with_search(opts)
   opts = opts or {}
 
@@ -120,13 +121,13 @@ h.keys.map({ "n", }, "<leader>lh", builtin.help_tags, { desc = "Search help tags
 h.keys.map({ "n", }, "<leader>l;", builtin.command_history, { desc = "Search command history with telescope", })
 h.keys.map({ "n", }, "<leader>lf", builtin.current_buffer_fuzzy_find,
   { desc = "Search in the current file with telescope", })
-h.keys.map({ "n", }, "<leader>lg", grep_string_with_search, { desc = "Search globally with telescope", })
-h.keys.map({ "n", }, "<leader>lc", function() grep_string_with_search { case_sensitive = true, } end,
-  { desc = "Search globally (case-sensitive) with telescope", })
-h.keys.map({ "n", }, "<leader>lw", function() grep_string_with_search { whole_word = true, } end,
-  { desc = "Search globally (whole-word) with telescope", })
-h.keys.map({ "n", }, "<leader>lb", function() grep_string_with_search { whole_word = true, case_sensitive = true, } end,
-  { desc = "Search globally (case-sensitive and whole-word) with telescope", })
+-- h.keys.map({ "n", }, "<leader>lg", grep_string_with_search, { desc = "Search globally with telescope", })
+-- h.keys.map({ "n", }, "<leader>lc", function() grep_string_with_search { case_sensitive = true, } end,
+--   { desc = "Search globally (case-sensitive) with telescope", })
+-- h.keys.map({ "n", }, "<leader>lw", function() grep_string_with_search { whole_word = true, } end,
+--   { desc = "Search globally (whole-word) with telescope", })
+-- h.keys.map({ "n", }, "<leader>lb", function() grep_string_with_search { whole_word = true, case_sensitive = true, } end,
+--   { desc = "Search globally (case-sensitive and whole-word) with telescope", })
 h.keys.map({ "n", }, "<leader>lo", function() builtin.grep_string(shared_grep_string_options) end,
   { desc = "Search the currently hovered word with telescope", })
 h.keys.map({ "v", }, "<leader>lo", grep_string_with_visual, { desc = "Search the current selection with telescope", })
@@ -179,3 +180,50 @@ telescope.setup {
     },
   },
 }
+
+--- @param opts { case_sensitive: boolean, whole_word: boolean  }
+local function grep(opts)
+  opts = opts or {}
+  local base_input_text = "Grep for"
+  local input_text
+
+  if opts.case_sensitive and opts.whole_word then
+    input_text = base_input_text .. " (case sensitive + whole word): "
+  elseif opts.case_sensitive then
+    input_text = base_input_text .. " (case sensitive): "
+  elseif opts.whole_word then
+    input_text = base_input_text .. " (whole word): "
+  else
+    input_text = base_input_text .. ": "
+  end
+
+  local term = vim.fn.input(input_text)
+  if term == "" then return end
+
+  local cmd = "grep! --no-messages "
+  cmd = cmd .. "-glob '!node_modules/' "
+  cmd = cmd .. "-glob '!.git/' "
+  if opts.whole_word then
+    cmd = cmd .. "--word-regexp "
+  end
+
+  if opts.case_sensitive then
+    cmd = cmd .. "--case-sensitive "
+  else
+    cmd = cmd .. "--ignore-case "
+  end
+  cmd = cmd .. term .. " *"
+
+  -- print(cmd)
+  vim.cmd(cmd)
+  vim.cmd "copen"
+end
+
+
+h.keys.map({ "n", }, "<leader>lg", grep, { desc = "Search globally with grep", })
+h.keys.map({ "n", }, "<leader>lc", function() grep { case_sensitive = true, } end,
+  { desc = "Search globally (case-sensitive) with grep", })
+h.keys.map({ "n", }, "<leader>lw", function() grep { whole_word = true, } end,
+  { desc = "Search globally (whole-word) with grep", })
+h.keys.map({ "n", }, "<leader>lb", function() grep { whole_word = true, case_sensitive = true, } end,
+  { desc = "Search globally (case-sensitive and whole-word) with grep", })

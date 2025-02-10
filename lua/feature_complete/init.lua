@@ -23,7 +23,6 @@ Plug "nvim-lua/plenary.nvim"
 -- editing (no file)
 Plug "tpope/vim-surround"
 Plug "tpope/vim-repeat"
-Plug "tpope/vim-afterimage"
 Plug "tpope/vim-commentary"
 Plug("mg979/vim-visual-multi", { commit = "38b0e8d", })
 Plug("jxnblk/vim-mdx-js", { commit = "17179d7", })

@@ -70,6 +70,7 @@ h.keys.map({ "n", }, "gp", "gT", { desc = "Go to the prev tab", })
 h.keys.map({ "n", }, "ge", h.keys.user_cmd_cb "copen 15", { desc = "Open the quickfix list", })
 h.keys.map({ "n", }, "gq", h.keys.user_cmd_cb "cclose", { desc = "Close the quickfix list", })
 
+-- TODO: issues with mac
 local alt_j = h.keys.is_linux() and "<A-j>" or "∆"
 local alt_k = h.keys.is_linux() and "<A-k>" or "˚"
 
@@ -131,7 +132,6 @@ local function clean_empty_bufs()
   end
 end
 h.keys.map({ "n", }, "<leader>te", clean_empty_bufs, { desc = "Close all empty buffers", })
-
 
 -- TODO: use more
 h.keys.map({ "n", }, [[<leader>']], [["]], { desc = "Set register", })
