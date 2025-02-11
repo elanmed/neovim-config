@@ -49,7 +49,6 @@ Plug "williamboman/mason-lspconfig.nvim"
 Plug("folke/lazydev.nvim", { commit = "a1b78b2", })
 Plug("windwp/nvim-autopairs", { commit = "19606af", })
 Plug "stevearc/conform.nvim"
-
 -- movements
 Plug("ThePrimeagen/harpoon", { branch = "harpoon2", commit = "0378a6c", })
 Plug("ggandor/leap.nvim", { commit = "c6bfb19", })
@@ -66,6 +65,7 @@ Plug("nvim-lualine/lualine.nvim", { commit = "b431d22", })
 -- tele
 Plug("nvim-telescope/telescope.nvim", { commit = "a0bbec2", })
 Plug("nvim-telescope/telescope-fzf-native.nvim", { commit = "dae2eac", ["do"] = "make", })
+Plug("smartpde/telescope-recent-files", { commit = "3a7a1b9", })
 -- treesitter
 Plug("nvim-treesitter/nvim-treesitter", { commit = "7a64148", ["do"] = h.keys.user_cmd_cb "TSUpdate", })
 Plug("stevearc/aerial.nvim", { commit = "92f93f4", })
