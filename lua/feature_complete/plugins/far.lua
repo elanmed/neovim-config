@@ -44,3 +44,11 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
     })
   end,
 })
+
+-- local flash_highlight = function(bufnr, lnum)
+--   local ns = vim.api.nvim_buf_add_highlight(bufnr, 0, "Visual", lnum - 1, 0, -1)
+--   local remove_highlight = function()
+--     pcall(vim.api.nvim_buf_clear_namespace, bufnr, ns, 0, -1)
+--   end
+--   vim.defer_fn(remove_highlight, 300)
+-- end
