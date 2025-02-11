@@ -6,6 +6,8 @@ local builtin = require "telescope.builtin"
 local action_state = require "telescope.actions.state"
 local themes = require "telescope.themes"
 
+local grug = require "grug-far"
+
 local custom_actions = {}
 
 custom_actions.send_selected_and_open = function(prompt_bufnr)
@@ -33,14 +35,6 @@ telescope.load_extension "fzf"
 -- telescope.load_extension "frecency"
 
 local shared_grep_string_options = { only_sort_text = true, }
-
-local function get_visual_selection()
-  local _, line_start, col_start = table.unpack(vim.fn.getpos "v")
-  local _, line_end, col_end = table.unpack(vim.fn.getpos ".")
-  local opts = {}
-  local visual = vim.api.nvim_buf_get_text(h.curr.buffer, line_start - 1, col_start - 1, line_end - 1, col_end, opts)
-  return visual[1] or ""
-end
 
 local function get_stripped_filename()
   local filepath = vim.fn.expand "%:p"
@@ -149,17 +143,14 @@ telescope.setup {
 }
 
 h.keys.map({ "v", }, "<leader>lo", function()
-  local visual_selection = get_visual_selection()
+  local visual_selection = grug.get_current_visual_selection(require_visual_mode_active)
   if visual_selection == "" then return end
 
-  require "grug-far".open {
-    prefills = {
-      search = visual_selection,
-    },
-  }
+  grug.with_visual_selection()
 end, { desc = "Search the current selection with telescope", })
+
 h.keys.map({ "n", }, "<leader>lo", function()
-    require "grug-far".open {
+    grug.open {
       prefills = {
         search = vim.fn.expand "<cword>",
       },
@@ -171,7 +162,7 @@ h.keys.map({ "n", }, "<leader>lg", function()
   local search = vim.fn.input "Grep for: "
   if search == "" then return end
 
-  require "grug-far".open {
+  grug.open {
     prefills = {
       search = search,
     },
@@ -182,7 +173,7 @@ h.keys.map({ "n", }, "<leader>lc", function()
     local search = vim.fn.input "Grep for: "
     if search == "" then return end
 
-    require "grug-far".open {
+    grug.open {
       prefills = {
         search = search,
         flags = "--case-sensitive",
@@ -195,7 +186,7 @@ h.keys.map({ "n", }, "<leader>lw", function()
     local search = vim.fn.input "Grep for: "
     if search == "" then return end
 
-    require "grug-far".open {
+    grug.open {
       prefills = {
         search = search,
         flags = "--word-regexp",
@@ -208,7 +199,7 @@ h.keys.map({ "n", }, "<leader>lb", function()
     local search = vim.fn.input "Grep for: "
     if search == "" then return end
 
-    require "grug-far".open {
+    grug.open {
       prefills = {
         search = search,
         flags = "--case-sensitive --word-regexp",
