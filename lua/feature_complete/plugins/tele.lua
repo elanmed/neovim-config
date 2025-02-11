@@ -81,6 +81,7 @@ h.keys.map({ "n", }, "<C-p>", function()
     themes.get_ivy {
       hidden = true,
       layout_config = ivy_layout_config,
+      only_cwd = true,
     }
   )
 end, { desc = "Find files with telescope", })
