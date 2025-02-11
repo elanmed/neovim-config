@@ -99,7 +99,8 @@ h.keys.map({ "n", }, "gd", vim.lsp.buf.definition, { desc = "LSP go to definitio
 h.keys.map({ "n", }, "gy", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
 h.keys.map({ "n", }, "gu", vim.lsp.buf.references, { desc = "LSP go to references", })
 h.keys.map({ "n", }, "ga", vim.lsp.buf.code_action, { desc = "LSP code action", })
-h.keys.map({ "n", }, "<leader>ld", vim.diagnostic.setloclist, { desc = "Open LSP diagnostics with the quickfix list", })
+h.keys.map({ "n", }, "<leader>ld", function() vim.diagnostic.setloclist { severity = "ERROR", } end,
+  { desc = "Open LSP diagnostics with the quickfix list", })
 h.keys.map({ "n", }, "gl", function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     -- https://neovim.io/doc/user/api.html#floating-windows
