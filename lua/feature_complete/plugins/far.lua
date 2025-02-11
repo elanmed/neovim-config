@@ -2,7 +2,7 @@ local h = require "shared.helpers"
 local grug = require "grug-far"
 
 h.keys.map({ "n", }, "<leader>re", function()
-  vim.cmd "GrugFar"
+  grug.open()
   vim.cmd "vertical resize 135%"
 end, { desc = "Open the grug-far ui", })
 
@@ -29,3 +29,12 @@ grug.setup {
     swapReplacementInterpreter = false,
   },
 }
+
+vim.api.nvim_create_autocmd({ "FileType", }, {
+  pattern = "grug-far",
+  callback = function()
+    h.keys.map({ "n", }, "<leader>o", "<leader>ro<leader>q", {
+      buffer = true,
+    })
+  end,
+})
