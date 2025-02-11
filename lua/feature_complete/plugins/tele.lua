@@ -63,21 +63,31 @@ local function yank_stripped_filename()
   vim.fn.setreg("+", stripped_filename)
 end
 
+local ivy_layout_config = {
+  height = 0.4,
+  preview_width = 0,
+}
+
 -- h.keys.map({ "n", }, "<C-p>", h.keys.user_cmd_cb "Telescope frecency workspace=CWD", { desc = "Find files with telescope", })
 h.keys.map({ "n", }, "<C-p>", function()
   builtin.find_files(themes.get_ivy {
     hidden = true,
-    layout_config = {
-      height = 0.4,
-      preview_width = 0,
-    },
+    layout_config = ivy_layout_config,
   })
 end, { desc = "Find files with telescope", })
+h.keys.map({ "n", }, "<leader>li", function()
+  builtin.search_history(themes.get_ivy {
+    layout_config = ivy_layout_config,
+  })
+end, { desc = "Search search history with telescope", })
+h.keys.map({ "n", }, "<leader>l;", function()
+  builtin.command_history(themes.get_ivy {
+    layout_config = ivy_layout_config,
+  })
+end, { desc = "Search command history with telescope", })
 h.keys.map({ "n", }, "<leader>lr", builtin.resume, { desc = "Resume telescope search", })
 h.keys.map({ "n", }, "<leader>lt", builtin.buffers, { desc = "Search currently open buffers with telescope", })
-h.keys.map({ "n", }, "<leader>li", builtin.search_history, { desc = "Search search history with telescope", })
 h.keys.map({ "n", }, "<leader>lh", builtin.help_tags, { desc = "Search help tags with telescope", })
-h.keys.map({ "n", }, "<leader>l;", builtin.command_history, { desc = "Search command history with telescope", })
 h.keys.map({ "n", }, "<leader>lf", builtin.current_buffer_fuzzy_find,
   { desc = "Search in the current file with telescope", })
 
@@ -142,19 +152,27 @@ telescope.setup {
   },
 }
 
+local files_filter_row = 4
+local shared_grug_opts = {
+  startInInsertMode = false,
+  startCursorRow = files_filter_row,
+}
+
 h.keys.map({ "v", }, "<leader>lo", function()
+  local require_visual_mode_active = true
   local visual_selection = grug.get_current_visual_selection(require_visual_mode_active)
   if visual_selection == "" then return end
 
-  grug.with_visual_selection()
+  grug.with_visual_selection(shared_grug_opts)
 end, { desc = "Search the current selection with telescope", })
 
 h.keys.map({ "n", }, "<leader>lo", function()
-    grug.open {
+    local opts = vim.tbl_extend("error", shared_grug_opts, {
       prefills = {
         search = vim.fn.expand "<cword>",
       },
-    }
+    })
+    grug.open(opts)
   end,
   { desc = "Search the currently hovered word with telescope", })
 
@@ -162,23 +180,25 @@ h.keys.map({ "n", }, "<leader>lg", function()
   local search = vim.fn.input "Grep for: "
   if search == "" then return end
 
-  grug.open {
+  local opts = vim.tbl_extend("error", shared_grug_opts, {
     prefills = {
       search = search,
     },
-  }
+  })
+  grug.open(opts)
 end, { desc = "Search globally with grug", })
 
 h.keys.map({ "n", }, "<leader>lc", function()
     local search = vim.fn.input "Grep for: "
     if search == "" then return end
 
-    grug.open {
+    local opts = vim.tbl_extend("error", shared_grug_opts, {
       prefills = {
         search = search,
         flags = "--case-sensitive",
       },
-    }
+    })
+    grug.open(opts)
   end,
   { desc = "Search globally (case-sensitive) with grug", })
 
@@ -186,12 +206,13 @@ h.keys.map({ "n", }, "<leader>lw", function()
     local search = vim.fn.input "Grep for: "
     if search == "" then return end
 
-    grug.open {
+    local opts = vim.tbl_extend("error", shared_grug_opts, {
       prefills = {
         search = search,
         flags = "--word-regexp",
       },
-    }
+    })
+    grug.open(opts)
   end,
   { desc = "Search globally (whole-word) with grug", })
 
@@ -199,11 +220,12 @@ h.keys.map({ "n", }, "<leader>lb", function()
     local search = vim.fn.input "Grep for: "
     if search == "" then return end
 
-    grug.open {
+    local opts = vim.tbl_extend("error", shared_grug_opts, {
       prefills = {
         search = search,
         flags = "--case-sensitive --word-regexp",
       },
-    }
+    })
+    grug.open(opts)
   end,
   { desc = "Search globally (case-sensitive and whole-word) with grug", })
