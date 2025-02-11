@@ -47,20 +47,8 @@ keys.map = function(modes, shortcut, command, opts)
   end
 end
 
--- https://stackoverflow.com/a/326715
---- @param cmd string
-local function os_capture(cmd)
-  local f = assert(io.popen(cmd, "r"))
-  local s = assert(f:read "*a")
-  f:close()
-  s = string.gsub(s, "^%s+", "")
-  s = string.gsub(s, "%s+$", "")
-  s = string.gsub(s, "[\n\r]+", " ")
-  return s
-end
-
 keys.is_linux = function()
-  return os_capture "uname -s" == "Linux"
+  return vim.uv.os_uname().sysname == "Linux"
 end
 
 --- @param mode 'n' | 'v' | 'i'
