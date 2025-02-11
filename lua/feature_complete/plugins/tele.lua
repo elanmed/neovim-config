@@ -33,6 +33,7 @@ local no_border_borderchars = { " ", }
 
 telescope.load_extension "fzf"
 telescope.load_extension "recent_files"
+telescope.load_extension "rails"
 
 local shared_grep_string_options = { only_sort_text = true, }
 
@@ -98,6 +99,9 @@ h.keys.map({ "n", }, "<leader>lt", builtin.buffers, { desc = "Search currently o
 h.keys.map({ "n", }, "<leader>lh", builtin.help_tags, { desc = "Search help tags with telescope", })
 h.keys.map({ "n", }, "<leader>lf", builtin.current_buffer_fuzzy_find,
   { desc = "Search in the current file with telescope", })
+vim.cmd [[
+nnoremap <leader>la :Telescope rails<space>
+]]
 
 -- h.keys.map({ "n", }, "<leader>lg", grep_string_with_search, { desc = "Search globally with telescope", })
 -- h.keys.map({ "n", }, "<leader>lc", function() grep_string_with_search { case_sensitive = true, } end,
