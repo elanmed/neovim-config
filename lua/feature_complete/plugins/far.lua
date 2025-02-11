@@ -1,8 +1,14 @@
 local h = require "shared.helpers"
 local grug = require "grug-far"
 
+GRUG_INSTANCE_NAME = ""
+
 h.keys.map({ "n", }, "<leader>re", function()
-  grug.open()
+  if grug.has_instance(GRUG_INSTANCE_NAME) then
+    grug.kill_instance(GRUG_INSTANCE_NAME)
+  else
+    GRUG_INSTANCE_NAME = grug.open()
+  end
   vim.cmd "vertical resize 135%"
 end, { desc = "Open the grug-far ui", })
 

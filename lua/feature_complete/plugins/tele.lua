@@ -163,7 +163,7 @@ h.keys.map({ "v", }, "<leader>lo", function()
   local visual_selection = grug.get_current_visual_selection(require_visual_mode_active)
   if visual_selection == "" then return end
 
-  grug.with_visual_selection(shared_grug_opts)
+  GRUG_INSTANCE_NAME = grug.with_visual_selection(shared_grug_opts)
 end, { desc = "Search the current selection with telescope", })
 
 h.keys.map({ "n", }, "<leader>lo", function()
@@ -172,7 +172,7 @@ h.keys.map({ "n", }, "<leader>lo", function()
         search = vim.fn.expand "<cword>",
       },
     })
-    grug.open(opts)
+    GRUG_INSTANCE_NAME = grug.open(opts)
   end,
   { desc = "Search the currently hovered word with telescope", })
 
@@ -185,7 +185,7 @@ h.keys.map({ "n", }, "<leader>lg", function()
       search = search,
     },
   })
-  grug.open(opts)
+  GRUG_INSTANCE_NAME = grug.open(opts)
 end, { desc = "Search globally with grug", })
 
 h.keys.map({ "n", }, "<leader>lc", function()
@@ -198,7 +198,7 @@ h.keys.map({ "n", }, "<leader>lc", function()
         flags = "--case-sensitive",
       },
     })
-    grug.open(opts)
+    GRUG_INSTANCE_NAME = grug.open(opts)
   end,
   { desc = "Search globally (case-sensitive) with grug", })
 
@@ -212,7 +212,7 @@ h.keys.map({ "n", }, "<leader>lw", function()
         flags = "--word-regexp",
       },
     })
-    grug.open(opts)
+    GRUG_INSTANCE_NAME = grug.open(opts)
   end,
   { desc = "Search globally (whole-word) with grug", })
 
@@ -226,6 +226,6 @@ h.keys.map({ "n", }, "<leader>lb", function()
         flags = "--case-sensitive --word-regexp",
       },
     })
-    grug.open(opts)
+    GRUG_INSTANCE_NAME = grug.open(opts)
   end,
   { desc = "Search globally (case-sensitive and whole-word) with grug", })
