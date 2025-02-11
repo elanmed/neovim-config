@@ -62,17 +62,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     if not client then return end
 
-    if client.supports_method "textDocument/formatting" then
-      vim.api.nvim_create_autocmd("BufWritePre", {
-        buffer = args.buf,
-        callback = function()
-          vim.lsp.buf.format { id = client.id, bufnr = args.buf, async = false, }
-          -- https://github.com/neovim/neovim/issues/25014#issuecomment-2312672119
-          vim.diagnostic.enable(args.buf)
-        end,
-      })
-    end
-
     if client.supports_method "textDocument/documentHighlight" then
       vim.o.updatetime = 100 -- how long until the cursor events fire
       vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
@@ -99,7 +88,9 @@ h.keys.map({ "n", }, "gd", vim.lsp.buf.definition, { desc = "LSP go to definitio
 h.keys.map({ "n", }, "gy", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
 h.keys.map({ "n", }, "gu", vim.lsp.buf.references, { desc = "LSP go to references", })
 h.keys.map({ "n", }, "ga", vim.lsp.buf.code_action, { desc = "LSP code action", })
-h.keys.map({ "n", }, "<leader>ld", function() vim.diagnostic.setloclist { severity = "ERROR", } end,
+h.keys.map({ "n", }, "<leader>ld", function()
+    vim.diagnostic.setloclist { severity = "ERROR", }
+  end,
   { desc = "Open LSP diagnostics with the quickfix list", })
 h.keys.map({ "n", }, "gl", function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
@@ -176,3 +167,9 @@ cmp.setup {
 
 require "lazydev".setup {}
 require "nvim-autopairs".setup {}
+require "conform".setup {
+  format_after_save = {
+    lsp_format = "fallback",
+    async = true,
+  },
+}
