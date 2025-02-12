@@ -1,4 +1,6 @@
 local h = require "shared.helpers"
+local lspconfig = require "lspconfig"
+
 
 vim.opt.signcolumn = "yes" -- reserve a space in the gutter
 
@@ -49,7 +51,7 @@ vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
   end,
 })
 
-local lspconfig_defaults = require "lspconfig".util.default_config
+local lspconfig_defaults = lspconfig.util.default_config
 lspconfig_defaults.capabilities = vim.tbl_deep_extend(
   "force",
   lspconfig_defaults.capabilities,
@@ -106,15 +108,35 @@ vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
   border = "single",
 })
 
-require "lspconfig".ts_ls.setup {}
-require "lspconfig".eslint.setup {}
-require "lspconfig".jsonls.setup {}
-require "lspconfig".lua_ls.setup {
+
+local function enable_deno_lsp()
+  local function file_exists(name)
+    local file = io.open(name, "r")
+    if file == nil then
+      return false
+    else
+      io.close(file)
+      return true
+    end
+  end
+
+  return file_exists(vim.fn.getcwd() .. "/.deno-enable-lsp")
+end
+
+if enable_deno_lsp() then
+  lspconfig.denols.setup {}
+else
+  lspconfig.ts_ls.setup {}
+  lspconfig.eslint.setup {}
+end
+
+lspconfig.jsonls.setup {}
+lspconfig.lua_ls.setup {
   settings = {
     Lua = { diagnostics = { globals = { "vim", }, }, },
   },
 }
-require "lspconfig".bashls.setup {
+lspconfig.bashls.setup {
   settings = {
     bashIde = {
       shellcheckArguments = "--extended-analysis=false",
@@ -125,21 +147,15 @@ require "lspconfig".bashls.setup {
     },
   },
 }
-require "lspconfig".css_variables.setup {}
-require "lspconfig".cssls.setup {}
-require "lspconfig".cssmodules_ls.setup {}
-require "lspconfig".stylelint_lsp.setup {}
-require "lspconfig".tailwindcss.setup {}
-require "lspconfig".solargraph.setup {}
-require "lspconfig".denols.setup {
-  settings = {
-    deno = {
-      -- TODO: enable this based on a local file i.e .deno-enable-lsp
-      enable = false,
-    },
-  },
-}
-require "lspconfig".vimls.setup {}
+lspconfig.css_variables.setup {}
+lspconfig.cssls.setup {}
+lspconfig.cssmodules_ls.setup {}
+lspconfig.stylelint_lsp.setup {}
+lspconfig.tailwindcss.setup {}
+lspconfig.solargraph.setup {}
+lspconfig.vimls.setup {}
+
+
 
 local cmp = require "cmp"
 cmp.setup {
