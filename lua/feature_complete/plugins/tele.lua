@@ -32,7 +32,7 @@ local no_border_borderchars = { " ", }
 -- end
 
 telescope.load_extension "fzf"
-telescope.load_extension "recent_files"
+telescope.load_extension "frecency"
 telescope.load_extension "rails"
 
 local shared_grep_string_options = { only_sort_text = true, }
@@ -70,18 +70,13 @@ local ivy_layout_config = {
 }
 
 -- h.keys.map({ "n", }, "<C-p>", h.keys.user_cmd_cb "Telescope frecency workspace=CWD", { desc = "Find files with telescope", })
--- h.keys.map({ "n", }, "<C-p>", function()
---   builtin.find_files(themes.get_ivy {
---     hidden = true,
---     layout_config = ivy_layout_config,
---   })
--- end, { desc = "Find files with telescope", })
 h.keys.map({ "n", }, "<C-p>", function()
-  telescope.extensions.recent_files.pick(
+  telescope.extensions.frecency.frecency(
     themes.get_ivy {
       hidden = true,
       layout_config = ivy_layout_config,
-      only_cwd = true,
+      workspace = "CWD",
+      db_safe_mode = false,
     }
   )
 end, { desc = "Find files with telescope", })
