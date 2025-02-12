@@ -19,7 +19,7 @@ require "mason-lspconfig".setup {
     "tailwindcss",
     "denols",
     "vimls",
-    -- "solargraph"
+    "solargraph",
   },
 }
 
@@ -154,8 +154,6 @@ lspconfig.stylelint_lsp.setup {}
 lspconfig.tailwindcss.setup {}
 lspconfig.solargraph.setup {}
 lspconfig.vimls.setup {}
-
-
 
 local cmp = require "cmp"
 cmp.setup {
