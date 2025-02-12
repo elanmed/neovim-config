@@ -44,6 +44,7 @@ Plug "neovim/nvim-lspconfig"
 Plug "hrsh7th/nvim-cmp"
 Plug "hrsh7th/cmp-buffer"
 Plug "hrsh7th/cmp-nvim-lsp"
+Plug "hrsh7th/cmp-path"
 Plug "williamboman/mason.nvim"
 Plug "williamboman/mason-lspconfig.nvim"
 Plug("folke/lazydev.nvim", { commit = "a1b78b2", })

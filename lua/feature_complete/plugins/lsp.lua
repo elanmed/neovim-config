@@ -153,6 +153,7 @@ cmp.setup {
     },
     { name = "buffer", },
     { name = "lazydev", group_index = 0, },
+    { name = "path", },
   },
   window = {
     completion = cmp.config.window.bordered(),
