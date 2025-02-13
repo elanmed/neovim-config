@@ -35,6 +35,7 @@ vim.diagnostic.config {
   },
 }
 
+
 local last_cursor = { nil, nil, }
 vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
   pattern = "*",
@@ -63,6 +64,10 @@ vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(args)
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     if not client then return end
+
+    if client.supports_method "textDocument/inlayHint" then
+      vim.lsp.inlay_hint.enable(true)
+    end
 
     if client.supports_method "textDocument/documentHighlight" then
       vim.o.updatetime = 100 -- how long until the cursor events fire
