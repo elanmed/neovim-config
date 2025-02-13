@@ -3,9 +3,36 @@ local h = require "shared.helpers"
 -- TODO: find a new remap
 -- vim.api.nvim_set_var("VM_maps", { ["Add Cursor Down"] = "<C-t>", })
 
-local leap = require "leap"
-leap.create_default_mappings()
-leap.opts.highlight_unlabeled_phase_one_targets = true
+local flash = require "flash"
+flash.setup {
+  modes = {
+    char = {
+      multi_line = false,
+    },
+  },
+  prompt = {
+    prefix = { { "󱐋 ", "FlashPromptIcon", }, },
+  },
+
+}
+h.keys.map({ "n", }, "s", function() flash.jump { forward = true, } end)
+h.keys.map({ "n", }, "S", function() flash.jump { forward = false, } end)
+h.keys.map({ "n", }, "<leader><leader>", function()
+  -- https://github.com/folke/flash.nvim#-examples
+  flash.jump {
+    forward = true,
+    search = {
+      mode = "search",
+      max_length = 0,
+    },
+    label = {
+      after = { 0, 0, },
+    },
+    pattern = "^",
+  }
+
+  h.keys.send_keys("n", "zz")
+end)
 
 local harpoon = require "harpoon"
 harpoon:setup {

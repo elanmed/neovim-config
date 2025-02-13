@@ -47,12 +47,12 @@ Plug "hrsh7th/cmp-nvim-lsp"
 Plug "hrsh7th/cmp-path"
 Plug "williamboman/mason.nvim"
 Plug "williamboman/mason-lspconfig.nvim"
-Plug("folke/lazydev.nvim", { commit = "a1b78b2", })
+Plug "folke/lazydev.nvim"
 Plug("windwp/nvim-autopairs", { commit = "19606af", })
 Plug "stevearc/conform.nvim"
 -- movements
 Plug("ThePrimeagen/harpoon", { branch = "harpoon2", commit = "0378a6c", })
-Plug("ggandor/leap.nvim", { commit = "c6bfb19", })
+Plug "folke/flash.nvim"
 Plug("chentoast/marks.nvim", { commit = "74e8d01", })
 Plug("christoomey/vim-tmux-navigator", { commit = "5b3c701", })
 -- quickfix_list
