@@ -76,7 +76,6 @@ h.keys.map({ "n", }, "<C-p>", function()
       hidden = true,
       layout_config = ivy_layout_config,
       workspace = "CWD",
-      db_safe_mode = false,
     }
   )
 end, { desc = "Find files with telescope", })
@@ -156,6 +155,11 @@ telescope.setup {
         ["<C-t>"] = actions.toggle_selection,
         ["<esc>"] = actions.close,
       },
+    },
+  },
+  extensions = {
+    frecency = {
+      db_safe_mode = false,
     },
   },
 }
