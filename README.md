@@ -5,7 +5,7 @@
   - [lspconfig](https://github.com/neovim/nvim-lspconfig), [mason](https://github.com/williamboman/mason.nvim) for language server features
   - [cmp](https://github.com/hrsh7th/nvim-cmp) for completions
   - [treesitter](https://github.com/nvim-treesitter/nvim-treesitter) for syntax highlighting, pair renaming, and viewing a file's code structure
-  - [flash](https://github.com/folke/flash.nvim) for easier movements
+  - [flash](https://github.com/folke/flash.nvim) for a combo of [easymotion](https://github.com/easymotion/vim-easymotion), [flit](https://github.com/ggandor/flit.nvim), and [leap](https://github.com/ggandor/leap.nvim)
   - [vim tmux navigator](https://github.com/christoomey/vim-tmux-navigator) for moving between vim and tmux panes
   - [harpoon](https://github.com/ThePrimeagen/harpoon/tree/harpoon2) for moving between frequently-used files
   - [telescope](https://github.com/nvim-telescope/telescope.nvim) to find anything that can be found in a single search
