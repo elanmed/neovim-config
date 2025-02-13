@@ -28,7 +28,6 @@ Plug("mg979/vim-visual-multi", { commit = "38b0e8d", })
 Plug("jxnblk/vim-mdx-js", { commit = "17179d7", })
 -- buffers
 Plug("akinsho/bufferline.nvim", { commit = "0b2fd86", })
-Plug("vim-scripts/BufOnly.vim", { cmd = "BufOnly", commit = "43dd923", })
 -- colorscheme
 Plug("RRethy/nvim-base16", { commit = "6ac181b", })
 -- file_tree
