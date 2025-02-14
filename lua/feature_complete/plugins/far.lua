@@ -45,6 +45,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
   end,
 })
 
+-- TODO: add this in a PR
 -- local flash_highlight = function(bufnr, lnum)
 --   local ns = vim.api.nvim_buf_add_highlight(bufnr, 0, "Visual", lnum - 1, 0, -1)
 --   local remove_highlight = function()
@@ -52,3 +53,87 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
 --   end
 --   vim.defer_fn(remove_highlight, 300)
 -- end
+
+local files_filter_row = 4
+local shared_grug_opts = {
+  startInInsertMode = false,
+  startCursorRow = files_filter_row,
+}
+
+h.keys.map({ "v", }, "<leader>lo", function()
+  local require_visual_mode_active = true
+  local visual_selection = grug.get_current_visual_selection(require_visual_mode_active)
+  if visual_selection == "" then return end
+
+  local opts = vim.tbl_extend("error", shared_grug_opts, {
+    prefills = {
+      flags = "--ignore-case",
+    },
+  })
+  GRUG_INSTANCE_NAME = grug.with_visual_selection(opts)
+end, { desc = "Search the current selection with telescope", })
+
+h.keys.map({ "n", }, "<leader>lo", function()
+    local opts = vim.tbl_extend("error", shared_grug_opts, {
+      prefills = {
+        search = vim.fn.expand "<cword>",
+        flags = "--ignore-case",
+      },
+    })
+    GRUG_INSTANCE_NAME = grug.open(opts)
+  end,
+  { desc = "Search the currently hovered word with telescope", })
+
+h.keys.map({ "n", }, "<leader>lg", function()
+  local search = vim.fn.input "Grep for: "
+  if search == "" then return end
+
+  local opts = vim.tbl_extend("error", shared_grug_opts, {
+    prefills = {
+      search = search,
+      flags = "--ignore-case",
+    },
+  })
+  GRUG_INSTANCE_NAME = grug.open(opts)
+end, { desc = "Search globally with grug", })
+
+h.keys.map({ "n", }, "<leader>lc", function()
+    local search = vim.fn.input "Grep for (case-sensitive): "
+    if search == "" then return end
+
+    local opts = vim.tbl_extend("error", shared_grug_opts, {
+      prefills = {
+        search = search,
+      },
+    })
+    GRUG_INSTANCE_NAME = grug.open(opts)
+  end,
+  { desc = "Search globally (case-sensitive) with grug", })
+
+h.keys.map({ "n", }, "<leader>lw", function()
+    local search = vim.fn.input "Grep for (whole-word): "
+    if search == "" then return end
+
+    local opts = vim.tbl_extend("error", shared_grug_opts, {
+      prefills = {
+        search = search,
+        flags = "--ignore-case --word-regexp",
+      },
+    })
+    GRUG_INSTANCE_NAME = grug.open(opts)
+  end,
+  { desc = "Search globally (whole-word) with grug", })
+
+h.keys.map({ "n", }, "<leader>lb", function()
+    local search = vim.fn.input "Grep for (case-sensitive and whole-word): "
+    if search == "" then return end
+
+    local opts = vim.tbl_extend("error", shared_grug_opts, {
+      prefills = {
+        search = search,
+        flags = "--word-regexp",
+      },
+    })
+    GRUG_INSTANCE_NAME = grug.open(opts)
+  end,
+  { desc = "Search globally (case-sensitive and whole-word) with grug", })

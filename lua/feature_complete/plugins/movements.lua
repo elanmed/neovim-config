@@ -7,13 +7,12 @@ local flash = require "flash"
 flash.setup {
   modes = {
     char = {
-      multi_line = false,
+      enabled = false,
     },
   },
   prompt = {
     prefix = { { "󱐋 ", "FlashPromptIcon", }, },
   },
-
 }
 h.keys.map({ "n", }, "s", function() flash.jump { forward = true, } end)
 h.keys.map({ "n", }, "S", function() flash.jump { forward = false, } end)
