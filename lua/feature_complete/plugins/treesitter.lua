@@ -27,7 +27,6 @@ require "nvim-treesitter.configs".setup {
     enable = true,
     additional_vim_regex_highlighting = false,
   },
-  indent = { enable = true, },
   endwise = { enable = true, },
   textobjects = {
     select = {
@@ -41,13 +40,6 @@ require "nvim-treesitter.configs".setup {
         ["if"] = { query = "@function.inner", desc = "Select inner part of a method/function definition", },
       },
     },
-  },
-}
-
-require "ibl".setup {
-  scope = {
-    show_start = false,
-    show_end = false,
   },
 }
 

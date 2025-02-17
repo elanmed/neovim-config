@@ -37,6 +37,12 @@ else
   h_install_package "$package_manager" fd
 fi
 
+if h_is_linux; then
+  h_install_package "$package_manager" ImageMagick
+else
+  h_install_package "$package_manager" imagemagick
+fi
+
 if $server_flag; then
   h_echo --mode=noop "SKIPPING: running :PlugInstall"
 else

@@ -60,3 +60,8 @@ require "marks".setup {
     delete_buf = "dma",  -- delete All
   },
 }
+
+require "snacks".setup {
+  image = { enabled = true, },
+  indent = { enabled = true, },
+}

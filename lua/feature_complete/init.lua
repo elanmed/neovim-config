@@ -76,13 +76,13 @@ Plug("MeanderingProgrammer/markdown.nvim", { commit = "17a7746", })
 Plug("nvim-treesitter/nvim-treesitter-textobjects", { commit = "bf8d2ad", })
 Plug("windwp/nvim-ts-autotag", { commit = "e239a56", })
 Plug("RRethy/nvim-treesitter-endwise", { commit = "8b34305", })
-Plug("lukas-reineke/indent-blankline.nvim", { commit = "18603eb", })
 Plug("JoosepAlviste/nvim-ts-context-commentstring", { commit = "375c2d8", })
 -- wild_menu
 Plug("gelguy/wilder.nvim", { commit = "679f348", ["do"] = ":UpdateRemotePlugins", })
 Plug("romgrk/fzy-lua-native", { commit = "820f745", })
 -- far
 Plug("MagicDuck/grug-far.nvim", { commit = "9a2f782", })
+Plug "folke/snacks.nvim"
 
 vim.call "plug#end"
 
