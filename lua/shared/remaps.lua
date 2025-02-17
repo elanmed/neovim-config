@@ -132,10 +132,11 @@ local function clean_empty_bufs()
   end
 end
 h.keys.map({ "n", }, "<leader>te", clean_empty_bufs, { desc = "Close all empty buffers", })
-vim.api.nvim_create_autocmd({ "BufEnter", }, {
-  pattern = "*",
-  callback = clean_empty_bufs,
-})
+-- TODO: find a better event
+-- vim.api.nvim_create_autocmd({ "BufEnter", }, {
+--   pattern = "*",
+--   callback = clean_empty_bufs,
+-- })
 h.keys.map({ "n", }, "<leader>to", function()
   vim.cmd "%bdelete" -- delete all buffers
   vim.cmd "edit#"    -- open the last buffer
