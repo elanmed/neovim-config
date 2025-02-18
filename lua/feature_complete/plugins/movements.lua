@@ -29,8 +29,6 @@ h.keys.map({ "n", }, "<leader><leader>", function()
     },
     pattern = "^",
   }
-
-  h.keys.send_keys("n", "zz")
 end)
 
 local harpoon = require "harpoon"

@@ -13,7 +13,6 @@ local h = require "shared.helpers"
 -- }
 
 local quicker = require "quicker"
-
 quicker.setup {
   keys = {
     {

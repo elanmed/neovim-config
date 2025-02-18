@@ -17,10 +17,9 @@ local Plug = vim.fn["plug#"]
 
 vim.call "plug#begin"
 
--- common lua utils (no file)
+-- (no file)
 Plug "nvim-lua/popup.nvim"
 Plug "nvim-lua/plenary.nvim"
--- editing (no file)
 Plug "tpope/vim-surround"
 Plug "tpope/vim-repeat"
 Plug "tpope/vim-commentary"

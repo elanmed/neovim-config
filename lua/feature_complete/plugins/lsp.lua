@@ -1,7 +1,6 @@
 local h = require "shared.helpers"
 local lspconfig = require "lspconfig"
 
-
 vim.opt.signcolumn = "yes" -- reserve a space in the gutter
 
 require "mason".setup()
@@ -34,7 +33,6 @@ vim.diagnostic.config {
     },
   },
 }
-
 
 local last_cursor = { nil, nil, }
 vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
@@ -112,7 +110,6 @@ end)
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
   border = "single",
 })
-
 
 local function enable_deno_lsp()
   local function file_exists(name)

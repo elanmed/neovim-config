@@ -20,7 +20,6 @@ require "oil".setup {
   },
 }
 
-
 -- https://github.com/folke/snacks.nvim/blob/main/docs/rename.md#oilnvim
 vim.api.nvim_create_autocmd("User", {
   pattern = "OilActionsPost",

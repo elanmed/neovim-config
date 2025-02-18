@@ -6,8 +6,6 @@ local builtin = require "telescope.builtin"
 local action_state = require "telescope.actions.state"
 local themes = require "telescope.themes"
 
-local grug = require "grug-far"
-
 local custom_actions = {}
 
 custom_actions.send_selected_and_open = function(prompt_bufnr)
@@ -69,7 +67,6 @@ local ivy_layout_config = {
   preview_width = 0,
 }
 
--- h.keys.map({ "n", }, "<C-p>", h.keys.user_cmd_cb "Telescope frecency workspace=CWD", { desc = "Find files with telescope", })
 h.keys.map({ "n", }, "<C-p>", function()
   telescope.extensions.frecency.frecency(
     themes.get_ivy {
@@ -136,8 +133,6 @@ telescope.setup {
     mappings             = {
       i = {
         ["<cr>"] = custom_actions.send_selected_and_open,
-        -- ["<C-f>"] = custom_actions.send_selected_and_open_with_fzf,
-        -- ["<C-a>"] = actions.toggle_all,
         ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
         ["<s-tab>"] = actions.move_selection_previous + actions.toggle_selection,
         ["<C-t>"] = actions.toggle_selection,
