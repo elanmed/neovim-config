@@ -31,10 +31,8 @@ Plug("akinsho/bufferline.nvim", { commit = "0b2fd86", })
 -- colorscheme
 Plug("RRethy/nvim-base16", { commit = "6ac181b", })
 -- file_tree
-Plug("preservim/nerdtree", { commit = "9b465ac", })
 Plug("stevearc/oil.nvim", { commit = "30e0438", })
 Plug("kyazdani42/nvim-web-devicons", { commit = "3722e3d", })
-Plug("mbbill/undotree", { commit = "2556c68", })
 -- git
 Plug "tpope/vim-fugitive"
 Plug("lewis6991/gitsigns.nvim", { commit = "899e993", })
@@ -58,7 +56,6 @@ Plug("christoomey/vim-tmux-navigator", { commit = "5b3c701", })
 -- Plug("kevinhwang91/nvim-bqf", { commit = "ebb6d26", })
 -- Plug("junegunn/fzf", { commit = "a09c6e9", ["do"] = "./install --bin", })
 Plug("stevearc/quicker.nvim", { commit = "5e272a7", })
-
 -- scroll
 Plug("karb94/neoscroll.nvim", { commit = "532dcc8", })
 Plug("echasnovski/mini.map", { commit = "8baf542", })
@@ -82,7 +79,9 @@ Plug("gelguy/wilder.nvim", { commit = "679f348", ["do"] = ":UpdateRemotePlugins"
 Plug("romgrk/fzy-lua-native", { commit = "820f745", })
 -- far
 Plug("MagicDuck/grug-far.nvim", { commit = "9a2f782", })
+-- misc
 Plug "folke/snacks.nvim"
+Plug("mbbill/undotree", { commit = "2556c68", })
 
 vim.call "plug#end"
 

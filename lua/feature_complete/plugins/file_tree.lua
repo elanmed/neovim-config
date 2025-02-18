@@ -1,8 +1,8 @@
 local h = require "shared.helpers"
+local snacks = require "snacks"
 
 h.keys.map({ "n", }, "<C-f>", h.keys.user_cmd_cb "Oil", { desc = "Toggle oil", })
-h.keys.map({ "n", }, "<leader>ne", h.keys.user_cmd_cb "NERDTreeFind", { desc = "Open NERDTree", })
-h.let.NERDTreeWinSize = 100
+h.keys.map({ "n", }, "<leader>ne", function() snacks.explorer.reveal() end, { desc = "Open snacks explorer", })
 
 require "oil".setup {
   default_file_explorer = true,
@@ -20,7 +20,6 @@ require "oil".setup {
   },
 }
 
-h.keys.map({ "n", }, "<leader>me", h.keys.user_cmd_cb "UndotreeToggle", { desc = "Toggle undotree", })
 
 -- https://github.com/folke/snacks.nvim/blob/main/docs/rename.md#oilnvim
 vim.api.nvim_create_autocmd("User", {

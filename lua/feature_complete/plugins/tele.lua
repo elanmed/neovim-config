@@ -97,18 +97,6 @@ h.keys.map({ "n", }, "<leader>lf", builtin.current_buffer_fuzzy_find,
 vim.cmd [[
 nnoremap <leader>la :Telescope rails<space>
 ]]
-
--- h.keys.map({ "n", }, "<leader>lg", grep_string_with_search, { desc = "Search globally with telescope", })
--- h.keys.map({ "n", }, "<leader>lc", function() grep_string_with_search { case_sensitive = true, } end,
---   { desc = "Search globally (case-sensitive) with telescope", })
--- h.keys.map({ "n", }, "<leader>lw", function() grep_string_with_search { whole_word = true, } end,
---   { desc = "Search globally (whole-word) with telescope", })
--- h.keys.map({ "n", }, "<leader>lb", function() grep_string_with_search { whole_word = true, case_sensitive = true, } end,
---   { desc = "Search globally (case-sensitive and whole-word) with telescope", })
--- h.keys.map({ "n", }, "<leader>lo", function() builtin.grep_string() end,
---   { desc = "Search the currently hovered word with telescope", })
--- h.keys.map({ "v", }, "<leader>lo", grep_string_with_visual, { desc = "Search the current selection with telescope", })
-
 h.keys.map({ "n", }, "<leader>le", grep_stripped_filename,
   { desc = "Search a file name starting with `wf_modules` with telescope", })
 h.keys.map({ "n", }, "<leader>ke", yank_stripped_filename, { desc = "C(K)opy a file name starting with `wf_modules`", })
