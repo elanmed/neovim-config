@@ -18,7 +18,7 @@ grug.setup {
     qflist = { n = "<leader>rq", },
     syncLocations = { n = "<leader>rs", },
     syncLine = { n = "<leader>rl", },
-    close = { n = "<leader>q", },
+    close = { n = "<leader>q", i = "<C-e>", },
     historyOpen = { n = "<leader>rh", },
     historyAdd = { n = "<leader>rd", },
     refresh = { n = "<leader>rr", },
@@ -71,7 +71,7 @@ h.keys.map({ "v", }, "<leader>lo", function()
     },
   })
   GRUG_INSTANCE_NAME = grug.with_visual_selection(opts)
-end, { desc = "Search the current selection with telescope", })
+end, { desc = "Search the current selection with grug", })
 
 h.keys.map({ "n", }, "<leader>lo", function()
     local opts = vim.tbl_extend("error", shared_grug_opts, {
@@ -82,19 +82,14 @@ h.keys.map({ "n", }, "<leader>lo", function()
     })
     GRUG_INSTANCE_NAME = grug.open(opts)
   end,
-  { desc = "Search the currently hovered word with telescope", })
+  { desc = "Search the currently hovered word with grug", })
 
 h.keys.map({ "n", }, "<leader>lg", function()
-  local search = vim.fn.input "Grep for: "
-  if search == "" then return end
-
-  local opts = vim.tbl_extend("error", shared_grug_opts, {
+  GRUG_INSTANCE_NAME = grug.open {
     prefills = {
-      search = search,
       flags = "--ignore-case",
     },
-  })
-  GRUG_INSTANCE_NAME = grug.open(opts)
+  }
 end, { desc = "Search globally with grug", })
 
 h.keys.map({ "n", }, "<leader>lc", function()
