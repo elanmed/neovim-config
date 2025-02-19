@@ -90,11 +90,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 h.keys.map({ "n", }, "gh", vim.lsp.buf.hover, { desc = "LSP hover", })
 h.keys.map({ "n", }, "gd", vim.lsp.buf.definition, { desc = "LSP go to definition", })
-h.keys.map({ "n", }, "gy", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
+h.keys.map({ "n", }, "gs", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
 h.keys.map({ "n", }, "gu", vim.lsp.buf.references, { desc = "LSP go to references", })
 h.keys.map({ "n", }, "ga", vim.lsp.buf.code_action, { desc = "LSP code action", })
 h.keys.map({ "n", }, "<leader>ld", function()
     vim.diagnostic.setqflist { severity = "ERROR", }
+    vim.cmd "copen"
   end,
   { desc = "Open LSP diagnostics with the quickfix list", })
 h.keys.map({ "n", }, "gl", function()

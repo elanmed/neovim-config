@@ -62,12 +62,12 @@ h.keys.map({ "n", }, "K", h.keys.user_cmd_cb "Cprev", { desc = "Move to the prev
 
 -- TODO: figure out a way to clear only one list, not all
 -- delete all quickfix lists
-h.keys.map({ "n", }, "gc", h.keys.user_cmd_cb "cex \"\"", { desc = "Clear all quickfix lists", })
+h.keys.map({ "n", }, "gy", h.keys.user_cmd_cb "cex \"\"", { desc = "Clear all quickfix lists", })
 
 h.keys.map({ "n", }, "gn", "gt", { desc = "Go to the next tab", })
 h.keys.map({ "n", }, "gp", "gT", { desc = "Go to the prev tab", })
 
-h.keys.map({ "n", }, "ge", h.keys.user_cmd_cb "copen 15", { desc = "Open the quickfix list", })
+h.keys.map({ "n", }, "ge", h.keys.user_cmd_cb "copen", { desc = "Open the quickfix list", })
 h.keys.map({ "n", }, "gq", h.keys.user_cmd_cb "cclose", { desc = "Close the quickfix list", })
 
 -- TODO: issues with mac
@@ -112,10 +112,6 @@ h.keys.map({ "n", }, "j", function() return count_based_keymap "j" end,
 h.keys.map({ "n", }, "k", function() return count_based_keymap "k" end,
   { expr = true, desc = "k, but respect lines that wrap", })
 
-h.keys.map({ "n", "v", "i", }, "<C-y>", function() vim.cmd "tabclose" end, { desc = "Close the current tab", })
-h.keys.map({ "n", }, "Y", h.keys.user_cmd_cb "silent! bdelete!", { desc = "Close the current buffer", })
-h.keys.map({ "n", }, "<leader>tw", function() error "use `Y` instead!" end)
-h.keys.map({ "n", }, "<leader>ta", h.keys.user_cmd_cb "silent! bufdo bdelete", { desc = "Close all buffers", })
 -- https://github.com/vim/vim/issues/1016#issuecomment-1226200584
 local function clean_empty_bufs()
   for _, buf in pairs(vim.api.nvim_list_bufs()) do
@@ -131,17 +127,25 @@ local function clean_empty_bufs()
     end
   end
 end
+
+h.keys.map({ "n", "v", "i", }, "<C-y>", function()
+  vim.cmd "tabclose"
+  clean_empty_bufs()
+end, { desc = "Close the current tab", })
+h.keys.map({ "n", }, "Y", function()
+  vim.cmd "silent! bdelete!"
+  clean_empty_bufs()
+end, { desc = "Close the current buffer", })
+h.keys.map({ "n", }, "<leader>ta", function()
+  vim.cmd "silent! bufdo bdelete"
+  clean_empty_bufs()
+end, { desc = "Close all buffers", })
 h.keys.map({ "n", }, "<leader>te", clean_empty_bufs, { desc = "Close all empty buffers", })
--- TODO: find a better event
--- vim.api.nvim_create_autocmd({ "BufEnter", }, {
---   pattern = "*",
---   callback = clean_empty_bufs,
--- })
 h.keys.map({ "n", }, "<leader>to", function()
   vim.cmd "%bdelete" -- delete all buffers
   vim.cmd "edit#"    -- open the last buffer
+  clean_empty_bufs()
 end)
-
 
 -- TODO: use more
 h.keys.map({ "n", }, [[<leader>']], [["]], { desc = "Set register", })
