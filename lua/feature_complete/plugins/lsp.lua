@@ -72,9 +72,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
       vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
         buffer = h.curr.buffer,
         callback = function()
-          if not h.tbl.table_contains_value({ "qf", "DiffviewFiles", "oil", "harpoon", }, vim.bo.filetype) then
-            vim.lsp.buf.document_highlight()
-          end
+          vim.lsp.buf.document_highlight()
         end,
       })
 
