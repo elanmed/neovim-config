@@ -29,10 +29,6 @@ local no_border_borderchars = { " ", }
 --   h.keys.send_keys("n", "i")
 -- end
 
-telescope.load_extension "fzf"
-telescope.load_extension "frecency"
-telescope.load_extension "rails"
-
 local shared_grep_string_options = { only_sort_text = true, }
 
 local function get_stripped_filename()
@@ -110,7 +106,13 @@ h.keys.map({ "n", }, "<leader>lp", function()
   end,
   { desc = "Search the planets with telescope", })
 
+
 telescope.setup {
+  extensions = {
+    frecency = {
+      db_safe_mode = false,
+    },
+  },
   defaults = {
     file_ignore_patterns = { "node_modules", ".git", },
     results_title        = "",
@@ -140,9 +142,8 @@ telescope.setup {
       },
     },
   },
-  extensions = {
-    frecency = {
-      db_safe_mode = false,
-    },
-  },
 }
+
+telescope.load_extension "fzf"
+telescope.load_extension "frecency"
+telescope.load_extension "rails"
