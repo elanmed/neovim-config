@@ -12,34 +12,18 @@ vim.api.nvim_create_autocmd({ "BufEnter", }, {
 })
 
 -- WIP: quickfix preview
--- TODO: turn off gitsigns in preview window
--- TODO: turn off indent markers in preview window
+-- TODO: keep preview open with cnext, cprev
 
 local PREVIEW_WIN_ID = nil
 
 local function maybe_close_preview()
-  if PREVIEW_WIN_ID ~= nil then
-    if vim.api.nvim_win_is_valid(PREVIEW_WIN_ID) then
-      local force = true
-      vim.api.nvim_win_close(PREVIEW_WIN_ID, force)
-      PREVIEW_WIN_ID = nil
-    end
-  end
-end
+  if PREVIEW_WIN_ID == nil then return end
 
---- @param buf_id number
---- @param line_num number
-local flash_highlight = function(buf_id, line_num)
-  local col_start = 0
-  local col_end = -1
-  local namespace = vim.api.nvim_buf_add_highlight(buf_id, h.curr.namespace, "Visual", line_num - 1, col_start, col_end)
-
-  local remove_highlight = function()
-    local line_start = 0
-    local line_end = -1
-    pcall(vim.api.nvim_buf_clear_namespace, buf_id, namespace, line_start, line_end)
+  if vim.api.nvim_win_is_valid(PREVIEW_WIN_ID) then
+    local force = true
+    vim.api.nvim_win_close(PREVIEW_WIN_ID, force)
+    PREVIEW_WIN_ID = nil
   end
-  vim.defer_fn(remove_highlight, 300)
 end
 
 local function open_preview()
@@ -49,11 +33,11 @@ local function open_preview()
   local qf_win_id = vim.api.nvim_get_current_win()
   maybe_close_preview()
 
-  local preview_height                = 10
-  local preview_height_padding_bottom = 2
+  local preview_height                  = 10
+  local preview_height_padding_bottom   = 2
 
   --- @class vim.api.keyset.win_config
-  local win_opts                      = {
+  local win_opts                        = {
     relative = "win",
     win = qf_win_id,
     width = vim.api.nvim_win_get_width(h.curr.window),
@@ -64,14 +48,22 @@ local function open_preview()
     title = "Preview",
     title_pos = "center",
     focusable = false,
+    zindex = 200,
   }
 
-  local curr_line                     = vim.fn.line "."
-  local curr_qf_item                  = qf_list[curr_line]
-  local enter_window                  = false
-  PREVIEW_WIN_ID                      = vim.api.nvim_open_win(curr_qf_item.bufnr, enter_window, win_opts)
+  local curr_line                       = vim.fn.line "."
+  local curr_qf_item                    = qf_list[curr_line]
+  local enter_window                    = false
+  PREVIEW_WIN_ID                        = vim.api.nvim_open_win(curr_qf_item.bufnr, enter_window, win_opts)
+
+  vim.wo[PREVIEW_WIN_ID].relativenumber = false
+  vim.wo[PREVIEW_WIN_ID].number         = true
+  vim.wo[PREVIEW_WIN_ID].signcolumn     = "no"
+  vim.wo[PREVIEW_WIN_ID].colorcolumn    = ""
+  vim.wo[PREVIEW_WIN_ID].winblend       = 5
+  vim.wo[PREVIEW_WIN_ID].cursorline     = true
+
   vim.api.nvim_win_set_cursor(PREVIEW_WIN_ID, { curr_qf_item.lnum, curr_qf_item.col, })
-  flash_highlight(curr_qf_item.bufnr, curr_qf_item.lnum)
 end
 
 vim.api.nvim_create_autocmd({ "BufLeave", "BufWinLeave", }, {
