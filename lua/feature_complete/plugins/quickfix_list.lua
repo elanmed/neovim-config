@@ -22,6 +22,7 @@ local function maybe_close_preview()
     if vim.api.nvim_win_is_valid(PREVIEW_WIN_ID) then
       local force = true
       vim.api.nvim_win_close(PREVIEW_WIN_ID, force)
+      PREVIEW_WIN_ID = nil
     end
   end
 end
