@@ -15,6 +15,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", }, {
 -- TODO: keep preview open with cnext, cprev
 
 local PREVIEW_WIN_ID = nil
+local PREVIEW_TOGGLED_OFF = false
 
 local function maybe_close_preview()
   if PREVIEW_WIN_ID == nil then return end
@@ -78,6 +79,7 @@ vim.api.nvim_create_autocmd({ "CursorMoved", }, {
   pattern = "*",
   callback = function()
     if vim.bo.filetype ~= "qf" then return end
+    if PREVIEW_TOGGLED_OFF then return end
     open_preview()
   end,
 })
@@ -88,8 +90,10 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
     h.keys.map({ "n", }, "t", function()
       if PREVIEW_WIN_ID == nil then
         open_preview()
+        PREVIEW_TOGGLED_OFF = false
       else
         maybe_close_preview()
+        PREVIEW_TOGGLED_OFF = true
       end
     end, { buffer = true, })
 
