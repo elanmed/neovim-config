@@ -12,20 +12,22 @@ vim.api.nvim_create_autocmd({ "BufEnter", }, {
 })
 
 -- WIP: quickfix preview
--- TODO:
--- cursor move event
+-- TODO: turn off gitsigns in preview window
+-- TODO: turn off indent markers in preview window
 
-local preview_win_id = nil
+local PREVIEW_WIN_ID = nil
 
 local function maybe_close_preview()
-  if preview_win_id ~= nil then
-    if vim.api.nvim_win_is_valid(preview_win_id) then
+  if PREVIEW_WIN_ID ~= nil then
+    if vim.api.nvim_win_is_valid(PREVIEW_WIN_ID) then
       local force = true
-      vim.api.nvim_win_close(preview_win_id, force)
+      vim.api.nvim_win_close(PREVIEW_WIN_ID, force)
     end
   end
 end
 
+--- @param buf_id number
+--- @param line_num number
 local flash_highlight = function(buf_id, line_num)
   local col_start = 0
   local col_end = -1
@@ -39,88 +41,94 @@ local flash_highlight = function(buf_id, line_num)
   vim.defer_fn(remove_highlight, 300)
 end
 
-local function preview_qf_item(qf_win_id)
-  qf_win_id = qf_win_id or vim.api.nvim_get_current_win()
+local function open_preview()
+  local qf_list = vim.fn.getqflist()
+  if h.tbl.size(qf_list) == 0 then return end
+
+  local qf_win_id = vim.api.nvim_get_current_win()
   maybe_close_preview()
 
-  local preview_height = 10
+  local preview_height                = 10
+  local preview_height_padding_bottom = 2
 
   --- @class vim.api.keyset.win_config
-  local win_opts       = {
+  local win_opts                      = {
     relative = "win",
     win = qf_win_id,
     width = vim.api.nvim_win_get_width(h.curr.window),
     height = preview_height,
-    -- row = qf_win_row - preview_height - 2,
-    row = -1 * preview_height - 2,
+    row = -1 * (preview_height + preview_height_padding_bottom),
     col = 1,
-    border = "double",
+    border = "rounded",
     title = "Preview",
     title_pos = "center",
     focusable = false,
   }
 
-  local curr_line      = vim.fn.line "."
-  local qf_list        = vim.fn.getqflist()
-  if h.tbl.size(qf_list) == 0 then return end
-
-  local curr_qf_item = qf_list[curr_line]
-
-  local enter_window = true
-  preview_win_id     = vim.api.nvim_open_win(curr_qf_item.bufnr, enter_window, win_opts)
-  vim.api.nvim_win_set_cursor(preview_win_id, { curr_qf_item.lnum, curr_qf_item.col, })
+  local curr_line                     = vim.fn.line "."
+  local curr_qf_item                  = qf_list[curr_line]
+  local enter_window                  = false
+  PREVIEW_WIN_ID                      = vim.api.nvim_open_win(curr_qf_item.bufnr, enter_window, win_opts)
+  vim.api.nvim_win_set_cursor(PREVIEW_WIN_ID, { curr_qf_item.lnum, curr_qf_item.col, })
   flash_highlight(curr_qf_item.bufnr, curr_qf_item.lnum)
-
-  vim.cmd "copen"
-  vim.api.nvim_win_set_cursor(qf_win_id, { curr_line, 0, })
 end
+
+vim.api.nvim_create_autocmd({ "BufLeave", "BufWinLeave", }, {
+  pattern = "*",
+  callback = function()
+    if vim.bo.filetype ~= "qf" then return end
+    maybe_close_preview()
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "CursorMoved", }, {
+  pattern = "*",
+  callback = function()
+    if vim.bo.filetype ~= "qf" then return end
+    open_preview()
+  end,
+})
 
 vim.api.nvim_create_autocmd({ "FileType", }, {
   pattern = "qf",
   callback = function()
-    h.keys.map({ "n", }, "p", function()
-      local curr_line = vim.fn.line "."
-      preview_qf_item()
-      vim.cmd("cc" .. curr_line)
-      vim.cmd "copen"
+    h.keys.map({ "n", }, "t", function()
+      if PREVIEW_WIN_ID == nil then
+        open_preview()
+      else
+        maybe_close_preview()
+      end
     end, { buffer = true, })
 
     h.keys.map({ "n", }, "<cr>", function()
       local curr_line = vim.fn.line "."
       vim.cmd "cclose"
-      maybe_close_preview()
-      vim.cmd("cc" .. curr_line)
+      vim.cmd("cc " .. curr_line)
     end, { buffer = true, })
 
     h.keys.map({ "n", }, "o", function()
       local curr_line = vim.fn.line "."
       maybe_close_preview()
-      vim.cmd("cc" .. curr_line)
+      vim.cmd("cc " .. curr_line)
     end, { buffer = true, })
   end,
 })
-
-h.keys.map({ "n", }, "ge", function()
-  vim.cmd "copen"
-  preview_qf_item()
-end, { desc = "Open the quickfix list", })
-
-h.keys.map({ "n", }, "gq", function()
-  vim.cmd "cclose"
-  maybe_close_preview()
-end, { desc = "Close the quickfix list", })
 
 h.set.quickfixtextfunc = "v:lua.GetQuickfixTextFunc"
 
 --- @param num number
 --- @param num_digits number
-local function pad_num(num, num_digits)
+--- @param side 'left' | 'right'
+local function pad_num(num, num_digits, side)
   if #tostring(num) >= num_digits then
     return tostring(num)
   end
 
-  local num_padding = num_digits - #tostring(num)
-  return tostring(num) .. string.rep(" ", num_padding)
+  local num_spaces = num_digits - #tostring(num)
+  if side == "left" then
+    return string.rep(" ", num_spaces) .. tostring(num)
+  end
+  return tostring(num) .. string.rep(" ", num_spaces)
 end
 
 function _G.GetQuickfixTextFunc()
@@ -150,12 +158,15 @@ function _G.GetQuickfixTextFunc()
 
   for index, item in pairs(qf_list) do
     local curr_bufname = vim.fn.bufname(item.bufnr)
-    local buffer_right_padding = longest_filename_len - #curr_bufname
-    local formatted_item = curr_bufname ..
-        string.rep(" ", buffer_right_padding) ..
+    local buffer_padding_right = longest_filename_len - #curr_bufname
+    local formatted_item =
+        curr_bufname ..
+        string.rep(" ", buffer_padding_right) ..
         " || " ..
-        pad_num(item.lnum, longest_row_len) ..
-        pad_num(item.col, longest_col_len) .. " ||   " ..
+        pad_num(item.lnum, longest_row_len, "left") ..
+        ":" ..
+        pad_num(item.col, longest_col_len, "right") ..
+        " || " ..
         vim.fn.trim(item.text)
 
     if #formatted_item > win_width then
