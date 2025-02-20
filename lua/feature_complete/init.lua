@@ -51,10 +51,6 @@ Plug("ThePrimeagen/harpoon", { branch = "harpoon2", commit = "0378a6c", })
 Plug "folke/flash.nvim"
 Plug("chentoast/marks.nvim", { commit = "74e8d01", })
 Plug("christoomey/vim-tmux-navigator", { commit = "5b3c701", })
--- quickfix_list
--- Plug("kevinhwang91/nvim-bqf", { commit = "ebb6d26", })
--- Plug("junegunn/fzf", { commit = "a09c6e9", ["do"] = "./install --bin", })
-Plug("stevearc/quicker.nvim", { commit = "5e272a7", })
 -- scroll
 Plug("karb94/neoscroll.nvim", { commit = "532dcc8", })
 Plug("echasnovski/mini.map", { commit = "8baf542", })
