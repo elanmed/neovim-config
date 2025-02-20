@@ -1,36 +1,4 @@
 local h = require "shared.helpers"
--- local bqf = require "bqf"
-
--- bqf.setup {
---   auto_resize_height = true,
---   func_map = {
---     openc = "<cr>",
---     open = "o",
---   },
---   preview = {
---     winblend = 0,
---   },
--- }
-
--- local quicker = require "quicker"
--- quicker.setup {
---   keys = {
---     {
---       ">",
---       function()
---         quicker.expand { before = 2, after = 2, add_to_existing = true, }
---       end,
---       desc = "Expand quickfix context",
---     },
---     {
---       "<",
---       function()
---         quicker.collapse()
---       end,
---       desc = "Collapse quickfix context",
---     },
---   },
--- }
 
 vim.api.nvim_create_autocmd({ "BufEnter", }, {
   pattern = "*",
@@ -141,3 +109,60 @@ h.keys.map({ "n", }, "gq", function()
   vim.cmd "cclose"
   maybe_close_preview()
 end, { desc = "Close the quickfix list", })
+
+h.set.quickfixtextfunc = "v:lua.GetQuickfixTextFunc"
+
+--- @param num number
+--- @param num_digits number
+local function pad_num(num, num_digits)
+  if #tostring(num) >= num_digits then
+    return tostring(num)
+  end
+
+  local num_padding = num_digits - #tostring(num)
+  return tostring(num) .. string.rep(" ", num_padding)
+end
+
+function _G.GetQuickfixTextFunc()
+  local longest_filename_len = 0
+  local longest_row_len = 0
+  local longest_col_len = 0
+  local qf_list = vim.fn.getqflist()
+
+  local items = {}
+  for _, item in pairs(qf_list) do
+    local curr_bufname = vim.fn.bufname(item.bufnr)
+    if #curr_bufname > longest_filename_len then
+      longest_filename_len = #curr_bufname
+    end
+
+    if #tostring(item.lnum) > longest_row_len then
+      longest_row_len = #tostring(item.lnum)
+    end
+
+    if #tostring(item.col) > longest_col_len then
+      longest_col_len = #tostring(item.col)
+    end
+  end
+
+  local misc_win_padding = 10
+  local win_width = vim.api.nvim_win_get_width(h.curr.window) - misc_win_padding
+
+  for index, item in pairs(qf_list) do
+    local curr_bufname = vim.fn.bufname(item.bufnr)
+    local buffer_right_padding = longest_filename_len - #curr_bufname
+    local formatted_item = curr_bufname ..
+        string.rep(" ", buffer_right_padding) ..
+        " || " ..
+        pad_num(item.lnum, longest_row_len) ..
+        pad_num(item.col, longest_col_len) .. " ||   " ..
+        vim.fn.trim(item.text)
+
+    if #formatted_item > win_width then
+      formatted_item = string.sub(formatted_item, 1, win_width)
+    end
+    items[index] = formatted_item
+  end
+
+  return items
+end
