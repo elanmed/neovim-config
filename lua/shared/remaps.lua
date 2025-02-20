@@ -67,9 +67,6 @@ h.keys.map({ "n", }, "gy", h.keys.user_cmd_cb "cex \"\"", { desc = "Clear all qu
 h.keys.map({ "n", }, "gn", "gt", { desc = "Go to the next tab", })
 h.keys.map({ "n", }, "gp", "gT", { desc = "Go to the prev tab", })
 
-h.keys.map({ "n", }, "ge", h.keys.user_cmd_cb "copen", { desc = "Open the quickfix list", })
-h.keys.map({ "n", }, "gq", h.keys.user_cmd_cb "cclose", { desc = "Close the quickfix list", })
-
 -- TODO: issues with mac
 local alt_j = h.keys.is_linux() and "<A-j>" or "∆"
 local alt_k = h.keys.is_linux() and "<A-k>" or "˚"
