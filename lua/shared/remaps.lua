@@ -56,9 +56,9 @@ vim.api.nvim_create_user_command("Cprev", function() gen_circular_next_prev("cpr
 vim.api.nvim_create_user_command("Lnext", function() gen_circular_next_prev("lnext", "lfirst") end, {})
 vim.api.nvim_create_user_command("Lprev", function() gen_circular_next_prev("lprev", "llast") end, {})
 
-h.keys.map({ "n", }, "Z", "gJ", { desc = "J without whitespace", })
 h.keys.map({ "n", }, "J", h.keys.user_cmd_cb "Cnext", { desc = "Move to the next item in the quickfix list", })
 h.keys.map({ "n", }, "K", h.keys.user_cmd_cb "Cprev", { desc = "Move to the prev item in the quickfix list", })
+h.keys.map({ "n", }, "Z", "gJ", { desc = "J without whitespace", })
 
 h.keys.map({ "n", }, "ge", h.keys.user_cmd_cb "copen", { desc = "Open the quickfix list", })
 h.keys.map({ "n", }, "gq", h.keys.user_cmd_cb "cclose", { desc = "Close the quickfix list", })

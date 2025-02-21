@@ -11,9 +11,6 @@ vim.api.nvim_create_autocmd({ "BufEnter", }, {
   end,
 })
 
--- WIP: quickfix preview
--- TODO: keep preview open with cnext, cprev
-
 local PREVIEW_WIN_ID = nil
 local PREVIEW_TOGGLED_OFF = false
 
@@ -113,6 +110,16 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
       local curr_line = vim.fn.line "."
       maybe_close_preview()
       vim.cmd("cc " .. curr_line)
+    end, { buffer = true, })
+
+    h.keys.map({ "n", }, "<C-j>", function()
+      vim.cmd "Cnext"
+      vim.cmd "copen"
+    end, { buffer = true, })
+
+    h.keys.map({ "n", }, "<C-k>", function()
+      vim.cmd "Cprev"
+      vim.cmd "copen"
     end, { buffer = true, })
   end,
 })
