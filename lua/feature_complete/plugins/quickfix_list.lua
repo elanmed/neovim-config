@@ -64,6 +64,12 @@ local function open_preview()
   vim.wo[PREVIEW_WIN_ID].winblend       = 5
   vim.wo[PREVIEW_WIN_ID].cursorline     = true
 
+  vim.api.nvim_buf_call(curr_qf_item.bufnr, function()
+    vim.cmd "filetype detect"
+    -- vim.cmd "syntax on"
+    vim.treesitter.start(curr_qf_item.bufnr)
+  end)
+
   vim.api.nvim_win_set_cursor(PREVIEW_WIN_ID, { curr_qf_item.lnum, curr_qf_item.col, })
 end
 
