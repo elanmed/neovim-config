@@ -38,6 +38,11 @@ h.keys.map({ "n", }, "<leader>ka", function() vim.fn.setreg("+", vim.fn.expand "
   { desc = "C(K)opy the absolute path of a file", })
 h.keys.map({ "n", }, "<leader>kr", function() vim.fn.setreg("+", vim.fn.expand "%:~:.") end,
   { desc = "C(K)opy the relative path of a file", })
+h.keys.map({ "n", }, "<leader>ko", function()
+    local open_cmd = h.keys.is_linux() and "xdg-open" or "open"
+    vim.cmd("!" .. open_cmd .. " '" .. vim.fn.expand "%:p" .. "'")
+  end,
+  { desc = "Open a file", })
 
 h.keys.map({ "v", }, "<", "<gv", { desc = "Outdent, while keeping selection", })
 h.keys.map({ "v", }, ">", ">gv", { desc = "Indent, while keeping selection", })
