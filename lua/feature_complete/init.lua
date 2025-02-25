@@ -62,15 +62,15 @@ Plug("nvim-telescope/telescope-fzf-native.nvim", { commit = "dae2eac", ["do"] = 
 Plug("sato-s/telescope-rails.nvim", { commit = "e0addf3", })
 Plug("nvim-telescope/telescope-frecency.nvim", { commit = "5db9364", })
 -- treesitter
-Plug("nvim-treesitter/nvim-treesitter", { commit = "7a64148", ["do"] = h.keys.user_cmd_cb "TSUpdate", })
+Plug("nvim-treesitter/nvim-treesitter", { ["do"] = h.keys.user_cmd_cb "TSUpdate", })
+Plug "nvim-treesitter/nvim-treesitter-textobjects"
 Plug("stevearc/aerial.nvim", { commit = "92f93f4", })
 Plug("MeanderingProgrammer/markdown.nvim", { commit = "17a7746", })
-Plug("nvim-treesitter/nvim-treesitter-textobjects", { commit = "bf8d2ad", })
 Plug("windwp/nvim-ts-autotag", { commit = "e239a56", })
 Plug("RRethy/nvim-treesitter-endwise", { commit = "8b34305", })
 Plug("JoosepAlviste/nvim-ts-context-commentstring", { commit = "375c2d8", })
 -- wild_menu
-Plug("gelguy/wilder.nvim", { commit = "679f348", ["do"] = ":UpdateRemotePlugins", })
+Plug("gelguy/wilder.nvim", { commit = "679f348", })
 Plug("romgrk/fzy-lua-native", { commit = "820f745", })
 -- far
 Plug("MagicDuck/grug-far.nvim", { commit = "9a2f782", })
