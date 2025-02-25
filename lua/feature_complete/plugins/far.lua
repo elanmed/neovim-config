@@ -18,7 +18,7 @@ grug.setup {
     qflist = { n = "<leader>rq", },
     syncLocations = { n = "<leader>rs", },
     syncLine = { n = "<leader>rl", },
-    close = { n = "<leader>q", i = "<C-e>", },
+    close = { n = "<leader>q", },
     historyOpen = { n = "<leader>rh", },
     historyAdd = { n = "<leader>rd", },
     refresh = { n = "<leader>rr", },
@@ -37,11 +37,12 @@ grug.setup {
 }
 
 vim.api.nvim_create_autocmd({ "FileType", }, {
+  group = vim.api.nvim_create_augroup("grug-far-keybindings", { clear = true, }),
   pattern = "grug-far",
   callback = function()
-    h.keys.map({ "n", }, "<leader>o", "<leader>ro<leader>q", {
-      buffer = true,
-    })
+    -- TODO: why doesn't h.keys.map with buffer = true set the keymap?
+    vim.api.nvim_buf_set_keymap(h.curr.buffer, "n", "<leader>o", "<leader>ro<leader>q", {})
+    vim.api.nvim_buf_set_keymap(h.curr.buffer, "i", "<C-e>", "<Esc><leader>q", {})
   end,
 })
 
