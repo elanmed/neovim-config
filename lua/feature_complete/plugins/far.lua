@@ -93,42 +93,24 @@ h.keys.map({ "n", }, "<leader>lg", function()
 end, { desc = "Search globally with grug", })
 
 h.keys.map({ "n", }, "<leader>lc", function()
-    local search = vim.fn.input "Grep for (case-sensitive): "
-    if search == "" then return end
-
-    local opts = vim.tbl_extend("error", shared_grug_opts, {
-      prefills = {
-        search = search,
-      },
-    })
-    GRUG_INSTANCE_NAME = grug.open(opts)
+    GRUG_INSTANCE_NAME = grug.open()
   end,
   { desc = "Search globally (case-sensitive) with grug", })
 
 h.keys.map({ "n", }, "<leader>lw", function()
-    local search = vim.fn.input "Grep for (whole-word): "
-    if search == "" then return end
-
-    local opts = vim.tbl_extend("error", shared_grug_opts, {
-      prefills = {
-        search = search,
+    GRUG_INSTANCE_NAME = grug.open {
+      prefilles = {
         flags = "--ignore-case --word-regexp",
       },
-    })
-    GRUG_INSTANCE_NAME = grug.open(opts)
+    }
   end,
   { desc = "Search globally (whole-word) with grug", })
 
 h.keys.map({ "n", }, "<leader>lb", function()
-    local search = vim.fn.input "Grep for (case-sensitive and whole-word): "
-    if search == "" then return end
-
-    local opts = vim.tbl_extend("error", shared_grug_opts, {
+    GRUG_INSTANCE_NAME = grug.open {
       prefills = {
-        search = search,
         flags = "--word-regexp",
       },
-    })
-    GRUG_INSTANCE_NAME = grug.open(opts)
+    }
   end,
   { desc = "Search globally (case-sensitive and whole-word) with grug", })
