@@ -94,8 +94,8 @@ local qf_preview = QfPreview:new()
 
 -- TODO: figure out a way to clear only one list, not all
 h.keys.map({ "n", }, "gy", function()
-  vim.cmd "cex \"\""
   qf_preview:close()
+  vim.cmd "cex \"\""
 end, { desc = "Clear all quickfix lists", })
 
 vim.api.nvim_create_autocmd({ "BufEnter", }, {
