@@ -8,6 +8,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
   end,
 })
 
+h.keys.map({ "n", }, "gy", h.keys.user_cmd_cb "cex \"\"", { desc = "Clear all quickfix lists", })
 h.keys.map({ "n", }, "z", "zz")
 h.keys.map({ "n", }, "L", h.keys.user_cmd_cb "bnext", { desc = "Next buffer", })
 h.keys.map({ "n", }, "H", h.keys.user_cmd_cb "bprev", { desc = "Previous buffer", })
