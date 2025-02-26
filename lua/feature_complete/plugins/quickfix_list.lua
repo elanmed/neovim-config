@@ -20,6 +20,13 @@ function QfPreview:set_preview_disabled(disabled)
   self.preview_disabled = disabled
 end
 
+--- @param str string
+--- @param start string
+local function starts_with(str, start)
+  -- http://lua-users.org/wiki/StringRecipes
+  return str:sub(1, #start) == start
+end
+
 --- @param opts? { respect_disabled : boolean }
 function QfPreview:open(opts)
   opts = opts or { respect_disabled = false, }
@@ -31,10 +38,18 @@ function QfPreview:open(opts)
   local qf_win_id = vim.api.nvim_get_current_win()
   self:close()
 
-  local preview_height                       = 10
-  local preview_height_padding_bottom        = 2
-  local curr_line                            = vim.fn.line "."
-  local curr_qf_item                         = qf_list[curr_line]
+  local preview_height                = 10
+  local preview_height_padding_bottom = 2
+  local curr_line                     = vim.fn.line "."
+  local curr_qf_item                  = qf_list[curr_line]
+
+  local buf_name                      = vim.api.nvim_buf_get_name(curr_qf_item.bufnr)
+  local preview_name                  = buf_name
+  local cwd_name                      = vim.fn.getcwd()
+  if starts_with(buf_name, cwd_name) then
+    local slash_offset = 1
+    preview_name = buf_name:sub(#cwd_name + 1 + slash_offset)
+  end
 
   local enter_window                         = false
   self.preview_win_id                        = vim.api.nvim_open_win(curr_qf_item.bufnr, enter_window, {
@@ -45,7 +60,7 @@ function QfPreview:open(opts)
     row = -1 * (preview_height + preview_height_padding_bottom),
     col = 1,
     border = "rounded",
-    title = "Preview",
+    title = preview_name,
     title_pos = "center",
     focusable = false,
   })
@@ -130,18 +145,28 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
       vim.cmd("cc " .. curr_line)
     end, { buffer = true, })
 
-    h.keys.map({ "n", }, "<C-j>", function()
+    h.keys.map({ "n", }, "<C-n>", function()
       vim.cmd "Cnext"
       vim.cmd "copen"
     end, { buffer = true, })
 
-    h.keys.map({ "n", }, "<C-k>", function()
+    h.keys.map({ "n", }, "<C-p>", function()
       vim.cmd "Cprev"
       vim.cmd "copen"
     end, { buffer = true, })
 
-    h.keys.map({ "n", }, ">", vim.cmd "cnewer", { buffer = true, })
-    h.keys.map({ "n", }, ">", vim.cmd "colder", { buffer = true, })
+    h.keys.map({ "n", }, ">", function()
+      local success = pcall(vim.cmd, "cnewer")
+      if not success then
+        print "No newer list!"
+      end
+    end, { buffer = true, })
+    h.keys.map({ "n", }, "<", function()
+      local success = pcall(vim.cmd, "colder")
+      if not success then
+        print "No older list!"
+      end
+    end, { buffer = true, })
   end,
 })
 
