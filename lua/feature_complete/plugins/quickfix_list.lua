@@ -139,6 +139,9 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
       vim.cmd "Cprev"
       vim.cmd "copen"
     end, { buffer = true, })
+
+    h.keys.map({ "n", }, ">", vim.cmd "cnewer", { buffer = true, })
+    h.keys.map({ "n", }, ">", vim.cmd "colder", { buffer = true, })
   end,
 })
 
