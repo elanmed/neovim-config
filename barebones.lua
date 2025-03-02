@@ -4,7 +4,7 @@ local h = require "shared.helpers"
 h.keys.map({ "", }, "<space>", "<nop>")
 h.let.mapleader = " "
 h.let.maplocalleader = " "
-vim.cmd "colorscheme darkblue"
+vim.cmd "colorscheme slate"
 
 require "shared.options"
 require "shared.remaps"
