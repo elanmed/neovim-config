@@ -128,14 +128,33 @@ end
 if enable_deno_lsp() then
   lspconfig.denols.setup {}
 else
-  lspconfig.ts_ls.setup {}
+  lspconfig.ts_ls.setup {
+    init_options = {
+      preferences = {
+        includeInlayParameterNameHints = "literals",
+        includeInlayVariableTypeHints = true,
+        includeInlayPropertyDeclarationTypeHints = true,
+        includeInlayFunctionLikeReturnTypeHints = true,
+        includeInlayEnumMemberValueHints = true,
+        importModuleSpecifierPreference = "non-relative",
+        jsxAttributeCompletionStyle = "braces",
+      },
+    },
+  }
   lspconfig.eslint.setup {}
 end
 
 lspconfig.jsonls.setup {}
 lspconfig.lua_ls.setup {
   settings = {
-    Lua = { diagnostics = { globals = { "vim", }, }, },
+    Lua = {
+      hint = {
+        enable = true,
+      },
+      diagnostics = {
+        globals = { "vim", },
+      },
+    },
   },
 }
 lspconfig.bashls.setup {
