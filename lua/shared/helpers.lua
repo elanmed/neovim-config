@@ -2,6 +2,7 @@ local remaps = {}
 local keys = {}
 local tbl = {}
 local screen = {}
+local os = {}
 
 --- @param mode string|string[]
 --- @param shortcut string
@@ -47,10 +48,6 @@ keys.map = function(modes, shortcut, command, opts)
   end
 end
 
-keys.is_linux = function()
-  return vim.uv.os_uname().sysname == "Linux"
-end
-
 --- @param mode 'n' | 'v' | 'i'
 --- @param keys_to_send string
 keys.send_keys = function(mode, keys_to_send)
@@ -69,7 +66,7 @@ end
 --- @param table table
 --- @param target_value any
 --- @return boolean
-tbl.table_contains_value = function(table, target_value)
+tbl.contains_value = function(table, target_value)
   for _, value in pairs(table) do
     if value == target_value then
       return true
@@ -81,7 +78,7 @@ end
 --- @param table table
 --- @param target_key any
 --- @return boolean
-tbl.table_contains_key = function(table, target_key)
+tbl.contains_key = function(table, target_key)
   for key in pairs(table) do
     if key == target_key then
       return true
@@ -128,6 +125,21 @@ screen.has_split = function()
   return screen_cols ~= window_cols
 end
 
+os.is_linux = function()
+  return vim.uv.os_uname().sysname == "Linux"
+end
+
+--- @param name string
+os.file_exists = function(name)
+  local file = io.open(name, "r")
+  if file == nil then
+    return false
+  else
+    io.close(file)
+    return true
+  end
+end
+
 
 return {
   set = vim.opt,
@@ -137,4 +149,5 @@ return {
   remaps = remaps,
   screen = screen,
   curr = curr,
+  os = os,
 }

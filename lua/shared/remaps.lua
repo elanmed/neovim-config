@@ -39,7 +39,7 @@ h.keys.map({ "n", }, "<leader>ka", function() vim.fn.setreg("+", vim.fn.expand "
 h.keys.map({ "n", }, "<leader>kr", function() vim.fn.setreg("+", vim.fn.expand "%:~:.") end,
   { desc = "C(K)opy the relative path of a file", })
 h.keys.map({ "n", }, "<leader>ko", function()
-    local open_cmd = h.keys.is_linux() and "xdg-open" or "open"
+    local open_cmd = h.os.is_linux() and "xdg-open" or "open"
     vim.cmd("!" .. open_cmd .. " '" .. vim.fn.expand "%:p" .. "'")
   end,
   { desc = "Open a file", })
@@ -72,8 +72,8 @@ h.keys.map({ "n", }, "gn", "gt", { desc = "Go to the next tab", })
 h.keys.map({ "n", }, "gp", "gT", { desc = "Go to the prev tab", })
 
 -- TODO: issues with mac
-local alt_j = h.keys.is_linux() and "<A-j>" or "∆"
-local alt_k = h.keys.is_linux() and "<A-k>" or "˚"
+local alt_j = h.os.is_linux() and "<A-j>" or "∆"
+local alt_k = h.os.is_linux() and "<A-k>" or "˚"
 
 h.keys.map({ "n", }, alt_j, ":m .+1<cr>==", { desc = "Move line down", })
 h.keys.map({ "n", }, alt_k, ":m .-2<cr>==", { desc = "Move line up", })

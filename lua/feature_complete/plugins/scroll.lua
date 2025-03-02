@@ -2,7 +2,7 @@ local h = require "shared.helpers"
 local neoscroll = require "neoscroll"
 
 local function is_neoscroll_override_filetype()
-  return h.tbl.table_contains_value({ "oil", }, vim.bo.filetype)
+  return h.tbl.contains_value({ "oil", }, vim.bo.filetype)
 end
 
 neoscroll.setup {
@@ -76,7 +76,7 @@ mini_map.setup {
 vim.api.nvim_create_autocmd({ "BufEnter", "WinEnter", }, {
   pattern = "*",
   callback = function()
-    if h.tbl.table_contains_value({ "oil", "fugitive", "markdown", "markdown.mdx", "qf", }, vim.bo.filetype) or h.screen.has_split() then
+    if h.tbl.contains_value({ "oil", "fugitive", "markdown", "markdown.mdx", "qf", }, vim.bo.filetype) or h.screen.has_split() then
       mini_map.close()
     else
       mini_map.open()

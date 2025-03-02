@@ -28,7 +28,7 @@ end, { nargs = "*", })
 vim.api.nvim_create_user_command("WebSearch", function(opts)
   local query = opts.args:gsub(" ", "+")
   local url = "https://www.google.com/search?q=" .. query
-  local open_cmd = h.keys.is_linux() and "xdg-open" or "open"
+  local open_cmd = h.os.is_linux() and "xdg-open" or "open"
   os.execute(open_cmd .. " '" .. url .. "' > /dev/null 2>&1 &")
 end, { nargs = 1, })
 
@@ -56,7 +56,7 @@ vim.api.nvim_create_user_command("Snippet", function(opts)
     return
   end
 
-  if not h.tbl.table_contains_key(snippet_trigger_to_file_mapping, snippet_trigger) then
+  if not h.tbl.contains_key(snippet_trigger_to_file_mapping, snippet_trigger) then
     print(snippet_trigger .. " is not a valid snippet trigger!")
     return
   end

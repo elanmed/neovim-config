@@ -112,17 +112,7 @@ vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
 })
 
 local function enable_deno_lsp()
-  local function file_exists(name)
-    local file = io.open(name, "r")
-    if file == nil then
-      return false
-    else
-      io.close(file)
-      return true
-    end
-  end
-
-  return file_exists(vim.fn.getcwd() .. "/.deno-enable-lsp")
+  return h.os.file_exists(vim.fn.getcwd() .. "/.deno-enable-lsp")
 end
 
 if enable_deno_lsp() then
