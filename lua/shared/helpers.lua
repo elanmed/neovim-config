@@ -4,6 +4,13 @@ local tbl = {}
 local screen = {}
 local os = {}
 
+-- sugar to avoid magic numbers
+local curr = {
+  buffer = 0,
+  window = 0,
+  namespace = 0,
+}
+
 --- @param mode string|string[]
 --- @param shortcut string
 --- @param command string|function
@@ -62,7 +69,6 @@ keys.send_keys = function(mode, keys_to_send)
   -- vim.api.nvim_feedkeys(keys, "n", false)
 end
 
-
 --- @param table table
 --- @param target_value any
 --- @return boolean
@@ -112,13 +118,6 @@ tbl.size = function(table)
   return count
 end
 
--- sugar to avoid magic numbers
-local curr = {
-  buffer = 0,
-  window = 0,
-  namespace = 0,
-}
-
 screen.has_split = function()
   local screen_cols = vim.o.columns
   local window_cols = vim.api.nvim_win_get_width(curr.window)
@@ -139,7 +138,6 @@ os.file_exists = function(name)
     return true
   end
 end
-
 
 return {
   set = vim.opt,
