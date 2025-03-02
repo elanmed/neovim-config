@@ -27,6 +27,18 @@ local function starts_with(str, start)
   return str:sub(1, #start) == start
 end
 
+--- @param item_text string
+local function shorten_bufname(item_text)
+  local cwd_name = vim.fn.getcwd()
+
+  if starts_with(item_text, cwd_name) then
+    local slash_offset = 1
+    return item_text:sub(#cwd_name + 1 + slash_offset)
+  end
+
+  return item_text
+end
+
 --- @param opts? { respect_disabled : boolean }
 function QfPreview:open(opts)
   opts = opts or { respect_disabled = false, }
@@ -38,18 +50,11 @@ function QfPreview:open(opts)
   local qf_win_id = vim.api.nvim_get_current_win()
   self:close()
 
-  local preview_height                = 10
-  local preview_height_padding_bottom = 2
-  local curr_line                     = vim.fn.line "."
-  local curr_qf_item                  = qf_list[curr_line]
-
-  local buf_name                      = vim.api.nvim_buf_get_name(curr_qf_item.bufnr)
-  local preview_name                  = buf_name
-  local cwd_name                      = vim.fn.getcwd()
-  if starts_with(buf_name, cwd_name) then
-    local slash_offset = 1
-    preview_name = buf_name:sub(#cwd_name + 1 + slash_offset)
-  end
+  local preview_height                       = 10
+  local preview_height_padding_bottom        = 2
+  local curr_line                            = vim.fn.line "."
+  local curr_qf_item                         = qf_list[curr_line]
+  local buf_name                             = vim.api.nvim_buf_get_name(curr_qf_item.bufnr)
 
   local enter_window                         = false
   self.preview_win_id                        = vim.api.nvim_open_win(curr_qf_item.bufnr, enter_window, {
@@ -60,7 +65,7 @@ function QfPreview:open(opts)
     row = -1 * (preview_height + preview_height_padding_bottom),
     col = 1,
     border = "rounded",
-    title = preview_name,
+    title = shorten_bufname(buf_name),
     title_pos = "center",
     focusable = false,
   })
@@ -92,7 +97,6 @@ end
 
 local qf_preview = QfPreview:new()
 
--- TODO: figure out a way to clear only one list, not all
 h.keys.map({ "n", }, "gy", function()
   qf_preview:close()
   vim.cmd "cex \"\""
@@ -195,16 +199,16 @@ local function pad_num(num, num_digits, side)
 end
 
 function _G.GetQuickfixTextFunc()
-  local longest_filename_len = 0
+  local longest_bufname_len = 0
   local longest_row_len = 0
   local longest_col_len = 0
   local qf_list = vim.fn.getqflist()
 
   local items = {}
   for _, item in pairs(qf_list) do
-    local curr_bufname = vim.fn.bufname(item.bufnr)
-    if #curr_bufname > longest_filename_len then
-      longest_filename_len = #curr_bufname
+    local curr_bufname = shorten_bufname(vim.fn.bufname(item.bufnr))
+    if #curr_bufname > longest_bufname_len then
+      longest_bufname_len = #curr_bufname
     end
 
     if #tostring(item.lnum) > longest_row_len then
@@ -220,8 +224,8 @@ function _G.GetQuickfixTextFunc()
   local win_width = vim.api.nvim_win_get_width(h.curr.window) - misc_win_padding
 
   for index, item in pairs(qf_list) do
-    local curr_bufname = vim.fn.bufname(item.bufnr)
-    local buffer_padding_right = longest_filename_len - #curr_bufname
+    local curr_bufname = shorten_bufname(vim.fn.bufname(item.bufnr))
+    local buffer_padding_right = longest_bufname_len - #curr_bufname
     local formatted_item =
         curr_bufname ..
         string.rep(" ", buffer_padding_right) ..
