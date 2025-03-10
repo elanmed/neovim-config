@@ -1,11 +1,24 @@
 local h = require "shared.helpers"
 local grug = require "grug-far"
 
-GRUG_INSTANCE_NAME = ""
+local GRUG_INSTANCE_NAME = ""
+
+--- returns `true` to abort, `false` to kill instance
+--- @return boolean
+local function maybe_abort()
+  if grug.has_instance(GRUG_INSTANCE_NAME) then
+    local user_input = vim.fn.input "A grug instance is already running. Okay to kill? (y/N) "
+    if user_input ~= "y" then
+      return true
+    end
+    grug.kill_instance(GRUG_INSTANCE_NAME)
+  end
+  return false
+end
 
 h.keys.map({ "n", }, "<leader>re", function()
   if grug.has_instance(GRUG_INSTANCE_NAME) then
-    grug.kill_instance(GRUG_INSTANCE_NAME)
+    grug.toggle_instance { instanceName = GRUG_INSTANCE_NAME, }
   else
     GRUG_INSTANCE_NAME = grug.open()
   end
@@ -62,6 +75,8 @@ local shared_grug_opts = {
 }
 
 h.keys.map({ "v", }, "<leader>lo", function()
+  if maybe_abort() then return end
+
   local require_visual_mode_active = true
   local visual_selection = grug.get_current_visual_selection(require_visual_mode_active)
   if visual_selection == "" then return end
@@ -75,6 +90,8 @@ h.keys.map({ "v", }, "<leader>lo", function()
 end, { desc = "Search the current selection with grug", })
 
 h.keys.map({ "n", }, "<leader>lo", function()
+    if maybe_abort() then return end
+
     local opts = vim.tbl_extend("error", shared_grug_opts, {
       prefills = {
         search = vim.fn.expand "<cword>",
@@ -86,6 +103,8 @@ h.keys.map({ "n", }, "<leader>lo", function()
   { desc = "Search the currently hovered word with grug", })
 
 h.keys.map({ "n", }, "<leader>lg", function()
+  if maybe_abort() then return end
+
   GRUG_INSTANCE_NAME = grug.open {
     prefills = {
       flags = "--ignore-case",
@@ -94,11 +113,14 @@ h.keys.map({ "n", }, "<leader>lg", function()
 end, { desc = "Search globally with grug", })
 
 h.keys.map({ "n", }, "<leader>lc", function()
+    if maybe_abort() then return end
+
     GRUG_INSTANCE_NAME = grug.open()
   end,
   { desc = "Search globally (case-sensitive) with grug", })
 
 h.keys.map({ "n", }, "<leader>lw", function()
+    maybe_abort()
     GRUG_INSTANCE_NAME = grug.open {
       prefilles = {
         flags = "--ignore-case --word-regexp",
@@ -108,6 +130,8 @@ h.keys.map({ "n", }, "<leader>lw", function()
   { desc = "Search globally (whole-word) with grug", })
 
 h.keys.map({ "n", }, "<leader>lb", function()
+    if maybe_abort() then return end
+
     GRUG_INSTANCE_NAME = grug.open {
       prefills = {
         flags = "--word-regexp",
