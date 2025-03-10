@@ -18,7 +18,6 @@ require "mason-lspconfig".setup {
     "tailwindcss",
     "denols",
     "vimls",
-    "solargraph",
   },
 }
 
@@ -121,10 +120,7 @@ else
   lspconfig.ts_ls.setup {
     init_options = {
       preferences = {
-        includeInlayParameterNameHints = "literals",
         includeInlayVariableTypeHints = true,
-        includeInlayPropertyDeclarationTypeHints = true,
-        includeInlayFunctionLikeReturnTypeHints = true,
         includeInlayEnumMemberValueHints = true,
         importModuleSpecifierPreference = "non-relative",
         jsxAttributeCompletionStyle = "braces",
@@ -163,7 +159,6 @@ lspconfig.cssls.setup {}
 lspconfig.cssmodules_ls.setup {}
 lspconfig.stylelint_lsp.setup {}
 lspconfig.tailwindcss.setup {}
-lspconfig.solargraph.setup {}
 lspconfig.vimls.setup {}
 
 local cmp = require "cmp"
