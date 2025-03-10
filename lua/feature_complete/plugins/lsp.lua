@@ -131,18 +131,7 @@ else
 end
 
 lspconfig.jsonls.setup {}
-lspconfig.lua_ls.setup {
-  settings = {
-    Lua = {
-      hint = {
-        enable = true,
-      },
-      diagnostics = {
-        globals = { "vim", },
-      },
-    },
-  },
-}
+lspconfig.lua_ls.setup {}
 lspconfig.bashls.setup {
   settings = {
     bashIde = {
