@@ -9,6 +9,17 @@ bufferline.setup {
     indicator = {
       style = "underline",
     },
+    custom_filter = function(buf_number)
+      local buf_name = vim.fn.bufname(buf_number)
+      local excluded_buf_names = { "Grug FAR", }
+      for _, str in pairs(excluded_buf_names) do
+        if string.find(buf_name, str) then
+          return false
+        end
+
+        return true
+      end
+    end,
   },
 }
 
