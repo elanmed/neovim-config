@@ -113,39 +113,23 @@ h.keys.map({ "n", }, "j", function() return count_based_keymap "j" end,
 h.keys.map({ "n", }, "k", function() return count_based_keymap "k" end,
   { expr = true, desc = "k, but respect lines that wrap", })
 
--- https://github.com/vim/vim/issues/1016#issuecomment-1226200584
-local function clean_empty_bufs()
-  for _, buf in pairs(vim.api.nvim_list_bufs()) do
-    if
-        vim.api.nvim_buf_get_name(buf) == ""
-        and not vim.api.nvim_get_option_value("modified", {
-          buf = buf,
-        })
-        and vim.api.nvim_buf_is_loaded(buf)
-    then
-      local opts = {}
-      vim.api.nvim_buf_delete(buf, opts)
-    end
-  end
-end
-
-h.keys.map({ "n", "v", "i", }, "<C-y>", function()
-  vim.cmd "tabclose"
-  clean_empty_bufs()
-end, { desc = "Close the current tab", })
-h.keys.map({ "n", }, "Y", function()
-  vim.cmd "silent! bdelete!"
-  clean_empty_bufs()
-end, { desc = "Close the current buffer", })
-h.keys.map({ "n", }, "<leader>ta", function()
-  vim.cmd "silent! bufdo bdelete"
-  clean_empty_bufs()
-end, { desc = "Close all buffers", })
-h.keys.map({ "n", }, "<leader>te", clean_empty_bufs, { desc = "Close all empty buffers", })
+h.keys.map({ "n", "v", "i", }, "<C-y>", h.keys.user_cmd_cb "tabclose", { desc = "Close the current tab", })
+h.keys.map({ "n", }, "Y", h.keys.user_cmd_cb "silent! bdelete!", { desc = "Close the current buffer", })
+h.keys.map({ "n", }, "<leader>ta", h.keys.user_cmd_cb "silent! bufdo bdelete", { desc = "Close all buffers", })
 h.keys.map({ "n", }, "<leader>to", function()
-  vim.cmd "%bdelete" -- delete all buffers
-  vim.cmd "edit#"    -- open the last buffer
-  clean_empty_bufs()
+  local cur_buf = vim.api.nvim_get_current_buf()
+
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if buf == cur_buf then
+      goto continue
+    elseif vim.api.nvim_get_option_value("modified", { buf = buf, }) then
+      goto continue
+    else
+      vim.api.nvim_buf_delete(buf, { force = true, })
+    end
+
+    ::continue::
+  end
 end)
 
 -- TODO: use more
