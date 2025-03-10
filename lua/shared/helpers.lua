@@ -125,7 +125,7 @@ screen.has_split = function()
 end
 
 os.is_linux = function()
-  return vim.uv.os_uname().sysname == "Linux"
+  return ! vim.fn.has "macunix"
 end
 
 --- @param name string
