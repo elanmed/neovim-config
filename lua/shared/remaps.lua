@@ -135,7 +135,6 @@ end)
 -- TODO: use more
 h.keys.map({ "n", }, [[<leader>']], [["]], { desc = "Set register", })
 h.keys.map({ "n", }, "@", "@r", { desc = "Replay macro, assuming it's set to `r`", })
-
 h.keys.map({ "i", }, "<C-x>", "<C-o>{")
 h.keys.map({ "n", "v", }, "<c-x>", "{")
 h.keys.map({ "i", }, "<C-c>", "<C-o>}")

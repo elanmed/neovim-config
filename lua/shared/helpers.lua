@@ -3,6 +3,7 @@ local keys = {}
 local tbl = {}
 local screen = {}
 local os = {}
+local dev = {}
 
 -- sugar to avoid magic numbers
 local curr = {
@@ -125,7 +126,7 @@ screen.has_split = function()
 end
 
 os.is_linux = function()
-  return not vim.fn.has "macunix"
+  return vim.fn.has "macunix" == 0
 end
 
 --- @param name string
@@ -139,6 +140,17 @@ os.file_exists = function(name)
   end
 end
 
+--- @param content string
+dev.log = function(content)
+  local file = io.open("log.txt", "a")
+  if not file then
+    print "Error opening file!"
+    return
+  end
+  file:write(content .. "\n")
+  file:close()
+end
+
 return {
   set = vim.opt,
   let = vim.g,
@@ -148,4 +160,5 @@ return {
   screen = screen,
   curr = curr,
   os = os,
+  dev = dev,
 }
