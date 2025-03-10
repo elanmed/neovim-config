@@ -147,7 +147,7 @@ dev.log = function(content)
     print "Error opening file!"
     return
   end
-  file:write(content .. "\n")
+  file:write("[LOG] " .. content .. "\n")
   file:close()
 end
 
