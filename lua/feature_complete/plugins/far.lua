@@ -18,7 +18,7 @@ end
 
 h.keys.map({ "n", }, "<leader>re", function()
   if grug.has_instance(GRUG_INSTANCE_NAME) then
-    grug.toggle_instance { instanceName = GRUG_INSTANCE_NAME, }
+    grug.toggle_instance { instanceName = GRUG_INSTANCE_NAME, startInInsertMode = true, }
   else
     GRUG_INSTANCE_NAME = grug.open()
   end
