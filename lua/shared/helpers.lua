@@ -125,7 +125,7 @@ screen.has_split = function()
 end
 
 os.is_linux = function()
-  return ! vim.fn.has "macunix"
+  return not vim.fn.has "macunix"
 end
 
 --- @param name string
