@@ -3,10 +3,16 @@ local h = require "shared.helpers"
 local QfPreview = {}
 QfPreview.__index = QfPreview
 
+--- @class HighlightQueueItem
+--- @field preview_win_id number
+--- @field qf_item_index number
+
 function QfPreview:new()
   local this = {
     preview_win_id = nil,
     preview_disabled = false,
+    highlight_q = {},
+    highlighting = false,
   }
   return setmetatable(this, QfPreview)
 end
@@ -18,6 +24,53 @@ end
 --- @param disabled boolean
 function QfPreview:set_preview_disabled(disabled)
   self.preview_disabled = disabled
+end
+
+--- queue mechanism to pipeline treesitter parsing, inspired by quicker.nvim
+--- @param opts HighlightQueueItem
+function QfPreview:highlight(opts)
+  table.insert(self.highlight_q, opts)
+
+  local function do_next_highlight()
+    if self.highlighting then return end
+    self.highlighting = true
+
+
+    --- @type HighlightQueueItem
+    local curr_q_item = table.remove(self.highlight_q, 1)
+    if not curr_q_item then
+      self.highlighting = false
+      return
+    end
+
+    local curr_line = vim.fn.line "."
+    if curr_line ~= curr_q_item.qf_item_index then
+      self.highlighting = false
+      return
+    end
+    if self.preview_win_id ~= curr_q_item.preview_win_id then
+      self.highlighting = false
+      return
+    end
+
+    local qf_list      = vim.fn.getqflist()
+    local curr_qf_item = qf_list[curr_q_item.qf_item_index]
+
+    vim.api.nvim_buf_call(curr_qf_item.bufnr, function()
+      vim.cmd "filetype detect"
+      vim.treesitter.start(curr_qf_item.bufnr)
+    end)
+
+    vim.api.nvim_win_set_cursor(curr_q_item.preview_win_id, { curr_qf_item.lnum, curr_qf_item.col, })
+
+    self.highlighting = false
+
+    vim.defer_fn(function()
+      do_next_highlight()
+    end, 20)
+  end
+
+  vim.schedule(do_next_highlight)
 end
 
 --- @param str string
@@ -72,12 +125,10 @@ function QfPreview:open()
   vim.wo[self.preview_win_id].winblend       = 5
   vim.wo[self.preview_win_id].cursorline     = true
 
-  vim.api.nvim_buf_call(curr_qf_item.bufnr, function()
-    vim.cmd "filetype detect"
-    vim.treesitter.start(curr_qf_item.bufnr)
-  end)
-
-  vim.api.nvim_win_set_cursor(self.preview_win_id, { curr_qf_item.lnum, curr_qf_item.col, })
+  self:highlight {
+    preview_win_id = self.preview_win_id,
+    qf_item_index = curr_line,
+  }
 end
 
 function QfPreview:close()
