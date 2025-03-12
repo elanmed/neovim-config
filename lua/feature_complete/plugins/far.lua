@@ -1,19 +1,25 @@
 local h = require "shared.helpers"
 local grug = require "grug-far"
+local snacks = require "snacks"
 
+-- TODO: find a cleaner way to handle this
 local GRUG_INSTANCE_NAME = ""
 
 --- returns `true` to abort, `false` to kill instance
---- @return boolean
-local function maybe_abort()
+--- @param cb function
+local function abort_or_cb(cb)
   if grug.has_instance(GRUG_INSTANCE_NAME) then
-    local user_input = vim.fn.input "A grug instance is already running. Okay to kill? (y/N) "
-    if user_input ~= "y" then
-      return true
-    end
-    grug.kill_instance(GRUG_INSTANCE_NAME)
+    snacks.input.input(
+      { prompt = "A grug instance is already running. Okay to kill? (y/N)", },
+      function(user_input)
+        if user_input == "y" then
+          grug.kill_instance(GRUG_INSTANCE_NAME)
+          cb()
+        end
+      end)
+  else
+    cb()
   end
-  return false
 end
 
 h.keys.map({ "n", }, "<leader>re", function()
@@ -75,67 +81,68 @@ local shared_grug_opts = {
 }
 
 h.keys.map({ "v", }, "<leader>lo", function()
-  if maybe_abort() then return end
-
-  local require_visual_mode_active = true
-  local visual_selection = grug.get_current_visual_selection(require_visual_mode_active)
-  if visual_selection == "" then return end
-
-  local opts = vim.tbl_extend("error", shared_grug_opts, {
-    prefills = {
-      flags = "--ignore-case",
-    },
-  })
-  GRUG_INSTANCE_NAME = grug.with_visual_selection(opts)
-end, { desc = "Search the current selection with grug", })
-
-h.keys.map({ "n", }, "<leader>lo", function()
-    if maybe_abort() then return end
+  abort_or_cb(function()
+    local require_visual_mode_active = true
+    local visual_selection = grug.get_current_visual_selection(require_visual_mode_active)
+    if visual_selection == "" then return end
 
     local opts = vim.tbl_extend("error", shared_grug_opts, {
       prefills = {
-        search = vim.fn.expand "<cword>",
         flags = "--ignore-case",
       },
     })
-    GRUG_INSTANCE_NAME = grug.open(opts)
+    GRUG_INSTANCE_NAME = grug.with_visual_selection(opts)
+  end)
+end, { desc = "Search the current selection with grug", })
+
+h.keys.map({ "n", }, "<leader>lo", function()
+    abort_or_cb(function()
+      local opts = vim.tbl_extend("error", shared_grug_opts, {
+        prefills = {
+          search = vim.fn.expand "<cword>",
+          flags = "--ignore-case",
+        },
+      })
+      GRUG_INSTANCE_NAME = grug.open(opts)
+    end)
   end,
   { desc = "Search the currently hovered word with grug", })
 
 h.keys.map({ "n", }, "<leader>lg", function()
-  if maybe_abort() then return end
-
-  GRUG_INSTANCE_NAME = grug.open {
-    prefills = {
-      flags = "--ignore-case",
-    },
-  }
+  abort_or_cb(function()
+    GRUG_INSTANCE_NAME = grug.open {
+      prefills = {
+        flags = "--ignore-case",
+      },
+    }
+  end)
 end, { desc = "Search globally with grug", })
 
 h.keys.map({ "n", }, "<leader>lc", function()
-    if maybe_abort() then return end
-
-    GRUG_INSTANCE_NAME = grug.open()
+    abort_or_cb(function()
+      GRUG_INSTANCE_NAME = grug.open()
+    end)
   end,
   { desc = "Search globally (case-sensitive) with grug", })
 
 h.keys.map({ "n", }, "<leader>lw", function()
-    maybe_abort()
-    GRUG_INSTANCE_NAME = grug.open {
-      prefilles = {
-        flags = "--ignore-case --word-regexp",
-      },
-    }
+    abort_or_cb(function()
+      GRUG_INSTANCE_NAME = grug.open {
+        prefilles = {
+          flags = "--ignore-case --word-regexp",
+        },
+      }
+    end)
   end,
   { desc = "Search globally (whole-word) with grug", })
 
 h.keys.map({ "n", }, "<leader>lb", function()
-    if maybe_abort() then return end
-
-    GRUG_INSTANCE_NAME = grug.open {
-      prefills = {
-        flags = "--word-regexp",
-      },
-    }
+    abort_or_cb(function()
+      GRUG_INSTANCE_NAME = grug.open {
+        prefills = {
+          flags = "--word-regexp",
+        },
+      }
+    end)
   end,
   { desc = "Search globally (case-sensitive and whole-word) with grug", })
