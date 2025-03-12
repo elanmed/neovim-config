@@ -144,7 +144,7 @@ end
 dev.log = function(content)
   local file = io.open("log.txt", "a")
   if not file then
-    print "Error opening file!"
+    vim.notify("Error opening file!", vim.log.levels.ERROR)
     return
   end
   file:write("[LOG] " .. content .. "\n")

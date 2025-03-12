@@ -168,14 +168,14 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
       --- @diagnostic disable-next-line: param-type-mismatch
       local success = pcall(vim.cmd, "cnewer")
       if not success then
-        print "No newer list!"
+        vim.notify("No newer list!", vim.log.levels.WARN)
       end
     end, { buffer = true, })
     h.keys.map({ "n", }, "<", function()
       --- @diagnostic disable-next-line: param-type-mismatch
       local success = pcall(vim.cmd, "colder")
       if not success then
-        print "No older list!"
+        vim.notify("No older list!", vim.log.levels.WARN)
       end
     end, { buffer = true, })
   end,
