@@ -107,6 +107,7 @@ h.keys.map({ "n", }, "<leader>lp", function()
   end,
   { desc = "Search the planets with telescope", })
 h.keys.map({ "n", }, "<leader>lv", function()
+  -- TODO: write own version with simpler args for file type, dir, whole word / case sensitive
   telescope.extensions.live_grep_args.live_grep_args()
 end)
 -- "require" -g "*.lua" -g "*.sh"

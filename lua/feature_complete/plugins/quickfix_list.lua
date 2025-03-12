@@ -132,6 +132,8 @@ vim.api.nvim_create_autocmd({ "CursorMoved", }, {
 vim.api.nvim_create_autocmd({ "FileType", }, {
   pattern = "qf",
   callback = function()
+    -- TODO: command to delete item from the list
+
     h.keys.map({ "n", }, "t", function()
       if qf_preview:is_closed() then
         qf_preview:open()
