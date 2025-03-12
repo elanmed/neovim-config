@@ -5,6 +5,7 @@ local actions = require "telescope.actions"
 local builtin = require "telescope.builtin"
 local action_state = require "telescope.actions.state"
 local themes = require "telescope.themes"
+local lga_actions = require "telescope-live-grep-args.actions"
 
 local custom_actions = {}
 
@@ -36,7 +37,7 @@ local function get_stripped_filename()
 
   local stripped_start = filepath:match "wf_modules.*$"
   if not stripped_start then
-    print "`wf_modules` not found in the filepath!"
+    vim.notify("`wf_modules` not found in the filepath!", vim.log.levels.ERROR)
     return nil
   end
 
@@ -105,12 +106,28 @@ h.keys.map({ "n", }, "<leader>lp", function()
     }
   end,
   { desc = "Search the planets with telescope", })
+h.keys.map({ "n", }, "<leader>lv", function()
+  telescope.extensions.live_grep_args.live_grep_args()
+end)
+-- "require" -g "*.lua" -g "*.sh"
+-- "require" -tlua --type-not sh"
+-- "require" -g "**/feature_complete/**"
 
 
 telescope.setup {
   extensions = {
     frecency = {
-      db_safe_mode = false,
+      db_safe_mode = false, -- disable prompt
+    },
+    live_grep_args = {
+      mappings = {
+        i = {
+          ["<C-k>"] = lga_actions.quote_prompt(),
+        },
+      },
+      additional_args = {
+        "--fixed-strings",
+      },
     },
   },
   defaults = {
@@ -147,3 +164,4 @@ telescope.setup {
 telescope.load_extension "fzf"
 telescope.load_extension "frecency"
 telescope.load_extension "rails"
+telescope.load_extension "live_grep_args"
