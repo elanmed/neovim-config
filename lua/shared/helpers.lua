@@ -140,14 +140,25 @@ os.file_exists = function(name)
   end
 end
 
---- @param content string
+--- @param content any
 dev.log = function(content)
   local file = io.open("log.txt", "a")
   if not file then
     vim.notify("Error opening file!", vim.log.levels.ERROR)
     return
   end
-  file:write("[LOG] " .. content .. "\n")
+
+  if type(content) == "table" then
+    local formatted_content = ""
+    for _, item in pairs(content) do
+      formatted_content = formatted_content .. " " .. (type(content) == "table" and tbl.dump(item) or tostring(item))
+    end
+    file:write("[LOG] " .. formatted_content .. "\n")
+  else
+    file:write("[LOG] " .. (type(content) == "table" and tbl.dump(content) or tostring(content)) .. "\n")
+  end
+
+
   file:close()
 end
 
