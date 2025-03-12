@@ -39,16 +39,11 @@ local function shorten_bufname(item_text)
   return item_text
 end
 
---- @param opts? { respect_disabled : boolean }
-function QfPreview:open(opts)
-  opts = opts or { respect_disabled = false, }
-  if opts.respect_disabled and self.preview_disabled then return end
-
+function QfPreview:open()
   local qf_list = vim.fn.getqflist()
   if h.tbl.size(qf_list) == 0 then return end
 
-  local qf_win_id = vim.api.nvim_get_current_win()
-  self:close()
+  local qf_win_id                            = vim.api.nvim_get_current_win()
 
   local preview_height                       = 10
   local preview_height_padding_bottom        = 2
@@ -86,7 +81,9 @@ function QfPreview:open(opts)
 end
 
 function QfPreview:close()
-  if self:is_closed() then return end
+  if self:is_closed() then
+    return
+  end
 
   if vim.api.nvim_win_is_valid(self.preview_win_id) then
     local force = true
@@ -95,12 +92,19 @@ function QfPreview:close()
   end
 end
 
+function QfPreview:refresh()
+  if self.preview_disabled then return end
+  self:close()
+  self:open()
+end
+
 local qf_preview = QfPreview:new()
 
 h.keys.map({ "n", }, "gy", function()
   qf_preview:close()
-  vim.cmd "cex \"\""
-end, { desc = "Clear all quickfix lists", })
+  -- vim.fn.setqflist({}, "r") -- clear current
+  vim.fn.setqflist({}, "f")
+end, { desc = "Clear the current quickfix list", })
 
 vim.api.nvim_create_autocmd({ "BufEnter", }, {
   pattern = "*",
@@ -125,7 +129,7 @@ vim.api.nvim_create_autocmd({ "CursorMoved", }, {
   pattern = "*",
   callback = function()
     if vim.bo.filetype ~= "qf" then return end
-    qf_preview:open { respect_disabled = true, }
+    qf_preview:refresh()
   end,
 })
 
@@ -133,6 +137,33 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
   pattern = "qf",
   callback = function()
     -- TODO: command to delete item from the list
+
+    h.keys.map({ "n", }, "gd", function()
+      vim.fn.setqflist(vim.fn.getqflist())
+    end, { buffer = true, })
+
+    h.keys.map({ "n", }, "dd", function()
+      local qf_list = vim.fn.getqflist()
+      local qf_list_len = h.tbl.size(qf_list)
+      if qf_list_len == 0 then return end
+
+      local curr_line = vim.fn.line "."
+      table.remove(qf_list, curr_line)
+      local replace = "r"
+      vim.fn.setqflist(qf_list, replace)
+
+      if qf_list_len == 1 then
+        qf_preview:close()
+        return
+      end
+
+      if curr_line == qf_list_len then
+        vim.api.nvim_win_set_cursor(h.curr.window, { curr_line - 1, 0, })
+      else
+        vim.api.nvim_win_set_cursor(h.curr.window, { curr_line, 0, })
+      end
+      qf_preview:refresh()
+    end, { buffer = true, })
 
     h.keys.map({ "n", }, "t", function()
       if qf_preview:is_closed() then
