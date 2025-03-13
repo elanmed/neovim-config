@@ -232,6 +232,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
   callback = function()
     h.keys.map({ "n", }, "gd", function()
       vim.fn.setqflist(vim.fn.getqflist())
+      vim.notify("Created a new list!", vim.log.levels.INFO)
     end, { buffer = true, })
 
     h.keys.map({ "n", }, "dd", function()
