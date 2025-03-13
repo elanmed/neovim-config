@@ -70,10 +70,13 @@ function QfPreview:highlight_pipeline(opts)
     local qf_list      = vim.fn.getqflist()
     local curr_qf_item = qf_list[curr_q_item.qf_item_index]
 
-    vim.api.nvim_buf_call(curr_qf_item.bufnr, function()
-      vim.cmd "filetype detect"
-      vim.treesitter.start(curr_qf_item.bufnr)
-    end)
+    if not self.parsed_buffers[curr_qf_item.bufnr] then
+      vim.api.nvim_buf_call(curr_qf_item.bufnr, function()
+        vim.cmd "filetype detect"
+        vim.treesitter.start(curr_qf_item.bufnr)
+      end)
+      self.parsed_buffers[curr_qf_item.bufnr] = true
+    end
 
     vim.api.nvim_win_set_cursor(curr_q_item.preview_win_id, { curr_qf_item.lnum, curr_qf_item.col, })
 
@@ -163,16 +166,14 @@ function QfPreview:close()
 end
 
 function QfPreview:refresh()
-  local qf_list = vim.fn.getqflist()
-  if
-      self.preview_disabled or
-      self:is_closed() or
-      not vim.api.nvim_win_is_valid(self.preview_win_id) or
-      #qf_list == 0
-  then
+  if self.preview_disabled then return end
+
+  if self:is_closed() then
+    self:open()
     return
   end
 
+  local qf_list = vim.fn.getqflist()
   local curr_line = vim.fn.line "."
   local curr_qf_item = qf_list[curr_line]
 
