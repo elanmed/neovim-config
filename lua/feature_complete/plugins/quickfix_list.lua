@@ -249,7 +249,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
         return
       end
 
-      if curr_line == #qf_list then
+      if curr_line == (#qf_list + 1) then
         vim.api.nvim_win_set_cursor(h.curr.window, { curr_line - 1, 0, })
       else
         vim.api.nvim_win_set_cursor(h.curr.window, { curr_line, 0, })
