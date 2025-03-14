@@ -5,10 +5,10 @@ local conf = require "telescope.config".values
 local finders = require "telescope.finders"
 local make_entry = require "telescope.make_entry"
 local action_state = require "telescope.actions.state"
+-- local prompt_parser = require "telescope._extensions.prompt_parser"
 
 -- TODO:
 -- wait until space to process
--- accept case arguments
 
 --- @param input table
 --- @return string
@@ -98,10 +98,6 @@ local live_grep_with_formatted_args = function()
       return nil
     end
 
-    local split_prompt = split(prompt)
-
-    local text = ""
-
     local parsing_type_flags = false
     local parsing_dir_flags = false
 
@@ -109,49 +105,101 @@ local live_grep_with_formatted_args = function()
     local negate_type_flags = {}
     local include_dir_flags = {}
     local negate_dir_flags = {}
+    local case_sensitive_flag = { "--ignore-case", }
+    local whole_word_flag = { nil, }
 
-    local index = 1
-    while index < (#split_prompt + 1) do
-      if index == 1 then
-        text = split_prompt[index]
+    local has_quotes = false
+    local search = ""
+    local search_index = 1
+    while search_index < (#prompt + 1) do
+      if search_index == 1 then
+        if prompt:sub(1, 1) == '"' then
+          has_quotes = true
+          goto continue
+        else
+          search = search .. prompt:sub(search_index, search_index)
+          goto continue
+        end
+      end
+
+      if has_quotes then
+        if prompt:sub(search_index, search_index) == '"' then
+          break
+        end
+      else
+        if prompt:sub(search_index, search_index) == " " then
+          break
+        end
+      end
+
+      search = search .. prompt:sub(search_index, search_index)
+
+      ::continue::
+      search_index = search_index + 1
+    end
+
+    local split_prompt = split(prompt:sub(search_index + 1))
+
+
+    local flags_index = 1
+    while flags_index < (#split_prompt + 1) do
+      if split_prompt[flags_index] == "-c" then
+        case_sensitive_flag = { "--case-sensitive", }
         goto continue
       end
 
-      if split_prompt[index] == "-t" then
+      if split_prompt[flags_index] == "-nc" then
+        case_sensitive_flag = { "--ignore-case", }
+        goto continue
+      end
+
+      if split_prompt[flags_index] == "-w" then
+        whole_word_flag = { "--word-regexp", }
+        goto continue
+      end
+
+      if split_prompt[flags_index] == "-nw" then
+        whole_word_flag = { nil, }
+        goto continue
+      end
+
+      if split_prompt[flags_index] == "-t" then
         parsing_type_flags = true
         parsing_dir_flags = false
         goto continue
       end
 
-      if split_prompt[index] == "-d" then
+      if split_prompt[flags_index] == "-d" then
         parsing_dir_flags = true
         parsing_type_flags = false
         goto continue
       end
 
       if parsing_type_flags == true then
-        insert_flags { str = split_prompt[index], include_tbl = include_type_flags, negate_tbl = negate_type_flags, }
+        insert_flags { str = split_prompt[flags_index], include_tbl = include_type_flags, negate_tbl = negate_type_flags, }
         goto continue
       end
 
       if parsing_dir_flags == true then
-        insert_flags { str = split_prompt[index], include_tbl = include_dir_flags, negate_tbl = negate_dir_flags, }
+        insert_flags { str = split_prompt[flags_index], include_tbl = include_dir_flags, negate_tbl = negate_dir_flags, }
         goto continue
       end
 
       ::continue::
-      index = index + 1
+      flags_index = flags_index + 1
     end
 
 
     local include_flag = construct_flag { negate = false, dir_tbl = include_dir_flags, type_tbl = include_type_flags, }
     local negate_flag = construct_flag { negate = true, dir_tbl = negate_dir_flags, type_tbl = negate_type_flags, }
 
+    local function flatten(tbl)
+      return vim.iter(tbl):flatten():totable()
+    end
 
-    local cmd = vim.iter { conf.vimgrep_arguments, include_flag, negate_flag, text, }:flatten():totable()
-    local minified_cmd = vim.iter { "rg", text, include_flag, negate_flag, }:flatten():totable()
+    local cmd = flatten { conf.vimgrep_arguments, case_sensitive_flag, whole_word_flag, search, include_flag, negate_flag, }
+    local minified_cmd = flatten { "rg", case_sensitive_flag, whole_word_flag, search, include_flag, negate_flag, }
     vim.notify(table.concat(minified_cmd, " "), vim.log.levels.DEBUG)
-
     return cmd
   end
 
