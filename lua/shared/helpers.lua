@@ -94,18 +94,18 @@ tbl.contains_key = function(table, target_key)
   return false
 end
 
---- @param o table
+--- @param input table
 --- @return string
-tbl.dump = function(o)
-  if type(o) == "table" then
-    local s = "{ "
-    for k, v in pairs(o) do
-      if type(k) ~= "number" then k = '"' .. k .. '"' end
-      s = s .. "[" .. k .. "] = " .. tbl.dump(v)
+tbl.dump = function(input)
+  if type(input) == "table" then
+    local str = "{ "
+    for key, value in pairs(input) do
+      if type(key) ~= "number" then key = '"' .. key .. '"' end
+      str = str .. "[" .. key .. "] = " .. tbl.dump(value)
     end
-    return s .. "} "
+    return str .. "} "
   else
-    return tostring(o)
+    return tostring(input)
   end
 end
 
