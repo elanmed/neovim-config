@@ -107,12 +107,8 @@ h.keys.map({ "n", }, "<leader>lp", function()
   end,
   { desc = "Search the planets with telescope", })
 h.keys.map({ "n", }, "<leader>lv", function()
-  -- TODO: write own version with simpler args for file type, dir, whole word / case sensitive
-  telescope.extensions.live_grep_args.live_grep_args()
+  telescope.extensions.live_grep_with_formatted_args.live_grep_with_formatted_args()
 end)
--- "require" -g "*.lua" -g "*.sh"
--- "require" -tlua --type-not sh"
--- "require" -g "**/feature_complete/**"
 
 
 telescope.setup {
@@ -165,4 +161,5 @@ telescope.setup {
 telescope.load_extension "fzf"
 telescope.load_extension "frecency"
 telescope.load_extension "rails"
-telescope.load_extension "live_grep_args"
+-- telescope.load_extension "live_grep_args"
+telescope.load_extension "live_grep_with_formatted_args"
