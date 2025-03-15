@@ -61,7 +61,6 @@ Plug("nvim-telescope/telescope.nvim", { commit = "a0bbec2", })
 Plug("nvim-telescope/telescope-fzf-native.nvim", { commit = "dae2eac", ["do"] = "make", })
 Plug("sato-s/telescope-rails.nvim", { commit = "e0addf3", })
 Plug("nvim-telescope/telescope-frecency.nvim", { commit = "5db9364", })
-Plug("nvim-telescope/telescope-live-grep-args.nvim", { commit = "b80ec2c", })
 -- treesitter
 Plug("nvim-treesitter/nvim-treesitter", { ["do"] = h.keys.user_cmd_cb "TSUpdate", })
 Plug "nvim-treesitter/nvim-treesitter-textobjects"

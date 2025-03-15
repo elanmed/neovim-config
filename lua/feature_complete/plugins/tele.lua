@@ -23,13 +23,6 @@ end
 
 local border_borderchars = { "─", "│", "─", "│", "┌", "┐", "┘", "└", }
 local no_border_borderchars = { " ", }
-
--- custom_actions.send_selected_and_open_with_fzf = function(prompt_bufnr)
---   custom_actions.send_selected_and_open(prompt_bufnr)
---   require "bqf.filter.fzf".run()
---   h.keys.send_keys("n", "i")
--- end
-
 local shared_grep_string_options = { only_sort_text = true, }
 
 local function get_stripped_filename()
@@ -162,5 +155,4 @@ telescope.setup {
 telescope.load_extension "fzf"
 telescope.load_extension "frecency"
 telescope.load_extension "rails"
--- telescope.load_extension "live_grep_args"
 telescope.load_extension "live_grep_with_formatted_args"
