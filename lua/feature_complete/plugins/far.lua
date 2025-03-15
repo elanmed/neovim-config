@@ -81,68 +81,80 @@ local shared_grug_opts = {
 }
 
 h.keys.map({ "v", }, "<leader>lo", function()
-  abort_or_cb(function()
-    local require_visual_mode_active = true
-    local visual_selection = grug.get_current_visual_selection(require_visual_mode_active)
-    if visual_selection == "" then return end
+  vim.notify("use <leader>lg instead!", vim.log.levels.ERROR)
 
-    local opts = vim.tbl_extend("error", shared_grug_opts, {
-      prefills = {
-        flags = "--ignore-case",
-      },
-    })
-    GRUG_INSTANCE_NAME = grug.with_visual_selection(opts)
-  end)
+  -- abort_or_cb(function()
+  --   local require_visual_mode_active = true
+  --   local visual_selection = grug.get_current_visual_selection(require_visual_mode_active)
+  --   if visual_selection == "" then return end
+
+  --   local opts = vim.tbl_extend("error", shared_grug_opts, {
+  --     prefills = {
+  --       flags = "--ignore-case",
+  --     },
+  --   })
+  --   GRUG_INSTANCE_NAME = grug.with_visual_selection(opts)
+  -- end)
 end, { desc = "Search the current selection with grug", })
 
 h.keys.map({ "n", }, "<leader>lo", function()
-    abort_or_cb(function()
-      local opts = vim.tbl_extend("error", shared_grug_opts, {
-        prefills = {
-          search = vim.fn.expand "<cword>",
-          flags = "--ignore-case",
-        },
-      })
-      GRUG_INSTANCE_NAME = grug.open(opts)
-    end)
+    vim.notify("use <leader>lg instead!", vim.log.levels.ERROR)
+
+    -- abort_or_cb(function()
+    --   local opts = vim.tbl_extend("error", shared_grug_opts, {
+    --     prefills = {
+    --       search = vim.fn.expand "<cword>",
+    --       flags = "--ignore-case",
+    --     },
+    --   })
+    --   GRUG_INSTANCE_NAME = grug.open(opts)
+    -- end)
   end,
   { desc = "Search the currently hovered word with grug", })
 
 h.keys.map({ "n", }, "<leader>lg", function()
-  abort_or_cb(function()
-    GRUG_INSTANCE_NAME = grug.open {
-      prefills = {
-        flags = "--ignore-case",
-      },
-    }
-  end)
+  vim.notify("use <leader>lg instead!", vim.log.levels.ERROR)
+
+  -- abort_or_cb(function()
+  --   GRUG_INSTANCE_NAME = grug.open {
+  --     prefills = {
+  --       flags = "--ignore-case",
+  --     },
+  --   }
+  -- end)
 end, { desc = "Search globally with grug", })
 
 h.keys.map({ "n", }, "<leader>lc", function()
-    abort_or_cb(function()
-      GRUG_INSTANCE_NAME = grug.open()
-    end)
+    vim.notify("use <leader>lg instead!", vim.log.levels.ERROR)
+
+    -- abort_or_cb(function()
+    --   GRUG_INSTANCE_NAME = grug.open()
+    -- end)
   end,
   { desc = "Search globally (case-sensitive) with grug", })
 
 h.keys.map({ "n", }, "<leader>lw", function()
-    abort_or_cb(function()
-      GRUG_INSTANCE_NAME = grug.open {
-        prefilles = {
-          flags = "--ignore-case --word-regexp",
-        },
-      }
-    end)
+    vim.notify("use <leader>lg instead!", vim.log.levels.ERROR)
+
+    -- abort_or_cb(function()
+    --   GRUG_INSTANCE_NAME = grug.open {
+    --     prefilles = {
+    --       flags = "--ignore-case --word-regexp",
+    --     },
+    --   }
+    -- end)
   end,
   { desc = "Search globally (whole-word) with grug", })
 
 h.keys.map({ "n", }, "<leader>lb", function()
-    abort_or_cb(function()
-      GRUG_INSTANCE_NAME = grug.open {
-        prefills = {
-          flags = "--word-regexp",
-        },
-      }
-    end)
+    vim.notify("use <leader>lg instead!", vim.log.levels.ERROR)
+
+    -- abort_or_cb(function()
+    --   GRUG_INSTANCE_NAME = grug.open {
+    --     prefills = {
+    --       flags = "--word-regexp",
+    --     },
+    --   }
+    -- end)
   end,
   { desc = "Search globally (case-sensitive and whole-word) with grug", })

@@ -5,7 +5,6 @@ local actions = require "telescope.actions"
 local builtin = require "telescope.builtin"
 local action_state = require "telescope.actions.state"
 local themes = require "telescope.themes"
-local lga_actions = require "telescope-live-grep-args.actions"
 
 local custom_actions = {}
 
@@ -99,25 +98,13 @@ h.keys.map({ "n", }, "<leader>lp", function()
     }
   end,
   { desc = "Search the planets with telescope", })
-h.keys.map({ "n", }, "<leader>lv", function()
-  telescope.extensions.live_grep_with_custom_args.live_grep_with_custom_args()
-end)
+h.keys.map({ "n", }, "<leader>lg", telescope.extensions.live_grep_with_custom_args.live_grep_with_custom_args)
 
 
 telescope.setup {
   extensions = {
     frecency = {
       db_safe_mode = false, -- disable prompt
-    },
-    live_grep_args = {
-      mappings = {
-        i = {
-          ["<C-k>"] = lga_actions.quote_prompt(),
-        },
-      },
-      additional_args = {
-        "--fixed-strings",
-      },
     },
   },
   defaults = {
