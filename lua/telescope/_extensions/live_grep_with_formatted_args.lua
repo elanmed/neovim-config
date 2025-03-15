@@ -148,7 +148,8 @@ local live_grep_with_formatted_args = function()
 
       local is_last_char_space = flags_prompt:sub(#flags_prompt, #flags_prompt) == " "
       if flags_index == #split_flags_prompt and not is_last_char_space then
-        goto continue
+        -- avoid updating the telescope command
+        return nil
       end
 
       if flag_token == "-c" then
@@ -216,7 +217,6 @@ local live_grep_with_formatted_args = function()
         prompt_title = "Live Grep (Formatted Args)",
         finder = finders.new_job(cmd_generator, entry_maker),
         previewer = conf.grep_previewer(setup_opts),
-        sorter = sorters.highlighter_only(setup_opts),
         attach_mappings = function(_, map)
           map("i", "<C-k>", quote_prompt)
           return true
