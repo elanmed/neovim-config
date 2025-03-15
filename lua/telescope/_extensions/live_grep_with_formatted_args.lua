@@ -1,14 +1,9 @@
 local pickers = require "telescope.pickers"
-local sorters = require "telescope.sorters"
 local telescope = require "telescope"
 local conf = require "telescope.config".values
 local finders = require "telescope.finders"
 local make_entry = require "telescope.make_entry"
 local action_state = require "telescope.actions.state"
--- local prompt_parser = require "telescope._extensions.prompt_parser"
-
--- TODO:
--- wait until space to process
 
 --- @param input table
 --- @return string
@@ -228,11 +223,6 @@ end
 -- live_grep_with_formatted_args()
 
 return telescope.register_extension {
-  setup = function(ext_config)
-    for k, v in pairs(ext_config) do
-      setup_opts[k] = v
-    end
-  end,
   exports = {
     live_grep_with_formatted_args = live_grep_with_formatted_args,
   },
