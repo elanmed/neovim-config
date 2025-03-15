@@ -47,7 +47,7 @@ local setup_opts = {
   auto_quoting = true,
 }
 
-local live_grep_with_formatted_args = function()
+local live_grep_with_custom_args = function()
   --- @param opts { str: string, include_tbl: table, negate_tbl: table }
   local function insert_flags(opts)
     local str, include_tbl, negate_tbl = opts.str, opts.include_tbl, opts.negate_tbl
@@ -209,7 +209,7 @@ local live_grep_with_formatted_args = function()
 
   pickers
       .new(setup_opts, {
-        prompt_title = "Live Grep: -{t,d,c,nc,w,nw} ",
+        prompt_title = "Live grep with custom args: -{t,d,c,nc,w,nw} ",
         finder = finders.new_job(cmd_generator, entry_maker),
         previewer = conf.grep_previewer(setup_opts),
         attach_mappings = function(_, map)
@@ -220,10 +220,10 @@ local live_grep_with_formatted_args = function()
       :find()
 end
 
--- live_grep_with_formatted_args()
+live_grep_with_custom_args()
 
 return telescope.register_extension {
   exports = {
-    live_grep_with_formatted_args = live_grep_with_formatted_args,
+    live_grep_with_custom_args = live_grep_with_custom_args,
   },
 }

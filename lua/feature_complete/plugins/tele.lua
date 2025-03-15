@@ -100,7 +100,7 @@ h.keys.map({ "n", }, "<leader>lp", function()
   end,
   { desc = "Search the planets with telescope", })
 h.keys.map({ "n", }, "<leader>lv", function()
-  telescope.extensions.live_grep_with_formatted_args.live_grep_with_formatted_args()
+  telescope.extensions.live_grep_with_custom_args.live_grep_with_custom_args()
 end)
 
 
@@ -155,4 +155,4 @@ telescope.setup {
 telescope.load_extension "fzf"
 telescope.load_extension "frecency"
 telescope.load_extension "rails"
-telescope.load_extension "live_grep_with_formatted_args"
+telescope.load_extension "live_grep_with_custom_args"
