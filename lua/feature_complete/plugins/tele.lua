@@ -152,6 +152,7 @@ telescope.setup {
         ["<tab>"] = actions.toggle_selection + actions.move_selection_next,
         ["<s-tab>"] = actions.move_selection_previous + actions.toggle_selection,
         ["<C-t>"] = actions.toggle_selection,
+        ["<C-a>"] = actions.toggle_all,
         ["<esc>"] = actions.close,
       },
     },
