@@ -47,50 +47,78 @@ local function quote_prompt(prompt_bufnr)
   picker:set_prompt(quoted_prompt)
 end
 
---- @param opts { str: string, include_tbl: table, negate_tbl: table }
-local function insert_flags(opts)
-  local str, include_tbl, negate_tbl = opts.str, opts.include_tbl, opts.negate_tbl
-  if str:sub(1, 1) == "!" then
-    if #str == 1 then
-      table.insert(negate_tbl, "")
-    else
-      table.insert(negate_tbl, str:sub(2))
-    end
-  else
-    table.insert(include_tbl, str)
-  end
-end
-
---- @param opts { dir_tbl: table, type_tbl: table, negate: boolean }
-local function construct_flag(opts)
-  local dir_tbl, type_tbl, negate = opts.dir_tbl, opts.type_tbl, opts.negate
-  local flag = ""
-  if #dir_tbl > 0 then
-    flag = flag .. "**/{" .. table.concat(dir_tbl, ",") .. "}/**"
-  end
-
-  if #type_tbl > 0 then
-    if #dir_tbl > 0 then
-      flag = flag .. "/"
-    end
-    flag = flag .. "*.{" .. table.concat(type_tbl, ",") .. "}"
-  end
-
-  if #flag > 0 then
-    if negate then
-      flag = "!" .. flag
-    end
-    return { "-g", flag, }
-  end
-
-  return {}
-end
 
 local setup_opts = {
   auto_quoting = true,
 }
 
 local live_grep_with_formatted_args = function()
+  --- @param opts { str: string, include_tbl: table, negate_tbl: table }
+  local function insert_flags(opts)
+    local str, include_tbl, negate_tbl = opts.str, opts.include_tbl, opts.negate_tbl
+    if str:sub(1, 1) == "!" then
+      if #str == 1 then
+        table.insert(negate_tbl, "")
+      else
+        table.insert(negate_tbl, str:sub(2))
+      end
+    else
+      table.insert(include_tbl, str)
+    end
+  end
+
+  --- @param opts { dir_tbl: table, type_tbl: table, negate: boolean }
+  local function construct_flag(opts)
+    local dir_tbl, type_tbl, negate = opts.dir_tbl, opts.type_tbl, opts.negate
+    local flag = ""
+    if #dir_tbl > 0 then
+      flag = flag .. "**/{" .. table.concat(dir_tbl, ",") .. "}/**"
+    end
+
+    if #type_tbl > 0 then
+      if #dir_tbl > 0 then
+        flag = flag .. "/"
+      end
+      flag = flag .. "*.{" .. table.concat(type_tbl, ",") .. "}"
+    end
+
+    if #flag > 0 then
+      if negate then
+        flag = "!" .. flag
+      end
+      return { "-g", flag, }
+    end
+
+    return {}
+  end
+
+  --- @param prompt string
+  local function parse_search(prompt)
+    local search = ""
+    local search_index = 1
+    while search_index < (#prompt + 1) do
+      if search_index == 1 then
+        if prompt:sub(1, 1) == '"' then
+          goto continue
+        else
+          -- vim.notify("Search term must be quoted!", vim.log.levels.ERROR)
+          goto continue
+        end
+      end
+
+      if prompt:sub(search_index, search_index) == '"' then
+        break
+      end
+
+      search = search .. prompt:sub(search_index, search_index)
+
+      ::continue::
+      search_index = search_index + 1
+    end
+
+    return { search = search, search_index = search_index, }
+  end
+
   local entry_maker = make_entry.gen_from_vimgrep(setup_opts)
 
   local cmd_generator = function(prompt)
@@ -108,80 +136,60 @@ local live_grep_with_formatted_args = function()
     local case_sensitive_flag = { "--ignore-case", }
     local whole_word_flag = { nil, }
 
-    local has_quotes = false
-    local search = ""
-    local search_index = 1
-    while search_index < (#prompt + 1) do
-      if search_index == 1 then
-        if prompt:sub(1, 1) == '"' then
-          has_quotes = true
-          goto continue
-        else
-          search = search .. prompt:sub(search_index, search_index)
-          goto continue
-        end
-      end
+    local parsed_search = parse_search(prompt)
+    local search, search_index = parsed_search.search, parsed_search.search_index
 
-      if has_quotes then
-        if prompt:sub(search_index, search_index) == '"' then
-          break
-        end
-      else
-        if prompt:sub(search_index, search_index) == " " then
-          break
-        end
-      end
-
-      search = search .. prompt:sub(search_index, search_index)
-
-      ::continue::
-      search_index = search_index + 1
-    end
-
-    local split_prompt = split(prompt:sub(search_index + 1))
-
+    local flags_prompt = prompt:sub(search_index + 1)
+    local split_flags_prompt = split(flags_prompt)
 
     local flags_index = 1
-    while flags_index < (#split_prompt + 1) do
-      if split_prompt[flags_index] == "-c" then
+    while flags_index < (#split_flags_prompt + 1) do
+      local flag_token = split_flags_prompt[flags_index]
+
+      local is_last_char_space = flags_prompt:sub(#flags_prompt, #flags_prompt) == " "
+      if flags_index == #split_flags_prompt and not is_last_char_space then
+        goto continue
+      end
+
+      if flag_token == "-c" then
         case_sensitive_flag = { "--case-sensitive", }
         goto continue
       end
 
-      if split_prompt[flags_index] == "-nc" then
+      if flag_token == "-nc" then
         case_sensitive_flag = { "--ignore-case", }
         goto continue
       end
 
-      if split_prompt[flags_index] == "-w" then
+      if flag_token == "-w" then
         whole_word_flag = { "--word-regexp", }
         goto continue
       end
 
-      if split_prompt[flags_index] == "-nw" then
+      if flag_token == "-nw" then
         whole_word_flag = { nil, }
         goto continue
       end
 
-      if split_prompt[flags_index] == "-t" then
+      if flag_token == "-t" then
         parsing_type_flags = true
         parsing_dir_flags = false
         goto continue
       end
 
-      if split_prompt[flags_index] == "-d" then
+      if flag_token == "-d" then
         parsing_dir_flags = true
         parsing_type_flags = false
         goto continue
       end
 
       if parsing_type_flags == true then
-        insert_flags { str = split_prompt[flags_index], include_tbl = include_type_flags, negate_tbl = negate_type_flags, }
+        insert_flags { str = flag_token, include_tbl = include_type_flags, negate_tbl = negate_type_flags, }
         goto continue
       end
 
       if parsing_dir_flags == true then
-        insert_flags { str = split_prompt[flags_index], include_tbl = include_dir_flags, negate_tbl = negate_dir_flags, }
+        insert_flags { str = flag_token, include_tbl = include_dir_flags, negate_tbl = negate_dir_flags, }
         goto continue
       end
 
