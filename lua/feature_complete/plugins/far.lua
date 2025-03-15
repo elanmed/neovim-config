@@ -29,6 +29,7 @@ h.keys.map({ "n", }, "<leader>re", function()
     GRUG_INSTANCE_NAME = grug.open()
   end
   vim.cmd "vertical resize 135%"
+  vim.notify("Common flags: --case-sensitive (default), --ignore-case, --word-regexp", vim.log.levels.INFO)
 end, { desc = "Open the grug-far ui", })
 
 grug.setup {
