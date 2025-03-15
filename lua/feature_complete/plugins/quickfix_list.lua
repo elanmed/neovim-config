@@ -230,26 +230,26 @@ vim.api.nvim_create_autocmd({ "CursorMoved", }, {
 vim.api.nvim_create_autocmd({ "FileType", }, {
   pattern = "qf",
   callback = function()
-    h.keys.map({ "n", }, "gd", function()
+    h.keys.map({ "n", }, "gdl", function()
       vim.fn.setqflist(vim.fn.getqflist())
       vim.notify("Created a new list!", vim.log.levels.INFO)
     end, { buffer = true, })
 
     h.keys.map({ "n", }, "dd", function()
-      local qf_list = vim.fn.getqflist()
-      if #qf_list == 0 then return end
+      local qf_list_before_remove = vim.fn.getqflist()
+      if #qf_list_before_remove == 0 then return end
 
       local curr_line = vim.fn.line "."
-      table.remove(qf_list, curr_line)
+      table.remove(qf_list_before_remove, curr_line)
       local replace = "r"
-      vim.fn.setqflist(qf_list, replace)
+      vim.fn.setqflist(qf_list_before_remove, replace)
 
-      if #qf_list == 1 then
+      if #qf_list_before_remove == 1 then
         qf_preview:close()
         return
       end
 
-      if curr_line == (#qf_list + 1) then
+      if curr_line == (#qf_list_before_remove + 1) then
         vim.api.nvim_win_set_cursor(h.curr.window, { curr_line - 1, 0, })
       else
         vim.api.nvim_win_set_cursor(h.curr.window, { curr_line, 0, })
