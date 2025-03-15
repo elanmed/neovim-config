@@ -3,7 +3,6 @@ local telescope = require "telescope"
 local conf = require "telescope.config".values
 local finders = require "telescope.finders"
 local make_entry = require "telescope.make_entry"
-local action_state = require "telescope.actions.state"
 
 --- @param input table
 --- @return string
@@ -40,9 +39,7 @@ local live_grep_with_custom_args = function()
   local function insert_flags(opts)
     local str, include_tbl, negate_tbl = opts.str, opts.include_tbl, opts.negate_tbl
     if str:sub(1, 1) == "!" then
-      if #str == 1 then
-        table.insert(negate_tbl, "")
-      else
+      if #str > 1 then
         table.insert(negate_tbl, str:sub(2))
       end
     else
@@ -81,12 +78,7 @@ local live_grep_with_custom_args = function()
     local search_index = 1
     while search_index < (#prompt + 1) do
       if search_index == 1 then
-        if prompt:sub(1, 1) == "'" then
-          goto continue
-        else
-          -- vim.notify("Search term must be quoted!", vim.log.levels.ERROR)
-          goto continue
-        end
+        goto continue
       end
 
       if prompt:sub(search_index, search_index) == "'" then
@@ -205,7 +197,7 @@ local live_grep_with_custom_args = function()
       :find()
 end
 
--- easy debugging, reload the page
+-- easy debugging, reload the file
 -- live_grep_with_custom_args()
 
 return telescope.register_extension {
