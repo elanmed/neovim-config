@@ -30,18 +30,6 @@ local function split(input_str)
   return tbl
 end
 
-local function quote_prompt(prompt_bufnr)
-  local function quote(value)
-    local quoted = value:gsub('"', "\\" .. '"')
-    return '"' .. quoted .. '"'
-  end
-
-  local picker = action_state.get_current_picker(prompt_bufnr)
-  local trimmed_prompt = vim.trim(picker:_get_prompt())
-  local quoted_prompt = quote(trimmed_prompt) .. " "
-  picker:set_prompt(quoted_prompt)
-end
-
 
 local setup_opts = {
   auto_quoting = true,
@@ -93,7 +81,7 @@ local live_grep_with_custom_args = function()
     local search_index = 1
     while search_index < (#prompt + 1) do
       if search_index == 1 then
-        if prompt:sub(1, 1) == '"' then
+        if prompt:sub(1, 1) == "'" then
           goto continue
         else
           -- vim.notify("Search term must be quoted!", vim.log.levels.ERROR)
@@ -101,7 +89,7 @@ local live_grep_with_custom_args = function()
         end
       end
 
-      if prompt:sub(search_index, search_index) == '"' then
+      if prompt:sub(search_index, search_index) == "'" then
         break
       end
 
@@ -209,18 +197,16 @@ local live_grep_with_custom_args = function()
 
   pickers
       .new(setup_opts, {
+        default_text = "'",
         prompt_title = "Live grep with custom args: -{t,d,c,nc,w,nw} ",
         finder = finders.new_job(cmd_generator, entry_maker),
         previewer = conf.grep_previewer(setup_opts),
-        attach_mappings = function(_, map)
-          map("i", "<C-k>", quote_prompt)
-          return true
-        end,
       })
       :find()
 end
 
-live_grep_with_custom_args()
+-- easy debugging, reload the page
+-- live_grep_with_custom_args()
 
 return telescope.register_extension {
   exports = {
