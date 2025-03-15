@@ -209,7 +209,7 @@ local live_grep_with_formatted_args = function()
 
   pickers
       .new(setup_opts, {
-        prompt_title = "Live Grep (Formatted Args)",
+        prompt_title = "Live Grep: -{t,d,c,nc,w,nw} ",
         finder = finders.new_job(cmd_generator, entry_maker),
         previewer = conf.grep_previewer(setup_opts),
         attach_mappings = function(_, map)
