@@ -113,17 +113,15 @@ h.keys.map({ "n", }, "<leader>lo", function()
   end,
   { desc = "Search the currently hovered word with grug", })
 
-h.keys.map({ "n", }, "<leader>lg", function()
-  vim.notify("use <leader>lg instead!", vim.log.levels.ERROR)
-
-  -- abort_or_cb(function()
-  --   GRUG_INSTANCE_NAME = grug.open {
-  --     prefills = {
-  --       flags = "--ignore-case",
-  --     },
-  --   }
-  -- end)
-end, { desc = "Search globally with grug", })
+-- h.keys.map({ "n", }, "<leader>lg", function()
+-- abort_or_cb(function()
+--   GRUG_INSTANCE_NAME = grug.open {
+--     prefills = {
+--       flags = "--ignore-case",
+--     },
+--   }
+-- end)
+-- end, { desc = "Search globally with grug", })
 
 h.keys.map({ "n", }, "<leader>lc", function()
     vim.notify("use <leader>lg instead!", vim.log.levels.ERROR)
