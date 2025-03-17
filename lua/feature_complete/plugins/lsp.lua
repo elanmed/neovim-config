@@ -120,8 +120,6 @@ else
   lspconfig.ts_ls.setup {
     init_options = {
       preferences = {
-        includeInlayVariableTypeHints = true,
-        includeInlayEnumMemberValueHints = true,
         importModuleSpecifierPreference = "non-relative",
         jsxAttributeCompletionStyle = "braces",
       },
