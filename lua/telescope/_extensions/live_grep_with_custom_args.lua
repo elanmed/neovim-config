@@ -34,7 +34,9 @@ local setup_opts = {
   auto_quoting = true,
 }
 
-local live_grep_with_custom_args = function()
+local live_grep_with_custom_args = function(opts)
+  opts = opts or {}
+
   --- @param opts { str: string, include_tbl: table, negate_tbl: table }
   local function insert_flags(opts)
     local str, include_tbl, negate_tbl = opts.str, opts.include_tbl, opts.negate_tbl
@@ -189,7 +191,7 @@ local live_grep_with_custom_args = function()
 
   pickers
       .new(setup_opts, {
-        default_text = "'",
+        default_text = opts.default_text or "'",
         prompt_title = "Live grep with custom args: -{t,d,c,nc,w,nw} ",
         finder = finders.new_job(cmd_generator, entry_maker),
         previewer = conf.grep_previewer(setup_opts),

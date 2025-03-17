@@ -75,43 +75,39 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
 --   vim.defer_fn(remove_highlight, 300)
 -- end
 
-local files_filter_row = 4
-local shared_grug_opts = {
-  startInInsertMode = false,
-  startCursorRow = files_filter_row,
-}
+-- local files_filter_row = 4
+-- local shared_grug_opts = {
+--   startInInsertMode = false,
+--   startCursorRow = files_filter_row,
+-- }
 
-h.keys.map({ "v", }, "<leader>lo", function()
-  vim.notify("use <leader>lg instead!", vim.log.levels.ERROR)
+-- h.keys.map({ "v", }, "<leader>lo", function()
+--   abort_or_cb(function()
+--     local require_visual_mode_active = true
+--     local visual_selection = grug.get_current_visual_selection(require_visual_mode_active)
+--     if visual_selection == "" then return end
 
-  -- abort_or_cb(function()
-  --   local require_visual_mode_active = true
-  --   local visual_selection = grug.get_current_visual_selection(require_visual_mode_active)
-  --   if visual_selection == "" then return end
+--     local opts = vim.tbl_extend("error", shared_grug_opts, {
+--       prefills = {
+--         flags = "--ignore-case",
+--       },
+--     })
+--     GRUG_INSTANCE_NAME = grug.with_visual_selection(opts)
+--   end)
+-- end, { desc = "Search the current selection with grug", })
 
-  --   local opts = vim.tbl_extend("error", shared_grug_opts, {
-  --     prefills = {
-  --       flags = "--ignore-case",
-  --     },
-  --   })
-  --   GRUG_INSTANCE_NAME = grug.with_visual_selection(opts)
-  -- end)
-end, { desc = "Search the current selection with grug", })
-
-h.keys.map({ "n", }, "<leader>lo", function()
-    vim.notify("use <leader>lg instead!", vim.log.levels.ERROR)
-
-    -- abort_or_cb(function()
-    --   local opts = vim.tbl_extend("error", shared_grug_opts, {
-    --     prefills = {
-    --       search = vim.fn.expand "<cword>",
-    --       flags = "--ignore-case",
-    --     },
-    --   })
-    --   GRUG_INSTANCE_NAME = grug.open(opts)
-    -- end)
-  end,
-  { desc = "Search the currently hovered word with grug", })
+-- h.keys.map({ "n", }, "<leader>lo", function()
+--     abort_or_cb(function()
+--       local opts = vim.tbl_extend("error", shared_grug_opts, {
+--         prefills = {
+--           search = vim.fn.expand "<cword>",
+--           flags = "--ignore-case",
+--         },
+--       })
+--       GRUG_INSTANCE_NAME = grug.open(opts)
+--     end)
+--   end,
+--   { desc = "Search the currently hovered word with grug", })
 
 -- h.keys.map({ "n", }, "<leader>lg", function()
 -- abort_or_cb(function()

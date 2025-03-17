@@ -1,4 +1,5 @@
 local h = require "shared.helpers"
+local grug = require "grug-far"
 
 local telescope = require "telescope"
 local actions = require "telescope.actions"
@@ -99,6 +100,17 @@ h.keys.map({ "n", }, "<leader>lp", function()
   end,
   { desc = "Search the planets with telescope", })
 h.keys.map({ "n", }, "<leader>lg", telescope.extensions.live_grep_with_custom_args.live_grep_with_custom_args)
+h.keys.map({ "n", }, "<leader>lo",
+  function()
+    telescope.extensions.live_grep_with_custom_args.live_grep_with_custom_args { default_text = "'" .. vim.fn.expand "<cword>" .. "' ", }
+  end)
+h.keys.map({ "v", }, "<leader>lo",
+  function()
+    local require_visual_mode_active = true
+    local visual_selection = grug.get_current_visual_selection(require_visual_mode_active)
+    if visual_selection == "" then return end
+    telescope.extensions.live_grep_with_custom_args.live_grep_with_custom_args { default_text = "'" .. visual_selection .. "' ", }
+  end)
 
 
 telescope.setup {
