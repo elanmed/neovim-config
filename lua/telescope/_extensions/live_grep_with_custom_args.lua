@@ -49,19 +49,19 @@ local live_grep_with_custom_args = function(opts)
     end
   end
 
-  --- @param opts { dir_tbl: table, type_tbl: table, negate: boolean }
+  --- @param opts { dir_tbl: table, file_tbl: table, negate: boolean }
   local function construct_flag(opts)
-    local dir_tbl, type_tbl, negate = opts.dir_tbl, opts.type_tbl, opts.negate
+    local dir_tbl, file_tbl, negate = opts.dir_tbl, opts.file_tbl, opts.negate
     local flag = ""
     if #dir_tbl > 0 then
       flag = flag .. "**/{" .. table.concat(dir_tbl, ",") .. "}/**"
     end
 
-    if #type_tbl > 0 then
+    if #file_tbl > 0 then
       if #dir_tbl > 0 then
         flag = flag .. "/"
       end
-      flag = flag .. "*.{" .. table.concat(type_tbl, ",") .. "}"
+      flag = flag .. "*{" .. table.concat(file_tbl, ",") .. "}"
     end
 
     if #flag > 0 then
@@ -103,11 +103,11 @@ local live_grep_with_custom_args = function(opts)
       return nil
     end
 
-    local parsing_type_flags = false
+    local parsing_file_flags = false
     local parsing_dir_flags = false
 
-    local include_type_flags = {}
-    local negate_type_flags = {}
+    local include_file_flags = {}
+    local negate_file_flags = {}
     local include_dir_flags = {}
     local negate_dir_flags = {}
     local case_sensitive_flag = { "--ignore-case", }
@@ -149,20 +149,20 @@ local live_grep_with_custom_args = function(opts)
         goto continue
       end
 
-      if flag_token == "-t" then
-        parsing_type_flags = true
+      if flag_token == "-f" then
+        parsing_file_flags = true
         parsing_dir_flags = false
         goto continue
       end
 
       if flag_token == "-d" then
         parsing_dir_flags = true
-        parsing_type_flags = false
+        parsing_file_flags = false
         goto continue
       end
 
-      if parsing_type_flags == true then
-        insert_flags { str = flag_token, include_tbl = include_type_flags, negate_tbl = negate_type_flags, }
+      if parsing_file_flags == true then
+        insert_flags { str = flag_token, include_tbl = include_file_flags, negate_tbl = negate_file_flags, }
         goto continue
       end
 
@@ -176,8 +176,8 @@ local live_grep_with_custom_args = function(opts)
     end
 
 
-    local include_flag = construct_flag { negate = false, dir_tbl = include_dir_flags, type_tbl = include_type_flags, }
-    local negate_flag = construct_flag { negate = true, dir_tbl = negate_dir_flags, type_tbl = negate_type_flags, }
+    local include_flag = construct_flag { negate = false, dir_tbl = include_dir_flags, file_tbl = include_file_flags, }
+    local negate_flag = construct_flag { negate = true, dir_tbl = negate_dir_flags, file_tbl = negate_file_flags, }
 
     local function flatten(tbl)
       return vim.iter(tbl):flatten():totable()
@@ -192,7 +192,7 @@ local live_grep_with_custom_args = function(opts)
   pickers
       .new(setup_opts, {
         default_text = opts.default_text or "'",
-        prompt_title = "Live grep with custom args: -{t,d,c,nc,w,nw} ",
+        prompt_title = "Live grep with custom args: -{f,d,c,nc,w,nw} ",
         finder = finders.new_job(cmd_generator, entry_maker),
         previewer = conf.grep_previewer(setup_opts),
       })
@@ -200,7 +200,7 @@ local live_grep_with_custom_args = function(opts)
 end
 
 -- easy debugging, reload the file
--- live_grep_with_custom_args()
+live_grep_with_custom_args()
 
 return telescope.register_extension {
   exports = {
