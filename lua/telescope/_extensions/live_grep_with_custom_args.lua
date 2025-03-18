@@ -200,7 +200,7 @@ local live_grep_with_custom_args = function(opts)
 end
 
 -- easy debugging, reload the file
-live_grep_with_custom_args()
+-- live_grep_with_custom_args()
 
 return telescope.register_extension {
   exports = {
