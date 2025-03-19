@@ -106,7 +106,7 @@ end)
 h.keys.map({ "n", }, "<leader>la", telescope.extensions.live_grep_with_custom_args.live_grep_with_custom_args)
 h.keys.map({ "n", }, "<leader>lo",
   function()
-    telescope.extensions.live_grep_with_custom_args.live_grep_with_custom_args { default_text = "'" .. vim.fn.expand "<cword>" .. "' ", }
+    telescope.extensions.live_grep_with_custom_args.live_grep_with_custom_args { default_text = "~" .. vim.fn.expand "<cword>" .. "~ ", }
   end)
 h.keys.map({ "v", }, "<leader>lo",
   function()

@@ -83,7 +83,7 @@ local live_grep_with_custom_args = function(opts)
         goto continue
       end
 
-      if prompt:sub(search_index, search_index) == "'" then
+      if prompt:sub(search_index, search_index) == "~" then
         break
       end
 
@@ -191,7 +191,7 @@ local live_grep_with_custom_args = function(opts)
 
   pickers
       .new(setup_opts, {
-        default_text = opts.default_text or "'",
+        default_text = opts.default_text or "~",
         prompt_title = "Live grep with custom args: -{f,d,c,nc,w,nw} ",
         finder = finders.new_job(cmd_generator, entry_maker),
         previewer = conf.grep_previewer(setup_opts),
