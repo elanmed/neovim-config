@@ -81,9 +81,9 @@ h.keys.map({ "n", }, "<leader>lt", builtin.buffers, { desc = "Search currently o
 h.keys.map({ "n", }, "<leader>lh", builtin.help_tags, { desc = "Search help tags with telescope", })
 h.keys.map({ "n", }, "<leader>lf", builtin.current_buffer_fuzzy_find,
   { desc = "Search in the current file with telescope", })
-vim.cmd [[
-nnoremap <leader>la :Telescope rails<space>
-]]
+-- vim.cmd [[
+-- nnoremap <leader>la :Telescope rails<space>
+-- ]]
 h.keys.map({ "n", }, "<leader>le", grep_stripped_filename,
   { desc = "Search a file name starting with `wf_modules` with telescope", })
 h.keys.map({ "n", }, "<leader>ke", yank_stripped_filename, { desc = "C(K)opy a file name starting with `wf_modules`", })
@@ -99,7 +99,11 @@ h.keys.map({ "n", }, "<leader>lp", function()
     }
   end,
   { desc = "Search the planets with telescope", })
-h.keys.map({ "n", }, "<leader>lg", telescope.extensions.live_grep_with_custom_args.live_grep_with_custom_args)
+h.keys.map({ "n", }, "<leader>lg", function()
+  -- fuzzy live grep
+  builtin.grep_string { only_sort_text = true, search = "", prompt_title = "Live grep fuzzy", }
+end)
+h.keys.map({ "n", }, "<leader>la", telescope.extensions.live_grep_with_custom_args.live_grep_with_custom_args)
 h.keys.map({ "n", }, "<leader>lo",
   function()
     telescope.extensions.live_grep_with_custom_args.live_grep_with_custom_args { default_text = "'" .. vim.fn.expand "<cword>" .. "' ", }
