@@ -4,9 +4,6 @@ local h = require "shared.helpers"
 vim.cmd "inoremap <C-t> <C-o>:Snippet<space>"
 h.keys.map({ "n", "v", }, "<C-t>", function() print "snippets only supported in insert mode!" end)
 
-vim.cmd [[
-  nnoremap <leader>s :%s/\<\>\C/<left><left><left><left><left>
-]]
 h.keys.map({ "n", }, "<leader>af", "<C-6>", { desc = "Alternate file", })
 h.keys.map({ "n", }, "<leader>va", "ggVG", { desc = "Select all", })
 h.keys.map({ "n", }, "*", "*N")
@@ -58,8 +55,6 @@ end
 
 vim.api.nvim_create_user_command("Cnext", function() gen_circular_next_prev("cnext", "cfirst") end, {})
 vim.api.nvim_create_user_command("Cprev", function() gen_circular_next_prev("cprev", "clast") end, {})
-vim.api.nvim_create_user_command("Lnext", function() gen_circular_next_prev("lnext", "lfirst") end, {})
-vim.api.nvim_create_user_command("Lprev", function() gen_circular_next_prev("lprev", "llast") end, {})
 
 h.keys.map({ "n", }, "J", h.keys.user_cmd_cb "Cnext", { desc = "Move to the next item in the quickfix list", })
 h.keys.map({ "n", }, "K", h.keys.user_cmd_cb "Cprev", { desc = "Move to the prev item in the quickfix list", })
@@ -82,13 +77,21 @@ h.keys.map({ "i", }, alt_k, "<esc>:m .-2<cr>==gi", { desc = "Move line up", })
 h.keys.map({ "v", }, alt_j, ":m '>+1<cr>gv=gv", { desc = "Move line down", })
 h.keys.map({ "v", }, alt_k, ":m '<-2<cr>gv=gv", { desc = "Move line up", })
 
--- search case sensitive, whole word, and both
+-- search Case sensitive, Whole word, and All
 vim.cmd [[
   nnoremap <leader>/c /\C<left><left>
   nnoremap <leader>/w /\<\><left><left>
-  nnoremap <leader>cw /\<\>\C<left><left><left><left>
+  nnoremap <leader>/a /\<\>\C<left><left><left><left>
 ]]
-vim.cmd [[nnoremap / /\V]] -- search without regex
+-- search without regex
+vim.cmd [[
+  nnoremap / /\V
+]]
+-- search and replace
+vim.cmd [[
+  nnoremap <leader>/s :%s/\<\>\C/<left><left><left><left><left>
+]]
+h.keys.map({ "n", }, "<leader>/t", h.keys.user_cmd_cb "noh", { desc = "Turn off highlighting", })
 
 h.keys.map({ "n", "v", }, "n", "nzz")
 h.keys.map({ "n", "v", }, "N", "Nzz")
@@ -132,13 +135,37 @@ h.keys.map({ "n", }, "<leader>to", function()
   end
 end)
 
+local function notify_fold_cmds()
+  vim.notify("common fold commands: z{t,T,c,C,o,O,R,M}", vim.log.levels.INFO)
+end
+
+-- https://stackoverflow.com/a/9407015
+local function next_closed_fold(dir)
+  local view = vim.fn.winsaveview()
+  local prev_line_num = 0
+  local curr_line_num = view.lnum
+  local is_open = true
+
+  while curr_line_num ~= prev_line_num and is_open do
+    h.keys.send_keys("n", "z" .. dir)
+    prev_line_num = curr_line_num
+    curr_line_num = vim.fn.line "."
+    is_open = vim.fn.foldclosed(curr_line_num) < 0
+  end
+
+  if is_open then
+    vim.fn.winrestview(view)
+  end
+end
+h.keys.map({ "n", }, "zj", function() next_closed_fold "j" end)
+h.keys.map({ "n", }, "zk", function() next_closed_fold "k" end)
+h.keys.map({ "n", }, "zt", "za", { desc = "Toggle fold", })
+h.keys.map({ "n", }, "zT", "zA", { desc = "Toggle fold", })
+h.keys.map({ "n", }, "z?", notify_fold_cmds, { desc = "Toggle fold", })
+
 -- TODO: use more
-h.keys.map({ "n", }, [[<leader>']], [["]], { desc = "Set register", })
-h.keys.map({ "n", }, "@", "@r", { desc = "Replay macro, assuming it's set to `r`", })
-h.keys.map({ "i", }, "<C-x>", "<C-o>{")
-h.keys.map({ "n", "v", }, "<c-x>", "{")
-h.keys.map({ "i", }, "<C-c>", "<C-o>}")
-h.keys.map({ "n", "v", }, "<C-c>", "}")
+h.keys.map({ "n", "v", }, "Q", "{")
+h.keys.map({ "n", "v", }, "W", "}")
 
 -- remaps to figure out in the future:
 h.keys.map({ "n", }, "B", "<nop>", { desc = "TODO find a remap", })

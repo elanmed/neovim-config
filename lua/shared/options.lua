@@ -37,28 +37,30 @@ h.set.shiftwidth           = 2    -- number of spaces to insert/delete when in i
 
 -- search
 h.set.ignorecase           = true
-h.keys.map({ "n", }, "<leader>/t", h.keys.user_cmd_cb "noh", { desc = "Turn off highlighting", })
 
 -- folding
-h.set.foldmethod = "expr"
-h.set.foldcolumn = "0"                                             -- disable fold symbols in left column
-h.set.foldlevelstart = 99                                          -- open folds by default
-h.keys.map({ "n", }, "<leader>u", "za", { desc = "Toggle fold", }) -- toggle fold
+h.set.foldmethod           = "expr"
+h.set.foldcolumn           = "0" -- disable fold symbols in left column
+h.set.foldlevelstart       = 99  -- open folds by default
 
-h.set.foldexpr = "v:lua.GetFold(v:lnum)"
+h.set.foldmethod           = "expr"
+h.set.foldexpr             = "v:lua.vim.treesitter.foldexpr()"
 
-local function indent_level(lnum)
-  return vim.fn.indent(lnum) / vim.o.shiftwidth + 1
-end
 
-function _G.GetFold(lnum)
-  -- Check for blank lines
-  if vim.fn.match(vim.fn.getline(lnum), [[\v^\s*$]]) ~= -1 then
-    if indent_level(lnum - 1) == 1 then
-      return 0
-    end
-    -- the foldlevel of this line is equal to the foldlevel of the line above or below it, whichever is smaller
-    return "-1"
-  end
-  return indent_level(lnum)
-end
+-- h.set.foldexpr             = "v:lua.GetFold(v:lnum)"
+
+-- local function indent_level(lnum)
+--   return vim.fn.indent(lnum) / vim.o.shiftwidth + 1
+-- end
+
+-- function _G.GetFold(lnum)
+--   -- Check for blank lines
+--   if vim.fn.match(vim.fn.getline(lnum), [[\v^\s*$]]) ~= -1 then
+--     if indent_level(lnum - 1) == 1 then
+--       return 0
+--     end
+--     -- the foldlevel of this line is equal to the foldlevel of the line above or below it, whichever is smaller
+--     return "-1"
+--   end
+--   return indent_level(lnum)
+-- end

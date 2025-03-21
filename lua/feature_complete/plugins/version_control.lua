@@ -89,10 +89,10 @@ local function go_to_commit(qf_cmd)
     vim.cmd "cc"
   end
 end
-h.keys.map({ "n", }, "W", function()
+h.keys.map({ "n", }, "<C-c>", function()
   go_to_commit "Cprev"
 end)
-h.keys.map({ "n", }, "Q", function()
+h.keys.map({ "n", }, "<C-x>", function()
   go_to_commit "Cnext"
 end)
 

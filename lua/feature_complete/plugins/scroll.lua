@@ -17,7 +17,7 @@ neoscroll.setup {
     h.set.cursorline = false
   end,
 }
-h.keys.map({ "n", }, "z", function() neoscroll.zz { half_win_duration = 250, } end)
+h.keys.map({ "n", }, "z.", function() neoscroll.zz { half_win_duration = 250, } end)
 
 local function get_current_line()
   local row = unpack(vim.api.nvim_win_get_cursor(h.curr.window))
