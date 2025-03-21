@@ -52,7 +52,6 @@ function QfPreview:highlight_pipeline(opts)
     if self.highlighting then return end
     self.highlighting = true
 
-
     --- @type HighlightQueueItem
     local curr_q_item = table.remove(self.highlight_q, 1)
     if not curr_q_item then
@@ -257,13 +256,18 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
 
       local replace = "r"
       vim.fn.setqflist(qf_list, replace)
+      vim.api.nvim_input "<Esc>"
+
+      if #qf_list == 0 then
+        qf_preview:close()
+        return
+      end
 
       local target_line = visual_row_start
       if target_line > #qf_list then
         target_line = #qf_list
       end
       vim.api.nvim_win_set_cursor(h.curr.window, { target_line, 0, })
-      h.keys.send_keys("n", "<esc>")
 
       qf_preview:refresh()
     end, { buffer = true, })
@@ -277,7 +281,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
       local replace = "r"
       vim.fn.setqflist(qf_list, replace)
 
-      if #qf_list == 1 then
+      if #qf_list == 0 then
         qf_preview:close()
         return
       end
