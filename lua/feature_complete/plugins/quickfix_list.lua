@@ -234,7 +234,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
       vim.notify("Created a new list!", vim.log.levels.INFO)
     end, { buffer = true, })
 
-    h.keys.map({ "v", }, "dd", function()
+    h.keys.map({ "v", }, "d", function()
       local qf_list = vim.fn.getqflist()
       if #qf_list == 0 then return end
 
