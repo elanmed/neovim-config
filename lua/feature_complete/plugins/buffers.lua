@@ -11,17 +11,16 @@ bufferline.setup {
     },
     custom_filter = function(buf_number)
       local buf_name = vim.fn.bufname(buf_number)
+      local filetype = vim.api.nvim_get_option_value("filetype", { buf = buf_number, })
 
       if buf_name == "" then return false end
 
-      local excluded_buf_names = { "Grug FAR", "fugitive", }
-      for _, str in pairs(excluded_buf_names) do
-        if string.find(buf_name, str) then
-          return false
-        end
-
-        return true
+      local excluded_filetypes = { "grug-far", "fugitive", }
+      if h.tbl.contains_value(excluded_filetypes, filetype) then
+        return false
       end
+
+      return true
     end,
   },
 }
