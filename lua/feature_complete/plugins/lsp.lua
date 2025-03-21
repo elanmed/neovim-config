@@ -57,7 +57,6 @@ lspconfig_defaults.capabilities = vim.tbl_deep_extend(
 )
 
 vim.api.nvim_create_autocmd("LspAttach", {
-  desc = "LSP actions",
   callback = function(args)
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     if not client then return end

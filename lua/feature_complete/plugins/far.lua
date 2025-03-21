@@ -120,7 +120,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
 -- end, { desc = "Search globally with grug", })
 
 h.keys.map({ "n", }, "<leader>lc", function()
-    vim.notify("use <leader>lg instead!", vim.log.levels.ERROR)
+    vim.notify("use <leader>la instead!", vim.log.levels.ERROR)
 
     -- abort_or_cb(function()
     --   GRUG_INSTANCE_NAME = grug.open()
@@ -129,7 +129,7 @@ h.keys.map({ "n", }, "<leader>lc", function()
   { desc = "Search globally (case-sensitive) with grug", })
 
 h.keys.map({ "n", }, "<leader>lw", function()
-    vim.notify("use <leader>lg instead!", vim.log.levels.ERROR)
+    vim.notify("use <leader>la instead!", vim.log.levels.ERROR)
 
     -- abort_or_cb(function()
     --   GRUG_INSTANCE_NAME = grug.open {
@@ -142,7 +142,7 @@ h.keys.map({ "n", }, "<leader>lw", function()
   { desc = "Search globally (whole-word) with grug", })
 
 h.keys.map({ "n", }, "<leader>lb", function()
-    vim.notify("use <leader>lg instead!", vim.log.levels.ERROR)
+    vim.notify("use <leader>la instead!", vim.log.levels.ERROR)
 
     -- abort_or_cb(function()
     --   GRUG_INSTANCE_NAME = grug.open {
