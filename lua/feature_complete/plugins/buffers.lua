@@ -14,7 +14,7 @@ bufferline.setup {
 
       if buf_name == "" then return false end
 
-      local excluded_buf_names = { "Grug FAR", }
+      local excluded_buf_names = { "Grug FAR", "fugitive", }
       for _, str in pairs(excluded_buf_names) do
         if string.find(buf_name, str) then
           return false
