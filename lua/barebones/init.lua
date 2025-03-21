@@ -23,8 +23,11 @@ h.keys.map({ "n", }, "<C-f>", function()
     vim.cmd "Explore %:p:h"
   end
 end, { desc = "Toggle netrw, focusing the current file", })
-vim.opt.path:append "**"               -- search in subfolder
-vim.cmd "nnoremap <C-p> :find<space>"
+vim.opt.path:append "**" -- search in subfolder
+h.keys.map({ "n", }, "<C-p>",
+  function()
+    vim.notify("use <C-z> and <C-p> in the terminal instead!", vim.log.levels.ERROR)
+  end)
 h.keys.map({ "i", }, "<C-s>", "<C-n>") -- autocomplete
 vim.cmd "nnoremap <C-g> :buffer<space>"
 vim.cmd "nnoremap <leader>lg :grep<space>"
