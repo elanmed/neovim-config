@@ -42,7 +42,7 @@ end
 --- returns a function that calls vim.cmd(user_cmd)
 --- @param user_cmd string
 --- @return function
-keys.user_cmd_cb = function(user_cmd)
+keys.vim_cmd_cb = function(user_cmd)
   return function() vim.cmd(user_cmd) end
 end
 

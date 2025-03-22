@@ -8,7 +8,7 @@ if vim.fn.empty(vim.fn.glob(data_dir .. "/site/autoload/plug.vim")) == 1 then
   vim.o.runtimepath = vim.o.runtimepath
   vim.api.nvim_create_autocmd({ "VimEnter", }, {
     pattern = "*",
-    callback = h.keys.user_cmd_cb "PlugInstall --sync",
+    callback = h.keys.vim_cmd_cb "PlugInstall --sync",
   })
 end
 
@@ -62,7 +62,7 @@ Plug("nvim-telescope/telescope-fzf-native.nvim", { commit = "dae2eac", ["do"] = 
 Plug("sato-s/telescope-rails.nvim", { commit = "e0addf3", })
 Plug("nvim-telescope/telescope-frecency.nvim", { commit = "5db9364", })
 -- treesitter
-Plug("nvim-treesitter/nvim-treesitter", { ["do"] = h.keys.user_cmd_cb "TSUpdate", })
+Plug("nvim-treesitter/nvim-treesitter", { ["do"] = h.keys.vim_cmd_cb "TSUpdate", })
 Plug "nvim-treesitter/nvim-treesitter-textobjects"
 Plug("stevearc/aerial.nvim", { commit = "92f93f4", })
 Plug("MeanderingProgrammer/markdown.nvim", { commit = "17a7746", })

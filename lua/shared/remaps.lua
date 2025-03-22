@@ -8,8 +8,8 @@ h.keys.map({ "n", }, "<leader>af", "<C-6>", { desc = "Alternate file", })
 h.keys.map({ "n", }, "<leader>va", "ggVG", { desc = "Select all", })
 h.keys.map({ "n", }, "*", "*N")
 h.keys.map({ "n", }, "<leader>f", "<C-w>w", { desc = "Toggle focus between windows", })
-h.keys.map({ "n", }, "<leader>e", h.keys.user_cmd_cb "e", { desc = "Reload buffer", })
-h.keys.map({ "n", }, "<leader>vs", h.keys.user_cmd_cb "vsplit")
+h.keys.map({ "n", }, "<leader>e", h.keys.vim_cmd_cb "e", { desc = "Reload buffer", })
+h.keys.map({ "n", }, "<leader>vs", h.keys.vim_cmd_cb "vsplit")
 h.keys.map({ "n", }, "<bs>", "b")
 
 h.keys.map({ "i", }, "<C-e>", "<C-o>$")
@@ -22,14 +22,14 @@ h.keys.map({ "n", }, "<leader>o", "o<esc>")
 h.keys.map({ "n", }, "<leader>O", "O<esc>")
 
 h.keys.map({ "n", }, "E", [[viw"_dP]], { desc = "pastE without overwriting the default register", }) -- TODO: find a better remap
-h.keys.map({ "n", }, "<leader>p", h.keys.user_cmd_cb "pu", { desc = "Paste on the line below", })
-h.keys.map({ "n", }, "<leader>P", h.keys.user_cmd_cb "pu!", { desc = "Paste on the line above", })
+h.keys.map({ "n", }, "<leader>p", h.keys.vim_cmd_cb "pu", { desc = "Paste on the line below", })
+h.keys.map({ "n", }, "<leader>P", h.keys.vim_cmd_cb "pu!", { desc = "Paste on the line above", })
 
 h.keys.map({ "n", }, "<leader>dl", [["zyy"zp]], { desc = "Duplicate the current line", })
 h.keys.map({ "v", }, "<leader>dl", [["zy`>"zp]], { desc = "Duplicate the current line", }) -- move to end of selection, then yank
 
-h.keys.map({ "n", }, "<leader>w", h.keys.user_cmd_cb "w", { desc = "Save", })
-h.keys.map({ "n", }, "<leader>q", h.keys.user_cmd_cb "q", { desc = "Quit", })
+h.keys.map({ "n", }, "<leader>w", h.keys.vim_cmd_cb "w", { desc = "Save", })
+h.keys.map({ "n", }, "<leader>q", h.keys.vim_cmd_cb "q", { desc = "Quit", })
 
 h.keys.map({ "n", }, "<leader>ka", function() vim.fn.setreg("+", vim.fn.expand "%:p") end,
   { desc = "C(K)opy the absolute path of a file", })
@@ -56,12 +56,12 @@ end
 vim.api.nvim_create_user_command("Cnext", function() generate_circular_next_prev("cnext", "cfirst") end, {})
 vim.api.nvim_create_user_command("Cprev", function() generate_circular_next_prev("cprev", "clast") end, {})
 
-h.keys.map({ "n", }, "J", h.keys.user_cmd_cb "Cnext", { desc = "Move to the next item in the quickfix list", })
-h.keys.map({ "n", }, "K", h.keys.user_cmd_cb "Cprev", { desc = "Move to the prev item in the quickfix list", })
+h.keys.map({ "n", }, "J", h.keys.vim_cmd_cb "Cnext", { desc = "Move to the next item in the quickfix list", })
+h.keys.map({ "n", }, "K", h.keys.vim_cmd_cb "Cprev", { desc = "Move to the prev item in the quickfix list", })
 h.keys.map({ "n", }, "Z", "gJ", { desc = "J without whitespace", })
 
-h.keys.map({ "n", }, "ge", h.keys.user_cmd_cb "copen", { desc = "Open the quickfix list", })
-h.keys.map({ "n", }, "gq", h.keys.user_cmd_cb "cclose", { desc = "Close the quickfix list", })
+h.keys.map({ "n", }, "ge", h.keys.vim_cmd_cb "copen", { desc = "Open the quickfix list", })
+h.keys.map({ "n", }, "gq", h.keys.vim_cmd_cb "cclose", { desc = "Close the quickfix list", })
 
 h.keys.map({ "n", }, "gn", "gt", { desc = "Go to the next tab", })
 h.keys.map({ "n", }, "gp", "gT", { desc = "Go to the prev tab", })
@@ -91,7 +91,7 @@ vim.cmd [[
 vim.cmd [[
   nnoremap <leader>/s :%s/\<\>\C/<left><left><left><left><left>
 ]]
-h.keys.map({ "n", }, "<leader>/t", h.keys.user_cmd_cb "noh", { desc = "Turn off highlighting", })
+h.keys.map({ "n", }, "<leader>/t", h.keys.vim_cmd_cb "noh", { desc = "Turn off highlighting", })
 
 h.keys.map({ "n", "v", }, "n", "nzz")
 h.keys.map({ "n", "v", }, "N", "Nzz")
@@ -116,9 +116,9 @@ h.keys.map({ "n", }, "j", function() return count_based_keymap "j" end,
 h.keys.map({ "n", }, "k", function() return count_based_keymap "k" end,
   { expr = true, desc = "k, but respect lines that wrap", })
 
-h.keys.map({ "n", "v", "i", }, "<C-y>", h.keys.user_cmd_cb "tabclose", { desc = "Close the current tab", })
-h.keys.map({ "n", }, "Y", h.keys.user_cmd_cb "silent! bdelete!", { desc = "Close the current buffer", })
-h.keys.map({ "n", }, "<leader>ta", h.keys.user_cmd_cb "silent! bufdo bdelete", { desc = "Close all buffers", })
+h.keys.map({ "n", "v", "i", }, "<C-y>", h.keys.vim_cmd_cb "tabclose", { desc = "Close the current tab", })
+h.keys.map({ "n", }, "Y", h.keys.vim_cmd_cb "silent! bdelete!", { desc = "Close the current buffer", })
+h.keys.map({ "n", }, "<leader>ta", h.keys.vim_cmd_cb "silent! bufdo bdelete", { desc = "Close all buffers", })
 h.keys.map({ "n", }, "<leader>to", function()
   local cur_buf = vim.api.nvim_get_current_buf()
 

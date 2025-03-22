@@ -1,7 +1,7 @@
 local h = require "shared.helpers"
 local snacks = require "snacks"
 
-h.keys.map({ "n", }, "<C-f>", h.keys.user_cmd_cb "Oil", { desc = "Toggle oil", })
+h.keys.map({ "n", }, "<C-f>", h.keys.vim_cmd_cb "Oil", { desc = "Toggle oil", })
 h.keys.map({ "n", }, "<leader>ne", function() snacks.explorer.reveal() end, { desc = "Open snacks explorer", })
 
 require "oil".setup {

@@ -42,18 +42,18 @@ h.keys.map({ "n", }, "<leader>hp", gitsigns.preview_hunk, { desc = "Preview the 
 h.keys.map({ "n", }, "<leader>hl", gitsigns.toggle_current_line_blame,
   { desc = "Toggle git blame for the current line", })
 h.keys.map({ "n", }, "<leader>hf", gitsigns.blame, { desc = "Toggle git blame for the current file", })
-h.keys.map({ "n", }, "<leader>hd", h.keys.user_cmd_cb "Gdiffsplit", { desc = "Open the Diff for the current file", })
+h.keys.map({ "n", }, "<leader>hd", h.keys.vim_cmd_cb "Gdiffsplit", { desc = "Open the Diff for the current file", })
 h.keys.map({ "n", }, "<leader>hq", function()
   vim.cmd "wincmd h"
   vim.cmd "q"
 end, { desc = "Close the diff for the current file", })
 
 -- fugitive
-h.keys.map({ "n", }, "<leader>gs", h.keys.user_cmd_cb "Gedit :",
+h.keys.map({ "n", }, "<leader>gs", h.keys.vim_cmd_cb "Gedit :",
   { desc = "Open the fugitive status in the current tab", })
-h.keys.map({ "n", }, "<leader>gd", h.keys.user_cmd_cb "Git difftool -y",
+h.keys.map({ "n", }, "<leader>gd", h.keys.vim_cmd_cb "Git difftool -y",
   { desc = "Open the git diff in different tabs", })
-h.keys.map({ "n", }, "<leader>gh", h.keys.user_cmd_cb "Git push origin HEAD", { desc = "Git pusH origin HEAD", })
+h.keys.map({ "n", }, "<leader>gh", h.keys.vim_cmd_cb "Git push origin HEAD", { desc = "Git pusH origin HEAD", })
 vim.cmd [[nnoremap <leader>ge :Git checkout ]]    -- Git checkout (an Existing branch)
 vim.cmd [[nnoremap <leader>gn :Git checkout -b ]] -- Git checkout -b (a New branch)
 h.keys.map({ "n", }, "<leader>gq", function()

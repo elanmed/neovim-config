@@ -61,7 +61,7 @@ require "aerial".setup {
     ["<C-b>"] = "actions.close",
   },
 }
-h.keys.map({ "n", }, "<C-b>", h.keys.user_cmd_cb "AerialToggle left", { desc = "Toggle aerial window", })
+h.keys.map({ "n", }, "<C-b>", h.keys.vim_cmd_cb "AerialToggle left", { desc = "Toggle aerial window", })
 
 require "ts_context_commentstring".setup {}
 require "nvim-ts-autotag".setup {}
