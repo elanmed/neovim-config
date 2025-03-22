@@ -11,7 +11,7 @@ h.set.splitright     = true          -- when splitting vertically, open new spli
 h.set.splitbelow     = true          -- when splitting horizontally, open new split below
 h.set.relativenumber = true          -- useful for multiline j, k
 h.set.termguicolors  = true          -- needed for modern themes
-h.set.scrolloff      = 8
+h.set.scrolloff      = 16
 h.set.fileencoding   = "utf-8"
 h.set.conceallevel   = 0     -- keep quotes keys in normal mode
 h.set.undofile       = true  -- persist undo tree across sessions
@@ -45,22 +45,3 @@ h.set.foldlevelstart       = 99  -- open folds by default
 
 h.set.foldmethod           = "expr"
 h.set.foldexpr             = "v:lua.vim.treesitter.foldexpr()"
-
-
--- h.set.foldexpr             = "v:lua.GetFold(v:lnum)"
-
--- local function indent_level(lnum)
---   return vim.fn.indent(lnum) / vim.o.shiftwidth + 1
--- end
-
--- function _G.GetFold(lnum)
---   -- Check for blank lines
---   if vim.fn.match(vim.fn.getline(lnum), [[\v^\s*$]]) ~= -1 then
---     if indent_level(lnum - 1) == 1 then
---       return 0
---     end
---     -- the foldlevel of this line is equal to the foldlevel of the line above or below it, whichever is smaller
---     return "-1"
---   end
---   return indent_level(lnum)
--- end
