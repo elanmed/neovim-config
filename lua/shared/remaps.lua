@@ -46,15 +46,15 @@ h.keys.map({ "v", }, ">", ">gv", { desc = "Indent, while keeping selection", })
 
 --- @param try string
 --- @param catch string
-local function gen_circular_next_prev(try, catch)
+local function generate_circular_next_prev(try, catch)
   local success, _ = pcall(vim.cmd, try)
   if not success then
     pcall(vim.cmd, catch)
   end
 end
 
-vim.api.nvim_create_user_command("Cnext", function() gen_circular_next_prev("cnext", "cfirst") end, {})
-vim.api.nvim_create_user_command("Cprev", function() gen_circular_next_prev("cprev", "clast") end, {})
+vim.api.nvim_create_user_command("Cnext", function() generate_circular_next_prev("cnext", "cfirst") end, {})
+vim.api.nvim_create_user_command("Cprev", function() generate_circular_next_prev("cprev", "clast") end, {})
 
 h.keys.map({ "n", }, "J", h.keys.user_cmd_cb "Cnext", { desc = "Move to the next item in the quickfix list", })
 h.keys.map({ "n", }, "K", h.keys.user_cmd_cb "Cprev", { desc = "Move to the prev item in the quickfix list", })
@@ -135,10 +135,6 @@ h.keys.map({ "n", }, "<leader>to", function()
   end
 end)
 
-local function notify_fold_cmds()
-  vim.notify("common fold commands: z{t,T,c,C,o,O,R,M}", vim.log.levels.INFO)
-end
-
 -- https://stackoverflow.com/a/9407015
 local function next_closed_fold(dir)
   local view = vim.fn.winsaveview()
@@ -161,7 +157,10 @@ h.keys.map({ "n", }, "zj", function() next_closed_fold "j" end)
 h.keys.map({ "n", }, "zk", function() next_closed_fold "k" end)
 h.keys.map({ "n", }, "zt", "za", { desc = "Toggle fold", })
 h.keys.map({ "n", }, "zT", "zA", { desc = "Toggle fold", })
-h.keys.map({ "n", }, "z?", notify_fold_cmds, { desc = "Toggle fold", })
+h.keys.map({ "n", }, "z?", function()
+  vim.notify("common fold commands: z{t,T,c,C,o,O,R(open all folds),M(close all folds)}", vim.log.levels.INFO)
+end
+, { desc = "Toggle fold", })
 
 -- TODO: use more
 h.keys.map({ "n", "v", }, "Q", "{")
