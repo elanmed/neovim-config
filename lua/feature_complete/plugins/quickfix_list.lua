@@ -229,7 +229,7 @@ vim.api.nvim_create_autocmd({ "CursorMoved", }, {
 vim.api.nvim_create_autocmd({ "FileType", }, {
   pattern = "qf",
   callback = function()
-    h.keys.map({ "n", }, "gdl", function()
+    h.keys.map({ "n", }, "gdu", function()
       vim.fn.setqflist(vim.fn.getqflist())
       vim.notify("Created a new list!", vim.log.levels.INFO)
     end, { buffer = true, })

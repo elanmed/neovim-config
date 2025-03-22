@@ -15,7 +15,7 @@ custom_actions.send_selected_and_open = function(prompt_bufnr)
 
   if num_selections > 1 then
     actions.send_selected_to_qflist(prompt_bufnr)
-    vim.cmd "copen 15"
+    vim.cmd "copen"
   else
     actions.select_default(prompt_bufnr)
   end
@@ -149,7 +149,7 @@ telescope.setup {
         ["<s-tab>"] = actions.move_selection_previous + actions.toggle_selection,
         ["<C-t>"] = actions.toggle_selection,
         ["<C-a>"] = actions.toggle_all,
-        ["<esc>"] = actions.close,
+        ["<C-e>"] = actions.close,
       },
     },
   },

@@ -16,7 +16,7 @@ flash.setup {
 }
 h.keys.map({ "n", }, "s", function() flash.jump { forward = true, } end)
 h.keys.map({ "n", }, "S", function() flash.jump { forward = false, } end)
-h.keys.map({ "n", }, "<leader><leader>s", function()
+h.keys.map({ "n", }, "<leader>sa", function()
   -- https://github.com/folke/flash.nvim#-examples
   flash.jump {
     forward = true,

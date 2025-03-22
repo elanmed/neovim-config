@@ -25,8 +25,8 @@ h.keys.map({ "n", }, "E", [[viw"_dP]], { desc = "pastE without overwriting the d
 h.keys.map({ "n", }, "<leader>p", h.keys.vim_cmd_cb "pu", { desc = "Paste on the line below", })
 h.keys.map({ "n", }, "<leader>P", h.keys.vim_cmd_cb "pu!", { desc = "Paste on the line above", })
 
-h.keys.map({ "n", }, "<leader>dl", [["zyy"zp]], { desc = "Duplicate the current line", })
-h.keys.map({ "v", }, "<leader>dl", [["zy`>"zp]], { desc = "Duplicate the current line", }) -- move to end of selection, then yank
+h.keys.map({ "n", }, "<leader>du", [["zyy"zp]], { desc = "Duplicate the current line", })
+h.keys.map({ "v", }, "<leader>du", [["zy`>"zp]], { desc = "Duplicate the current line", }) -- move to end of selection, then yank
 
 h.keys.map({ "n", }, "<leader>w", h.keys.vim_cmd_cb "w", { desc = "Save", })
 h.keys.map({ "n", }, "<leader>q", h.keys.vim_cmd_cb "q", { desc = "Quit", })
