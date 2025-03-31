@@ -14,8 +14,8 @@ h.keys.map({ "n", }, "<bs>", "b")
 h.keys.map({ "i", }, "<C-e>", "<C-o>$")
 h.keys.map({ "n", "v", }, "<C-e>", "$")
 
-h.keys.map({ "i", }, "<C-a>", "<C-o>0")
-h.keys.map({ "n", "v", }, "<C-a>", "0")
+h.keys.map({ "i", }, "<C-a>", "<C-o>^")
+h.keys.map({ "n", "v", }, "<C-a>", "^")
 
 h.keys.map({ "n", }, "<leader>o", "o<esc>")
 h.keys.map({ "n", }, "<leader>O", "O<esc>")
