@@ -81,9 +81,6 @@ h.keys.map({ "n", }, "<leader>lt", builtin.buffers, { desc = "Search currently o
 h.keys.map({ "n", }, "<leader>lh", builtin.help_tags, { desc = "Search help tags with telescope", })
 h.keys.map({ "n", }, "<leader>lf", builtin.current_buffer_fuzzy_find,
   { desc = "Search in the current file with telescope", })
--- vim.cmd [[
--- nnoremap <leader>la :Telescope rails<space>
--- ]]
 h.keys.map({ "n", }, "<leader>le", grep_stripped_filename,
   { desc = "Search a file name starting with `wf_modules` with telescope", })
 h.keys.map({ "n", }, "<leader>ke", yank_stripped_filename, { desc = "C(K)opy a file name starting with `wf_modules`", })
@@ -157,5 +154,4 @@ telescope.setup {
 
 telescope.load_extension "fzf"
 telescope.load_extension "frecency"
-telescope.load_extension "rails"
 telescope.load_extension "live_grep_with_custom_args"
