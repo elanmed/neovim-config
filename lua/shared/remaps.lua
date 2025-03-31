@@ -4,7 +4,6 @@ local h = require "shared.helpers"
 vim.cmd "inoremap <C-t> <C-o>:Snippet<space>"
 h.keys.map({ "n", "v", }, "<C-t>", function() print "snippets only supported in insert mode!" end)
 
-h.keys.map({ "n", }, "<leader>af", "<C-6>", { desc = "Alternate file", })
 h.keys.map({ "n", }, "<leader>va", "ggVG", { desc = "Select all", })
 h.keys.map({ "n", }, "*", "*N")
 h.keys.map({ "n", }, "<leader>f", "<C-w>w", { desc = "Toggle focus between windows", })
@@ -70,6 +69,7 @@ h.keys.map({ "n", }, "gp", "gT", { desc = "Go to the prev tab", })
 local alt_j = h.os.is_linux() and "<A-j>" or "∆"
 local alt_k = h.os.is_linux() and "<A-k>" or "˚"
 
+-- https://vim.fandom.com/wiki/Moving_lines_up_or_down
 h.keys.map({ "n", }, alt_j, ":m .+1<cr>==", { desc = "Move line down", })
 h.keys.map({ "n", }, alt_k, ":m .-2<cr>==", { desc = "Move line up", })
 h.keys.map({ "i", }, alt_j, "<esc>:m .+1<cr>==gi", { desc = "Move line down", })
