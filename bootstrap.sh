@@ -27,7 +27,6 @@ h_validate_package_manager "$package_manager"
 h_install_package "$package_manager" neovim
 h_install_package "$package_manager" fzf
 h_install_package "$package_manager" ripgrep
-h_install_package "$package_manager" watchman
 h_install_package "$package_manager" fd
 
 if $server_flag; then
