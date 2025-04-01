@@ -6,9 +6,6 @@ bufferline.setup {
     style_preset = bufferline.style_preset.no_italic,
     right_mouse_command = nil,
     left_mouse_command = nil,
-    indicator = {
-      style = "underline",
-    },
     custom_filter = function(buf_number)
       local buf_name = vim.fn.bufname(buf_number)
       local filetype = vim.api.nvim_get_option_value("filetype", { buf = buf_number, })

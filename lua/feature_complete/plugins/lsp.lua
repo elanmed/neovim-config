@@ -51,7 +51,7 @@ local function toggle_virtual_lines()
   end
 end
 
-h.keys.map({ "n", "v", }, "<C-b>", toggle_virtual_lines, { desc = "toggle virtual lines", })
+h.keys.map({ "n", "v", }, "<C-g>", toggle_virtual_lines, { desc = "toggle virtual lines", })
 h.keys.map({ "i", }, "<C-g>s", "<nop>", { desc = "disable vim surround remap", })
 h.keys.map({ "i", }, "<C-g>S", "<nop>", { desc = "disable vim surround remap", })
 h.keys.map({ "i", }, "<C-g>", toggle_virtual_lines, { desc = "toggle virtual lines", })
@@ -97,7 +97,7 @@ vim.api.nvim_create_autocmd("LspProgress", {
   --- @param ev {data: {client_id: integer, params: lsp.ProgressParams}}
   callback = function(ev)
     local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏", }
-    snacks.notifier.notify(vim.lsp.status(), "info", {
+    vim.notify(vim.lsp.status(), "info", {
       id = "lsp_progress",
       title = "LSP Progress",
       opts = function(notif)
