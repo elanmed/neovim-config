@@ -158,7 +158,7 @@ h.keys.map({ "n", }, "zk", function() next_closed_fold "k" end)
 h.keys.map({ "n", }, "zt", "za", { desc = "Toggle fold", })
 h.keys.map({ "n", }, "zT", "zA", { desc = "Toggle fold", })
 h.keys.map({ "n", }, "z?", function()
-  vim.notify("common fold commands: z{t,T,c,C,o,O,R(open all folds),M(close all folds)}", vim.log.levels.INFO)
+  h.notify.info "common fold commands: z{t,T,c,C,o,O,R(open all folds),M(close all folds)}"
 end
 , { desc = "Toggle fold", })
 

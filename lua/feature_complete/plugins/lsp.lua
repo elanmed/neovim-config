@@ -1,5 +1,6 @@
 local h = require "shared.helpers"
 local lspconfig = require "lspconfig"
+local snacks = require "snacks"
 
 vim.opt.signcolumn = "yes" -- reserve a space in the gutter
 
@@ -21,33 +22,37 @@ require "mason-lspconfig".setup {
   },
 }
 
-vim.diagnostic.config {
-  virtual_text = false,
-  signs = {
-    text = {
-      [vim.diagnostic.severity.ERROR] = "",
-      [vim.diagnostic.severity.INFO] = "",
-      [vim.diagnostic.severity.WARN] = "",
-      [vim.diagnostic.severity.HINT] = "",
-    },
+local signs = {
+  text = {
+    [vim.diagnostic.severity.ERROR] = "",
+    [vim.diagnostic.severity.INFO] = "",
+    [vim.diagnostic.severity.WARN] = "",
+    [vim.diagnostic.severity.HINT] = "",
   },
 }
 
-local last_cursor = { nil, nil, }
-vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
-  pattern = "*",
-  callback = function()
-    local current_cursor = vim.api.nvim_win_get_cursor(h.curr.window)
+vim.diagnostic.config {
+  virtual_lines = true,
+  signs = signs,
+}
 
-    -- when holding, don't force open the diagnostics unless the cursor has also moved
-    -- allows opening another float i.e. hover
-    if not (current_cursor[1] == last_cursor[1] and current_cursor[2] == last_cursor[2]) then
-      vim.diagnostic.open_float { border = "single", focus = false, scope = "line", }
-    end
+local function toggle_virtual_lines()
+  local current_virtual_lines = vim.diagnostic.config().virtual_lines
 
-    last_cursor = current_cursor
-  end,
-})
+  vim.diagnostic.config {
+    virtual_lines = not current_virtual_lines,
+    signs = signs,
+  }
+
+  if not current_virtual_lines then
+    h.notify.toggle_on "Virtual lines enabled"
+  else
+    h.notify.toggle_off "Virtual lines disabled"
+  end
+end
+
+h.keys.map({ "n", "v", }, "<C-g>", toggle_virtual_lines, { desc = "toggle virtual lines", })
+h.keys.map({ "i", }, "<C-g>", toggle_virtual_lines, { desc = "toggle virtual lines", })
 
 local lspconfig_defaults = lspconfig.util.default_config
 lspconfig_defaults.capabilities = vim.tbl_deep_extend(
@@ -61,12 +66,12 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local client = vim.lsp.get_client_by_id(args.data.client_id)
     if not client then return end
 
-    if client.supports_method "textDocument/inlayHint" then
+    if client:supports_method "textDocument/inlayHint" then
       vim.lsp.inlay_hint.enable(true)
     end
 
-    if client.supports_method "textDocument/documentHighlight" then
-      vim.o.updatetime = 100 -- how long until the cursor events fire
+    if client:supports_method "textDocument/documentHighlight" then
+      h.set.updatetime = 100 -- how long until the cursor events fire
       vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
         buffer = h.curr.buffer,
         callback = function()
@@ -84,11 +89,28 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
-h.keys.map({ "n", }, "gh", vim.lsp.buf.hover, { desc = "LSP hover", })
+-- https://github.com/folke/snacks.nvim/blob/main/docs/notifier.md#-examples
+vim.api.nvim_create_autocmd("LspProgress", {
+  --- @param ev {data: {client_id: integer, params: lsp.ProgressParams}}
+  callback = function(ev)
+    local spinner = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏", }
+    snacks.notifier.notify(vim.lsp.status(), "info", {
+      id = "lsp_progress",
+      title = "LSP Progress",
+      opts = function(notif)
+        notif.icon = ev.data.params.value.kind == "end" and " "
+            or spinner[math.floor(vim.uv.hrtime() / (1e6 * 80)) % #spinner + 1]
+      end,
+    })
+  end,
+})
+
+h.keys.map({ "n", }, "gh", function() vim.lsp.buf.hover { border = "single", } end, { desc = "LSP hover", })
 h.keys.map({ "n", }, "gd", vim.lsp.buf.definition, { desc = "LSP go to definition", })
 h.keys.map({ "n", }, "gs", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
 h.keys.map({ "n", }, "gu", vim.lsp.buf.references, { desc = "LSP go to references", })
 h.keys.map({ "n", }, "ga", vim.lsp.buf.code_action, { desc = "LSP code action", })
+-- TODO: broken
 h.keys.map({ "n", }, "<leader>ld", function()
     local buf_diagnostics = vim.diagnostic.get(0, { severity = "ERROR", })
     vim.diagnostic.toqflist(buf_diagnostics)
@@ -104,10 +126,6 @@ h.keys.map({ "n", }, "gl", function()
     end
   end
 end)
-
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
-  border = "single",
-})
 
 local function enable_deno_lsp()
   return h.os.file_exists(vim.fn.getcwd() .. "/.deno-enable-lsp")

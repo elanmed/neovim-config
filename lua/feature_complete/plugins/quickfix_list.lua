@@ -231,7 +231,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
   callback = function()
     h.keys.map({ "n", }, "gdu", function()
       vim.fn.setqflist(vim.fn.getqflist())
-      vim.notify("Created a new list!", vim.log.levels.INFO)
+      h.notify.info "Created a new list!"
     end, { buffer = true, })
 
     h.keys.map({ "v", }, "d", function()
@@ -331,14 +331,14 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
       --- @diagnostic disable-next-line: param-type-mismatch
       local success = pcall(vim.cmd, "cnewer")
       if not success then
-        vim.notify("No newer list!", vim.log.levels.WARN)
+        h.notify.warn "No newer list!"
       end
     end, { buffer = true, })
     h.keys.map({ "n", }, "<", function()
       --- @diagnostic disable-next-line: param-type-mismatch
       local success = pcall(vim.cmd, "colder")
       if not success then
-        vim.notify("No older list!", vim.log.levels.WARN)
+        h.notify.warn "No older list!"
       end
     end, { buffer = true, })
   end,

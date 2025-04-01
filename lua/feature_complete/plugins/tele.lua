@@ -30,7 +30,7 @@ local function get_stripped_filename()
 
   local stripped_start = filepath:match "wf_modules.*$"
   if not stripped_start then
-    vim.notify("`wf_modules` not found in the filepath!", vim.log.levels.ERROR)
+    h.notify.error "`wf_modules` not found in the filepath!"
     return nil
   end
 

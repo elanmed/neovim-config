@@ -4,6 +4,7 @@ local tbl = {}
 local screen = {}
 local os = {}
 local dev = {}
+local notify = {}
 
 -- sugar to avoid magic numbers
 local curr = {
@@ -144,7 +145,7 @@ end
 dev.log = function(content)
   local file = io.open("log.txt", "a")
   if not file then
-    vim.notify("Error opening file!", vim.log.levels.ERROR)
+    notify.error "Error opening file!"
     return
   end
 
@@ -158,12 +159,56 @@ dev.log = function(content)
     file:write("[LOG] " .. (type(content) == "table" and tbl.dump(content) or tostring(content)) .. "\n")
   end
 
-
   file:close()
 end
 
+--- @param message string
+--- @param level "error" | "warn" | "info" | "toggle_on" | "toggle_off"
+notify.notify = function(message, level)
+  local hlgroup
+  if level == "error" then
+    hlgroup = "NotifyError"
+  elseif level == "warn" then
+    hlgroup = "NotifyWarning"
+  elseif level == "info" then
+    hlgroup = "NotifyInfo"
+  elseif level == "toggle_on" then
+    hlgroup = "NotifyToggleOn"
+  elseif level == "toggle_off" then
+    hlgroup = "NotifyToggleOff"
+  end
+
+  local add_to_history = true
+  vim.api.nvim_echo({ { message, hlgroup, }, }, add_to_history, {})
+end
+
+--- @param message string
+notify.info = function(message)
+  notify.notify(message, "info")
+end
+
+--- @param message string
+notify.warn = function(message)
+  notify.notify(message, "warn")
+end
+
+--- @param message string
+notify.error = function(message)
+  notify.notify(message, "error")
+end
+
+--- @param message string
+notify.toggle_on = function(message)
+  notify.notify(message, "toggle_on")
+end
+
+--- @param message string
+notify.toggle_off = function(message)
+  notify.notify(message, "toggle_off")
+end
+
 return {
-  set = vim.opt,
+  set = vim.o,
   let = vim.g,
   keys = keys,
   tbl = tbl,
@@ -172,4 +217,5 @@ return {
   curr = curr,
   os = os,
   dev = dev,
+  notify = notify,
 }

@@ -14,7 +14,7 @@ vim.api.nvim_create_user_command("PrintRemaps", function()
   local file = io.open("remaps.txt", "w")
 
   if not file then
-    vim.notify("Error opening file!", vim.log.levels.ERROR)
+    h.notify.error "Error opening file!"
     return
   end
 

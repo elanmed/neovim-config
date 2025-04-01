@@ -38,7 +38,7 @@ harpoon:setup {
   },
 }
 
-h.keys.map({ "n", }, "<C-g>",
+h.keys.map({ "n", }, "<leader>at",
   function()
     harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_max_width = 80, })
   end,

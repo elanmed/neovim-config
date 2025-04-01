@@ -46,7 +46,6 @@ vim.api.nvim_set_hl(h.curr.namespace, "TelescopeBorder", { link = "PmenuBorder",
 vim.api.nvim_set_hl(h.curr.namespace, "FloatBorder", { link = "PmenuBorder", }) -- harpoon border
 vim.api.nvim_set_hl(h.curr.namespace, "CursorLine", { link = "Visual", })
 vim.api.nvim_set_hl(h.curr.namespace, "AerialLine", { link = "Visual", })
-vim.api.nvim_set_hl(h.curr.namespace, "BufferLineBufferSelected", { fg = M.yellow, underline = true, bold = true, })
 vim.api.nvim_set_hl(h.curr.namespace, "WilderAccent", { fg = M.orange, })
 vim.api.nvim_set_hl(h.curr.namespace, "WildMenu", { fg = M.yellow, underline = true, bold = true, })
 
@@ -56,5 +55,11 @@ vim.api.nvim_set_hl(h.curr.namespace, "FlashCurrent", { bg = M.red, fg = colors.
 
 vim.api.nvim_set_hl(h.curr.namespace, "SnacksIndent", { fg = M.grey, })
 vim.api.nvim_set_hl(h.curr.namespace, "SnacksIndentScope", { fg = M.light_grey, })
+
+vim.api.nvim_set_hl(h.curr.namespace, "NotifyWarning", { fg = M.yellow, })
+vim.api.nvim_set_hl(h.curr.namespace, "NotifyError", { fg = M.red, })
+vim.api.nvim_set_hl(h.curr.namespace, "NotifyInfo", { fg = M.green, })
+vim.api.nvim_set_hl(h.curr.namespace, "NotifyToggleOn", { fg = M.green, })
+vim.api.nvim_set_hl(h.curr.namespace, "NotifyToggleOff", { fg = M.blue, })
 
 return M

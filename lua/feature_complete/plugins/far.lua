@@ -29,7 +29,7 @@ h.keys.map({ "n", }, "<leader>re", function()
     GRUG_INSTANCE_NAME = grug.open()
   end
   vim.cmd "vertical resize 135%"
-  vim.notify("Common flags: --case-sensitive (default), --ignore-case, --word-regexp", vim.log.levels.INFO)
+  h.notify.info "Common flags: --case-sensitive (default), --ignore-case, --word-regexp"
 end, { desc = "Open the grug-far ui", })
 
 grug.setup {
@@ -120,7 +120,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
 -- end, { desc = "Search globally with grug", })
 
 h.keys.map({ "n", }, "<leader>lc", function()
-    vim.notify("use <leader>la instead!", vim.log.levels.ERROR)
+    h.notify.error "use <leader>la instead!"
 
     -- abort_or_cb(function()
     --   GRUG_INSTANCE_NAME = grug.open()
@@ -129,7 +129,7 @@ h.keys.map({ "n", }, "<leader>lc", function()
   { desc = "Search globally (case-sensitive) with grug", })
 
 h.keys.map({ "n", }, "<leader>lw", function()
-    vim.notify("use <leader>la instead!", vim.log.levels.ERROR)
+    h.notify.error "use <leader>la instead!"
 
     -- abort_or_cb(function()
     --   GRUG_INSTANCE_NAME = grug.open {
@@ -142,7 +142,7 @@ h.keys.map({ "n", }, "<leader>lw", function()
   { desc = "Search globally (whole-word) with grug", })
 
 h.keys.map({ "n", }, "<leader>lb", function()
-    vim.notify("use <leader>la instead!", vim.log.levels.ERROR)
+    h.notify.error "use <leader>la instead!"
 
     -- abort_or_cb(function()
     --   GRUG_INSTANCE_NAME = grug.open {
