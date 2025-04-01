@@ -10,3 +10,14 @@ h.keys.map({ "n", }, "<leader>me", function()
   vim.cmd "UndotreeToggle"
   vim.cmd "wincmd h"
 end, { desc = "Toggle undotree", })
+
+vim.api.nvim_create_autocmd({ "BufEnter", }, {
+  pattern = "*",
+  callback = function()
+    if h.tbl.contains_value({ "aerial", "undotree", }, vim.bo.filetype) then
+      h.set.cursorline = true
+    else
+      h.set.cursorline = false
+    end
+  end,
+})

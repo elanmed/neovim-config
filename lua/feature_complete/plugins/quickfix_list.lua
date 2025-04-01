@@ -199,17 +199,6 @@ h.keys.map({ "n", }, "gy", function()
   vim.fn.setqflist({}, "f")
 end, { desc = "Clear the current quickfix list", })
 
-vim.api.nvim_create_autocmd({ "BufEnter", }, {
-  pattern = "*",
-  callback = function()
-    if h.tbl.contains_value({ "qf", "aerial", "undotree", }, vim.bo.filetype) then
-      h.set.cursorline = true
-    else
-      h.set.cursorline = false
-    end
-  end,
-})
-
 vim.api.nvim_create_autocmd({ "BufLeave", "BufWinLeave", }, {
   pattern = "*",
   callback = function()
@@ -223,6 +212,26 @@ vim.api.nvim_create_autocmd({ "CursorMoved", }, {
   callback = function()
     if vim.bo.filetype ~= "qf" then return end
     qf_preview:refresh()
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "BufEnter", }, {
+  pattern = "*",
+  callback = function()
+    if vim.bo.filetype ~= "qf" then return end
+
+    local qf_list = vim.fn.getqflist()
+
+    if #qf_list > 50 then
+      local truncated_list = {}
+      for i = 1, 50 do
+        truncated_list[i] = qf_list[i]
+      end
+
+      local replace = "r"
+      vim.fn.setqflist(truncated_list, replace)
+      h.notify.info "Truncated the quickfix list to 50 items"
+    end
   end,
 })
 
@@ -392,11 +401,11 @@ function _G.GetQuickfixTextFunc()
     local formatted_item =
         curr_bufname ..
         string.rep(" ", buffer_padding_right) ..
-        " || " ..
+        " | " ..
         pad_num(item.lnum, longest_row_len, "left") ..
         ":" ..
         pad_num(item.col, longest_col_len, "right") ..
-        " || " ..
+        " | " ..
         vim.fn.trim(item.text)
 
     if #formatted_item > win_width then
