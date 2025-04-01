@@ -6,18 +6,24 @@ local os = {}
 local dev = {}
 local notify = {}
 
--- sugar to avoid magic numbers
+-- sugar to avoid magic 0s
 local curr = {
   buffer = 0,
   window = 0,
   namespace = 0,
 }
 
+--- @param vim_cmd string
+--- @return function
+keys.vim_cmd_cb = function(vim_cmd)
+  return function() vim.cmd(vim_cmd) end
+end
+
 --- @param mode string|string[]
 --- @param shortcut string
 --- @param command string|function
 --- @param opts? vim.keymap.set.Opts
-local function remap(mode, shortcut, command, opts)
+keys.map = function(mode, shortcut, command, opts)
   opts = opts or {}
   vim.keymap.set(
     mode,
@@ -25,36 +31,6 @@ local function remap(mode, shortcut, command, opts)
     command,
     vim.tbl_extend("force", { noremap = true, silent = true, nowait = true, }, opts)
   )
-  local desc = opts.desc or ""
-  local formatted_mode = mode == "" and " " or mode
-
-  local function get_string_len(str)
-    if str == "∆" or str == "˚" then return 1 end
-    return #str
-  end
-
-  local formatted_shortcut = shortcut .. string.rep(" ", 10 - get_string_len(shortcut))
-  local formatted_command = type(command) == "string" and command or "Function"
-
-  remaps[#remaps + 1] = table.concat({ formatted_mode, formatted_shortcut, formatted_command, desc, },
-    string.rep(" ", 3))
-end
-
---- returns a function that calls vim.cmd(user_cmd)
---- @param user_cmd string
---- @return function
-keys.vim_cmd_cb = function(user_cmd)
-  return function() vim.cmd(user_cmd) end
-end
-
---- @param modes string[]
---- @param shortcut string
---- @param command string|function
---- @param opts? vim.keymap.set.Opts
-keys.map = function(modes, shortcut, command, opts)
-  for _, mode in pairs(modes) do
-    remap(mode, shortcut, command, opts)
-  end
 end
 
 --- @param mode 'n' | 'v' | 'i'
@@ -166,6 +142,7 @@ end
 --- @param level "error" | "warn" | "info" | "toggle_on" | "toggle_off"
 notify.notify = function(message, level)
   local hlgroup
+
   if level == "error" then
     hlgroup = "NotifyError"
   elseif level == "warn" then

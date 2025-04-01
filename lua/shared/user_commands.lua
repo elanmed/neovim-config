@@ -11,26 +11,8 @@ vim.api.nvim_create_user_command("PrintHighlights", function()
 end, {})
 
 vim.api.nvim_create_user_command("PrintRemaps", function()
-  local file = io.open("remaps.txt", "w")
-
-  if not file then
-    h.notify.error "Error opening file!"
-    return
-  end
-
-  for _, val in pairs(h.remaps) do
-    file:write(val .. "\n")
-  end
-
-  file:close()
-end, { nargs = "*", })
-
-vim.api.nvim_create_user_command("WebSearch", function(opts)
-  local query = opts.args:gsub(" ", "+")
-  local url = "https://www.google.com/search?q=" .. query
-  local open_cmd = h.os.is_linux() and "xdg-open" or "open"
-  os.execute(open_cmd .. " '" .. url .. "' > /dev/null 2>&1 &")
-end, { nargs = 1, })
+  vim.cmd "redir! > remaps.txt | silent map | redir END"
+end, {})
 
 vim.api.nvim_create_user_command("Snippet", function(opts)
   local snippet_trigger_to_file_mapping = {
@@ -57,7 +39,7 @@ vim.api.nvim_create_user_command("Snippet", function(opts)
   end
 
   if not h.tbl.contains_key(snippet_trigger_to_file_mapping, snippet_trigger) then
-    print(snippet_trigger .. " is not a valid snippet trigger!")
+    h.notify.error(snippet_trigger .. " is not a valid snippet trigger!")
     return
   end
 
