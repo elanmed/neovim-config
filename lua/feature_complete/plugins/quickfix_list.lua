@@ -222,15 +222,15 @@ vim.api.nvim_create_autocmd({ "BufEnter", }, {
 
     local qf_list = vim.fn.getqflist()
 
-    if #qf_list > 50 then
+    if #qf_list > 75 then
       local truncated_list = {}
-      for i = 1, 50 do
+      for i = 1, 75 do
         truncated_list[i] = qf_list[i]
       end
 
       local replace = "r"
       vim.fn.setqflist(truncated_list, replace)
-      h.notify.info "Truncated the quickfix list to 50 items"
+      h.notify.info "truncated the quickfix list to 75 items"
     end
   end,
 })
