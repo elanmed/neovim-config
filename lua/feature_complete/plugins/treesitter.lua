@@ -57,11 +57,8 @@ require "aerial".setup {
     width = nil,
     min_width = nil,
   },
-  keymaps = {
-    ["<C-b>"] = "actions.close",
-  },
 }
-h.keys.map({ "n", }, "<C-b>", h.keys.vim_cmd_cb "AerialToggle left", { desc = "Toggle aerial window", })
+h.keys.map({ "n", }, "<leader>it", h.keys.vim_cmd_cb "AerialToggle left", { desc = "Toggle aerial window", })
 
 require "ts_context_commentstring".setup {}
 require "nvim-ts-autotag".setup {}

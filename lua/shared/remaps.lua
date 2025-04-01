@@ -169,7 +169,6 @@ h.keys.map({ "n", "v", }, "W", "}")
 -- remaps to figure out in the future:
 h.keys.map({ "n", }, "B", "<nop>", { desc = "TODO find a remap", })
 h.keys.map({ "n", }, "<leader>;", "<nop>", { desc = "TODO find a remap", })
-h.keys.map({ "n", }, "<leader>i", "<nop>", { desc = "TODO find a remap", })
 h.keys.map({ "n", }, "<leader>x", "<nop>", { desc = "TODO find a remap", })
 h.keys.map({ "n", }, "<leader>b", "<nop>", { desc = "TODO find a remap", })
 h.keys.map({ "n", }, "<leader>n", "<nop>", { desc = "TODO find a remap", })

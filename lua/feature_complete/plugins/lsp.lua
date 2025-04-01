@@ -1,6 +1,5 @@
 local h = require "shared.helpers"
 local lspconfig = require "lspconfig"
-local snacks = require "snacks"
 
 vim.opt.signcolumn = "yes" -- reserve a space in the gutter
 
@@ -92,6 +91,8 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
+h.keys.map({ "i", }, "<C-b>", function() vim.lsp.buf.signature_help { border = "single", } end,
+  { desc = "LSP signature help", })
 h.keys.map({ "n", }, "gh", function() vim.lsp.buf.hover { border = "single", } end, { desc = "LSP hover", })
 h.keys.map({ "n", }, "gd", vim.lsp.buf.definition, { desc = "LSP go to definition", })
 h.keys.map({ "n", }, "gs", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
