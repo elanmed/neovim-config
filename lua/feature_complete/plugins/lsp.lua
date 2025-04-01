@@ -51,8 +51,11 @@ local function toggle_virtual_lines()
   end
 end
 
-h.keys.map({ "n", "v", }, "<C-g>", toggle_virtual_lines, { desc = "toggle virtual lines", })
+h.keys.map({ "n", "v", }, "<C-b>", toggle_virtual_lines, { desc = "toggle virtual lines", })
+h.keys.map({ "i", }, "<C-g>s", "<nop>", { desc = "disable vim surround remap", })
+h.keys.map({ "i", }, "<C-g>S", "<nop>", { desc = "disable vim surround remap", })
 h.keys.map({ "i", }, "<C-g>", toggle_virtual_lines, { desc = "toggle virtual lines", })
+
 
 local lspconfig_defaults = lspconfig.util.default_config
 lspconfig_defaults.capabilities = vim.tbl_deep_extend(
@@ -110,13 +113,12 @@ h.keys.map({ "n", }, "gd", vim.lsp.buf.definition, { desc = "LSP go to definitio
 h.keys.map({ "n", }, "gs", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
 h.keys.map({ "n", }, "gu", vim.lsp.buf.references, { desc = "LSP go to references", })
 h.keys.map({ "n", }, "ga", vim.lsp.buf.code_action, { desc = "LSP code action", })
--- TODO: broken
 h.keys.map({ "n", }, "<leader>ld", function()
-    local buf_diagnostics = vim.diagnostic.get(0, { severity = "ERROR", })
-    vim.diagnostic.toqflist(buf_diagnostics)
+    vim.diagnostic.setqflist { severity = vim.diagnostic.severity.ERROR, }
     vim.cmd "copen"
   end,
   { desc = "Open LSP diagnostics with the quickfix list", })
+
 h.keys.map({ "n", }, "gl", function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     -- https://neovim.io/doc/user/api.html#floating-windows
