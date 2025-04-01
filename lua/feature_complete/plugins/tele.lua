@@ -121,7 +121,7 @@ telescope.setup {
     },
   },
   defaults = {
-    file_ignore_patterns = { "node_modules", ".git", },
+    file_ignore_patterns = { "node_modules", ".git", "dist", },
     results_title        = "",
     layout_strategy      = "vertical",
     sorting_strategy     = "ascending",
