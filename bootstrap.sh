@@ -17,7 +17,7 @@ for arg in "$@"; do
       shift
       ;;
     *)
-      h_format_error "--pm={brew,dnf,apt} --server"
+      h_format_error "--pm={brew,pacman,dnf,apt} --server"
       ;;
   esac
 done
@@ -25,17 +25,10 @@ done
 h_validate_package_manager "$package_manager"
 
 h_install_package "$package_manager" neovim
-h_is_linux && h_install_package "$package_manager" python3-neovim
-
 h_install_package "$package_manager" fzf
 h_install_package "$package_manager" ripgrep
 h_install_package "$package_manager" watchman
-
-if h_is_linux; then
-  h_install_package "$package_manager" fd-find
-else
-  h_install_package "$package_manager" fd
-fi
+h_install_package "$package_manager" fd
 
 if $server_flag; then
   h_echo --mode=noop "SKIPPING: running :PlugInstall"
