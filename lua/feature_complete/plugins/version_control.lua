@@ -69,14 +69,14 @@ gitsigns.setup {
 
 -- gitsigns
 -- https://github.com/lewis6991/gitsigns.nvim?tab=readme-ov-file#keymaps
-h.keys.map({ "n", }, ")", function()
+h.keys.map("n", ")", function()
   if vim.wo.diff then
     vim.cmd.normal { "]c", bang = true, }
   else
     gitsigns.nav_hunk "next"
   end
 end, { desc = "Go to the next git hunk", })
-h.keys.map({ "n", }, "(", function()
+h.keys.map("n", "(", function()
   if vim.wo.diff then
     vim.cmd.normal { "[c", bang = true, }
   else
@@ -84,7 +84,7 @@ h.keys.map({ "n", }, "(", function()
   end
 end, { desc = "Go to the prev git hunk", })
 
-h.keys.map({ "n", }, "<leader>hr", function()
+h.keys.map("n", "<leader>hr", function()
   gitsigns.reset_hunk()
   vim.cmd "w"
 end, { desc = "Reset the current hunk", })
@@ -94,28 +94,28 @@ h.keys.map({ "v", }, "<leader>hr", function()
   vim.cmd "w"
 end, { desc = "Reset the current hunk", })
 
-h.keys.map({ "n", }, "<leader>hb", function()
+h.keys.map("n", "<leader>hb", function()
   gitsigns.reset_buffer()
   vim.cmd "w"
 end, { desc = "Reset the current bUffer", })
 
-h.keys.map({ "n", }, "<leader>hp", gitsigns.preview_hunk, { desc = "Preview the current hunk", })
-h.keys.map({ "n", }, "<leader>hl", gitsigns.toggle_current_line_blame,
+h.keys.map("n", "<leader>hp", gitsigns.preview_hunk, { desc = "Preview the current hunk", })
+h.keys.map("n", "<leader>hl", gitsigns.toggle_current_line_blame,
   { desc = "Toggle git blame for the current line", })
 
 -- fugitive
-h.keys.map({ "n", }, "<leader>hd", function()
+h.keys.map("n", "<leader>hd", function()
     local current_buf = vim.api.nvim_get_current_buf()
     vim.cmd "tabnew"
     vim.api.nvim_set_current_buf(current_buf)
     vim.cmd "Gdiffsplit"
   end,
   { desc = "Open the Diff for the current file", })
-h.keys.map({ "n", }, "<leader>hq", function() h.notify.error "use <C-y> instead!" end)
-h.keys.map({ "n", }, "<leader>gs", h.keys.vim_cmd_cb "Gedit :",
+h.keys.map("n", "<leader>hq", function() h.notify.error "use <C-y> instead!" end)
+h.keys.map("n", "<leader>gs", h.keys.vim_cmd_cb "Gedit :",
   { desc = "Open the fugitive status in the current tab", })
-h.keys.map({ "n", }, "<leader>gp", h.keys.vim_cmd_cb "Git push origin HEAD", { desc = "Git Push origin HEAD", })
-h.keys.map({ "n", }, "<leader>gq", function() h.notify.error "use <C-y> instead!" end)
+h.keys.map("n", "<leader>gp", h.keys.vim_cmd_cb "Git push origin HEAD", { desc = "Git Push origin HEAD", })
+h.keys.map("n", "<leader>gq", function() h.notify.error "use <C-y> instead!" end)
 
-h.keys.map({ "n", }, "<leader>gh", h.keys.vim_cmd_cb "DiffviewFileHistory %", { desc = "", })
-h.keys.map({ "n", }, "<leader>gd", h.keys.vim_cmd_cb "DiffviewOpen", { desc = "Open the git diff in different tabs", })
+h.keys.map("n", "<leader>gh", h.keys.vim_cmd_cb "DiffviewFileHistory %", { desc = "", })
+h.keys.map("n", "<leader>gd", h.keys.vim_cmd_cb "DiffviewOpen", { desc = "Open the git diff in different tabs", })

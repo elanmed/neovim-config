@@ -14,9 +14,9 @@ flash.setup {
     prefix = { { "󱐋 ", "FlashPromptIcon", }, },
   },
 }
-h.keys.map({ "n", }, "s", function() flash.jump { forward = true, } end)
-h.keys.map({ "n", }, "S", function() flash.jump { forward = false, } end)
-h.keys.map({ "n", }, "<leader>sa", function()
+h.keys.map("n", "s", function() flash.jump { forward = true, } end)
+h.keys.map("n", "S", function() flash.jump { forward = false, } end)
+h.keys.map("n", "<leader>sa", function()
   -- https://github.com/folke/flash.nvim#-examples
   flash.jump {
     forward = true,
@@ -38,12 +38,12 @@ harpoon:setup {
   },
 }
 
-h.keys.map({ "n", }, "<leader>at",
+h.keys.map("n", "<leader>at",
   function()
     harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_max_width = 80, })
   end,
   { desc = "Toggle the harpoon window", })
-h.keys.map({ "n", }, "<leader>ad", function()
+h.keys.map("n", "<leader>ad", function()
   harpoon:list():add()
 end, { desc = "Add a haRpoon entry", })
 

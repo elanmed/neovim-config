@@ -57,7 +57,7 @@ local ivy_layout_config = {
   preview_width = 0,
 }
 
-h.keys.map({ "n", }, "<C-p>", function()
+h.keys.map("n", "<C-p>", function()
   telescope.extensions.frecency.frecency(
     themes.get_ivy {
       hidden = true,
@@ -66,25 +66,25 @@ h.keys.map({ "n", }, "<C-p>", function()
     }
   )
 end, { desc = "Find files with telescope", })
-h.keys.map({ "n", }, "<leader>li", function()
+h.keys.map("n", "<leader>li", function()
   builtin.search_history(themes.get_ivy {
     layout_config = ivy_layout_config,
   })
 end, { desc = "Search search history with telescope", })
-h.keys.map({ "n", }, "<leader>l;", function()
+h.keys.map("n", "<leader>l;", function()
   builtin.command_history(themes.get_ivy {
     layout_config = ivy_layout_config,
   })
 end, { desc = "Search command history with telescope", })
-h.keys.map({ "n", }, "<leader>lr", builtin.resume, { desc = "Resume telescope search", })
-h.keys.map({ "n", }, "<leader>lt", builtin.buffers, { desc = "Search currently open buffers with telescope", })
-h.keys.map({ "n", }, "<leader>lh", builtin.help_tags, { desc = "Search help tags with telescope", })
-h.keys.map({ "n", }, "<leader>lf", builtin.current_buffer_fuzzy_find,
+h.keys.map("n", "<leader>lr", builtin.resume, { desc = "Resume telescope search", })
+h.keys.map("n", "<leader>lt", builtin.buffers, { desc = "Search currently open buffers with telescope", })
+h.keys.map("n", "<leader>lh", builtin.help_tags, { desc = "Search help tags with telescope", })
+h.keys.map("n", "<leader>lf", builtin.current_buffer_fuzzy_find,
   { desc = "Search in the current file with telescope", })
-h.keys.map({ "n", }, "<leader>le", grep_stripped_filename,
+h.keys.map("n", "<leader>le", grep_stripped_filename,
   { desc = "Search a file name starting with `wf_modules` with telescope", })
-h.keys.map({ "n", }, "<leader>ke", yank_stripped_filename, { desc = "C(K)opy a file name starting with `wf_modules`", })
-h.keys.map({ "n", }, "<leader>lp", function()
+h.keys.map("n", "<leader>ke", yank_stripped_filename, { desc = "C(K)opy a file name starting with `wf_modules`", })
+h.keys.map("n", "<leader>lp", function()
     builtin.planets {
       layout_strategy = "horizontal",
       border = true,
@@ -96,12 +96,12 @@ h.keys.map({ "n", }, "<leader>lp", function()
     }
   end,
   { desc = "Search the planets with telescope", })
-h.keys.map({ "n", }, "<leader>lg", function()
+h.keys.map("n", "<leader>lg", function()
   -- fuzzy live grep
   builtin.grep_string { only_sort_text = true, search = "", prompt_title = "Live grep fuzzy", }
 end)
-h.keys.map({ "n", }, "<leader>la", telescope.extensions.live_grep_with_custom_args.live_grep_with_custom_args)
-h.keys.map({ "n", }, "<leader>lo",
+h.keys.map("n", "<leader>la", telescope.extensions.live_grep_with_custom_args.live_grep_with_custom_args)
+h.keys.map("n", "<leader>lo",
   function()
     telescope.extensions.live_grep_with_custom_args.live_grep_with_custom_args { default_text = "~" .. vim.fn.expand "<cword>" .. "~ ", }
   end)

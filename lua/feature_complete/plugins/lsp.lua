@@ -93,18 +93,18 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 h.keys.map({ "i", }, "<C-b>", function() vim.lsp.buf.signature_help { border = "single", } end,
   { desc = "LSP signature help", })
-h.keys.map({ "n", }, "gh", function() vim.lsp.buf.hover { border = "single", } end, { desc = "LSP hover", })
-h.keys.map({ "n", }, "gd", vim.lsp.buf.definition, { desc = "LSP go to definition", })
-h.keys.map({ "n", }, "gs", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
-h.keys.map({ "n", }, "gu", vim.lsp.buf.references, { desc = "LSP go to references", })
-h.keys.map({ "n", }, "ga", vim.lsp.buf.code_action, { desc = "LSP code action", })
-h.keys.map({ "n", }, "<leader>ld", function()
+h.keys.map("n", "gh", function() vim.lsp.buf.hover { border = "single", } end, { desc = "LSP hover", })
+h.keys.map("n", "gd", vim.lsp.buf.definition, { desc = "LSP go to definition", })
+h.keys.map("n", "gs", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
+h.keys.map("n", "gu", vim.lsp.buf.references, { desc = "LSP go to references", })
+h.keys.map("n", "ga", vim.lsp.buf.code_action, { desc = "LSP code action", })
+h.keys.map("n", "<leader>ld", function()
     vim.diagnostic.setqflist { severity = vim.diagnostic.severity.ERROR, }
     vim.cmd "copen"
   end,
   { desc = "Open LSP diagnostics with the quickfix list", })
 
-h.keys.map({ "n", }, "gl", function()
+h.keys.map("n", "gl", function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     -- https://neovim.io/doc/user/api.html#floating-windows
     if vim.api.nvim_win_get_config(win).relative == "win" then

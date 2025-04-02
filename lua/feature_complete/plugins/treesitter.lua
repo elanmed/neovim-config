@@ -58,11 +58,11 @@ require "aerial".setup {
     min_width = nil,
   },
 }
-h.keys.map({ "n", }, "<leader>it", h.keys.vim_cmd_cb "AerialToggle left", { desc = "Toggle aerial window", })
+h.keys.map("n", "<leader>it", h.keys.vim_cmd_cb "AerialToggle left", { desc = "Toggle aerial window", })
 
 require "ts_context_commentstring".setup {}
 require "nvim-ts-autotag".setup {}
 
 h.keys.map({ "i", }, "<C-_>", "<C-o><Plug>ContextCommentaryLine")
-h.keys.map({ "n", }, "<C-_>", "<Plug>ContextCommentaryLine")
+h.keys.map("n", "<C-_>", "<Plug>ContextCommentaryLine")
 h.keys.map({ "v", }, "<C-_>", "<Plug>ContextCommentarygv")

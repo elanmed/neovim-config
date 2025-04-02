@@ -193,7 +193,7 @@ end
 
 local qf_preview = QfPreview:new()
 
-h.keys.map({ "n", }, "gy", function()
+h.keys.map("n", "gy", function()
   qf_preview:close()
   -- vim.fn.setqflist({}, "r") -- clear current
   vim.fn.setqflist({}, "f")
@@ -238,7 +238,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", }, {
 vim.api.nvim_create_autocmd({ "FileType", }, {
   pattern = "qf",
   callback = function()
-    h.keys.map({ "n", }, "gdu", function()
+    h.keys.map("n", "gdu", function()
       vim.fn.setqflist(vim.fn.getqflist())
       h.notify.info "Created a new list!"
     end, { buffer = true, })
@@ -281,7 +281,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
       qf_preview:refresh()
     end, { buffer = true, })
 
-    h.keys.map({ "n", }, "dd", function()
+    h.keys.map("n", "dd", function()
       local qf_list = vim.fn.getqflist()
       if #qf_list == 0 then return end
 
@@ -304,7 +304,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
       qf_preview:refresh()
     end, { buffer = true, })
 
-    h.keys.map({ "n", }, "t", function()
+    h.keys.map("n", "t", function()
       if qf_preview:is_closed() then
         qf_preview:open()
         qf_preview:set_preview_disabled(false)
@@ -314,36 +314,36 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
       end
     end, { buffer = true, })
 
-    h.keys.map({ "n", }, "<cr>", function()
+    h.keys.map("n", "<cr>", function()
       local curr_line = vim.fn.line "."
       vim.cmd "cclose"
       vim.cmd("cc " .. curr_line)
     end, { buffer = true, })
 
-    h.keys.map({ "n", }, "o", function()
+    h.keys.map("n", "o", function()
       local curr_line = vim.fn.line "."
       qf_preview:close()
       vim.cmd("cc " .. curr_line)
     end, { buffer = true, })
 
-    h.keys.map({ "n", }, "<C-n>", function()
+    h.keys.map("n", "<C-n>", function()
       vim.cmd "Cnext"
       vim.cmd "copen"
     end, { buffer = true, })
 
-    h.keys.map({ "n", }, "<C-p>", function()
+    h.keys.map("n", "<C-p>", function()
       vim.cmd "Cprev"
       vim.cmd "copen"
     end, { buffer = true, })
 
-    h.keys.map({ "n", }, ">", function()
+    h.keys.map("n", ">", function()
       --- @diagnostic disable-next-line: param-type-mismatch
       local success = pcall(vim.cmd, "cnewer")
       if not success then
         h.notify.warn "No newer list!"
       end
     end, { buffer = true, })
-    h.keys.map({ "n", }, "<", function()
+    h.keys.map("n", "<", function()
       --- @diagnostic disable-next-line: param-type-mismatch
       local success = pcall(vim.cmd, "colder")
       if not success then

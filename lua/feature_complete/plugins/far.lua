@@ -22,7 +22,7 @@ local function abort_or_cb(cb)
   end
 end
 
-h.keys.map({ "n", }, "<leader>re", function()
+h.keys.map("n", "<leader>re", function()
   if grug.has_instance(GRUG_INSTANCE_NAME) then
     grug.toggle_instance { instanceName = GRUG_INSTANCE_NAME, startInInsertMode = true, }
   else
@@ -96,7 +96,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
 --   end)
 -- end, { desc = "Search the current selection with grug", })
 
--- h.keys.map({ "n", }, "<leader>lo", function()
+-- h.keys.map("n", "<leader>lo", function()
 --     abort_or_cb(function()
 --       local opts = vim.tbl_extend("error", shared_grug_opts, {
 --         prefills = {
@@ -109,7 +109,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
 --   end,
 --   { desc = "Search the currently hovered word with grug", })
 
--- h.keys.map({ "n", }, "<leader>lg", function()
+-- h.keys.map("n", "<leader>lg", function()
 -- abort_or_cb(function()
 --   GRUG_INSTANCE_NAME = grug.open {
 --     prefills = {
@@ -119,7 +119,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
 -- end)
 -- end, { desc = "Search globally with grug", })
 
-h.keys.map({ "n", }, "<leader>lc", function()
+h.keys.map("n", "<leader>lc", function()
     h.notify.error "use <leader>la instead!"
 
     -- abort_or_cb(function()
@@ -128,7 +128,7 @@ h.keys.map({ "n", }, "<leader>lc", function()
   end,
   { desc = "Search globally (case-sensitive) with grug", })
 
-h.keys.map({ "n", }, "<leader>lw", function()
+h.keys.map("n", "<leader>lw", function()
     h.notify.error "use <leader>la instead!"
 
     -- abort_or_cb(function()
@@ -141,7 +141,7 @@ h.keys.map({ "n", }, "<leader>lw", function()
   end,
   { desc = "Search globally (whole-word) with grug", })
 
-h.keys.map({ "n", }, "<leader>lb", function()
+h.keys.map("n", "<leader>lb", function()
     h.notify.error "use <leader>la instead!"
 
     -- abort_or_cb(function()
