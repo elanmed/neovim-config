@@ -99,6 +99,12 @@ h.keys.map("n", "gs", vim.lsp.buf.type_definition, { desc = "LSP go to type defi
 h.keys.map("n", "gu", vim.lsp.buf.references, { desc = "LSP go to references", })
 h.keys.map("n", "ga", vim.lsp.buf.code_action, { desc = "LSP code action", })
 h.keys.map("n", "<leader>ld", function()
+    local error_diagnostics = vim.diagnostic.get(h.curr.buffer, { severity = vim.diagnostic.severity.ERROR, })
+    if #error_diagnostics == 0 then
+      h.notify.warn "No diagnostics"
+      return
+    end
+
     vim.diagnostic.setqflist { severity = vim.diagnostic.severity.ERROR, }
     vim.cmd "copen"
   end,
