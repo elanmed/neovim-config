@@ -97,7 +97,7 @@ h.keys.map("n", "<leader>lp", function()
   end,
   { desc = "Search the planets with telescope", })
 h.keys.map("n", "<leader>lg", function()
-  -- fuzzy live grep
+  -- fuzzy live grep, slow on large code bases
   builtin.grep_string { only_sort_text = true, search = "", prompt_title = "Live grep fuzzy", }
 end)
 h.keys.map("n", "<leader>la", telescope.extensions.live_grep_with_custom_args.live_grep_with_custom_args)

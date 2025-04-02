@@ -97,27 +97,6 @@ function QfPreview:set_preview_disabled(disabled)
   self.preview_disabled = disabled
 end
 
---- call in a vim.schedule to avoid blocking the ui while treesitter parses
---- @param opts { preview_win_id: number, qf_item_index: number}
-function QfPreview:_deprecated_highlight(opts)
-  local curr_line = vim.fn.line "."
-  if curr_line ~= opts.qf_item_index then return end
-  if self.preview_win_id ~= opts.preview_win_id then return end
-
-  local qf_list      = vim.fn.getqflist()
-  local curr_qf_item = qf_list[opts.qf_item_index]
-
-  if not self.parsed_buffers[curr_qf_item.bufnr] then
-    vim.api.nvim_buf_call(curr_qf_item.bufnr, function()
-      vim.cmd "filetype detect"
-      vim.treesitter.start(curr_qf_item.bufnr)
-    end)
-    self.parsed_buffers[curr_qf_item.bufnr] = true
-  end
-
-  vim.api.nvim_win_set_cursor(opts.preview_win_id, { curr_qf_item.lnum, curr_qf_item.col, })
-end
-
 function QfPreview:open()
   local qf_list = vim.fn.getqflist()
   if #qf_list == 0 then return end

@@ -19,22 +19,6 @@ neoscroll.setup {
 }
 h.keys.map("n", "z.", function() neoscroll.zz { half_win_duration = 250, } end)
 
-local function get_current_line()
-  local row = unpack(vim.api.nvim_win_get_cursor(h.curr.window))
-  return row
-end
-
-local function is_first_line()
-  local current_line = get_current_line()
-  return current_line == 1
-end
-
-local function is_last_line()
-  local current_line = get_current_line()
-  local last_line = vim.fn.line "$"
-  return current_line == last_line
-end
-
 h.keys.map({ "n", "v", "i", }, "<C-u>", function()
   h.keys.send_keys("n", "0")
   if is_neoscroll_override_filetype() then
@@ -42,7 +26,7 @@ h.keys.map({ "n", "v", "i", }, "<C-u>", function()
     return
   end
 
-  if is_last_line() then
+  if vim.fn.line "$" == vim.fn.line "." then
     h.keys.send_keys("n", "M")
   else
     neoscroll.ctrl_u { duration = 250, }
@@ -56,7 +40,7 @@ h.keys.map({ "n", "v", "i", }, "<C-d>", function()
     return
   end
 
-  if is_first_line() then
+  if vim.fn.line "." == 1 then
     h.keys.send_keys("n", "M")
   else
     neoscroll.ctrl_d { duration = 250, }

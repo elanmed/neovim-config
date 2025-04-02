@@ -35,7 +35,6 @@ require "nvim-treesitter.configs".setup {
       keymaps = {
         ["ai"] = { query = "@conditional.outer", desc = "Select outer part of a conditional", },
         ["ii"] = { query = "@conditional.inner", desc = "Select inner part of a conditional", },
-
         ["af"] = { query = "@function.outer", desc = "Select outer part of a method/function definition", },
         ["if"] = { query = "@function.inner", desc = "Select inner part of a method/function definition", },
       },
