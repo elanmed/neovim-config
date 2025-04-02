@@ -76,6 +76,7 @@ Plug "MagicDuck/grug-far.nvim"
 -- misc
 Plug "folke/snacks.nvim"
 Plug "mbbill/undotree"
+Plug "sindrets/diffview.nvim"
 
 vim.call "plug#end"
 
