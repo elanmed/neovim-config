@@ -38,6 +38,7 @@ diffview.setup {
       { "n", "<leader>go", actions.conflict_choose_all "ours", { desc = "Use the OURS version of a conflict for the whole file", }, },
       { "n", "<leader>gt", actions.conflict_choose_all "theirs", { desc = "Use the THEIRS version of a conflict for the whole file", }, },
       { "n", "<leader>ga", actions.conflict_choose_all "all", { desc = "Use all the versions of a conflict for the whole file", }, },
+      { "n", "-", actions.toggle_stage_entry, { desc = "Stage / unstage the selected entry", }, },
 
       { "n", "<cr>", actions.select_entry, { desc = "Open the diff for the selected entry", }, },
       { "n", "<C-n>", actions.select_next_entry, { desc = "Open the diff for the next file", }, },
