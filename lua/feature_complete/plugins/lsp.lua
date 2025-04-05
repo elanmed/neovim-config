@@ -178,10 +178,11 @@ cmp.setup {
   },
   mapping = cmp.mapping.preset.insert {
     ["<C-s>"] = cmp.mapping.complete(),
-    ["<C-e>"] = cmp.mapping.abort(),
+    ["<esc>"] = cmp.mapping.abort(),
     ["<CR>"] = cmp.mapping.confirm { select = true, },
   },
 }
+
 
 require "lazydev".setup {}
 require "nvim-autopairs".setup {}

@@ -37,13 +37,3 @@ grug.setup {
     swapReplacementInterpreter = false,
   },
 }
-
-vim.api.nvim_create_autocmd({ "FileType", }, {
-  group = vim.api.nvim_create_augroup("grug-far-keybindings", { clear = true, }),
-  pattern = "grug-far",
-  callback = function()
-    -- TODO: why doesn't h.keys.map with buffer = true set the keymap?
-    vim.api.nvim_buf_set_keymap(h.curr.buffer, "n", "<leader>o", "<leader>ro<leader>q", {})
-    vim.api.nvim_buf_set_keymap(h.curr.buffer, "i", "<C-e>", "<Esc><leader>q", {})
-  end,
-})
