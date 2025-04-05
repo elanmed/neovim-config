@@ -37,3 +37,11 @@ grug.setup {
     swapReplacementInterpreter = false,
   },
 }
+
+vim.api.nvim_create_autocmd({ "FileType", }, {
+  group = vim.api.nvim_create_augroup("grug-far-keybindings", { clear = true, }),
+  pattern = "grug-far",
+  callback = function()
+    vim.api.nvim_buf_set_keymap(h.curr.buffer, "i", "<C-e>", "<Esc><leader>q", {})
+  end,
+})
