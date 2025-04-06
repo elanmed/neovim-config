@@ -43,8 +43,25 @@ require "nvim-treesitter.configs".setup {
 }
 
 require "render-markdown".setup {
-  -- https://github.com/MeanderingProgrammer/render-markdown.nvim/wiki#render-modes
-  render_modes = true,
+  render_modes = false,
+  overrides = {
+    buftype = {
+      nofile = {
+        win_options = {
+          concealcursor = {
+            -- vim option
+            -- when in normal mode, conceal text for a line when the cursor is positioned on it
+            rendered = "n",
+          },
+        },
+        anti_conceal = {
+          -- render-markdown option
+          -- always conceal text for a line when the cursor is positioned on it
+          enabled = false,
+        },
+      },
+    },
+  },
 }
 
 require "aerial".setup {
