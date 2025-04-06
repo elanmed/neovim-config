@@ -9,7 +9,3 @@ require "shared.options"
 require "shared.remaps"
 require "shared.user_commands"
 require "feature_complete"
-
--- TODO:
--- merge conflicts with fugitive
--- diff for current file over several commits

@@ -80,7 +80,7 @@ h.keys.map("n", "<leader>lr", builtin.resume, { desc = "Resume telescope search"
 h.keys.map("n", "<leader>lt", builtin.buffers, { desc = "Search currently open buffers with telescope", })
 h.keys.map("n", "<leader>lh", builtin.help_tags, { desc = "Search help tags with telescope", })
 h.keys.map("n", "<leader>lf", builtin.current_buffer_fuzzy_find,
-  { desc = "Search in the current file with telescope", })
+  { desc = "Search in the current buffer with telescope", })
 h.keys.map("n", "<leader>le", grep_stripped_filename,
   { desc = "Search a file name starting with `wf_modules` with telescope", })
 h.keys.map("n", "<leader>ke", yank_stripped_filename, { desc = "C(K)opy a file name starting with `wf_modules`", })

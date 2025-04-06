@@ -52,6 +52,7 @@ vim.api.nvim_set_hl(h.curr.namespace, "WildMenu", { fg = M.yellow, underline = t
 vim.api.nvim_set_hl(h.curr.namespace, "FlashMatch", { link = "Search", })
 vim.api.nvim_set_hl(h.curr.namespace, "FlashLabel", { link = "IncSearch", })
 vim.api.nvim_set_hl(h.curr.namespace, "FlashCurrent", { bg = M.red, fg = colors.base01, })
+vim.api.nvim_set_hl(h.curr.namespace, "FlashCursor", { bg = M.red, fg = colors.base01, })
 
 vim.api.nvim_set_hl(h.curr.namespace, "SnacksIndent", { fg = M.grey, })
 vim.api.nvim_set_hl(h.curr.namespace, "SnacksIndentScope", { fg = M.light_grey, })

@@ -2,13 +2,13 @@ local h = require "shared.helpers"
 
 -- delay when using h.keys.map
 vim.cmd "inoremap <C-t> <C-o>:Snippet<space>"
+vim.cmd "nnoremap ; :"
 h.keys.map({ "n", "v", }, "<C-t>", function() h.notify.error "snippets only supported in insert mode!" end)
 
 h.keys.map("n", "<leader>va", "ggVG", { desc = "Select all", })
 h.keys.map("n", "*", "*N")
 h.keys.map("n", "<leader>f", "<C-w>w", { desc = "Toggle focus between windows", })
 h.keys.map("n", "<leader>e", h.keys.vim_cmd_cb "e", { desc = "Reload buffer", })
-h.keys.map("n", "<leader>vs", h.keys.vim_cmd_cb "vsplit")
 h.keys.map("n", "<bs>", "b")
 
 h.keys.map({ "i", }, "<C-e>", "<C-o>$")
@@ -31,14 +31,14 @@ h.keys.map("n", "<leader>w", h.keys.vim_cmd_cb "w", { desc = "Save", })
 h.keys.map("n", "<leader>q", h.keys.vim_cmd_cb "q", { desc = "Quit", })
 
 h.keys.map("n", "<leader>ka", function() vim.fn.setreg("+", vim.fn.expand "%:p") end,
-  { desc = "C(K)opy the absolute path of a file", })
+  { desc = "C(K)opy the absolute path of the current buffer", })
 h.keys.map("n", "<leader>kr", function() vim.fn.setreg("+", vim.fn.expand "%:~:.") end,
-  { desc = "C(K)opy the relative path of a file", })
+  { desc = "C(K)opy the relative path of the current buffer", })
 h.keys.map("n", "<leader>ko", function()
     local open_cmd = h.os.is_linux() and "xdg-open" or "open"
     vim.cmd("!" .. open_cmd .. " '" .. vim.fn.expand "%:p" .. "'")
   end,
-  { desc = "Open a file", })
+  { desc = "Open the current buffer with then `open` command", })
 
 h.keys.map({ "v", }, "<", "<gv", { desc = "Outdent, while keeping selection", })
 h.keys.map({ "v", }, ">", ">gv", { desc = "Indent, while keeping selection", })

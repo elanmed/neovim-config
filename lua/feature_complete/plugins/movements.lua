@@ -7,7 +7,7 @@ local flash = require "flash"
 flash.setup {
   modes = {
     char = {
-      enabled = false,
+      enabled = true,
     },
   },
   prompt = {

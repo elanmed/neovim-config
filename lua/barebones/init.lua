@@ -21,7 +21,7 @@ h.keys.map("n", "<C-f>", function()
   else
     vim.cmd "Explore %:p:h"
   end
-end, { desc = "Toggle netrw, focusing the current file", })
+end, { desc = "Toggle netrw, focusing the current buffer", })
 vim.opt.path:append "**"               -- search in subfolder
 h.keys.map("n", "<C-p>", h.keys.vim_cmd_cb "wq!")
 h.keys.map({ "i", }, "<C-s>", "<C-n>") -- autocomplete
