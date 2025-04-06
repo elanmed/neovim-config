@@ -178,7 +178,7 @@ cmp.setup {
   },
   mapping = cmp.mapping.preset.insert {
     ["<C-s>"] = cmp.mapping.complete(),
-    ["<C-e>"] = cmp.mapping.abort(),
+    ["<C-c>"] = cmp.mapping.abort(),
     ["<CR>"] = cmp.mapping.confirm { select = true, },
   },
 }
