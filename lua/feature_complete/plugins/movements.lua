@@ -38,14 +38,12 @@ harpoon:setup {
   },
 }
 
-h.keys.map("n", "<leader>at",
+h.keys.map("n", "<leader>th",
   function()
     harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_max_width = 80, })
   end,
   { desc = "Toggle the harpoon window", })
-h.keys.map("n", "<leader>ad", function()
-  harpoon:list():add()
-end, { desc = "Add a haRpoon entry", })
+h.keys.map("n", "<leader>ya", function() harpoon:list():add() end, { desc = "Yank an file into harpoon", })
 
 require "marks".setup {
   excluded_filetypes = { "oil", },

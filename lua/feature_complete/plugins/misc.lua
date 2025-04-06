@@ -6,7 +6,7 @@ require "snacks".setup {
   explorer = { enabled = true, replace_netrw = false, },
 }
 
-h.keys.map("n", "<leader>me", function()
+h.keys.map("n", "<leader>tm", function()
   vim.cmd "UndotreeToggle"
   vim.cmd "wincmd h"
 end, { desc = "Toggle undotree", })

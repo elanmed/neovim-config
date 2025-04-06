@@ -7,6 +7,7 @@ h.keys.map({ "n", "v", }, "<C-t>", function() h.notify.error "snippets only supp
 
 h.keys.map({ "n", "v", }, "b", "<Plug>(MatchitNormalForward)") -- TODO: what is this?
 h.keys.map({ "n", "v", }, "<bs>", "b")
+h.keys.map({ "n", }, "<leader>e", h.keys.vim_cmd_cb "e")
 
 h.keys.map("n", "*", "*N")
 h.keys.map("n", "<leader>f", "<C-w>w", { desc = "Toggle focus between windows", })
@@ -24,21 +25,16 @@ h.keys.map("n", "E", [[viw"_dP]], { desc = "pastE without overwriting the defaul
 h.keys.map("n", "<leader>p", h.keys.vim_cmd_cb "pu", { desc = "Paste on the line below", })
 h.keys.map("n", "<leader>P", h.keys.vim_cmd_cb "pu!", { desc = "Paste on the line above", })
 
-h.keys.map("n", "<leader>du", [["zyy"zp]], { desc = "Duplicate the current line", })
-h.keys.map({ "v", }, "<leader>du", [["zy`>"zp]], { desc = "Duplicate the current line", }) -- move to end of selection, then yank
+h.keys.map("n", "<leader>yp", [["zyy"zp]], { desc = "Copy and paste the current line", })
+h.keys.map({ "v", }, "<leader>yp", [["zy`>"zp]], { desc = "Copy and paste the current line", }) -- move to end of selection, then yank
 
 h.keys.map("n", "<leader>w", h.keys.vim_cmd_cb "w", { desc = "Save", })
 h.keys.map("n", "<leader>q", h.keys.vim_cmd_cb "q", { desc = "Quit", })
 
-h.keys.map("n", "<leader>ka", function() vim.fn.setreg("+", vim.fn.expand "%:p") end,
-  { desc = "C(K)opy the absolute path of the current buffer", })
-h.keys.map("n", "<leader>kr", function() vim.fn.setreg("+", vim.fn.expand "%:~:.") end,
-  { desc = "C(K)opy the relative path of the current buffer", })
-h.keys.map("n", "<leader>ko", function()
-    local open_cmd = h.os.is_linux() and "xdg-open" or "open"
-    vim.cmd("!" .. open_cmd .. " '" .. vim.fn.expand "%:p" .. "'")
-  end,
-  { desc = "Open the current buffer with then `open` command", })
+h.keys.map("n", "<leader>ya", function() vim.fn.setreg("+", vim.fn.expand "%:p") end,
+  { desc = "CopY the absolute path of the current buffer", })
+h.keys.map("n", "<leader>yr", function() vim.fn.setreg("+", vim.fn.expand "%:~:.") end,
+  { desc = "CopY the relative path of the current buffer", })
 
 h.keys.map({ "v", }, "<", "<gv", { desc = "Outdent, while keeping selection", })
 h.keys.map({ "v", }, ">", ">gv", { desc = "Indent, while keeping selection", })
@@ -158,15 +154,25 @@ h.keys.map("n", "z?", function()
 end
 , { desc = "Toggle fold", })
 
--- -- TODO: use more
--- h.keys.map({ "n", "v", }, "Q", "{")
+-- TODO: one remap for misc open: mundo, haproon, aerial, grug
 
--- remaps to figure out in the future:
 h.keys.map("n", "W", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "B", "<nop>", { desc = "TODO find a remap", })
+h.keys.map("n", "<C-x>", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "<leader>;", "<nop>", { desc = "TODO find a remap", })
-h.keys.map("n", "<leader>x", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "<leader>b", "<nop>", { desc = "TODO find a remap", })
+h.keys.map("n", "<leader>c", "<nop>", { desc = "TODO find a remap", })
+h.keys.map("n", "<leader>d", "<nop>", { desc = "TODO find a remap", })
+h.keys.map("n", "<leader>e", "<nop>", { desc = "TODO find a remap", })
+h.keys.map("n", "<leader>g", "<nop>", { desc = "TODO find a remap", })
+h.keys.map("n", "<leader>i", "<nop>", { desc = "TODO find a remap", })
+h.keys.map("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
+h.keys.map("n", "<leader>k", "<nop>", { desc = "TODO find a remap", })
+h.keys.map("n", "<leader>m", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "<leader>n", "<nop>", { desc = "TODO find a remap", })
+h.keys.map("n", "<leader>r", "<nop>", { desc = "TODO find a remap", })
+h.keys.map("n", "<leader>v", "<nop>", { desc = "TODO find a remap", })
+h.keys.map("n", "<leader>x", "<nop>", { desc = "TODO find a remap", })
+h.keys.map("n", "<leader>z", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "<leader>,", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "<leader>.", "<nop>", { desc = "TODO find a remap", })
