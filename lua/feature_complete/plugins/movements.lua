@@ -1,13 +1,13 @@
 local h = require "shared.helpers"
-
--- TODO: find a new remap
--- vim.api.nvim_set_var("VM_maps", { ["Add Cursor Down"] = "<C-t>", })
-
 local flash = require "flash"
+
 flash.setup {
   modes = {
     char = {
       enabled = true,
+      multi_line = false,
+      keys = { "f", "F", "t", "T", },
+      jump_labels = true,
     },
   },
   prompt = {

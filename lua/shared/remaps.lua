@@ -5,11 +5,11 @@ vim.cmd "inoremap <C-t> <C-o>:Snippet<space>"
 vim.cmd "nnoremap ; :"
 h.keys.map({ "n", "v", }, "<C-t>", function() h.notify.error "snippets only supported in insert mode!" end)
 
-h.keys.map("n", "<leader>va", "ggVG", { desc = "Select all", })
+h.keys.map({ "n", "v", }, "b", "<Plug>(MatchitNormalForward)") -- TODO: what is this?
+h.keys.map({ "n", "v", }, "<bs>", "b")
+
 h.keys.map("n", "*", "*N")
 h.keys.map("n", "<leader>f", "<C-w>w", { desc = "Toggle focus between windows", })
-h.keys.map("n", "<leader>e", h.keys.vim_cmd_cb "e", { desc = "Reload buffer", })
-h.keys.map("n", "<bs>", "b")
 
 h.keys.map({ "i", }, "<C-e>", "<C-o>$")
 h.keys.map({ "n", "v", }, "<C-e>", "$")
@@ -65,17 +65,13 @@ h.keys.map("n", "gq", h.keys.vim_cmd_cb "cclose", { desc = "Close the quickfix l
 h.keys.map("n", "gn", "gt", { desc = "Go to the next tab", })
 h.keys.map("n", "gp", "gT", { desc = "Go to the prev tab", })
 
--- TODO: issues with mac
-local alt_j = h.os.is_linux() and "<A-j>" or "∆"
-local alt_k = h.os.is_linux() and "<A-k>" or "˚"
-
 -- https://vim.fandom.com/wiki/Moving_lines_up_or_down
-h.keys.map("n", alt_j, ":m .+1<cr>==", { desc = "Move line down", })
-h.keys.map("n", alt_k, ":m .-2<cr>==", { desc = "Move line up", })
-h.keys.map({ "i", }, alt_j, "<esc>:m .+1<cr>==gi", { desc = "Move line down", })
-h.keys.map({ "i", }, alt_k, "<esc>:m .-2<cr>==gi", { desc = "Move line up", })
-h.keys.map({ "v", }, alt_j, ":m '>+1<cr>gv=gv", { desc = "Move line down", })
-h.keys.map({ "v", }, alt_k, ":m '<-2<cr>gv=gv", { desc = "Move line up", })
+h.keys.map("n", "<A-j>", ":m .+1<cr>==", { desc = "Move line down", })
+h.keys.map("n", "<A-k>", ":m .-2<cr>==", { desc = "Move line up", })
+h.keys.map({ "i", }, "<A-j>", "<esc>:m .+1<cr>==gi", { desc = "Move line down", })
+h.keys.map({ "i", }, "<A-k>", "<esc>:m .-2<cr>==gi", { desc = "Move line up", })
+h.keys.map({ "v", }, "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move line down", })
+h.keys.map({ "v", }, "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move line up", })
 
 -- search Case sensitive, Whole word, and All
 vim.cmd [[
@@ -91,7 +87,7 @@ vim.cmd [[
 vim.cmd [[
   nnoremap <leader>/s :%s/\<\>\C/<left><left><left><left><left>
 ]]
-h.keys.map("n", "<leader>/t", h.keys.vim_cmd_cb "noh", { desc = "Turn off highlighting", })
+h.keys.map("n", "<leader>/h", h.keys.vim_cmd_cb "nohlsearch", { desc = "Turn off highlighting", })
 
 h.keys.map({ "n", "v", }, "n", "nzz")
 h.keys.map({ "n", "v", }, "N", "Nzz")
@@ -162,11 +158,11 @@ h.keys.map("n", "z?", function()
 end
 , { desc = "Toggle fold", })
 
--- TODO: use more
-h.keys.map({ "n", "v", }, "Q", "{")
-h.keys.map({ "n", "v", }, "W", "}")
+-- -- TODO: use more
+-- h.keys.map({ "n", "v", }, "Q", "{")
 
 -- remaps to figure out in the future:
+h.keys.map("n", "W", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "B", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "<leader>;", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "<leader>x", "<nop>", { desc = "TODO find a remap", })
