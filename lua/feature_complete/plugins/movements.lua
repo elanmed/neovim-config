@@ -1,19 +1,22 @@
 local h = require "shared.helpers"
 local flash = require "flash"
 
+vim.g.clever_f_across_no_line = true
+vim.g.clever_f_mark_char_color = "CleverFMark"
+h.keys.map("n", "<Esc>", "<Plug>(clever-f-reset)")
+h.keys.map("n", "<C-c>", "<Plug>(clever-f-reset)")
+
 flash.setup {
   modes = {
     char = {
-      enabled = true,
-      multi_line = false,
-      keys = { "f", "F", "t", "T", },
-      jump_labels = true,
+      enabled = false,
     },
   },
   prompt = {
     prefix = { { "󱐋 ", "FlashPromptIcon", }, },
   },
 }
+
 h.keys.map("n", "s", function() flash.jump { forward = true, } end)
 h.keys.map("n", "S", function() flash.jump { forward = false, } end)
 h.keys.map("n", "<leader>sa", function()

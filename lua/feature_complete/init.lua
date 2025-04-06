@@ -32,9 +32,10 @@ Plug "RRethy/nvim-base16"
 -- file_tree
 Plug "stevearc/oil.nvim"
 Plug "kyazdani42/nvim-web-devicons"
--- git
+-- version_control
 Plug "tpope/vim-fugitive"
 Plug "lewis6991/gitsigns.nvim"
+Plug "sindrets/diffview.nvim"
 -- lsp
 Plug "neovim/nvim-lspconfig"
 Plug "hrsh7th/nvim-cmp"
@@ -51,6 +52,7 @@ Plug("ThePrimeagen/harpoon", { branch = "harpoon2", })
 Plug "folke/flash.nvim"
 Plug "chentoast/marks.nvim"
 Plug "christoomey/vim-tmux-navigator"
+Plug "rhysd/clever-f.vim"
 -- scroll
 Plug "karb94/neoscroll.nvim"
 Plug "echasnovski/mini.map"
@@ -76,7 +78,6 @@ Plug "MagicDuck/grug-far.nvim"
 -- misc
 Plug "folke/snacks.nvim"
 Plug "mbbill/undotree"
-Plug "sindrets/diffview.nvim"
 
 vim.call "plug#end"
 
