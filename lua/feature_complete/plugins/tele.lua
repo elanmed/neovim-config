@@ -83,7 +83,7 @@ h.keys.map("n", "<leader>lf", builtin.current_buffer_fuzzy_find,
   { desc = "Search in the current buffer with telescope", })
 h.keys.map("n", "<leader>le", grep_stripped_filename,
   { desc = "Search a file name starting with `wf_modules` with telescope", })
-h.keys.map("n", "<leader>ke", yank_stripped_filename, { desc = "C(K)opy a file name starting with `wf_modules`", })
+h.keys.map("n", "<leader>ye", yank_stripped_filename, { desc = "C(K)opy a file name starting with `wf_modules`", })
 h.keys.map("n", "<leader>lp", function()
     builtin.planets {
       layout_strategy = "horizontal",

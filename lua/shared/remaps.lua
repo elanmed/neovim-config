@@ -14,7 +14,6 @@ h.keys.map("n", "<leader>f", "<C-w>w", { desc = "Toggle focus between windows", 
 
 h.keys.map({ "i", }, "<C-e>", "<C-o>$")
 h.keys.map({ "n", "v", }, "<C-e>", "$")
-
 h.keys.map({ "i", }, "<C-a>", "<C-o>^")
 h.keys.map({ "n", "v", }, "<C-a>", "^")
 
@@ -170,7 +169,6 @@ h.keys.map("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "<leader>k", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "<leader>m", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "<leader>n", "<nop>", { desc = "TODO find a remap", })
-h.keys.map("n", "<leader>r", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "<leader>v", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "<leader>x", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "<leader>z", "<nop>", { desc = "TODO find a remap", })
