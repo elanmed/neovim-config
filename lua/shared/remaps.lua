@@ -109,8 +109,8 @@ h.keys.map("n", "k", function() return count_based_keymap "k" end,
 
 h.keys.map({ "n", "v", "i", }, "<C-y>", h.keys.vim_cmd_cb "tabclose", { desc = "Close the current tab", })
 h.keys.map("n", "Y", h.keys.vim_cmd_cb "silent! bdelete!", { desc = "Close the current buffer", })
-h.keys.map("n", "<leader>ta", h.keys.vim_cmd_cb "silent! bufdo bdelete", { desc = "Close all buffers", })
-h.keys.map("n", "<leader>to", function()
+h.keys.map("n", "<leader>ua", h.keys.vim_cmd_cb "silent! bufdo bdelete", { desc = "Close all buffers", })
+h.keys.map("n", "<leader>uo", function()
   local cur_buf = vim.api.nvim_get_current_buf()
 
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do

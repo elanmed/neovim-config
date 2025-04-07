@@ -2,7 +2,7 @@ local h = require "shared.helpers"
 local snacks = require "snacks"
 
 h.keys.map("n", "<C-f>", h.keys.vim_cmd_cb "Oil", { desc = "Toggle oil", })
-h.keys.map("n", "<leader>te", snacks.explorer.reveal, { desc = "Open snacks explorer", })
+h.keys.map("n", "<leader>ti", snacks.explorer.reveal, { desc = "Open snacks explorer", })
 
 require "oil".setup {
   default_file_explorer = true,
