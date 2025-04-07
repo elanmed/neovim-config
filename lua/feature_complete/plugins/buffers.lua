@@ -22,7 +22,6 @@ bufferline.setup {
   },
 }
 
--- TODO: replace with u
 h.keys.map("n", "<leader>up", h.keys.vim_cmd_cb "BufferLinePick", { desc = "Pick a buffer", })
 h.keys.map("n", "<leader>ui", h.keys.vim_cmd_cb "BufferLineTogglePin", { desc = "Pin a buffer", })
 h.keys.map("n", "<leader>ul", h.keys.vim_cmd_cb "BufferLineMoveNext", { desc = "Move a buffer to the left", })

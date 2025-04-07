@@ -8,7 +8,6 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
   end,
 })
 
-h.keys.map("n", "gy", h.keys.vim_cmd_cb "cex \"\"", { desc = "Clear all quickfix lists", })
 h.keys.map("n", "L", h.keys.vim_cmd_cb "bnext", { desc = "Next buffer", })
 h.keys.map("n", "H", h.keys.vim_cmd_cb "bprev", { desc = "Previous buffer", })
 
@@ -27,6 +26,7 @@ h.keys.map("n", "<C-p>", h.keys.vim_cmd_cb "wq!")
 h.keys.map({ "i", }, "<C-s>", "<C-n>") -- autocomplete
 vim.cmd "nnoremap <C-g> :buffer<space>"
 vim.cmd "nnoremap <leader>lg :grep<space>"
+vim.cmd "nnoremap <leader>la :grep<space>"
 h.keys.map({ "c", }, "/", function()
   if vim.fn.wildmenumode() == 1 then
     return "<C-y>"
@@ -34,7 +34,3 @@ h.keys.map({ "c", }, "/", function()
     return "/"
   end
 end, { expr = true, })
-
-h.keys.map("n", "gd", "<nop>")
-h.keys.map("n", "gh", "<nop>")
-h.keys.map("n", "<C-b>", "<nop>")

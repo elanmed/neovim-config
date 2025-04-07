@@ -27,8 +27,9 @@ h.keys.map("n", "<leader>P", h.keys.vim_cmd_cb "pu!", { desc = "Paste on the lin
 h.keys.map("n", "<leader>yp", [["zyy"zp]], { desc = "Copy and paste the current line", })
 h.keys.map({ "v", }, "<leader>yp", [["zy`>"zp]], { desc = "Copy and paste the current line", }) -- move to end of selection, then yank
 
-h.keys.map("n", "<leader>w", h.keys.vim_cmd_cb "w", { desc = "Save", })
-h.keys.map("n", "<leader>q", h.keys.vim_cmd_cb "q", { desc = "Quit", })
+h.keys.map("n", ",", h.keys.vim_cmd_cb "w", { desc = "Save", })
+h.keys.map("n", "<leader>w", function() h.notify.error "Use , instead!" end, { desc = "Save", })
+h.keys.map("n", "<leader>q", function() h.notify.error "Use :q<cr> instead!" end, { desc = "Save", })
 
 h.keys.map("n", "<leader>ya", function() vim.fn.setreg("+", vim.fn.expand "%:p") end,
   { desc = "CopY the absolute path of the current buffer", })
@@ -152,8 +153,6 @@ h.keys.map("n", "z?", function()
   h.notify.info "common fold commands: z{t,T,c,C,o,O,R(open all folds),M(close all folds)}"
 end
 , { desc = "Toggle fold", })
-
--- TODO: one remap for misc open: mundo, haproon, aerial, grug
 
 h.keys.map("n", "W", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "B", "<nop>", { desc = "TODO find a remap", })
