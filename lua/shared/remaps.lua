@@ -83,7 +83,7 @@ vim.cmd [[
 vim.cmd [[
   nnoremap <leader>/s :%s/\<\>\C/<left><left><left><left><left>
 ]]
-h.keys.map("n", "<leader>/h", h.keys.vim_cmd_cb "nohlsearch", { desc = "Turn off highlighting", })
+h.keys.map("n", "<leader>/g", h.keys.vim_cmd_cb "nohlsearch", { desc = "Turn off hiGhlighting", })
 
 h.keys.map({ "n", "v", }, "n", "nzz")
 h.keys.map({ "n", "v", }, "N", "Nzz")
