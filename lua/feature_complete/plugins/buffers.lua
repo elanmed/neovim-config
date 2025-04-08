@@ -1,18 +1,16 @@
 local h = require "shared.helpers"
 local bufferline = require "bufferline"
+
 bufferline.setup {
   options = {
     diagnostics = "nvim_lsp",
     style_preset = bufferline.style_preset.no_italic,
-    right_mouse_command = nil,
-    left_mouse_command = nil,
     custom_filter = function(buf_number)
       local buf_name = vim.fn.bufname(buf_number)
-      local filetype = vim.api.nvim_get_option_value("filetype", { buf = buf_number, })
-
       if buf_name == "" then return false end
 
       local excluded_filetypes = { "grug-far", "fugitive", }
+      local filetype = vim.api.nvim_get_option_value("filetype", { buf = buf_number, })
       if h.tbl.contains_value(excluded_filetypes, filetype) then
         return false
       end

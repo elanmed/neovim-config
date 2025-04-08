@@ -32,9 +32,9 @@ h.keys.map("n", "<leader>w", function() h.notify.error "Use , instead!" end, { d
 h.keys.map("n", "<leader>q", function() h.notify.error "Use :q<cr> instead!" end, { desc = "Save", })
 
 h.keys.map("n", "<leader>ya", function() vim.fn.setreg("+", vim.fn.expand "%:p") end,
-  { desc = "CopY the absolute path of the current buffer", })
+  { desc = "Yank the Absolute path of the current buffer", })
 h.keys.map("n", "<leader>yr", function() vim.fn.setreg("+", vim.fn.expand "%:~:.") end,
-  { desc = "CopY the relative path of the current buffer", })
+  { desc = "Yank the Relative path of the current buffer", })
 
 h.keys.map({ "v", }, "<", "<gv", { desc = "Outdent, while keeping selection", })
 h.keys.map({ "v", }, ">", ">gv", { desc = "Indent, while keeping selection", })
@@ -79,7 +79,7 @@ vim.cmd [[
 vim.cmd [[
   nnoremap / /\V
 ]]
--- search and replace
+-- search and replace, case sensitive and by whole word
 vim.cmd [[
   nnoremap <leader>/s :%s/\<\>\C/<left><left><left><left><left>
 ]]
@@ -161,7 +161,6 @@ h.keys.map("n", "<leader>;", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "<leader>b", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "<leader>c", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "<leader>d", "<nop>", { desc = "TODO find a remap", })
-h.keys.map("n", "<leader>e", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "<leader>g", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "<leader>i", "<nop>", { desc = "TODO find a remap", })
 h.keys.map("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })

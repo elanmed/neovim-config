@@ -50,10 +50,10 @@ local function toggle_virtual_lines()
   end
 end
 
-h.keys.map({ "n", "v", }, "<C-g>", toggle_virtual_lines, { desc = "toggle virtual lines", })
-h.keys.map({ "i", }, "<C-g>s", "<nop>", { desc = "disable vim surround remap", })
-h.keys.map({ "i", }, "<C-g>S", "<nop>", { desc = "disable vim surround remap", })
-h.keys.map({ "i", }, "<C-g>", toggle_virtual_lines, { desc = "toggle virtual lines", })
+h.keys.map({ "n", "v", }, "<C-g>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
+h.keys.map({ "i", }, "<C-g>s", "<nop>", { desc = "Disable vim surround remap", })
+h.keys.map({ "i", }, "<C-g>S", "<nop>", { desc = "Disable vim surround remap", })
+h.keys.map({ "i", }, "<C-g>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
 
 
 local lspconfig_defaults = lspconfig.util.default_config
@@ -98,7 +98,7 @@ h.keys.map("n", "gd", vim.lsp.buf.definition, { desc = "LSP go to definition", }
 h.keys.map("n", "gs", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
 h.keys.map("n", "gu", vim.lsp.buf.references, { desc = "LSP go to references", })
 h.keys.map("n", "ga", vim.lsp.buf.code_action, { desc = "LSP code action", })
-h.keys.map("n", "<leader>ld", function()
+h.keys.map("n", "gi", function()
     local error_diagnostics = vim.diagnostic.get(h.curr.buffer, { severity = vim.diagnostic.severity.ERROR, })
     if #error_diagnostics == 0 then
       h.notify.warn "No diagnostics"
