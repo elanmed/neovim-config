@@ -43,7 +43,7 @@ function CharOccurrencePreview:get_char_occurrences(str)
   -- bee -> { "b" = 1, "e" = 2 }
   local char_to_num_occurrence = {}
   -- bee -> { 1 = 1, 2 = 1, 3 = 2 }
-  local occurrence_as_str = {}
+  local occurrence_num_per_index = {}
 
   for i = 1, #str do
     local char = str:sub(i, i)
@@ -56,10 +56,10 @@ function CharOccurrencePreview:get_char_occurrences(str)
     else
       char_to_num_occurrence[char] = -1
     end
-    occurrence_as_str[i] = char_to_num_occurrence[char]
+    occurrence_num_per_index[i] = char_to_num_occurrence[char]
   end
 
-  return occurrence_as_str
+  return occurrence_num_per_index
 end
 
 --- @param opts { forward: boolean }
@@ -73,8 +73,10 @@ function CharOccurrencePreview:highlight(opts)
   local col_1_indexed = curr_col_0_indexed + 1
 
   local forward_start_col_1_indexed = col_1_indexed + 1
+  -- highlight starting with the char _after_ the cursor
   local forward_subbed = curr_line:sub(forward_start_col_1_indexed)
 
+  -- no need for `-1` because `sub` is exclusive
   local backward_start_col_1_indexed = col_1_indexed
   local backward_subbed = curr_line:sub(0, backward_start_col_1_indexed)
   local backward_subbed_reversed = backward_subbed:reverse()
