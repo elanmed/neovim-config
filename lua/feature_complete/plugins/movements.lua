@@ -5,7 +5,7 @@ local CharOccurrencePreview = {}
 CharOccurrencePreview.__index = CharOccurrencePreview
 
 function CharOccurrencePreview:new()
-  local ns_id = vim.api.nvim_create_namespace "Elan"
+  local ns_id = vim.api.nvim_create_namespace "CharOccurrencePreview"
 
   local this = {
     is_dimmed = false,
@@ -85,11 +85,13 @@ function CharOccurrencePreview:highlight(opts)
   for offset, value in pairs(orders) do
     local hl_group
     if value == 1 then
-      hl_group = "ElanFirst"
+      hl_group = "CharOccurrencePreviewFirst"
     elseif value == 2 then
-      hl_group = "ElanSecond"
+      hl_group = "CharOccurrencePreviewSecond"
+    elseif value == 3 then
+      hl_group = "CharOccurrencePreviewThird"
     else
-      hl_group = "ElanDimmed"
+      hl_group = "CharOccurrencePreviewDimmed"
     end
 
     local highlight_col_1_indexed
@@ -122,41 +124,33 @@ end
 
 local char_occurrence_preview = CharOccurrencePreview:new()
 
-vim.api.nvim_create_autocmd({ "CursorMoved", }, {
-  pattern = "*",
-  callback = function()
-    if char_occurrence_preview.is_dimmed == true then
+--- @param opts { key: "f"|"F"|"t"|"T", forward: boolean }
+local function on_key(opts)
+  -- the `schedule` ensures that the highlight is cleared after operator pending mode is complete
+  -- example:
+  -- - in normal mode, `f` is pressed
+  -- - on_key begins to run
+  -- - the highlight is added
+  -- - the clearing cb is scheduled, but not run
+  -- - on_key waits for `f`'s operator before finishing
+  -- - an operator is pressed, i.e. `l`
+  -- - on_key finishes running
+  -- - the clearing cb is run
+  vim.schedule(function()
+    if char_occurrence_preview.is_dimmed then
       char_occurrence_preview:maybe_clear_highlight()
       char_occurrence_preview:toggle_off()
     end
-  end,
-})
+  end)
 
---- @param opts { key: "f"|"F"|"t"|"T", forward: boolean }
-local function on_key(opts)
-  char_occurrence_preview:maybe_clear_highlight()
   char_occurrence_preview:highlight { forward = opts.forward, }
   return opts.key
 end
 
-
-h.keys.map({ "n", "x", "o", }, "<c-c>",
-  function()
-    char_occurrence_preview:maybe_clear_highlight()
-    return "<c-c>"
-  end,
-  { expr = true, })
-h.keys.map({ "n", "x", "o", }, "<esc>",
-  function()
-    char_occurrence_preview:maybe_clear_highlight()
-    return "<esc>"
-  end,
-  { expr = true, })
-
-h.keys.map({ "n", "x", "o", }, "f", function() return on_key { key = "f", forward = true, } end, { expr = true, })
-h.keys.map({ "n", "x", "o", }, "F", function() return on_key { key = "F", forward = false, } end, { expr = true, })
-h.keys.map({ "n", "x", "o", }, "t", function() return on_key { key = "t", forward = true, } end, { expr = true, })
-h.keys.map({ "n", "x", "o", }, "T", function() return on_key { key = "T", forward = false, } end, { expr = true, })
+h.keys.map({ "n", "v", "o", }, "f", function() return on_key { key = "f", forward = true, } end, { expr = true, })
+h.keys.map({ "n", "v", "o", }, "F", function() return on_key { key = "F", forward = false, } end, { expr = true, })
+h.keys.map({ "n", "v", "o", }, "t", function() return on_key { key = "t", forward = true, } end, { expr = true, })
+h.keys.map({ "n", "v", "o", }, "T", function() return on_key { key = "T", forward = false, } end, { expr = true, })
 
 flash.setup {
   modes = {
