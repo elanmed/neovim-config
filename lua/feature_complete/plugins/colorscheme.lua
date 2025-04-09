@@ -48,7 +48,6 @@ vim.api.nvim_set_hl(h.curr.namespace, "CursorLine", { link = "Visual", })
 vim.api.nvim_set_hl(h.curr.namespace, "AerialLine", { link = "Visual", })
 vim.api.nvim_set_hl(h.curr.namespace, "WilderAccent", { fg = M.orange, })
 vim.api.nvim_set_hl(h.curr.namespace, "WildMenu", { fg = M.yellow, underline = true, bold = true, })
-vim.api.nvim_set_hl(h.curr.namespace, "CleverFMark", { fg = M.yellow, underline = true, bold = true, })
 
 vim.api.nvim_set_hl(h.curr.namespace, "FlashMatch", { link = "Search", })
 vim.api.nvim_set_hl(h.curr.namespace, "FlashLabel", { link = "IncSearch", })
@@ -63,5 +62,9 @@ vim.api.nvim_set_hl(h.curr.namespace, "NotifyError", { fg = M.red, })
 vim.api.nvim_set_hl(h.curr.namespace, "NotifyInfo", { fg = M.green, })
 vim.api.nvim_set_hl(h.curr.namespace, "NotifyToggleOn", { fg = M.green, })
 vim.api.nvim_set_hl(h.curr.namespace, "NotifyToggleOff", { fg = M.purple, })
+
+vim.api.nvim_set_hl(h.curr.namespace, "ElanFirst", { fg = M.red, underline = true, bold = true, })
+vim.api.nvim_set_hl(h.curr.namespace, "ElanSecond", { fg = M.yellow, underline = true, bold = true, })
+vim.api.nvim_set_hl(h.curr.namespace, "ElanDimmed", { fg = M.light_grey, })
 
 return M
