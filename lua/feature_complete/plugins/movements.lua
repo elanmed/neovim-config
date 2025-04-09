@@ -1,18 +1,37 @@
 local h = require "shared.helpers"
 local flash = require "flash"
 
-local ns_id = vim.api.nvim_create_namespace "Elan"
+local CharOccurrencePreview = {}
+CharOccurrencePreview.__index = CharOccurrencePreview
 
-local DIMMED = false
-local HIGHLIGHTED_LINE = nil
+function CharOccurrencePreview:new()
+  local ns_id = vim.api.nvim_create_namespace "Elan"
 
+  local this = {
+    is_dimmed = false,
+    highlighted_line = nil,
+    ns_id = ns_id,
+  }
+  return setmetatable(this, CharOccurrencePreview)
+end
+
+--- @param opts { highlighted_line: number }
+function CharOccurrencePreview:toggle_on(opts)
+  self.is_dimmed = true
+  self.highlighted_line = opts.highlighted_line
+end
+
+function CharOccurrencePreview:toggle_off()
+  self.is_dimmed = false
+  self.highlighted_line = nil
+end
 
 -- row and col params are expected to be already 0-indexed
 --- @param opts { row: number, start_col: number, end_col: number, hl_group: string }
-local function apply_highlight(opts)
+function CharOccurrencePreview:apply_highlight(opts)
   vim.hl.range(
     h.curr.buffer,
-    ns_id,
+    self.ns_id,
     opts.hl_group,
     { opts.row, opts.start_col, },
     { opts.row, opts.end_col, }
@@ -20,7 +39,7 @@ local function apply_highlight(opts)
 end
 
 --- @param str string
-local function get_orders(str)
+function CharOccurrencePreview:get_char_occurrences(str)
   -- bee -> { "b" = 1, "e" = 2 }
   local char_to_num_occurrence = {}
   -- bee -> { 1 = 1, 2 = 1, 3 = 2 }
@@ -44,7 +63,7 @@ local function get_orders(str)
 end
 
 --- @param opts { forward: boolean }
-local function highlight(opts)
+function CharOccurrencePreview:highlight(opts)
   local curr_line = vim.api.nvim_get_current_line()
   local cursor_pos = vim.api.nvim_win_get_cursor(h.curr.buffer)
   local curr_row_1_indexed = cursor_pos[1]
@@ -60,8 +79,8 @@ local function highlight(opts)
   local backward_subbed = curr_line:sub(0, backward_start_col_1_indexed)
   local backward_subbed_reversed = backward_subbed:reverse()
 
-  local forward_orders = get_orders(forward_subbed)
-  local backward_orders = get_orders(backward_subbed_reversed)
+  local forward_orders = self:get_char_occurrences(forward_subbed)
+  local backward_orders = self:get_char_occurrences(backward_subbed_reversed)
   local orders = opts.forward and forward_orders or backward_orders
   for offset, value in pairs(orders) do
     local hl_group
@@ -82,7 +101,7 @@ local function highlight(opts)
 
     local highlight_col_0_indexed = highlight_col_1_indexed - 1
 
-    apply_highlight {
+    self:apply_highlight {
       row = row_0_indexed,
       start_col = highlight_col_0_indexed,
       end_col = highlight_col_0_indexed + 1,
@@ -90,46 +109,46 @@ local function highlight(opts)
     }
   end
 
-  DIMMED = true
-  HIGHLIGHTED_LINE = row_0_indexed
+  self:toggle_on { highlighted_line = row_0_indexed, }
   vim.cmd "redraw"
 end
 
-local function maybe_clear_highlight()
-  if HIGHLIGHTED_LINE == nil then
+function CharOccurrencePreview:maybe_clear_highlight()
+  if self.highlighted_line == nil then
     return
   end
-  vim.api.nvim_buf_clear_namespace(h.curr.buffer, ns_id, HIGHLIGHTED_LINE, HIGHLIGHTED_LINE + 1)
+  vim.api.nvim_buf_clear_namespace(h.curr.buffer, self.ns_id, self.highlighted_line, self.highlighted_line + 1)
 end
+
+local char_occurrence_preview = CharOccurrencePreview:new()
 
 vim.api.nvim_create_autocmd({ "CursorMoved", }, {
   pattern = "*",
   callback = function()
-    if DIMMED == true then
-      maybe_clear_highlight()
-      DIMMED = false
-      HIGHLIGHTED_LINE = nil
+    if char_occurrence_preview.is_dimmed == true then
+      char_occurrence_preview:maybe_clear_highlight()
+      char_occurrence_preview:toggle_off()
     end
   end,
 })
 
 --- @param opts { key: "f"|"F"|"t"|"T", forward: boolean }
 local function on_key(opts)
-  maybe_clear_highlight()
-  highlight { forward = opts.forward, }
+  char_occurrence_preview:maybe_clear_highlight()
+  char_occurrence_preview:highlight { forward = opts.forward, }
   return opts.key
 end
 
 
 h.keys.map({ "n", "x", "o", }, "<c-c>",
   function()
-    maybe_clear_highlight()
+    char_occurrence_preview:maybe_clear_highlight()
     return "<c-c>"
   end,
   { expr = true, })
 h.keys.map({ "n", "x", "o", }, "<esc>",
   function()
-    maybe_clear_highlight()
+    char_occurrence_preview:maybe_clear_highlight()
     return "<esc>"
   end,
   { expr = true, })
