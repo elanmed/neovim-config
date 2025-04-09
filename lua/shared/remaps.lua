@@ -29,7 +29,7 @@ h.keys.map({ "v", }, "<leader>yp", [["zy`>"zp]], { desc = "Copy and paste the cu
 
 h.keys.map("n", ",", h.keys.vim_cmd_cb "w", { desc = "Save", })
 h.keys.map("n", "<leader>w", function() h.notify.error "Use , instead!" end, { desc = "Save", })
-h.keys.map("n", "<leader>q", function() h.notify.error "Use :q<cr> instead!" end, { desc = "Save", })
+h.keys.map("n", "<leader>q", h.keys.vim_cmd_cb "q", { desc = "Save", })
 
 h.keys.map("n", "<leader>ya", function() vim.fn.setreg("+", vim.fn.expand "%:p") end,
   { desc = "Yank the Absolute path of the current buffer", })
