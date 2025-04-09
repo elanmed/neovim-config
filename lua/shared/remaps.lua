@@ -2,7 +2,7 @@ local h = require "shared.helpers"
 
 -- delay when using h.keys.map
 vim.cmd "inoremap <C-t> <C-o>:Snippet<space>"
-vim.cmd "nnoremap ; :"
+vim.cmd "nnoremap ' :"
 h.keys.map({ "n", "v", }, "<C-t>", function() h.notify.error "snippets only supported in insert mode!" end)
 
 h.keys.map({ "n", "v", }, "b", "<Plug>(MatchitNormalForward)") -- TODO: what is this?
