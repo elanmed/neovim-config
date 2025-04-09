@@ -23,7 +23,6 @@ end
 local function get_orders(str)
   -- bee -> { "b" = 1, "e" = 2 }
   local char_to_num_occurrence = {}
-
   -- bee -> { 1 = 1, 2 = 1, 3 = 2 }
   local occurrence_as_str = {}
 
@@ -34,12 +33,10 @@ local function get_orders(str)
       if char_to_num_occurrence[char] == nil then
         char_to_num_occurrence[char] = 0
       end
-
       char_to_num_occurrence[char] = char_to_num_occurrence[char] + 1
     else
       char_to_num_occurrence[char] = -1
     end
-
     occurrence_as_str[i] = char_to_num_occurrence[char]
   end
 
@@ -61,13 +58,12 @@ local function highlight(opts)
 
   local backward_start_col_1_indexed = col_1_indexed
   local backward_subbed = curr_line:sub(0, backward_start_col_1_indexed)
+  local backward_subbed_reversed = backward_subbed:reverse()
 
-  local subbed = opts.forward and forward_subbed or backward_subbed
-
-  -- bee
-  -- 123
-  -- bee -> { 1 = 1, 2 = 1, 3 = 2 }
-  for offset, value in pairs(get_orders(subbed)) do
+  local forward_orders = get_orders(forward_subbed)
+  local backward_orders = get_orders(backward_subbed_reversed)
+  local orders = opts.forward and forward_orders or backward_orders
+  for offset, value in pairs(orders) do
     local hl_group
     if value == 1 then
       hl_group = "ElanFirst"
@@ -77,7 +73,13 @@ local function highlight(opts)
       hl_group = "ElanDimmed"
     end
 
-    local highlight_col_1_indexed = col_1_indexed + offset
+    local highlight_col_1_indexed
+    if opts.forward then
+      highlight_col_1_indexed = col_1_indexed + offset
+    else
+      highlight_col_1_indexed = col_1_indexed - offset + 1 -- TODO: why do I need + 1
+    end
+
     local highlight_col_0_indexed = highlight_col_1_indexed - 1
 
     apply_highlight {
@@ -88,15 +90,13 @@ local function highlight(opts)
     }
   end
 
-
   DIMMED = true
   HIGHLIGHTED_LINE = row_0_indexed
   vim.cmd "redraw"
 end
 
-local function cleanup_highlight()
+local function maybe_clear_highlight()
   if HIGHLIGHTED_LINE == nil then
-    h.notify.error "HIGHLIGHTED_LINE is nil!"
     return
   end
   vim.api.nvim_buf_clear_namespace(h.curr.buffer, ns_id, HIGHLIGHTED_LINE, HIGHLIGHTED_LINE + 1)
@@ -106,7 +106,7 @@ vim.api.nvim_create_autocmd({ "CursorMoved", }, {
   pattern = "*",
   callback = function()
     if DIMMED == true then
-      cleanup_highlight()
+      maybe_clear_highlight()
       DIMMED = false
       HIGHLIGHTED_LINE = nil
     end
@@ -115,14 +115,29 @@ vim.api.nvim_create_autocmd({ "CursorMoved", }, {
 
 --- @param opts { key: "f"|"F"|"t"|"T", forward: boolean }
 local function on_key(opts)
+  maybe_clear_highlight()
   highlight { forward = opts.forward, }
   return opts.key
 end
 
-h.keys.map({ "n", "x", "o", }, "f", function() on_key { key = "f", forward = true, } end,
-  { buffer = h.curr.buffer, expr = true, })
-h.keys.map({ "n", "x", "o", }, "F", function() on_key { key = "F", forward = false, } end,
-  { buffer = h.curr.buffer, expr = true, })
+
+h.keys.map({ "n", "x", "o", }, "<c-c>",
+  function()
+    maybe_clear_highlight()
+    return "<c-c>"
+  end,
+  { expr = true, })
+h.keys.map({ "n", "x", "o", }, "<esc>",
+  function()
+    maybe_clear_highlight()
+    return "<esc>"
+  end,
+  { expr = true, })
+
+h.keys.map({ "n", "x", "o", }, "f", function() return on_key { key = "f", forward = true, } end, { expr = true, })
+h.keys.map({ "n", "x", "o", }, "F", function() return on_key { key = "F", forward = false, } end, { expr = true, })
+h.keys.map({ "n", "x", "o", }, "t", function() return on_key { key = "t", forward = true, } end, { expr = true, })
+h.keys.map({ "n", "x", "o", }, "T", function() return on_key { key = "T", forward = false, } end, { expr = true, })
 
 flash.setup {
   modes = {
