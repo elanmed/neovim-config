@@ -1,5 +1,6 @@
 local h = require "shared.helpers"
 local grug = require "grug-far"
+local snacks = require "snacks"
 
 -- https://github.com/ibhagwan/fzf-lua/wiki#how-do-i-get-maximum-performance-out-of-fzf-lua
 local fzf_lua = require "fzf-lua"
@@ -66,7 +67,14 @@ local function without_preview_cb(cb)
 end
 
 
-h.keys.map("n", "<C-p>", with_preview_cb(fzf_lua.files), { desc = "Find files with telescope", })
+h.keys.map("n", "<C-p>", function()
+  snacks.picker.smart {
+    layout = {
+      preset = "vscode",
+    },
+  }
+end, { desc = "Find files with telescope", })
+
 h.keys.map("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
 h.keys.map("n", "<leader>lh", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with telescope", })
 h.keys.map("n", "<leader>l;", without_preview_cb(fzf_lua.command_history),
@@ -266,7 +274,6 @@ local function live_grep_with_args(opts)
 end
 
 h.keys.map("n", "<leader>la", function() live_grep_with_args { query = "~", } end)
-
 h.keys.map("v", "<leader>lo",
   function()
     local require_visual_mode_active = true
@@ -274,7 +281,6 @@ h.keys.map("v", "<leader>lo",
     if visual_selection == "" then return end
     live_grep_with_args { query = "~" .. visual_selection .. "~ ", }
   end, { desc = "Grep the current word", })
-
 h.keys.map({ "n", }, "<leader>lo",
   function() live_grep_with_args { query = "~" .. vim.fn.expand "<cword>" .. "~ ", } end,
   { desc = "Grep the current visual selection", })
