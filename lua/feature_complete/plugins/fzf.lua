@@ -1,4 +1,5 @@
 local h = require "shared.helpers"
+local grug = require "grug-far"
 
 -- https://github.com/ibhagwan/fzf-lua/wiki#how-do-i-get-maximum-performance-out-of-fzf-lua
 local fzf_lua = require "fzf-lua"
@@ -32,64 +33,32 @@ local function with_preview_cb(cb)
 end
 
 local function without_preview_cb(cb)
+  local without_preview_opts = {
+    previewer = false,
+    winopts = {
+      width  = 1,
+      height = 0.5,
+      row    = 1,
+    },
+  }
   return function() cb(without_preview_opts) end
 end
 
-local without_preview_opts = {
-  previewer = false,
-  winopts = {
-    width  = 1,
-    height = 0.5,
-    row    = 1,
-  },
-}
 
 h.keys.map("n", "<C-p>", with_preview_cb(fzf_lua.files), { desc = "Find files with telescope", })
-
-h.keys.map("n", "<leader>l;",
-  function()
-    fzf_lua.command_history(without_preview_opts)
-  end,
+h.keys.map("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
+h.keys.map("n", "<leader>lh", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with telescope", })
+h.keys.map("n", "<leader>l;", without_preview_cb(fzf_lua.command_history),
   { desc = "Search search history with telescope", })
-
-h.keys.map("n", "<leader>lr",
-  function()
-    fzf_lua.resume()
-  end,
-  { desc = "Resume fzf-lua search", })
-
-h.keys.map("n", "<leader>lu",
-  function()
-    fzf_lua.buffers(with_preview_opts)
-  end,
+h.keys.map("n", "<leader>lu", with_preview_cb(fzf_lua.buffers),
   { desc = "Search currently open buffers with telescope", })
-
-h.keys.map("n", "<leader>lh",
-  function()
-    fzf_lua.helptags(with_preview_opts)
-  end,
-  { desc = "Search help tags with telescope", })
-
-h.keys.map("n", "<leader>lf",
-  function()
-    fzf_lua.grep_curbuf(with_preview_opts)
-  end,
+h.keys.map("n", "<leader>lf", with_preview_cb(fzf_lua.grep_curbuf),
   { desc = "Search in the current buffer with telescope", })
-
 h.keys.map("n", "<leader>lg",
   function()
     fzf_lua.grep(vim.tbl_extend("force", with_preview_opts, { search = "", }))
-  end, { desc = "Live grep the entire project", })
-
-h.keys.map("n", "<leader>lo",
-  function()
-    fzf_lua.grep_cword(with_preview_opts)
-  end, { desc = "Grep the current word", })
-
-h.keys.map({ "v", }, "<leader>lo",
-  function()
-    fzf_lua.grep_visual(with_preview_opts)
-  end, { desc = "Grep the current visual selection", })
+  end,
+  { desc = "Live grep the entire project", })
 
 --- @param input_str string
 --- @return table
@@ -192,7 +161,7 @@ local cmd_generator = function(prompt)
 
     local is_last_char_space = flags_prompt:sub(#flags_prompt, #flags_prompt) == " "
     if flags_index == #split_flags_prompt and not is_last_char_space then
-      -- avoid updating the telescope command
+      -- avoid updating the rg command
       return nil
     end
 
@@ -275,8 +244,16 @@ local function live_grep_with_args(opts)
   end, opts)
 end
 
-h.keys.map("n", "<leader>la", function()
-  live_grep_with_args {
-    __fzf_init_cmd = "hello",
-  }
-end)
+h.keys.map("n", "<leader>la", function() live_grep_with_args { query = "~", } end)
+
+h.keys.map("v", "<leader>lo",
+  function()
+    local require_visual_mode_active = true
+    local visual_selection = grug.get_current_visual_selection(require_visual_mode_active)
+    if visual_selection == "" then return end
+    live_grep_with_args { query = "~" .. visual_selection .. "~ ", }
+  end, { desc = "Grep the current word", })
+
+h.keys.map({ "n", }, "<leader>lo",
+  function() live_grep_with_args { query = "~" .. vim.fn.expand "<cword>" .. "~ ", } end,
+  { desc = "Grep the current visual selection", })
