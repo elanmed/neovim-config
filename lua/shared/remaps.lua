@@ -35,6 +35,22 @@ h.keys.map("n", "<leader>ya", function() vim.fn.setreg("+", vim.fn.expand "%:p")
   { desc = "Yank the Absolute path of the current buffer", })
 h.keys.map("n", "<leader>yr", function() vim.fn.setreg("+", vim.fn.expand "%:~:.") end,
   { desc = "Yank the Relative path of the current buffer", })
+h.keys.map("n", "<leader>ye",
+  function()
+    local filepath = vim.fn.expand "%:p"
+
+    local stripped_start = filepath:match "wf_modules.*$"
+    if not stripped_start then
+      h.notify.error "`wf_modules` not found in the filepath!"
+      return nil
+    end
+
+    local stripped_filename = stripped_start:match "(.-)%..-$"
+    if stripped_filename == nil then return end
+
+    vim.fn.setreg("+", stripped_filename)
+  end
+  , { desc = "C(K)opy a file name starting with `wf_modules`", })
 
 h.keys.map({ "v", }, "<", "<gv", { desc = "Outdent, while keeping selection", })
 h.keys.map({ "v", }, ">", ">gv", { desc = "Indent, while keeping selection", })
