@@ -3,6 +3,13 @@ local grug = require "grug-far"
 
 -- https://github.com/ibhagwan/fzf-lua/wiki#how-do-i-get-maximum-performance-out-of-fzf-lua
 local fzf_lua = require "fzf-lua"
+
+local ignore_dirs = { "node_modules", ".git", "dist", }
+local fd_cmd = "fd --type f"
+for _, ignore_dir in pairs(ignore_dirs) do
+  fd_cmd = fd_cmd .. " --exclude " .. ignore_dir
+end
+
 fzf_lua.setup {
   winopts = {
     preview = { default = "bat_native", },
@@ -11,6 +18,7 @@ fzf_lua.setup {
     hidden = false,
     git_icons = false,
     file_icons = false,
+    cmd = fd_cmd,
   },
   fzf_opts = {
     ["--layout"] = "reverse-list",
