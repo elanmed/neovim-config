@@ -23,6 +23,19 @@ fzf_lua.setup {
   fzf_opts = {
     ["--layout"] = "reverse-list",
   },
+  keymap = {
+    builtin = {},
+    fzf = {
+      ["ctrl-a"] = "select-all+accept",
+      ["tab"] = "select+down",
+      ["shift-tab"] = "up+deselect",
+    },
+  },
+  actions = {
+    files = {
+      ["enter"] = fzf_lua.actions.file_edit_or_qf,
+    },
+  },
 }
 
 local with_preview_opts = {
