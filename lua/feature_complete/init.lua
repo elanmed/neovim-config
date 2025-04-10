@@ -58,10 +58,6 @@ Plug "karb94/neoscroll.nvim"
 Plug "echasnovski/mini.map"
 -- statusline
 Plug "nvim-lualine/lualine.nvim"
--- tele
--- Plug "nvim-telescope/telescope.nvim"
--- Plug("nvim-telescope/telescope-fzf-native.nvim", { ["do"] = "make", })
--- Plug "nvim-telescope/telescope-frecency.nvim"
 -- treesitter
 Plug("nvim-treesitter/nvim-treesitter", { ["do"] = h.keys.vim_cmd_cb "TSUpdate", })
 Plug "nvim-treesitter/nvim-treesitter-textobjects"
@@ -75,10 +71,11 @@ Plug "gelguy/wilder.nvim"
 Plug "romgrk/fzy-lua-native"
 -- far
 Plug "MagicDuck/grug-far.nvim"
+-- fzf
+Plug "ibhagwan/fzf-lua"
 -- misc
 Plug "folke/snacks.nvim"
 Plug "mbbill/undotree"
-Plug "ibhagwan/fzf-lua"
 
 vim.call "plug#end"
 
