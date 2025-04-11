@@ -1,8 +1,6 @@
 local h = require "shared.helpers"
 local grug = require "grug-far"
 local snacks = require "snacks"
-
--- https://github.com/ibhagwan/fzf-lua/wiki#how-do-i-get-maximum-performance-out-of-fzf-lua
 local fzf_lua = require "fzf-lua"
 
 local ignore_dirs = { "node_modules", ".git", "dist", }
@@ -256,23 +254,31 @@ local cmd_generator = function(prompt)
     return vim.iter(tbl):flatten():totable()
   end
 
-  local cmd = flatten { "rg", "--column", "--color=always", case_sensitive_flag, whole_word_flag, search, include_flag, negate_flag, }
+  local cmd = flatten {
+    "rg",
+    "--line-number", "--column", "--no-heading", -- formatting for fzf-lua
+    "--hidden",
+    "--color=always",
+    case_sensitive_flag, whole_word_flag, search, include_flag, negate_flag,
+  }
 
   return table.concat(cmd, " ")
 end
 
+-- https://github.com/ibhagwan/fzf-lua/wiki/Advanced#example-1-live-ripgrep
 local function live_grep_with_args(opts)
-  -- https://github.com/ibhagwan/fzf-lua/wiki/Advanced#example-1-live-ripgrep
   opts = vim.tbl_extend("force", opts or {}, with_preview_opts)
   opts.git_icons = false
   opts.file_icons = false
   opts.actions = fzf_lua.defaults.actions.files
   opts.previewer = "bat_native"
-  opts.search = "~"
   opts.fn_transform = function(x)
     return fzf_lua.make_entry.file(x, opts)
   end
 
+  -- found in the live_grep implementation, necessary to preview the correct section w/bats
+  -- fzf-lua/lua/fzf-lua/providers/grep.lua
+  opts = fzf_lua.core.set_fzf_field_index(opts)
 
   return fzf_lua.fzf_live(function(prompt)
     local cmd = cmd_generator(prompt or "")
