@@ -70,7 +70,15 @@ end
 h.keys.map("n", "<C-p>", function()
   snacks.picker.smart {
     layout = {
-      preset = "vscode",
+      layout = {
+        backdrop = false,
+        row = -1,
+        width = 0,
+        height = 0.4,
+        box = "vertical",
+        { win = "input", height = 1, border = "rounded", },
+        { win = "list", border = "none", },
+      },
     },
   }
 end, { desc = "Find files with telescope", })
