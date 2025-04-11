@@ -266,8 +266,9 @@ local cmd_generator = function(prompt)
 end
 
 -- https://github.com/ibhagwan/fzf-lua/wiki/Advanced#example-1-live-ripgrep
-local function live_grep_with_args(opts)
-  opts = vim.tbl_extend("force", opts or {}, with_preview_opts)
+--- @param initial_query string
+local function live_grep_with_args(initial_query)
+  local opts = with_preview_opts
   opts.git_icons = false
   opts.file_icons = false
   opts.actions = fzf_lua.defaults.actions.files
@@ -275,6 +276,7 @@ local function live_grep_with_args(opts)
   opts.fn_transform = function(x)
     return fzf_lua.make_entry.file(x, opts)
   end
+  opts.query = initial_query
 
   -- found in the live_grep implementation, necessary to preview the correct section w/bats
   -- fzf-lua/lua/fzf-lua/providers/grep.lua
@@ -287,14 +289,14 @@ local function live_grep_with_args(opts)
   end, opts)
 end
 
-h.keys.map("n", "<leader>la", function() live_grep_with_args { query = "~", } end)
+h.keys.map("n", "<leader>la", function() live_grep_with_args "~" end)
 h.keys.map("v", "<leader>lo",
   function()
     local require_visual_mode_active = true
     local visual_selection = grug.get_current_visual_selection(require_visual_mode_active)
     if visual_selection == "" then return end
-    live_grep_with_args { query = "~" .. visual_selection .. "~ ", }
+    live_grep_with_args("~" .. visual_selection .. "~ ")
   end, { desc = "Grep the current word", })
 h.keys.map({ "n", }, "<leader>lo",
-  function() live_grep_with_args { query = "~" .. vim.fn.expand "<cword>" .. "~ ", } end,
+  function() live_grep_with_args("~" .. vim.fn.expand "<cword>" .. "~ ") end,
   { desc = "Grep the current visual selection", })
