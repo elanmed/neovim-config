@@ -134,7 +134,7 @@ local function construct_flag(opts)
     else
       flag = flag .. "'"
     end
-    flag = flag .. "*{" .. table.concat(file_tbl, ",") .. "}'"
+    flag = flag .. "{" .. table.concat(file_tbl, ",") .. "}'"
   end
 
   if #flag > 0 then
