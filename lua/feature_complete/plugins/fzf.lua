@@ -35,6 +35,9 @@ fzf_lua.setup {
       ["enter"] = fzf_lua.actions.file_edit_or_qf,
     },
   },
+  marks = {
+    marks = "%a",
+  },
 }
 
 local with_preview_opts = {
@@ -83,6 +86,7 @@ end, { desc = "Find files with telescope", })
 
 h.keys.map("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
 h.keys.map("n", "<leader>lh", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with telescope", })
+h.keys.map("n", "<leader>lm", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with telescope", })
 h.keys.map("n", "<leader>l;", without_preview_cb(fzf_lua.command_history),
   { desc = "Search search history with telescope", })
 h.keys.map("n", "<leader>lu", with_preview_cb(fzf_lua.buffers),
@@ -105,8 +109,14 @@ local function split(input_str)
   return tbl
 end
 
+--- @param tbl table
+--- @return table
+local function flatten(tbl)
+  return vim.iter(tbl):flatten():totable()
+end
+
 --- @param opts { str: string, include_tbl: table, negate_tbl: table }
-local function insert_flags(opts)
+local function record_custom_flag(opts)
   local str, include_tbl, negate_tbl = opts.str, opts.include_tbl, opts.negate_tbl
   if str:sub(1, 1) == "!" then
     if #str > 1 then
@@ -118,7 +128,7 @@ local function insert_flags(opts)
 end
 
 --- @param opts { dir_tbl: table, file_tbl: table, negate: boolean }
-local function construct_flag(opts)
+local function construct_rg_flag(opts)
   local dir_tbl, file_tbl, negate = opts.dir_tbl, opts.file_tbl, opts.negate
   local flag = ""
   if #dir_tbl > 0 then
@@ -129,22 +139,21 @@ local function construct_flag(opts)
   end
 
   if #file_tbl > 0 then
-    if #dir_tbl > 0 then
-      flag = flag .. "/"
-    else
+    if #dir_tbl == 0 then
       flag = flag .. "'"
     end
-    flag = flag .. "{" .. table.concat(file_tbl, ",") .. "}'"
+    flag = flag .. "/{" .. table.concat(file_tbl, ",") .. "}'"
   end
 
   if #flag > 0 then
     if negate then
       flag = "!" .. flag
     end
-    return { "-g", flag, }
+
+    return "-g " .. flag
   end
 
-  return {}
+  return ""
 end
 
 --- @param prompt string
@@ -233,12 +242,12 @@ local cmd_generator = function(prompt)
     end
 
     if parsing_file_flags == true then
-      insert_flags { str = flag_token, include_tbl = include_file_flags, negate_tbl = negate_file_flags, }
+      record_custom_flag { str = flag_token, include_tbl = include_file_flags, negate_tbl = negate_file_flags, }
       goto continue
     end
 
     if parsing_dir_flags == true then
-      insert_flags { str = flag_token, include_tbl = include_dir_flags, negate_tbl = negate_dir_flags, }
+      record_custom_flag { str = flag_token, include_tbl = include_dir_flags, negate_tbl = negate_dir_flags, }
       goto continue
     end
 
@@ -247,12 +256,8 @@ local cmd_generator = function(prompt)
   end
 
 
-  local include_flag = construct_flag { negate = false, dir_tbl = include_dir_flags, file_tbl = include_file_flags, }
-  local negate_flag = construct_flag { negate = true, dir_tbl = negate_dir_flags, file_tbl = negate_file_flags, }
-
-  local function flatten(tbl)
-    return vim.iter(tbl):flatten():totable()
-  end
+  local include_flag = construct_rg_flag { negate = false, dir_tbl = include_dir_flags, file_tbl = include_file_flags, }
+  local negate_flag = construct_rg_flag { negate = true, dir_tbl = negate_dir_flags, file_tbl = negate_file_flags, }
 
   local cmd = flatten {
     "rg",

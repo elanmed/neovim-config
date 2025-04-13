@@ -1,5 +1,6 @@
 local h = require "shared.helpers"
 local flash = require "flash"
+local marks = require "marks"
 
 local CharOccurPreview = {}
 CharOccurPreview.__index = CharOccurPreview
@@ -88,13 +89,13 @@ function CharOccurPreview:highlight(opts)
     local hl_group
     if value == 1 then
       -- goto continue
-      hl_group = "CharOccurPreviewDimmed"
+      hl_group = "FTPreviewFirst"
     elseif value == 2 then
-      hl_group = "CharOccurPreviewSecond"
+      hl_group = "FTPreviewSecond"
     elseif value == 3 then
-      hl_group = "CharOccurPreviewThird"
+      hl_group = "FTPreviewThird"
     else
-      hl_group = "CharOccurPreviewDimmed"
+      hl_group = "FTPreviewDimmed"
     end
 
     local highlight_col_1_indexed
@@ -183,28 +184,23 @@ h.keys.map("n", "<leader>sa", function()
   }
 end)
 
-local harpoon = require "harpoon"
-harpoon:setup {
-  settings = {
-    save_on_toggle = true,
-  },
-}
-
-h.keys.map("n", "<leader>th",
-  function()
-    harpoon.ui:toggle_quick_menu(harpoon:list(), { ui_max_width = 80, })
-  end,
-  { desc = "Toggle the harpoon window", })
-h.keys.map("n", "<leader>yo", function() harpoon:list():add() end, { desc = "Yank an file into harpoon", })
-
-require "marks".setup {
+marks.setup {
   excluded_filetypes = { "oil", },
   default_mappings = false,
   mappings = {
     toggle = "mt",
-    next = "me",         -- nExt
-    prev = "mr",         -- pRev
-    delete_line = "dml", -- delete mark on the current Line
-    delete_buf = "dma",  -- delete All
+    next = "me", -- nExt
+    prev = "mr", -- pRev
+    delete_line = "dml",
+    delete_buf = "dmb",
   },
 }
+h.keys.map("n", "mgg", function()
+  local view = vim.fn.winsaveview()
+  vim.cmd "1"
+  marks.set_next()
+  vim.fn.winrestview(view)
+  h.notify.info "mark set!"
+end, { desc = "Set a mark at the top of the file", })
+
+h.keys.map("n", "dma", h.keys.vim_cmd_cb "delmarks A-Za-z0-9", { desc = "Delete all marks", })

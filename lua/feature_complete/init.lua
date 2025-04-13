@@ -48,7 +48,6 @@ Plug "folke/lazydev.nvim"
 Plug "windwp/nvim-autopairs"
 Plug "stevearc/conform.nvim"
 -- movements
-Plug("ThePrimeagen/harpoon", { branch = "harpoon2", })
 Plug "folke/flash.nvim"
 Plug "chentoast/marks.nvim"
 Plug "christoomey/vim-tmux-navigator"

@@ -63,8 +63,9 @@ vim.api.nvim_set_hl(h.curr.namespace, "NotifyInfo", { fg = M.green, })
 vim.api.nvim_set_hl(h.curr.namespace, "NotifyToggleOn", { fg = M.green, })
 vim.api.nvim_set_hl(h.curr.namespace, "NotifyToggleOff", { fg = M.purple, })
 
-vim.api.nvim_set_hl(h.curr.namespace, "FTPreviewSecond", { fg = M.yellow, underline = true, bold = true, })
-vim.api.nvim_set_hl(h.curr.namespace, "FTPreviewThird", { fg = M.red, underline = true, bold = true, })
-vim.api.nvim_set_hl(h.curr.namespace, "FTPreviewDimmed", { fg = M.light_grey, })
+vim.api.nvim_set_hl(h.curr.namespace, "FTPreviewFirst", { link = "Normal", })
+vim.api.nvim_set_hl(h.curr.namespace, "FTPreviewSecond", { fg = M.yellow, bg = M.black, underline = true, bold = true, })
+vim.api.nvim_set_hl(h.curr.namespace, "FTPreviewThird", { fg = M.red, bg = M.black, underline = true, bold = true, })
+vim.api.nvim_set_hl(h.curr.namespace, "FTPreviewDimmed", { fg = M.light_grey, bg = M.black, })
 
 return M
