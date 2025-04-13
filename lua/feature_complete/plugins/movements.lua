@@ -8,7 +8,7 @@ function CharOccurrencePreview:new()
   local ns_id = vim.api.nvim_create_namespace "CharOccurrencePreview"
 
   local this = {
-    is_dimmed = false,
+    is_highlighted = false,
     highlighted_line = nil,
     ns_id = ns_id,
   }
@@ -17,12 +17,12 @@ end
 
 --- @param opts { highlighted_line: number }
 function CharOccurrencePreview:toggle_on(opts)
-  self.is_dimmed = true
+  self.is_highlighted = true
   self.highlighted_line = opts.highlighted_line
 end
 
 function CharOccurrencePreview:toggle_off()
-  self.is_dimmed = false
+  self.is_highlighted = false
   self.highlighted_line = nil
 end
 
@@ -87,7 +87,8 @@ function CharOccurrencePreview:highlight(opts)
   for offset, value in pairs(orders) do
     local hl_group
     if value == 1 then
-      hl_group = "CharOccurrencePreviewFirst"
+      -- goto continue
+      hl_group = "CharOccurrencePreviewDimmed"
     elseif value == 2 then
       hl_group = "CharOccurrencePreviewSecond"
     elseif value == 3 then
@@ -139,7 +140,7 @@ local function on_key(opts)
   -- - on_key finishes running
   -- - the clearing cb is run
   vim.schedule(function()
-    if char_occurrence_preview.is_dimmed then
+    if char_occurrence_preview.is_highlighted then
       char_occurrence_preview:maybe_clear_highlight()
       char_occurrence_preview:toggle_off()
     end

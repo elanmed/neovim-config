@@ -63,9 +63,9 @@ vim.api.nvim_set_hl(h.curr.namespace, "NotifyInfo", { fg = M.green, })
 vim.api.nvim_set_hl(h.curr.namespace, "NotifyToggleOn", { fg = M.green, })
 vim.api.nvim_set_hl(h.curr.namespace, "NotifyToggleOff", { fg = M.purple, })
 
-vim.api.nvim_set_hl(h.curr.namespace, "CharOccurrencePreviewFirst", { fg = M.red, underline = true, bold = true, })
+vim.api.nvim_set_hl(h.curr.namespace, "CharOccurrencePreviewFirst", { underline = true, bold = true, })
 vim.api.nvim_set_hl(h.curr.namespace, "CharOccurrencePreviewSecond", { fg = M.yellow, underline = true, bold = true, })
-vim.api.nvim_set_hl(h.curr.namespace, "CharOccurrencePreviewThird", { fg = M.green, underline = true, bold = true, })
+vim.api.nvim_set_hl(h.curr.namespace, "CharOccurrencePreviewThird", { fg = M.red, underline = true, bold = true, })
 vim.api.nvim_set_hl(h.curr.namespace, "CharOccurrencePreviewDimmed", { fg = M.light_grey, })
 
 return M
