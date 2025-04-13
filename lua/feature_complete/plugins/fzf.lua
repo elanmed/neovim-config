@@ -25,7 +25,7 @@ fzf_lua.setup {
   keymap = {
     builtin = {},
     fzf = {
-      ["ctrl-a"] = "select-all+accept",
+      ["ctrl-a"] = "toggle-all",
       ["tab"] = "select+down",
       ["shift-tab"] = "up+deselect",
     },
