@@ -52,7 +52,6 @@ Plug("ThePrimeagen/harpoon", { branch = "harpoon2", })
 Plug "folke/flash.nvim"
 Plug "chentoast/marks.nvim"
 Plug "christoomey/vim-tmux-navigator"
--- Plug "rhysd/clever-f.vim"
 -- scroll
 Plug "karb94/neoscroll.nvim"
 Plug "echasnovski/mini.map"

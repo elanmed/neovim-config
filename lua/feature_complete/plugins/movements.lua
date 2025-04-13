@@ -1,34 +1,34 @@
 local h = require "shared.helpers"
 local flash = require "flash"
 
-local CharOccurrencePreview = {}
-CharOccurrencePreview.__index = CharOccurrencePreview
+local CharOccurPreview = {}
+CharOccurPreview.__index = CharOccurPreview
 
-function CharOccurrencePreview:new()
-  local ns_id = vim.api.nvim_create_namespace "CharOccurrencePreview"
+function CharOccurPreview:new()
+  local ns_id = vim.api.nvim_create_namespace "CharOccurPreview"
 
   local this = {
     is_highlighted = false,
     highlighted_line = nil,
     ns_id = ns_id,
   }
-  return setmetatable(this, CharOccurrencePreview)
+  return setmetatable(this, CharOccurPreview)
 end
 
 --- @param opts { highlighted_line: number }
-function CharOccurrencePreview:toggle_on(opts)
+function CharOccurPreview:toggle_on(opts)
   self.is_highlighted = true
   self.highlighted_line = opts.highlighted_line
 end
 
-function CharOccurrencePreview:toggle_off()
+function CharOccurPreview:toggle_off()
   self.is_highlighted = false
   self.highlighted_line = nil
 end
 
 -- row and col params are expected to be already 0-indexed
 --- @param opts { row: number, start_col: number, end_col: number, hl_group: string }
-function CharOccurrencePreview:apply_highlight(opts)
+function CharOccurPreview:apply_highlight(opts)
   vim.hl.range(
     h.curr.buffer,
     self.ns_id,
@@ -39,7 +39,7 @@ function CharOccurrencePreview:apply_highlight(opts)
 end
 
 --- @param str string
-function CharOccurrencePreview:get_char_occurrences(str)
+function CharOccurPreview:get_char_occurrences(str)
   -- bee -> { "b" = 1, "e" = 2 }
   local char_to_num_occurrence = {}
   -- bee -> { 1 = 1, 2 = 1, 3 = 2 }
@@ -63,7 +63,7 @@ function CharOccurrencePreview:get_char_occurrences(str)
 end
 
 --- @param opts { forward: boolean }
-function CharOccurrencePreview:highlight(opts)
+function CharOccurPreview:highlight(opts)
   local curr_line = vim.api.nvim_get_current_line()
   local cursor_pos = vim.api.nvim_win_get_cursor(h.curr.buffer)
   local curr_row_1_indexed = cursor_pos[1]
@@ -88,13 +88,13 @@ function CharOccurrencePreview:highlight(opts)
     local hl_group
     if value == 1 then
       -- goto continue
-      hl_group = "CharOccurrencePreviewDimmed"
+      hl_group = "CharOccurPreviewDimmed"
     elseif value == 2 then
-      hl_group = "CharOccurrencePreviewSecond"
+      hl_group = "CharOccurPreviewSecond"
     elseif value == 3 then
-      hl_group = "CharOccurrencePreviewThird"
+      hl_group = "CharOccurPreviewThird"
     else
-      hl_group = "CharOccurrencePreviewDimmed"
+      hl_group = "CharOccurPreviewDimmed"
     end
 
     local highlight_col_1_indexed
@@ -118,14 +118,14 @@ function CharOccurrencePreview:highlight(opts)
   vim.cmd "redraw"
 end
 
-function CharOccurrencePreview:maybe_clear_highlight()
+function CharOccurPreview:maybe_clear_highlight()
   if self.highlighted_line == nil then
     return
   end
   vim.api.nvim_buf_clear_namespace(h.curr.buffer, self.ns_id, self.highlighted_line, self.highlighted_line + 1)
 end
 
-local char_occurrence_preview = CharOccurrencePreview:new()
+local char_occurrence_preview = CharOccurPreview:new()
 
 --- @param opts { key: "f"|"F"|"t"|"T", forward: boolean }
 local function on_key(opts)

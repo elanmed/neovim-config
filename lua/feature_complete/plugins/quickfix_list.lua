@@ -27,7 +27,6 @@ function QfPreview:new()
     preview_win_id = nil,
     preview_disabled = false,
     parsed_buffers = {},
-    highlight_q = {},
     highlighting = false,
   }
   return setmetatable(this, QfPreview)
@@ -37,59 +36,24 @@ function QfPreview:is_closed()
   return self.preview_win_id == nil
 end
 
---- @class HighlightQueueItem
---- @field preview_win_id number
---- @field qf_item_index number
+--- @param opts { preview_win_id: number, qf_item_index: number}
+function QfPreview:highlight(opts)
+  local curr_line = vim.fn.line "."
+  if curr_line ~= opts.qf_item_index then return end
+  if self.preview_win_id ~= opts.preview_win_id then return end
 
---- process highlights in a queue:
----   - avoid blocking the ui while treesitter parses
----   - avoid highlighting irrelevant buffers
---- @param opts HighlightQueueItem
-function QfPreview:highlight_pipeline(opts)
-  table.insert(self.highlight_q, opts)
+  local qf_list      = vim.fn.getqflist()
+  local curr_qf_item = qf_list[opts.qf_item_index]
 
-  local function do_next_highlight()
-    if self.highlighting then return end
-    self.highlighting = true
-
-    --- @type HighlightQueueItem
-    local curr_q_item = table.remove(self.highlight_q, 1)
-    if not curr_q_item then
-      self.highlighting = false
-      return
-    end
-
-    local curr_line = vim.fn.line "."
-    if curr_line ~= curr_q_item.qf_item_index then
-      self.highlighting = false
-      return
-    end
-    if self.preview_win_id ~= curr_q_item.preview_win_id then
-      self.highlighting = false
-      return
-    end
-
-    local qf_list      = vim.fn.getqflist()
-    local curr_qf_item = qf_list[curr_q_item.qf_item_index]
-
-    if not self.parsed_buffers[curr_qf_item.bufnr] then
-      vim.api.nvim_buf_call(curr_qf_item.bufnr, function()
-        vim.cmd "filetype detect"
-        vim.treesitter.start(curr_qf_item.bufnr)
-      end)
-      self.parsed_buffers[curr_qf_item.bufnr] = true
-    end
-
-    vim.api.nvim_win_set_cursor(curr_q_item.preview_win_id, { curr_qf_item.lnum, curr_qf_item.col, })
-
-    self.highlighting = false
-
-    vim.defer_fn(function()
-      do_next_highlight()
-    end, 20)
+  if not self.parsed_buffers[curr_qf_item.bufnr] then
+    vim.api.nvim_buf_call(curr_qf_item.bufnr, function()
+      vim.cmd "filetype detect"
+      vim.treesitter.start(curr_qf_item.bufnr)
+    end)
+    self.parsed_buffers[curr_qf_item.bufnr] = true
   end
 
-  vim.schedule(do_next_highlight)
+  vim.api.nvim_win_set_cursor(opts.preview_win_id, { curr_qf_item.lnum, curr_qf_item.col, })
 end
 
 --- @param disabled boolean
@@ -130,7 +94,7 @@ function QfPreview:open()
   vim.wo[self.preview_win_id].winblend       = 5
   vim.wo[self.preview_win_id].cursorline     = true
 
-  self:highlight_pipeline { preview_win_id = self.preview_win_id, qf_item_index = curr_line, }
+  self:highlight { preview_win_id = self.preview_win_id, qf_item_index = curr_line, }
 end
 
 function QfPreview:close()
@@ -167,7 +131,7 @@ function QfPreview:refresh()
 
   vim.api.nvim_win_set_cursor(self.preview_win_id, { curr_qf_item.lnum, curr_qf_item.col, })
 
-  self:highlight_pipeline { preview_win_id = self.preview_win_id, qf_item_index = curr_line, }
+  self:highlight { preview_win_id = self.preview_win_id, qf_item_index = curr_line, }
 end
 
 local qf_preview = QfPreview:new()
@@ -201,15 +165,15 @@ vim.api.nvim_create_autocmd({ "BufEnter", }, {
 
     local qf_list = vim.fn.getqflist()
 
-    if #qf_list > 75 then
+    if #qf_list > 100 then
       local truncated_list = {}
-      for i = 1, 75 do
+      for i = 1, 100 do
         truncated_list[i] = qf_list[i]
       end
 
       local replace = "r"
       vim.fn.setqflist(truncated_list, replace)
-      h.notify.info "truncated the quickfix list to 75 items"
+      h.notify.info "truncated the quickfix list to 100 items"
     end
   end,
 })
@@ -220,67 +184,6 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
     h.keys.map("n", "gdu", function()
       vim.fn.setqflist(vim.fn.getqflist())
       h.notify.info "Created a new list!"
-    end, { buffer = true, })
-
-    h.keys.map({ "v", }, "d", function()
-      local qf_list = vim.fn.getqflist()
-      if #qf_list == 0 then return end
-
-      local _, visual_row_start = unpack(vim.fn.getpos "v")
-      local _, visual_row_end   = unpack(vim.fn.getpos ".")
-
-      if visual_row_end < visual_row_start then
-        local temp_visual_row_start = visual_row_start
-        visual_row_start = visual_row_end
-        visual_row_end = temp_visual_row_start
-      end
-
-      local curr = visual_row_start
-      while (curr <= visual_row_end) do
-        -- can't remove multiple elements at once
-        table.remove(qf_list, visual_row_start)
-        curr = curr + 1
-      end
-
-      local replace = "r"
-      vim.fn.setqflist(qf_list, replace)
-      vim.api.nvim_input "<Esc>"
-
-      if #qf_list == 0 then
-        qf_preview:close()
-        return
-      end
-
-      local target_line = visual_row_start
-      if target_line > #qf_list then
-        target_line = #qf_list
-      end
-      vim.api.nvim_win_set_cursor(h.curr.window, { target_line, 0, })
-
-      qf_preview:refresh()
-    end, { buffer = true, })
-
-    h.keys.map("n", "dd", function()
-      local qf_list = vim.fn.getqflist()
-      if #qf_list == 0 then return end
-
-      local curr_line = vim.fn.line "."
-      table.remove(qf_list, curr_line)
-      local replace = "r"
-      vim.fn.setqflist(qf_list, replace)
-
-      if #qf_list == 0 then
-        qf_preview:close()
-        return
-      end
-
-      local target_line = curr_line
-      if target_line > #qf_list then
-        target_line = #qf_list
-      end
-      vim.api.nvim_win_set_cursor(h.curr.window, { target_line, 0, })
-
-      qf_preview:refresh()
     end, { buffer = true, })
 
     h.keys.map("n", "t", function()
