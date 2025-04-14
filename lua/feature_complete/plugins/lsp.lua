@@ -4,6 +4,8 @@ local lspconfig = require "lspconfig"
 vim.opt.signcolumn = "yes" -- reserve a space in the gutter
 
 require "mason".setup()
+-- https://github.com/williamboman/mason-lspconfig.nvim/blob/e86a4c84ff35240639643ffed56ee1c4d55f538e/doc/mason-lspconfig.txt#L164-L197
+-- useful for `ensure_installed`, not strictly necessary
 require "mason-lspconfig".setup {
   ensure_installed = {
     "ts_ls",
@@ -131,22 +133,20 @@ local function enable_deno_lsp()
 end
 
 if enable_deno_lsp() then
-  lspconfig.denols.setup {}
+  vim.lsp.enable "denols"
 else
-  lspconfig.ts_ls.setup {
+  vim.lsp.config("ts_ls", {
     init_options = {
       preferences = {
         importModuleSpecifierPreference = "non-relative",
         jsxAttributeCompletionStyle = "braces",
       },
     },
-  }
-  lspconfig.eslint.setup {}
+  })
+  vim.lsp.enable "eslint"
 end
 
-lspconfig.jsonls.setup {}
-lspconfig.lua_ls.setup {}
-lspconfig.bashls.setup {
+vim.lsp.config("bashls", {
   settings = {
     bashIde = {
       shellcheckArguments = "--extended-analysis=false",
@@ -156,13 +156,18 @@ lspconfig.bashls.setup {
       },
     },
   },
+})
+
+vim.lsp.enable {
+  "jsonls",
+  "lua_ls",
+  "css_variables",
+  "cssls",
+  "cssmodules_ls",
+  "stylelint_lsp",
+  "tailwindcss",
+  "vimls",
 }
-lspconfig.css_variables.setup {}
-lspconfig.cssls.setup {}
-lspconfig.cssmodules_ls.setup {}
-lspconfig.stylelint_lsp.setup {}
-lspconfig.tailwindcss.setup {}
-lspconfig.vimls.setup {}
 
 local cmp = require "cmp"
 cmp.setup {
