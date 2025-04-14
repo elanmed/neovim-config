@@ -40,27 +40,24 @@ function CharOccurPreview:apply_highlight(opts)
 end
 
 --- @param str string
-function CharOccurPreview:get_char_occurrences(str)
+function CharOccurPreview:get_char_occurrence_at_position(str)
   -- bee -> { "b" = 1, "e" = 2 }
   local char_to_num_occurrence = {}
   -- bee -> { 1 = 1, 2 = 1, 3 = 2 }
-  local occurrence_num_per_index = {}
+  local char_occurrence_at_position = {}
 
   for i = 1, #str do
     local char = str:sub(i, i)
 
-    if string.match(char, "%a") then
-      if char_to_num_occurrence[char] == nil then
-        char_to_num_occurrence[char] = 0
-      end
-      char_to_num_occurrence[char] = char_to_num_occurrence[char] + 1
-    else
-      char_to_num_occurrence[char] = -1
+    if char_to_num_occurrence[char] == nil then
+      char_to_num_occurrence[char] = 0
     end
-    occurrence_num_per_index[i] = char_to_num_occurrence[char]
+    char_to_num_occurrence[char] = char_to_num_occurrence[char] + 1
+
+    char_occurrence_at_position[i] = char_to_num_occurrence[char]
   end
 
-  return occurrence_num_per_index
+  return char_occurrence_at_position
 end
 
 --- @param opts { forward: boolean }
@@ -82,13 +79,12 @@ function CharOccurPreview:highlight(opts)
   local backward_subbed = curr_line:sub(0, backward_start_col_1_indexed)
   local backward_subbed_reversed = backward_subbed:reverse()
 
-  local forward_orders = self:get_char_occurrences(forward_subbed)
-  local backward_orders = self:get_char_occurrences(backward_subbed_reversed)
+  local forward_orders = self:get_char_occurrence_at_position(forward_subbed)
+  local backward_orders = self:get_char_occurrence_at_position(backward_subbed_reversed)
   local orders = opts.forward and forward_orders or backward_orders
   for offset, value in pairs(orders) do
     local hl_group
     if value == 1 then
-      -- goto continue
       hl_group = "FTPreviewFirst"
     elseif value == 2 then
       hl_group = "FTPreviewSecond"
