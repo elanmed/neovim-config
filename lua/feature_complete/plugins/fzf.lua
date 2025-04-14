@@ -82,17 +82,17 @@ h.keys.map("n", "<C-p>", function()
       },
     },
   }
-end, { desc = "Find files with telescope", })
+end, { desc = "Find files with fzf", })
 
 h.keys.map("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
-h.keys.map("n", "<leader>lh", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with telescope", })
-h.keys.map("n", "<leader>lm", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with telescope", })
+h.keys.map("n", "<leader>lh", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with fzf", })
+h.keys.map("n", "<leader>lm", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
 h.keys.map("n", "<leader>l;", without_preview_cb(fzf_lua.command_history),
-  { desc = "Search search history with telescope", })
+  { desc = "Search search history with fzf", })
 h.keys.map("n", "<leader>lu", with_preview_cb(fzf_lua.buffers),
-  { desc = "Search currently open buffers with telescope", })
+  { desc = "Search currently open buffers with fzf", })
 h.keys.map("n", "<leader>lf", with_preview_cb(fzf_lua.grep_curbuf),
-  { desc = "Search in the current buffer with telescope", })
+  { desc = "Search in the current buffer with fzf", })
 h.keys.map("n", "<leader>lg",
   function()
     fzf_lua.grep(vim.tbl_extend("force", with_preview_opts, { search = "", }))

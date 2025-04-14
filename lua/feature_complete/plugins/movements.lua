@@ -191,6 +191,7 @@ marks.setup {
     delete_buf = "dmb",
   },
 }
+
 h.keys.map("n", "mgg", function()
   local view = vim.fn.winsaveview()
   vim.cmd "1"
