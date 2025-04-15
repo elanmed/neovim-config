@@ -27,15 +27,15 @@ diffview.setup {
       { "n", "g?", actions.help { "view", "diff2", }, { desc = "Open the help panel", }, },
     },
     diff3 = {
-      { "n", "<leader>ho", actions.diffget "ours", { desc = "Use the diff hunk from the OURS version of the file", }, },
-      { "n", "<leader>ht", actions.diffget "theirs", { desc = "Use the diff hunk from the THEIRS version of the file", }, },
+      { "n", "<leader>go", actions.diffget "ours", { desc = "Use the diff hunk from the OURS version of the file", }, },
+      { "n", "<leader>gt", actions.diffget "theirs", { desc = "Use the diff hunk from the THEIRS version of the file", }, },
       { "n", "g?", actions.help { "view", "diff3", }, { desc = "Open the help panel", }, },
     },
     file_panel = {
       { "n", "X", actions.restore_entry, { desc = "Restore entry to the state on the left side", }, },
-      { "n", "<leader>ho", actions.conflict_choose_all "ours", { desc = "Use the OURS version of a conflict for the whole file", }, },
-      { "n", "<leader>ht", actions.conflict_choose_all "theirs", { desc = "Use the THEIRS version of a conflict for the whole file", }, },
-      { "n", "<leader>ha", actions.conflict_choose_all "all", { desc = "Use all the versions of a conflict for the whole file", }, },
+      { "n", "<leader>go", actions.conflict_choose_all "ours", { desc = "Use the OURS version of a conflict for the whole file", }, },
+      { "n", "<leader>gt", actions.conflict_choose_all "theirs", { desc = "Use the THEIRS version of a conflict for the whole file", }, },
+      { "n", "<leader>ga", actions.conflict_choose_all "all", { desc = "Use all the versions of a conflict for the whole file", }, },
       { "n", "-", actions.toggle_stage_entry, { desc = "Stage / unstage the selected entry", }, },
       { "n", "o", actions.goto_file_edit, { desc = "Open the file in the previous tabpage", }, },
       { "n", "<leader>e", actions.refresh_files, { desc = "Refresh files", }, },
@@ -83,36 +83,33 @@ h.keys.map("n", "(", function()
     gitsigns.nav_hunk "prev"
   end
 end, { desc = "Go to the prev git hunk", })
-
-h.keys.map("n", "<leader>hr", function()
+h.keys.map("n", "<leader>ge", function()
   gitsigns.reset_hunk()
   vim.cmd "w"
 end, { desc = "Reset the current hunk", })
-
-h.keys.map({ "v", }, "<leader>hr", function()
+h.keys.map({ "v", }, "<leader>ge", function()
   gitsigns.reset_hunk { vim.fn.line ".", vim.fn.line "v", }
   vim.cmd "w"
 end, { desc = "Reset the current hunk", })
-
-h.keys.map("n", "<leader>hb", function()
+h.keys.map("n", "<leader>gb", function()
   gitsigns.reset_buffer()
   vim.cmd "w"
 end, { desc = "Reset the current bUffer", })
+h.keys.map("n", "<leader>gh", h.keys.vim_cmd_cb "DiffviewFileHistory %", { desc = "", })
+h.keys.map("n", "<leader>gd", h.keys.vim_cmd_cb "DiffviewOpen", { desc = "Open the diff for all buffers", })
+h.keys.map("n", "<leader>gw", gitsigns.preview_hunk, { desc = "Preview the current hunk", })
+h.keys.map("n", "<leader>gp", h.keys.vim_cmd_cb "Git push origin HEAD")
 
-h.keys.map("n", "<leader>hh", h.keys.vim_cmd_cb "DiffviewFileHistory %", { desc = "", })
-h.keys.map("n", "<leader>hd", h.keys.vim_cmd_cb "DiffviewOpen", { desc = "Open the diff for all buffers", })
-h.keys.map("n", "<leader>hp", gitsigns.preview_hunk, { desc = "Preview the current hunk", })
-h.keys.map("n", "<leader>hl", gitsigns.toggle_current_line_blame,
+h.keys.map("n", "<leader>gl", gitsigns.toggle_current_line_blame,
   { desc = "Toggle git blame for the current line", })
-h.keys.map("n", "<leader>hi", function()
+h.keys.map("n", "<leader>gi", function()
     local current_buf = vim.api.nvim_get_current_buf()
     vim.cmd "tabnew"
     vim.api.nvim_set_current_buf(current_buf)
     vim.cmd "Gdiffsplit"
   end,
   { desc = "Open the dIff for the current buffer", })
-h.keys.map("n", "<leader>hq", function() h.notify.error "use <C-y> instead!" end)
-h.keys.map("n", "<leader>hs", function()
+h.keys.map("n", "<leader>gs", function()
     vim.cmd "tabnew"
     vim.cmd "Gedit :"
   end,
