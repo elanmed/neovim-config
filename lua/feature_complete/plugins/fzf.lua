@@ -95,7 +95,18 @@ h.keys.map("n", "<leader>lf", with_preview_cb(fzf_lua.grep_curbuf),
   { desc = "Search in the current buffer with fzf", })
 h.keys.map("n", "<leader>lg",
   function()
-    fzf_lua.grep(vim.tbl_extend("force", with_preview_opts, { search = "", }))
+    fzf_lua.grep {
+      search = "",
+      -- TODO: issues with vim.tbl_extend work
+      winopts = {
+        width   = 1,
+        height  = 1,
+        preview = {
+          layout   = "vertical",
+          vertical = "up:35%",
+        },
+      },
+    }
   end,
   { desc = "Live grep the entire project", })
 

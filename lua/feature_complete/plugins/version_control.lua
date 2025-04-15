@@ -99,6 +99,8 @@ h.keys.map("n", "<leader>hb", function()
   vim.cmd "w"
 end, { desc = "Reset the current bUffer", })
 
+h.keys.map("n", "<leader>hh", h.keys.vim_cmd_cb "DiffviewFileHistory %", { desc = "", })
+h.keys.map("n", "<leader>hd", h.keys.vim_cmd_cb "DiffviewOpen", { desc = "Open the diff for all buffers", })
 h.keys.map("n", "<leader>hp", gitsigns.preview_hunk, { desc = "Preview the current hunk", })
 h.keys.map("n", "<leader>hl", gitsigns.toggle_current_line_blame,
   { desc = "Toggle git blame for the current line", })
@@ -110,9 +112,8 @@ h.keys.map("n", "<leader>hi", function()
   end,
   { desc = "Open the dIff for the current buffer", })
 h.keys.map("n", "<leader>hq", function() h.notify.error "use <C-y> instead!" end)
-
-h.keys.map("n", "<leader>hs", h.keys.vim_cmd_cb "Gedit :",
+h.keys.map("n", "<leader>hs", function()
+    vim.cmd "tabnew"
+    vim.cmd "Gedit :"
+  end,
   { desc = "Open the fugitive status in the current tab", })
-
-h.keys.map("n", "<leader>hh", h.keys.vim_cmd_cb "DiffviewFileHistory %", { desc = "", })
-h.keys.map("n", "<leader>hd", h.keys.vim_cmd_cb "DiffviewOpen", { desc = "Open the diff for all buffers", })
