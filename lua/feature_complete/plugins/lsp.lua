@@ -57,7 +57,6 @@ h.keys.map({ "i", }, "<C-g>s", "<nop>", { desc = "Disable vim surround remap", }
 h.keys.map({ "i", }, "<C-g>S", "<nop>", { desc = "Disable vim surround remap", })
 h.keys.map({ "i", }, "<C-g>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
 
-
 local lspconfig_defaults = lspconfig.util.default_config
 lspconfig_defaults.capabilities = vim.tbl_deep_extend(
   "force",

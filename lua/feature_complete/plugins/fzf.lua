@@ -67,7 +67,6 @@ local function without_preview_cb(cb)
   return function() cb(without_preview_opts) end
 end
 
-
 h.keys.map("n", "<C-p>", function()
   snacks.picker.smart {
     layout = {
@@ -314,5 +313,35 @@ h.keys.map("v", "<leader>lo",
     live_grep_with_args("~" .. visual_selection .. "~ ")
   end, { desc = "Grep the current word", })
 h.keys.map({ "n", }, "<leader>lo",
-  function() live_grep_with_args("~" .. vim.fn.expand "<cword>" .. "~ ") end,
-  { desc = "Grep the current visual selection", })
+  function()
+    live_grep_with_args("~" .. vim.fn.expand "<cword>" .. "~ ")
+  end, { desc = "Grep the current visual selection", })
+
+local function get_stripped_filename()
+  local filepath = vim.fn.expand "%:p"
+
+  local stripped_start = filepath:match "wf_modules.*$"
+  if not stripped_start then
+    h.notify.warn "`wf_modules` not found in the filepath!"
+    return nil
+  end
+
+  local stripped_filename = stripped_start:match "(.-)%..-$"
+  return stripped_filename
+end
+
+h.keys.map("n", "<leader>le",
+  function()
+    local stripped_filename = get_stripped_filename()
+    if stripped_filename == nil then return end
+
+    live_grep_with_args("~" .. stripped_filename .. "~ ")
+  end, { desc = "Grep the current file name starting with `wf_modules`", })
+
+h.keys.map("n", "<leader>ye",
+  function()
+    local stripped_filename = get_stripped_filename()
+    if stripped_filename == nil then return end
+
+    vim.fn.setreg("+", stripped_filename)
+  end, { desc = "Yank a file name starting with `wf_modules`", })
