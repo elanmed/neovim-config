@@ -25,6 +25,8 @@ done
 h_validate_package_manager "$package_manager"
 
 h_install_package "$package_manager" neovim
+h_install_package "$package_manager" python3-neovim
+h_install_package "$package_manager" bat
 h_install_package "$package_manager" fzf
 h_install_package "$package_manager" ripgrep
 h_install_package "$package_manager" fd
