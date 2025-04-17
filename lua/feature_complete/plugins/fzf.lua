@@ -23,8 +23,9 @@ fzf_lua.setup {
     ["--layout"] = "reverse-list",
   },
   keymap = {
-    builtin = {},
+    builtin = { false, },
     fzf = {
+      false,
       ["ctrl-a"] = "toggle-all",
       ["tab"] = "select+down",
       ["shift-tab"] = "up+deselect",
@@ -295,6 +296,7 @@ local function live_grep_with_args(initial_query)
     return fzf_lua.make_entry.file(x, opts)
   end
   opts.query = initial_query
+  opts.fzf_opts = { ["--multi"] = true, }
 
   -- found in the live_grep implementation, necessary to preview the correct section w/bats
   -- fzf-lua/lua/fzf-lua/providers/grep.lua
