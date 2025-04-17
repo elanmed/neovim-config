@@ -80,6 +80,19 @@ h.keys.map("n", "<C-p>", function()
         { win = "list", border = "none", },
       },
     },
+    formatters = {
+      file = {
+        truncate = 100,
+      },
+    },
+    win = {
+      input = {
+        keys = {
+          ["<Esc>"] = { "close", mode = "i", },
+          ["<C-c>"] = { "cancel", mode = "i", },
+        },
+      },
+    },
   }
 end, { desc = "Find files with fzf", })
 
@@ -94,18 +107,8 @@ h.keys.map("n", "<leader>lf", with_preview_cb(fzf_lua.grep_curbuf),
   { desc = "Search in the current buffer with fzf", })
 h.keys.map("n", "<leader>lg",
   function()
-    fzf_lua.grep {
-      search = "",
-      -- TODO: issues with vim.tbl_extend work
-      winopts = {
-        width   = 1,
-        height  = 1,
-        preview = {
-          layout   = "vertical",
-          vertical = "up:35%",
-        },
-      },
-    }
+    local opts = vim.tbl_deep_extend("error", { search = "", }, with_preview_opts)
+    fzf_lua.grep(opts)
   end,
   { desc = "Live grep the entire project", })
 
@@ -283,7 +286,7 @@ end
 -- https://github.com/ibhagwan/fzf-lua/wiki/Advanced#example-1-live-ripgrep
 --- @param initial_query string
 local function live_grep_with_args(initial_query)
-  local opts = with_preview_opts
+  local opts = vim.tbl_deep_extend("error", {}, with_preview_opts)
   opts.git_icons = false
   opts.file_icons = false
   opts.actions = fzf_lua.defaults.actions.files
