@@ -54,12 +54,13 @@ Plug "christoomey/vim-tmux-navigator"
 -- scroll
 Plug "karb94/neoscroll.nvim"
 Plug "echasnovski/mini.map"
+Plug "ojroques/nvim-scrollbar"
+Plug "ojroques/vim-scrollstatus"
 -- statusline
 Plug "nvim-lualine/lualine.nvim"
 -- treesitter
 Plug("nvim-treesitter/nvim-treesitter", { ["do"] = h.keys.vim_cmd_cb "TSUpdate", })
 Plug "nvim-treesitter/nvim-treesitter-textobjects"
-Plug "stevearc/aerial.nvim"
 Plug "MeanderingProgrammer/markdown.nvim"
 Plug "RRethy/nvim-treesitter-endwise"
 Plug "windwp/nvim-ts-autotag"
@@ -73,7 +74,6 @@ Plug "MagicDuck/grug-far.nvim"
 Plug "ibhagwan/fzf-lua"
 -- misc
 Plug "folke/snacks.nvim"
-Plug "mbbill/undotree"
 
 vim.call "plug#end"
 

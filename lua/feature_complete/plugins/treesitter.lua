@@ -64,18 +64,6 @@ require "render-markdown".setup {
   },
 }
 
-require "aerial".setup {
-  lazy_load = false,
-  show_guides = true,
-  layout = {
-    resize_to_content = true,
-    max_width = 0.4,
-    width = nil,
-    min_width = nil,
-  },
-}
-h.keys.map("n", "<leader>ta", h.keys.vim_cmd_cb "AerialToggle left", { desc = "Toggle aerial window", })
-
 require "ts_context_commentstring".setup {}
 require "nvim-ts-autotag".setup {}
 
