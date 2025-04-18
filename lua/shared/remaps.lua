@@ -3,6 +3,7 @@ local h = require "shared.helpers"
 -- delay when using h.keys.map
 vim.cmd "inoremap <C-t> <C-o>:Snippet<space>"
 h.keys.map({ "n", "v", }, "<C-t>", function() h.notify.error "snippets only supported in insert mode!" end)
+h.keys.map("n", "q:", "<nop>")
 
 h.keys.map({ "n", "v", }, "b", "<Plug>(MatchitNormalForward)") -- TODO: what is this?
 h.keys.map({ "n", "v", }, "<bs>", "b")
