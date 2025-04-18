@@ -21,10 +21,9 @@ vim.keymap.set("n", "<C-f>", function()
     vim.cmd "Explore %:p:h"
   end
 end, { desc = "Toggle netrw, focusing the current buffer", })
-vim.opt.path:append "**"               -- search in subfolder
+vim.opt.path:append "**"                   -- search in subfolder
 vim.keymap.set("n", "<C-p>", h.keys.vim_cmd_cb "wq!")
 vim.keymap.set({ "i", }, "<C-s>", "<C-n>") -- autocomplete
-vim.cmd "nnoremap <C-g> :buffer<space>"
 vim.cmd "nnoremap <leader>lg :grep<space>"
 vim.cmd "nnoremap <leader>la :grep<space>"
 vim.keymap.set({ "c", }, "/", function()

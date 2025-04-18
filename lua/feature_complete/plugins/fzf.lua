@@ -1,6 +1,5 @@
 local h = require "shared.helpers"
 local grug = require "grug-far"
-local snacks = require "snacks"
 local fzf_lua = require "fzf-lua"
 
 local ignore_dirs = { "node_modules", ".git", "dist", }
