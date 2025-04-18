@@ -68,16 +68,16 @@ local function without_preview_cb(cb)
   return function() cb(without_preview_opts) end
 end
 
-h.keys.map("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
-h.keys.map("n", "<leader>lh", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with fzf", })
-h.keys.map("n", "<leader>lm", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
-h.keys.map("n", "<leader>l;", without_preview_cb(fzf_lua.command_history),
+vim.keymap.set("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
+vim.keymap.set("n", "<leader>lh", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with fzf", })
+vim.keymap.set("n", "<leader>lm", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
+vim.keymap.set("n", "<leader>l;", without_preview_cb(fzf_lua.command_history),
   { desc = "Search search history with fzf", })
-h.keys.map("n", "<leader>lu", with_preview_cb(fzf_lua.buffers),
+vim.keymap.set("n", "<leader>lu", with_preview_cb(fzf_lua.buffers),
   { desc = "Search currently open buffers with fzf", })
-h.keys.map("n", "<leader>lf", with_preview_cb(fzf_lua.grep_curbuf),
+vim.keymap.set("n", "<leader>lf", with_preview_cb(fzf_lua.grep_curbuf),
   { desc = "Search in the current buffer with fzf", })
-h.keys.map("n", "<leader>lg",
+vim.keymap.set("n", "<leader>lg",
   function()
     local opts = vim.tbl_deep_extend("error", { search = "", }, with_preview_opts)
     fzf_lua.grep(opts)
@@ -280,15 +280,15 @@ local function live_grep_with_args(initial_query)
   end, opts)
 end
 
-h.keys.map("n", "<leader>la", function() live_grep_with_args "~" end)
-h.keys.map("v", "<leader>lo",
+vim.keymap.set("n", "<leader>la", function() live_grep_with_args "~" end)
+vim.keymap.set("v", "<leader>lo",
   function()
     local require_visual_mode_active = true
     local visual_selection = grug.get_current_visual_selection(require_visual_mode_active)
     if visual_selection == "" then return end
     live_grep_with_args("~" .. visual_selection .. "~ ")
   end, { desc = "Grep the current word", })
-h.keys.map({ "n", }, "<leader>lo",
+vim.keymap.set({ "n", }, "<leader>lo",
   function()
     live_grep_with_args("~" .. vim.fn.expand "<cword>" .. "~ ")
   end, { desc = "Grep the current visual selection", })
@@ -306,7 +306,7 @@ local function get_stripped_filename()
   return stripped_filename
 end
 
-h.keys.map("n", "<leader>le",
+vim.keymap.set("n", "<leader>le",
   function()
     local stripped_filename = get_stripped_filename()
     if stripped_filename == nil then return end
@@ -314,7 +314,7 @@ h.keys.map("n", "<leader>le",
     live_grep_with_args("~" .. stripped_filename .. "~ ")
   end, { desc = "Grep the current file name starting with `wf_modules`", })
 
-h.keys.map("n", "<leader>ye",
+vim.keymap.set("n", "<leader>ye",
   function()
     local stripped_filename = get_stripped_filename()
     if stripped_filename == nil then return end

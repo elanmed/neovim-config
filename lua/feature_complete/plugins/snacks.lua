@@ -24,7 +24,7 @@ snacks.setup {
   },
 }
 
-h.keys.map("n", "<C-p>", function()
+vim.keymap.set("n", "<C-p>", function()
   snacks.picker.smart {
     layout = {
       layout = {
@@ -44,7 +44,7 @@ h.keys.map("n", "<C-p>", function()
     },
   }
 end, { desc = "Find files with snacks", })
-h.keys.map("n", "<leader>ln", function()
+vim.keymap.set("n", "<leader>ln", function()
   snacks.picker.undo {
     layout = {
       layout = {

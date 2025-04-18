@@ -147,12 +147,12 @@ local function on_key(opts)
   return opts.key
 end
 
-h.keys.map({ "n", "v", "o", }, "f", function() return on_key { key = "f", forward = true, } end, { expr = true, })
-h.keys.map({ "n", "v", "o", }, "F", function() return on_key { key = "F", forward = false, } end, { expr = true, })
-h.keys.map({ "n", "v", "o", }, "t", function() return on_key { key = "t", forward = true, } end, { expr = true, })
-h.keys.map({ "n", "v", "o", }, "T", function() return on_key { key = "T", forward = false, } end, { expr = true, })
+vim.keymap.set({ "n", "v", "o", }, "f", function() return on_key { key = "f", forward = true, } end, { expr = true, })
+vim.keymap.set({ "n", "v", "o", }, "F", function() return on_key { key = "F", forward = false, } end, { expr = true, })
+vim.keymap.set({ "n", "v", "o", }, "t", function() return on_key { key = "t", forward = true, } end, { expr = true, })
+vim.keymap.set({ "n", "v", "o", }, "T", function() return on_key { key = "T", forward = false, } end, { expr = true, })
 
-flash.setup {
+flasvim.oup {
   modes = {
     char = {
       enabled = false,
@@ -163,9 +163,9 @@ flash.setup {
   },
 }
 
-h.keys.map("n", "s", function() flash.jump { forward = true, } end)
-h.keys.map("n", "S", function() flash.jump { forward = false, } end)
-h.keys.map("n", "<leader>sa", function()
+vim.keymap.set("n", "s", function() flash.jump { forward = true, } end)
+vim.keymap.set("n", "S", function() flash.jump { forward = false, } end)
+vim.keymap.set("n", "<leader>sa", function()
   -- https://github.com/folke/flash.nvim#-examples
   flash.jump {
     forward = true,
@@ -191,7 +191,7 @@ marks.setup {
     delete_buf = "dmb",
   },
 }
-h.keys.map("n", "mgg", function()
+vim.keymap.set("n", "mgg", function()
   local view = vim.fn.winsaveview()
   vim.cmd "1"
   marks.set_next()
@@ -199,4 +199,4 @@ h.keys.map("n", "mgg", function()
   h.notify.info "mark set!"
 end, { desc = "Set a mark at the top of the file", })
 
-h.keys.map("n", "dma", h.keys.vim_cmd_cb "delmarks A-Za-z0-9", { desc = "Delete all marks", })
+vim.keymap.set("n", "dma", h.keys.vim_cmd_cb "delmarks A-Za-z0-9", { desc = "Delete all marks", })

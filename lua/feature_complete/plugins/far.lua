@@ -4,7 +4,7 @@ local grug = require "grug-far"
 -- TODO: find a cleaner way to handle this
 local GRUG_INSTANCE_NAME = ""
 
-h.keys.map("n", "<leader>re", function()
+vim.keymap.set("n", "<leader>re", function()
   if grug.has_instance(GRUG_INSTANCE_NAME) then
     grug.toggle_instance { instanceName = GRUG_INSTANCE_NAME, startInInsertMode = true, }
   else

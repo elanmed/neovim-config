@@ -52,10 +52,10 @@ local function toggle_virtual_lines()
   end
 end
 
-h.keys.map({ "n", "v", }, "<C-g>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
-h.keys.map({ "i", }, "<C-g>s", "<nop>", { desc = "Disable vim surround remap", })
-h.keys.map({ "i", }, "<C-g>S", "<nop>", { desc = "Disable vim surround remap", })
-h.keys.map({ "i", }, "<C-g>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
+vim.keymap.set({ "n", "v", }, "<C-g>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
+vim.keymap.set({ "i", }, "<C-g>s", "<nop>", { desc = "Disable vim surround remap", })
+vim.keymap.set({ "i", }, "<C-g>S", "<nop>", { desc = "Disable vim surround remap", })
+vim.keymap.set({ "i", }, "<C-g>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
 
 local lspconfig_defaults = lspconfig.util.default_config
 lspconfig_defaults.capabilities = vim.tbl_deep_extend(
@@ -74,7 +74,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
 
     if client:supports_method "textDocument/documentHighlight" then
-      h.set.updatetime = 100 -- how long until the cursor events fire
+      vim.o.updatetime = 100 -- how long until the cursor events fire
       vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
         buffer = h.curr.buffer,
         callback = function()
@@ -98,14 +98,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
-h.keys.map({ "i", }, "<C-b>", function() vim.lsp.buf.signature_help { border = "single", } end,
+vim.keymap.set({ "i", }, "<C-b>", function() vim.lsp.buf.signature_help { border = "single", } end,
   { desc = "LSP signature help", })
-h.keys.map("n", "gh", function() vim.lsp.buf.hover { border = "single", } end, { desc = "LSP hover", })
-h.keys.map("n", "gd", vim.lsp.buf.definition, { desc = "LSP go to definition", })
-h.keys.map("n", "gs", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
-h.keys.map("n", "gu", vim.lsp.buf.references, { desc = "LSP go to references", })
-h.keys.map("n", "ga", vim.lsp.buf.code_action, { desc = "LSP code action", })
-h.keys.map("n", "gi", function()
+vim.keymap.set("n", "gh", function() vim.lsp.buf.hover { border = "single", } end, { desc = "LSP hover", })
+vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "LSP go to definition", })
+vim.keymap.set("n", "gs", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
+vim.keymap.set("n", "gu", vim.lsp.buf.references, { desc = "LSP go to references", })
+vim.keymap.set("n", "ga", vim.lsp.buf.code_action, { desc = "LSP code action", })
+vim.keymap.set("n", "gi", function()
     local error_diagnostics = vim.diagnostic.get(h.curr.buffer, { severity = vim.diagnostic.severity.ERROR, })
     if #error_diagnostics == 0 then
       h.notify.warn "No diagnostics"
@@ -117,7 +117,7 @@ h.keys.map("n", "gi", function()
   end,
   { desc = "Open LSP diagnostics with the quickfix list", })
 
-h.keys.map("n", "gl", function()
+vim.keymap.set("n", "gl", function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     -- https://neovim.io/doc/user/api.html#floating-windows
     if vim.api.nvim_win_get_config(win).relative == "win" then

@@ -19,20 +19,6 @@ keys.vim_cmd_cb = function(vim_cmd)
   return function() vim.cmd(vim_cmd) end
 end
 
---- @param mode string|string[]
---- @param shortcut string
---- @param command string|function
---- @param opts? vim.keymap.set.Opts
-keys.map = function(mode, shortcut, command, opts)
-  opts = opts or {}
-  vim.keymap.set(
-    mode,
-    shortcut,
-    command,
-    vim.tbl_extend("force", { noremap = true, silent = true, nowait = true, }, opts)
-  )
-end
-
 --- @param mode 'n' | 'v' | 'i'
 --- @param keys_to_send string
 keys.send_keys = function(mode, keys_to_send)
@@ -181,8 +167,6 @@ notify.toggle_off = function(message)
 end
 
 return {
-  set = vim.o,
-  let = vim.g,
   keys = keys,
   tbl = tbl,
   remaps = remaps,

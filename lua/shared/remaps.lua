@@ -1,47 +1,47 @@
 local h = require "shared.helpers"
 
--- delay when using h.keys.map
+-- delay when using vim.keymap.set
 vim.cmd "inoremap <C-t> <C-o>:Snippet<space>"
-h.keys.map({ "n", "v", }, "<C-t>", function() h.notify.error "snippets only supported in insert mode!" end)
-h.keys.map("n", "q:",
+vim.keymap.set({ "n", "v", }, "<C-t>", function() h.notify.error "snippets only supported in insert mode!" end)
+vim.keymap.set("n", "q:",
   function()
     h.notify.warn "Use :q to quit or q? to open the command-line window instead!"
   end
   , { desc = "Prevent accidentally opening the command-line window", })
 
-h.keys.map({ "n", "v", }, "b", "<Plug>(MatchitNormalForward)") -- TODO: what is this?
-h.keys.map({ "n", "v", }, "<bs>", "b")
-h.keys.map({ "n", }, "<leader>e", h.keys.vim_cmd_cb "e")
+vim.keymap.set({ "n", "v", }, "b", "<Plug>(MatchitNormalForward)") -- TODO: what is this?
+vim.keymap.set({ "n", "v", }, "<bs>", "b")
+vim.keymap.set({ "n", }, "<leader>e", h.keys.vim_cmd_cb "e")
 
-h.keys.map("n", "*", "*N")
-h.keys.map("n", "<leader>f", "<C-w>w", { desc = "Toggle focus between windows", })
+vim.keymap.set("n", "*", "*N")
+vim.keymap.set("n", "<leader>f", "<C-w>w", { desc = "Toggle focus between windows", })
 
-h.keys.map({ "i", }, "<C-e>", "<C-o>$")
-h.keys.map({ "n", "v", }, "<C-e>", "$")
-h.keys.map({ "i", }, "<C-a>", "<C-o>^")
-h.keys.map({ "n", "v", }, "<C-a>", "^")
+vim.keymap.set({ "i", }, "<C-e>", "<C-o>$")
+vim.keymap.set({ "n", "v", }, "<C-e>", "$")
+vim.keymap.set({ "i", }, "<C-a>", "<C-o>^")
+vim.keymap.set({ "n", "v", }, "<C-a>", "^")
 
-h.keys.map("n", "<leader>o", "o<esc>")
-h.keys.map("n", "<leader>O", "O<esc>")
+vim.keymap.set("n", "<leader>o", "o<esc>")
+vim.keymap.set("n", "<leader>O", "O<esc>")
 
-h.keys.map("n", "E", [[viw"_dP]], { desc = "pastE without overwriting the default register", }) -- TODO: find a better remap
-h.keys.map("n", "<leader>p", h.keys.vim_cmd_cb "pu", { desc = "Paste on the line below", })
-h.keys.map("n", "<leader>P", h.keys.vim_cmd_cb "pu!", { desc = "Paste on the line above", })
+vim.keymap.set("n", "E", [[viw"_dP]], { desc = "pastE without overwriting the default register", }) -- TODO: find a better remap
+vim.keymap.set("n", "<leader>p", h.keys.vim_cmd_cb "pu", { desc = "Paste on the line below", })
+vim.keymap.set("n", "<leader>P", h.keys.vim_cmd_cb "pu!", { desc = "Paste on the line above", })
 
-h.keys.map("n", "<leader>yp", [["zyy"zp]], { desc = "Copy and paste the current line", })
-h.keys.map({ "v", }, "<leader>yp", [["zy`>"zp]], { desc = "Copy and paste the current line", }) -- move to end of selection, then yank
+vim.keymap.set("n", "<leader>yp", [["zyy"zp]], { desc = "Copy and paste the current line", })
+vim.keymap.set({ "v", }, "<leader>yp", [["zy`>"zp]], { desc = "Copy and paste the current line", }) -- move to end of selection, then yank
 
-h.keys.map("n", ",", h.keys.vim_cmd_cb "w", { desc = "Save", })
-h.keys.map("n", "<leader>w", function() h.notify.error "Use , instead!" end, { desc = "Save", })
-h.keys.map("n", "<leader>q", h.keys.vim_cmd_cb "q", { desc = "Save", })
+vim.keymap.set("n", ",", h.keys.vim_cmd_cb "w", { desc = "Save", })
+vim.keymap.set("n", "<leader>w", function() h.notify.error "Use , instead!" end, { desc = "Save", })
+vim.keymap.set("n", "<leader>q", h.keys.vim_cmd_cb "q", { desc = "Save", })
 
-h.keys.map("n", "<leader>ya", function() vim.fn.setreg("+", vim.fn.expand "%:p") end,
+vim.keymap.set("n", "<leader>ya", function() vim.fn.setreg("+", vim.fn.expand "%:p") end,
   { desc = "Yank the Absolute path of the current buffer", })
-h.keys.map("n", "<leader>yr", function() vim.fn.setreg("+", vim.fn.expand "%:~:.") end,
+vim.keymap.set("n", "<leader>yr", function() vim.fn.setreg("+", vim.fn.expand "%:~:.") end,
   { desc = "Yank the Relative path of the current buffer", })
 
-h.keys.map({ "v", }, "<", "<gv", { desc = "Outdent, while keeping selection", })
-h.keys.map({ "v", }, ">", ">gv", { desc = "Indent, while keeping selection", })
+vim.keymap.set({ "v", }, "<", "<gv", { desc = "Outdent, while keeping selection", })
+vim.keymap.set({ "v", }, ">", ">gv", { desc = "Indent, while keeping selection", })
 
 --- @param try string
 --- @param catch string
@@ -55,23 +55,23 @@ end
 vim.api.nvim_create_user_command("Cnext", function() generate_circular_next_prev("cnext", "cfirst") end, {})
 Vim.api.nvim_create_user_command("Cprev", function() generate_circular_next_prev("cprev", "clast") end, {})
 
-h.keys.map("n", "J", h.keys.vim_cmd_cb "Cnext", { desc = "Move to the next item in the quickfix list", })
-h.keys.map("n", "K", h.keys.vim_cmd_cb "Cprev", { desc = "Move to the prev item in the quickfix list", })
-h.keys.map("n", "Z", "gJ", { desc = "J without whitespace", })
+vim.keymap.set("n", "J", h.keys.vim_cmd_cb "Cnext", { desc = "Move to the next item in the quickfix list", })
+vim.keymap.set("n", "K", h.keys.vim_cmd_cb "Cprev", { desc = "Move to the prev item in the quickfix list", })
+vim.keymap.set("n", "Z", "gJ", { desc = "J without whitespace", })
 
-h.keys.map("n", "ge", h.keys.vim_cmd_cb "copen", { desc = "Open the quickfix list", })
-h.keys.map("n", "gq", h.keys.vim_cmd_cb "cclose", { desc = "Close the quickfix list", })
+vim.keymap.set("n", "ge", h.keys.vim_cmd_cb "copen", { desc = "Open the quickfix list", })
+vim.keymap.set("n", "gq", h.keys.vim_cmd_cb "cclose", { desc = "Close the quickfix list", })
 
-h.keys.map("n", "gn", "gt", { desc = "Go to the next tab", })
-h.keys.map("n", "gp", "gT", { desc = "Go to the prev tab", })
+vim.keymap.set("n", "gn", "gt", { desc = "Go to the next tab", })
+vim.keymap.set("n", "gp", "gT", { desc = "Go to the prev tab", })
 
 -- https://vim.fandom.com/wiki/Moving_lines_up_or_down
-h.keys.map("n", "<A-j>", ":m .+1<cr>==", { desc = "Move line down", })
-h.keys.map("n", "<A-k>", ":m .-2<cr>==", { desc = "Move line up", })
-h.keys.map("i", "<A-j>", "<esc>:m .+1<cr>==gi", { desc = "Move line down", })
-h.keys.map("i", "<A-k>", "<esc>:m .-2<cr>==gi", { desc = "Move line up", })
-h.keys.map("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move line down", })
-h.keys.map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move line up", })
+vim.keymap.set("n", "<A-j>", ":m .+1<cr>==", { desc = "Move line down", })
+vim.keymap.set("n", "<A-k>", ":m .-2<cr>==", { desc = "Move line up", })
+vim.keymap.set("i", "<A-j>", "<esc>:m .+1<cr>==gi", { desc = "Move line down", })
+vim.keymap.set("i", "<A-k>", "<esc>:m .-2<cr>==gi", { desc = "Move line up", })
+vim.keymap.set("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move line down", })
+vim.keymap.set("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move line up", })
 
 -- search Case sensitive, Whole word, and All
 vim.cmd [[
@@ -87,16 +87,16 @@ vim.cmd [[
 vim.cmd [[
   nnoremap <leader>/s :%s/\<\>\C/<left><left><left><left><left>
 ]]
-h.keys.map("n", "<leader>/g", h.keys.vim_cmd_cb "nohlsearch", { desc = "Turn off hiGhlighting", })
+vim.keymap.set("n", "<leader>/g", h.keys.vim_cmd_cb "nohlsearch", { desc = "Turn off hiGhlighting", })
 
-h.keys.map({ "n", "v", }, "n", "nzz")
-h.keys.map({ "n", "v", }, "N", "Nzz")
+vim.keymap.set({ "n", "v", }, "n", "nzz")
+vim.keymap.set({ "n", "v", }, "N", "Nzz")
 
 -- prevent x, c from overwriting the clipboard
-h.keys.map("n", "x", [["_x]])
-h.keys.map("n", "X", [["_X]])
-h.keys.map("n", "c", [["_c]])
-h.keys.map("n", "C", [["_C]])
+vim.keymap.set("n", "x", [["_x]])
+vim.keymap.set("n", "X", [["_X]])
+vim.keymap.set("n", "c", [["_c]])
+vim.keymap.set("n", "C", [["_C]])
 
 local function count_based_keymap(movement)
   local count = vim.v.count
@@ -107,15 +107,15 @@ local function count_based_keymap(movement)
   end
 end
 
-h.keys.map("n", "j", function() return count_based_keymap "j" end,
+vim.keymap.set("n", "j", function() return count_based_keymap "j" end,
   { expr = true, desc = "j, but respect lines that wrap", })
-h.keys.map("n", "k", function() return count_based_keymap "k" end,
+vim.keymap.set("n", "k", function() return count_based_keymap "k" end,
   { expr = true, desc = "k, but respect lines that wrap", })
 
-h.keys.map({ "n", "v", "i", }, "<C-y>", h.keys.vim_cmd_cb "tabclose", { desc = "Close the current tab", })
-h.keys.map("n", "Y", h.keys.vim_cmd_cb "silent! bdelete!", { desc = "Close the current buffer", })
-h.keys.map("n", "<leader>ua", h.keys.vim_cmd_cb "silent! bufdo bdelete", { desc = "Close all buffers", })
-h.keys.map("n", "<leader>uo", function()
+vim.keymap.set({ "n", "v", "i", }, "<C-y>", h.keys.vim_cmd_cb "tabclose", { desc = "Close the current tab", })
+vim.keymap.set("n", "Y", h.keys.vim_cmd_cb "silent! bdelete!", { desc = "Close the current buffer", })
+vim.keymap.set("n", "<leader>ua", h.keys.vim_cmd_cb "silent! bufdo bdelete", { desc = "Close all buffers", })
+vim.keymap.set("n", "<leader>uo", function()
   local cur_buf = vim.api.nvim_get_current_buf()
 
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
@@ -131,7 +131,7 @@ h.keys.map("n", "<leader>uo", function()
   end
 end)
 
-h.keys.map({ "n", "v", "i", }, "<C-u>", function()
+vim.keymap.set({ "n", "v", "i", }, "<C-u>", function()
   if vim.fn.line "$" == vim.fn.line "." then
     return "M"
   else
@@ -139,7 +139,7 @@ h.keys.map({ "n", "v", "i", }, "<C-u>", function()
   end
 end, { expr = true, })
 
-h.keys.map({ "n", "v", "i", }, "<C-d>", function()
+vim.keymap.set({ "n", "v", "i", }, "<C-d>", function()
   if vim.fn.line "." == 1 then
     return "M"
   else
@@ -165,30 +165,30 @@ local function next_closed_fold(dir)
     vim.fn.winrestview(view)
   end
 end
-h.keys.map("n", "zj", function() next_closed_fold "j" end)
-h.keys.map("n", "zk", function() next_closed_fold "k" end)
-h.keys.map("n", "zt", "za", { desc = "Toggle fold", })
-h.keys.map("n", "zT", "zA", { desc = "Toggle fold", })
-h.keys.map("n", "z?", function()
+vim.keymap.set("n", "zj", function() next_closed_fold "j" end)
+vim.keymap.set("n", "zk", function() next_closed_fold "k" end)
+vim.keymap.set("n", "zt", "za", { desc = "Toggle fold", })
+vim.keymap.set("n", "zT", "zA", { desc = "Toggle fold", })
+vim.keymap.set("n", "z?", function()
   h.notify.info "common fold commands: z{t,T,c,C,o,O,R(open all folds),M(close all folds)}"
 end
 , { desc = "Toggle fold", })
 
-h.keys.map("n", "W", "<nop>", { desc = "TODO find a remap", })
-h.keys.map("n", "B", "<nop>", { desc = "TODO find a remap", })
-h.keys.map("n", "<C-x>", "<nop>", { desc = "TODO find a remap", })
-h.keys.map("n", "<leader>;", "<nop>", { desc = "TODO find a remap", })
-h.keys.map("n", "<leader>b", "<nop>", { desc = "TODO find a remap", })
-h.keys.map("n", "<leader>c", "<nop>", { desc = "TODO find a remap", })
-h.keys.map("n", "<leader>d", "<nop>", { desc = "TODO find a remap", })
-h.keys.map("n", "<leader>g", "<nop>", { desc = "TODO find a remap", })
-h.keys.map("n", "<leader>i", "<nop>", { desc = "TODO find a remap", })
-h.keys.map("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
-h.keys.map("n", "<leader>k", "<nop>", { desc = "TODO find a remap", })
-h.keys.map("n", "<leader>m", "<nop>", { desc = "TODO find a remap", })
-h.keys.map("n", "<leader>n", "<nop>", { desc = "TODO find a remap", })
-h.keys.map("n", "<leader>v", "<nop>", { desc = "TODO find a remap", })
-h.keys.map("n", "<leader>x", "<nop>", { desc = "TODO find a remap", })
-h.keys.map("n", "<leader>z", "<nop>", { desc = "TODO find a remap", })
-h.keys.map("n", "<leader>,", "<nop>", { desc = "TODO find a remap", })
-h.keys.map("n", "<leader>.", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "W", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "B", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<C-x>", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>;", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>b", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>c", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>d", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>g", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>i", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>k", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>m", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>n", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>v", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>x", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>z", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>,", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>.", "<nop>", { desc = "TODO find a remap", })
