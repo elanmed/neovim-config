@@ -15,9 +15,8 @@ require "lualine".setup {
         path = 3, -- absolute path, with tilde as the home directory
       },
     },
-    lualine_c = {},
-    lualine_x = {},
+    lualine_x = { "progress", },
     lualine_y = { "branch", },
-    lualine_z = { "filetype", },
+    lualine_z = { "lsp_status", "filetype", },
   },
 }
