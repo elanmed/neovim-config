@@ -1,5 +1,3 @@
-local h              = require "shared.helpers"
-
 -- vim.opt.colorcolumn    = "120"
 vim.opt.clipboard      = "unnamedplus" -- os clipboard
 vim.opt.cursorline     = true
