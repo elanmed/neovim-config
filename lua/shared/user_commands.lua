@@ -1,11 +1,5 @@
 local h = require "shared.helpers"
 
-vim.api.nvim_create_user_command("Far", function(opts)
-  vim.cmd(string.format("cdo s/%s/%s", opts.fargs[1], opts.fargs[2]))
-  vim.cmd "cfdo update"
-  vim.cmd "cfdo bdelete"
-end, { nargs = "*", })
-
 vim.api.nvim_create_user_command("PrintHighlights", function()
   vim.cmd "redir! > highlights.txt | silent hi | redir END"
 end, {})

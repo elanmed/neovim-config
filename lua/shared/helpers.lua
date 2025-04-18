@@ -71,6 +71,7 @@ tbl.contains_key = function(table, target_key)
   return false
 end
 
+--- more reliable version of vim.print
 --- @param input table
 --- @return string
 tbl.dump = function(input)
@@ -141,22 +142,17 @@ end
 --- @param message string
 --- @param level "error" | "warn" | "info" | "toggle_on" | "toggle_off"
 notify.notify = function(message, level)
-  local hlgroup
-
-  if level == "error" then
-    hlgroup = "NotifyError"
-  elseif level == "warn" then
-    hlgroup = "NotifyWarning"
-  elseif level == "info" then
-    hlgroup = "NotifyInfo"
-  elseif level == "toggle_on" then
-    hlgroup = "NotifyToggleOn"
-  elseif level == "toggle_off" then
-    hlgroup = "NotifyToggleOff"
-  end
+  local level_to_hl_group = {
+    error = "NotifyError",
+    warn = "NotifyWarning",
+    info = "NotifyInfo",
+    toggle_on = "NotifyToggleOn",
+    toggle_off = "NotifyToggleOff",
+  }
+  local hl_group = level_to_hl_group[level]
 
   local add_to_history = true
-  vim.api.nvim_echo({ { message, hlgroup, }, }, add_to_history, {})
+  vim.api.nvim_echo({ { message, hl_group, }, }, add_to_history, {})
 end
 
 --- @param message string

@@ -3,7 +3,11 @@ local h = require "shared.helpers"
 -- delay when using h.keys.map
 vim.cmd "inoremap <C-t> <C-o>:Snippet<space>"
 h.keys.map({ "n", "v", }, "<C-t>", function() h.notify.error "snippets only supported in insert mode!" end)
-h.keys.map("n", "q:", "<nop>")
+h.keys.map("n", "q:",
+  function()
+    h.notify.warn "Use :q to quit or q? to open the command-line window instead!"
+  end
+  , { desc = "Prevent accidentally opening the command-line window", })
 
 h.keys.map({ "n", "v", }, "b", "<Plug>(MatchitNormalForward)") -- TODO: what is this?
 h.keys.map({ "n", "v", }, "<bs>", "b")
@@ -49,7 +53,7 @@ local function generate_circular_next_prev(try, catch)
 end
 
 vim.api.nvim_create_user_command("Cnext", function() generate_circular_next_prev("cnext", "cfirst") end, {})
-vim.api.nvim_create_user_command("Cprev", function() generate_circular_next_prev("cprev", "clast") end, {})
+Vim.api.nvim_create_user_command("Cprev", function() generate_circular_next_prev("cprev", "clast") end, {})
 
 h.keys.map("n", "J", h.keys.vim_cmd_cb "Cnext", { desc = "Move to the next item in the quickfix list", })
 h.keys.map("n", "K", h.keys.vim_cmd_cb "Cprev", { desc = "Move to the prev item in the quickfix list", })
@@ -64,10 +68,10 @@ h.keys.map("n", "gp", "gT", { desc = "Go to the prev tab", })
 -- https://vim.fandom.com/wiki/Moving_lines_up_or_down
 h.keys.map("n", "<A-j>", ":m .+1<cr>==", { desc = "Move line down", })
 h.keys.map("n", "<A-k>", ":m .-2<cr>==", { desc = "Move line up", })
-h.keys.map({ "i", }, "<A-j>", "<esc>:m .+1<cr>==gi", { desc = "Move line down", })
-h.keys.map({ "i", }, "<A-k>", "<esc>:m .-2<cr>==gi", { desc = "Move line up", })
-h.keys.map({ "v", }, "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move line down", })
-h.keys.map({ "v", }, "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move line up", })
+h.keys.map("i", "<A-j>", "<esc>:m .+1<cr>==gi", { desc = "Move line down", })
+h.keys.map("i", "<A-k>", "<esc>:m .-2<cr>==gi", { desc = "Move line up", })
+h.keys.map("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move line down", })
+h.keys.map("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move line up", })
 
 -- search Case sensitive, Whole word, and All
 vim.cmd [[
@@ -89,10 +93,10 @@ h.keys.map({ "n", "v", }, "n", "nzz")
 h.keys.map({ "n", "v", }, "N", "Nzz")
 
 -- prevent x, c from overwriting the clipboard
-h.keys.map({ "", }, "x", [["_x]])
-h.keys.map({ "", }, "X", [["_X]])
-h.keys.map({ "", }, "c", [["_c]])
-h.keys.map({ "", }, "C", [["_C]])
+h.keys.map("n", "x", [["_x]])
+h.keys.map("n", "X", [["_X]])
+h.keys.map("n", "c", [["_c]])
+h.keys.map("n", "C", [["_C]])
 
 local function count_based_keymap(movement)
   local count = vim.v.count
