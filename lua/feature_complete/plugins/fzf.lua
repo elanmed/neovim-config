@@ -68,47 +68,6 @@ local function without_preview_cb(cb)
   return function() cb(without_preview_opts) end
 end
 
-h.keys.map("n", "<C-p>", function()
-  snacks.picker.smart {
-    layout = {
-      layout = {
-        backdrop = false,
-        row = -1,
-        width = 0,
-        height = 0.4,
-        box = "vertical",
-        { win = "input", height = 1, border = "rounded", },
-        { win = "list", border = "none", },
-      },
-    },
-    formatters = {
-      file = {
-        truncate = 100,
-      },
-    },
-  }
-end, { desc = "Find files with snacks", })
-h.keys.map("n", "<leader>ln", function()
-  snacks.picker.undo {
-    layout = {
-      layout = {
-        backdrop = false,
-        width = 0,
-        min_width = 80,
-        height = 0.999,
-        min_height = 30,
-        box = "vertical",
-        border = "rounded",
-        title = "{title} {live} {flags}",
-        title_pos = "center",
-        { win = "preview", title = "{preview}", height = 0.35, border = "rounded", },
-        { win = "list", border = "none", },
-        { win = "input", height = 1, border = "top", },
-      },
-    },
-  }
-end, { desc = "View the undotree with snacks", })
-
 h.keys.map("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
 h.keys.map("n", "<leader>lh", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with fzf", })
 h.keys.map("n", "<leader>lm", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })

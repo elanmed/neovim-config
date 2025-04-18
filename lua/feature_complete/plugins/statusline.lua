@@ -1,5 +1,8 @@
 local h = require "shared.helpers"
 
+vim.g.scrollstatus_symbol_track = "-"
+vim.g.scrollstatus_symbol_bar = ""
+
 h.set.showmode = false -- disrupts lualine
 require "lualine".setup {
   options = {
@@ -15,8 +18,9 @@ require "lualine".setup {
         path = 3, -- absolute path, with tilde as the home directory
       },
     },
-    lualine_x = { "progress", },
+    lualine_c = { "lsp_status", },
+    lualine_x = { "ScrollStatus", "progress", },
     lualine_y = { "branch", },
-    lualine_z = { "lsp_status", "filetype", },
+    lualine_z = { "filetype", },
   },
 }
