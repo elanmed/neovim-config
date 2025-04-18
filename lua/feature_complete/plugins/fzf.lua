@@ -86,16 +86,28 @@ h.keys.map("n", "<C-p>", function()
         truncate = 100,
       },
     },
-    win = {
-      input = {
-        keys = {
-          ["<Esc>"] = { "close", mode = "i", },
-          ["<C-c>"] = { "cancel", mode = "i", },
-        },
+  }
+end, { desc = "Find files with snacks", })
+h.keys.map("n", "<leader>ln", function()
+  snacks.picker.undo {
+    layout = {
+      layout = {
+        backdrop = false,
+        width = 0,
+        min_width = 80,
+        height = 0.999,
+        min_height = 30,
+        box = "vertical",
+        border = "rounded",
+        title = "{title} {live} {flags}",
+        title_pos = "center",
+        { win = "preview", title = "{preview}", height = 0.35, border = "rounded", },
+        { win = "list", border = "none", },
+        { win = "input", height = 1, border = "top", },
       },
     },
   }
-end, { desc = "Find files with fzf", })
+end, { desc = "View the undotree with snacks", })
 
 h.keys.map("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
 h.keys.map("n", "<leader>lh", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with fzf", })
