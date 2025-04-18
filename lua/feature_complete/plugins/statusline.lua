@@ -3,7 +3,7 @@ local h = require "shared.helpers"
 vim.g.scrollstatus_symbol_track = "-"
 vim.g.scrollstatus_symbol_bar = ""
 
-vim.o.showmode = false -- disrupts lualine
+vim.opt.showmode = false -- disrupts lualine
 require "lualine".setup {
   options = {
     component_separators = { left = "", right = "", },

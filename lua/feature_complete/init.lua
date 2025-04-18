@@ -5,7 +5,7 @@ if vim.fn.empty(vim.fn.glob(data_dir .. "/site/autoload/plug.vim")) == 1 then
   vim.cmd("silent !curl -fLo " ..
     data_dir ..
     "/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim")
-  vim.o.runtimepath = vim.o.runtimepath
+  vim.opt.runtimepath = vim.opt.runtimepath
   vim.api.nvim_create_autocmd({ "VimEnter", }, {
     pattern = "*",
     callback = h.keys.vim_cmd_cb "PlugInstall --sync",

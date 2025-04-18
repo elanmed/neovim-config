@@ -235,7 +235,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
   end,
 })
 
-vim.o.quickfixtextfunc = "v:lua.GetQuickfixTextFunc"
+vim.opt.quickfixtextfunc = "v:lua.GetQuickfixTextFunc"
 
 --- @param num number
 --- @param num_digits number

@@ -84,7 +84,7 @@ tbl.size = function(table)
 end
 
 screen.has_split = function()
-  local screen_cols = vim.o.columns
+  local screen_cols = vim.opt.columns
   local window_cols = vim.api.nvim_win_get_width(curr.window)
   return screen_cols ~= window_cols
 end

@@ -74,7 +74,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     end
 
     if client:supports_method "textDocument/documentHighlight" then
-      vim.o.updatetime = 100 -- how long until the cursor events fire
+      vim.opt.updatetime = 100 -- how long until the cursor events fire
       vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
         buffer = h.curr.buffer,
         callback = function()
