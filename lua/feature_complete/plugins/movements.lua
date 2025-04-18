@@ -152,7 +152,7 @@ vim.keymap.set({ "n", "v", "o", }, "F", function() return on_key { key = "F", fo
 vim.keymap.set({ "n", "v", "o", }, "t", function() return on_key { key = "t", forward = true, } end, { expr = true, })
 vim.keymap.set({ "n", "v", "o", }, "T", function() return on_key { key = "T", forward = false, } end, { expr = true, })
 
-flasvim.oup {
+flash.setup {
   modes = {
     char = {
       enabled = false,
