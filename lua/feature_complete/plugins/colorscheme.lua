@@ -49,10 +49,6 @@ vim.api.nvim_set_hl(h.curr.namespace, "FlashLabel", { link = "IncSearch", })
 vim.api.nvim_set_hl(h.curr.namespace, "SnacksIndent", { fg = M.grey, })
 vim.api.nvim_set_hl(h.curr.namespace, "SnacksIndentScope", { fg = M.light_grey, })
 
-vim.api.nvim_set_hl(h.curr.namespace, "FTPreviewSecond", { fg = M.yellow, bg = M.black, underline = true, bold = true, })
-vim.api.nvim_set_hl(h.curr.namespace, "FTPreviewThird", { fg = M.red, bg = M.black, underline = true, bold = true, })
-vim.api.nvim_set_hl(h.curr.namespace, "FTPreviewDimmed", { fg = M.light_grey, bg = M.black, })
-
 vim.api.nvim_set_hl(h.curr.namespace, "NotifyWarning", { fg = M.yellow, })
 vim.api.nvim_set_hl(h.curr.namespace, "NotifyError", { fg = M.red, })
 vim.api.nvim_set_hl(h.curr.namespace, "NotifyInfo", { fg = M.green, })
