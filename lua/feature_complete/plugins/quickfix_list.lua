@@ -42,6 +42,14 @@ vim.api.nvim_create_autocmd({ "BufEnter", }, {
 })
 
 vim.api.nvim_create_autocmd({ "FileType", }, {
+  pattern = "*",
+  callback = function()
+    if vim.bo.filetype ~= "qf" then return end
+    vim.wo.cursorline = false
+  end,
+})
+
+vim.api.nvim_create_autocmd({ "FileType", }, {
   pattern = "qf",
   callback = function()
     vim.keymap.set("n", "gdu", function()
