@@ -179,7 +179,6 @@ cmp.setup {
       end,
     },
     { name = "buffer", },
-    { name = "lazydev", group_index = 0, },
     { name = "path", },
   },
   window = {
@@ -193,7 +192,6 @@ cmp.setup {
   },
 }
 
-require "lazydev".setup {}
 require "nvim-autopairs".setup {}
 require "conform".setup {
   formatters_by_ft = {

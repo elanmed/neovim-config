@@ -44,7 +44,6 @@ Plug "hrsh7th/cmp-nvim-lsp"
 Plug "hrsh7th/cmp-path"
 Plug "williamboman/mason.nvim"
 Plug "williamboman/mason-lspconfig.nvim"
-Plug "folke/lazydev.nvim"
 Plug "windwp/nvim-autopairs"
 Plug "stevearc/conform.nvim"
 -- movements
