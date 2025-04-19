@@ -4,6 +4,7 @@ local marks = require "marks"
 local colors = require "feature_complete.plugins.colorscheme"
 
 require "custom_plugins.ft_preview".setup()
+
 vim.api.nvim_set_hl(h.curr.namespace, "FTPreviewSecond",
   { fg = colors.yellow, bg = colors.black, underline = true, bold = true, })
 vim.api.nvim_set_hl(h.curr.namespace, "FTPreviewThird",

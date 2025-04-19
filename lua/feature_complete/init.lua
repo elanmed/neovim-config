@@ -70,6 +70,7 @@ Plug "MagicDuck/grug-far.nvim"
 Plug "ibhagwan/fzf-lua"
 -- snacks
 Plug "folke/snacks.nvim"
+Plug "declancm/cinnamon.nvim"
 
 vim.call "plug#end"
 

@@ -130,22 +130,6 @@ vim.keymap.set("n", "<leader>uo", function()
   end
 end)
 
-vim.keymap.set({ "n", "v", "i", }, "<C-u>", function()
-  if vim.fn.line "$" == vim.fn.line "." then
-    return "M"
-  else
-    return "<C-u>"
-  end
-end, { expr = true, })
-
-vim.keymap.set({ "n", "v", "i", }, "<C-d>", function()
-  if vim.fn.line "." == 1 then
-    return "M"
-  else
-    return "<C-d>"
-  end
-end, { expr = true, })
-
 -- https://stackoverflow.com/a/9407015
 local function next_closed_fold(dir)
   local view = vim.fn.winsaveview()
