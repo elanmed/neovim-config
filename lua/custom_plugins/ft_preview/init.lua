@@ -6,34 +6,34 @@ M.setup = function()
   vim.api.nvim_set_hl(0, "FTPreviewThird", { link = "DiagnosticError", })
   vim.api.nvim_set_hl(0, "FTPreviewDimmed", { link = "Comment", })
 
-  local CharOccurPreview = {}
-  CharOccurPreview.__index = CharOccurPreview
+  local FTPreview = {}
+  FTPreview.__index = FTPreview
 
-  function CharOccurPreview:new()
-    local ns_id = vim.api.nvim_create_namespace "CharOccurPreview"
+  function FTPreview:new()
+    local ns_id = vim.api.nvim_create_namespace "FTPreview"
 
     local this = {
       is_highlighted = false,
       highlighted_line = nil,
       ns_id = ns_id,
     }
-    return setmetatable(this, CharOccurPreview)
+    return setmetatable(this, FTPreview)
   end
 
   --- @param opts { highlighted_line: number }
-  function CharOccurPreview:toggle_on(opts)
+  function FTPreview:toggle_on(opts)
     self.is_highlighted = true
     self.highlighted_line = opts.highlighted_line
   end
 
-  function CharOccurPreview:toggle_off()
+  function FTPreview:toggle_off()
     self.is_highlighted = false
     self.highlighted_line = nil
   end
 
   -- row and col params are expected to be already 0-indexed
   --- @param opts { row: number, start_col: number, end_col: number, hl_group: string }
-  function CharOccurPreview:apply_highlight(opts)
+  function FTPreview:apply_highlight(opts)
     vim.hl.range(
       0,
       self.ns_id,
@@ -44,7 +44,7 @@ M.setup = function()
   end
 
   --- @param str string
-  function CharOccurPreview:get_char_occurrence_at_position(str)
+  function FTPreview:get_char_occurrence_at_position(str)
     -- bee -> { "b" = 1, "e" = 2 }
     local char_to_num_occurrence = {}
     -- bee -> { 1 = 1, 2 = 1, 3 = 2 }
@@ -65,7 +65,7 @@ M.setup = function()
   end
 
   --- @param opts { forward: boolean }
-  function CharOccurPreview:highlight(opts)
+  function FTPreview:highlight(opts)
     local curr_line = vim.api.nvim_get_current_line()
     local cursor_pos = vim.api.nvim_win_get_cursor(0)
     local curr_row_1_indexed = cursor_pos[1]
@@ -119,14 +119,14 @@ M.setup = function()
     vim.cmd "redraw"
   end
 
-  function CharOccurPreview:maybe_clear_highlight()
+  function FTPreview:maybe_clear_highlight()
     if self.highlighted_line == nil then
       return
     end
     vim.api.nvim_buf_clear_namespace(0, self.ns_id, self.highlighted_line, self.highlighted_line + 1)
   end
 
-  local char_occurrence_preview = CharOccurPreview:new()
+  local char_occurrence_preview = FTPreview:new()
 
   --- @param opts { key: "f"|"F"|"t"|"T", forward: boolean }
   local function on_key(opts)
