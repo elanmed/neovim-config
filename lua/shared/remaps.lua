@@ -13,7 +13,6 @@ vim.keymap.set({ "n", "v", }, "b", "<Plug>(MatchitNormalForward)") -- TODO: what
 vim.keymap.set({ "n", "v", }, "<bs>", "b")
 vim.keymap.set({ "n", }, "<leader>e", h.keys.vim_cmd_cb "e")
 
-vim.keymap.set("n", "*", "*N")
 vim.keymap.set("n", "<leader>f", "<C-w>w", { desc = "Toggle focus between windows", })
 
 vim.keymap.set({ "i", }, "<C-e>", "<C-o>$")

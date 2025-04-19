@@ -1,5 +1,19 @@
 local M = {}
 
+--- @class QuickfixItem
+--- @field bufnr number the buffer number
+--- @field module string the module name
+--- @field lnum number the 1-indexed line number in the corresponding buffer
+--- @field end_lnum number the 1-indexed end line number in the corresponding buffer, if multi-line
+--- @field col number the 1-indexed column number in the corresponding buffer
+--- @field end_col number the 1-indexed end column number in the corresponding buffer, if multi-line
+--- @field vcol boolean
+--- @field pattern any search pattern used to locate the error
+--- @field text string description of the error
+--- @field type string type of the error, 'E', '1', etc.
+--- @field valid boolean recognized error message
+--- @field user_data any custom data associated with the item, can be any type
+
 M.setup = function()
   local QuickfixPreview = {}
   QuickfixPreview.__index = QuickfixPreview
@@ -9,7 +23,6 @@ M.setup = function()
       preview_win_id = nil,
       preview_disabled = false,
       parsed_buffers = {},
-      highlighting = false,
     }
     return setmetatable(this, QuickfixPreview)
   end
@@ -18,12 +31,18 @@ M.setup = function()
     return self.preview_win_id == nil
   end
 
+  --- @param disabled boolean
+  function QuickfixPreview:set_preview_disabled(disabled)
+    self.preview_disabled = disabled
+  end
+
   --- @param opts { preview_win_id: number, qf_item_index: number}
   function QuickfixPreview:highlight(opts)
-    local curr_line = vim.fn.line "."
-    if curr_line ~= opts.qf_item_index then return end
+    local curr_line_nr = vim.fn.line "."
+    if curr_line_nr ~= opts.qf_item_index then return end
     if self.preview_win_id ~= opts.preview_win_id then return end
 
+    --- @type QuickfixItem[]
     local qf_list      = vim.fn.getqflist()
     local curr_qf_item = qf_list[opts.qf_item_index]
 
@@ -38,33 +57,26 @@ M.setup = function()
     vim.api.nvim_win_set_cursor(opts.preview_win_id, { curr_qf_item.lnum, curr_qf_item.col, })
   end
 
-  --- @param disabled boolean
-  function QuickfixPreview:set_preview_disabled(disabled)
-    self.preview_disabled = disabled
-  end
-
   function QuickfixPreview:open()
+    --- @type QuickfixItem[]
     local qf_list = vim.fn.getqflist()
     if #qf_list == 0 then return end
 
-    local qf_win_id                            = vim.api.nvim_get_current_win()
-
     local preview_height                       = 10
-    local preview_height_padding_bottom        = 2
-    local curr_line                            = vim.fn.line "."
-    local curr_qf_item                         = qf_list[curr_line]
-    local buf_name                             = vim.api.nvim_buf_get_name(curr_qf_item.bufnr)
+    local preview_height_padding_bottom        = 3
+    local curr_line_nr                         = vim.fn.line "."
+    local curr_qf_item                         = qf_list[curr_line_nr]
 
     local enter_window                         = false
     self.preview_win_id                        = vim.api.nvim_open_win(curr_qf_item.bufnr, enter_window, {
       relative = "win",
-      win = qf_win_id,
+      win = vim.api.nvim_get_current_win(),
       width = vim.api.nvim_win_get_width(0),
       height = preview_height,
       row = -1 * (preview_height + preview_height_padding_bottom),
       col = 1,
       border = "rounded",
-      title = buf_name,
+      title = vim.api.nvim_buf_get_name(curr_qf_item.bufnr),
       title_pos = "center",
       focusable = false,
     })
@@ -76,7 +88,7 @@ M.setup = function()
     vim.wo[self.preview_win_id].winblend       = 5
     vim.wo[self.preview_win_id].cursorline     = true
 
-    self:highlight { preview_win_id = self.preview_win_id, qf_item_index = curr_line, }
+    self:highlight { preview_win_id = self.preview_win_id, qf_item_index = curr_line_nr, }
   end
 
   function QuickfixPreview:close()
@@ -99,10 +111,12 @@ M.setup = function()
       return
     end
 
+    --- @type QuickfixItem[]
     local qf_list = vim.fn.getqflist()
-    local curr_line = vim.fn.line "."
-    local curr_qf_item = qf_list[curr_line]
+    local curr_line_nr = vim.fn.line "."
+    local curr_qf_item = qf_list[curr_line_nr]
 
+    -- avoid creating a new window, reuse the existing one
     vim.api.nvim_win_set_buf(self.preview_win_id, curr_qf_item.bufnr)
 
     local buf_name = vim.api.nvim_buf_get_name(curr_qf_item.bufnr)
@@ -110,10 +124,9 @@ M.setup = function()
       title = buf_name,
       title_pos = "center",
     })
-
     vim.api.nvim_win_set_cursor(self.preview_win_id, { curr_qf_item.lnum, curr_qf_item.col, })
 
-    self:highlight { preview_win_id = self.preview_win_id, qf_item_index = curr_line, }
+    self:highlight { preview_win_id = self.preview_win_id, qf_item_index = curr_line_nr, }
   end
 
   local qf_preview = QuickfixPreview:new()
@@ -156,13 +169,12 @@ M.setup = function()
       end, { buffer = true, })
 
       vim.keymap.set("n", "o", function()
-        local curr_line = vim.fn.line "."
+        local curr_line_nr = vim.fn.line "."
         qf_preview:close()
-        vim.cmd("cc " .. curr_line)
+        vim.cmd("cc " .. curr_line_nr)
       end, { buffer = true, })
     end,
   })
 end
-
 
 return M
