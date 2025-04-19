@@ -1,11 +1,5 @@
 local snacks = require "snacks"
 
-require "cinnamon".setup {
-  keymaps = {
-    basic = true,
-  },
-}
-
 --- @type snacks.Config
 snacks.setup {
   indent = { enabled = true, animate = { enabled = false, }, },
