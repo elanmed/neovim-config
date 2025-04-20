@@ -108,10 +108,7 @@ vim.keymap.set("n", "<leader>gi", function()
     vim.cmd "Gdiffsplit"
   end,
   { desc = "Open the dIff for the current buffer", })
-vim.keymap.set("n", "<leader>gs", function()
-    vim.cmd "tabnew"
-    vim.cmd "Gedit :"
-  end,
+vim.keymap.set("n", "<leader>gs", h.keys.vim_cmd_cb "Gedit :",
   { desc = "Open the fugitive status in the current tab", })
 
 -- diffview
