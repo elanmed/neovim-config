@@ -6,8 +6,13 @@ vim.keymap.set({ "n", "v", }, "<C-t>", function() h.notify.error "snippets only 
 vim.keymap.set("n", "q:",
   function()
     h.notify.warn "Use :q to quit or q? to open the command-line window instead!"
-  end
-  , { desc = "Prevent accidentally opening the command-line window", })
+  end,
+  { desc = "Prevent accidentally opening the command-line window", })
+vim.keymap.set("n", "z.",
+  function()
+    h.notify.warn "z. doesn't work well with smooth scrolling"
+  end,
+  { desc = "Prevent accidentally opening the command-line window", })
 
 vim.keymap.set({ "n", "v", }, "b", "<Plug>(MatchitNormalForward)") -- TODO: what is this?
 vim.keymap.set({ "n", "v", }, "<bs>", "b")
