@@ -3,6 +3,14 @@ local flash = require "flash"
 local marks = require "marks"
 local colors = require "feature_complete.plugins.colorscheme"
 
+require "multicursors".setup {
+  hint_config = false,
+}
+vim.keymap.set("n", "<leader>tm", function()
+  vim.cmd "MCstart"
+  h.notify.info "Starting multicursor"
+end)
+
 require "custom_plugins.ft_preview".setup()
 
 vim.api.nvim_set_hl(h.curr.namespace, "FTPreviewSecond",

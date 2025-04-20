@@ -23,7 +23,6 @@ Plug "nvim-lua/plenary.nvim"
 Plug "tpope/vim-surround"
 Plug "tpope/vim-repeat"
 Plug "tpope/vim-commentary"
-Plug "mg979/vim-visual-multi"
 Plug "jxnblk/vim-mdx-js"
 -- buffers
 Plug "akinsho/bufferline.nvim"
@@ -32,6 +31,7 @@ Plug "RRethy/nvim-base16"
 -- file_tree
 Plug "stevearc/oil.nvim"
 Plug "kyazdani42/nvim-web-devicons"
+Plug "declancm/cinnamon.nvim"
 -- version_control
 Plug "tpope/vim-fugitive"
 Plug "lewis6991/gitsigns.nvim"
@@ -50,6 +50,8 @@ Plug "stevearc/conform.nvim"
 Plug "folke/flash.nvim"
 Plug "chentoast/marks.nvim"
 Plug "christoomey/vim-tmux-navigator"
+Plug "smoka7/multicursors.nvim"
+Plug "nvimtools/hydra.nvim"
 -- statusline
 Plug "nvim-lualine/lualine.nvim"
 Plug "ojroques/vim-scrollstatus"
@@ -69,7 +71,6 @@ Plug "MagicDuck/grug-far.nvim"
 Plug "ibhagwan/fzf-lua"
 -- snacks
 Plug "folke/snacks.nvim"
-Plug "declancm/cinnamon.nvim"
 
 vim.call "plug#end"
 
