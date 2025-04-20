@@ -33,7 +33,7 @@ local signs = {
 }
 
 vim.diagnostic.config {
-  virtual_lines = true,
+  virtual_lines = false,
   signs = signs,
 }
 
