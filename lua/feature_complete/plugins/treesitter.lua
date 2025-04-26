@@ -67,6 +67,6 @@ require "render-markdown".setup {
 require "ts_context_commentstring".setup {}
 require "nvim-ts-autotag".setup {}
 
-vim.keymap.set({ "i", }, "<C-_>", "<C-o><Plug>ContextCommentaryLine")
+vim.keymap.set("i", "<C-_>", "<C-o><Plug>ContextCommentaryLine")
 vim.keymap.set("n", "<C-_>", "<Plug>ContextCommentaryLine")
 vim.keymap.set({ "v", }, "<C-_>", "<Plug>ContextCommentarygv")

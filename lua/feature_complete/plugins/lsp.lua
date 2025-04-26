@@ -53,9 +53,9 @@ local function toggle_virtual_lines()
 end
 
 vim.keymap.set({ "n", "v", }, "<C-g>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
-vim.keymap.set({ "i", }, "<C-g>s", "<nop>", { desc = "Disable vim surround remap", })
-vim.keymap.set({ "i", }, "<C-g>S", "<nop>", { desc = "Disable vim surround remap", })
-vim.keymap.set({ "i", }, "<C-g>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
+vim.keymap.set("i", "<C-g>s", "<nop>", { desc = "Disable vim surround remap", })
+vim.keymap.set("i", "<C-g>S", "<nop>", { desc = "Disable vim surround remap", })
+vim.keymap.set("i", "<C-g>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
 
 local lspconfig_defaults = lspconfig.util.default_config
 lspconfig_defaults.capabilities = vim.tbl_deep_extend(
@@ -98,7 +98,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
   end,
 })
 
-vim.keymap.set({ "i", }, "<C-b>", function() vim.lsp.buf.signature_help { border = "single", } end,
+vim.keymap.set("i", "<C-b>", function() vim.lsp.buf.signature_help { border = "single", } end,
   { desc = "LSP signature help", })
 vim.keymap.set("n", "gh", function() vim.lsp.buf.hover { border = "single", } end, { desc = "LSP hover", })
 vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "LSP go to definition", })
