@@ -20,20 +20,47 @@ vim.keymap.set({ "n", }, "<leader>e", h.keys.vim_cmd_cb "e")
 
 vim.keymap.set("n", "<leader>f", "<C-w>w", { desc = "Toggle focus between windows", })
 
-vim.keymap.set({ "i", }, "<C-e>", "<C-o>$")
+vim.keymap.set("i", "<C-e>", "<C-o>$")
 vim.keymap.set({ "n", "v", }, "<C-e>", "$")
-vim.keymap.set({ "i", }, "<C-a>", "<C-o>^")
+vim.keymap.set("i", "<C-a>", "<C-o>^")
 vim.keymap.set({ "n", "v", }, "<C-a>", "^")
 
 vim.keymap.set("n", "<leader>o", "o<esc>")
 vim.keymap.set("n", "<leader>O", "O<esc>")
 
-vim.keymap.set("n", "E", [[viw"_dP]], { desc = "pastE without overwriting the default register", }) -- TODO: find a better remap
+vim.keymap.set("n", "E", [[viw"_dP]], { desc = "pastE without overwriting the default register", })
 vim.keymap.set("n", "<leader>p", h.keys.vim_cmd_cb "pu", { desc = "Paste on the line below", })
 vim.keymap.set("n", "<leader>P", h.keys.vim_cmd_cb "pu!", { desc = "Paste on the line above", })
 
-vim.keymap.set("n", "<leader>yp", [["zyy"zp]], { desc = "Copy and paste the current line", })
-vim.keymap.set({ "v", }, "<leader>yp", [["zy`>"zp]], { desc = "Copy and paste the current line", }) -- move to end of selection, then yank
+vim.keymap.set("n", "<leader>yp", function()
+  local yank_line = [["zyy]]
+  local paste_line = [["zp]]
+  return yank_line .. paste_line
+end, { desc = "Copy and paste the current line", })
+vim.keymap.set("v", "<leader>yp", function()
+  local yank_line = [["zyy]]
+  local move_to_end_selection = "'>"
+  local paste_line = [["zp]]
+  return yank_line .. move_to_end_selection .. paste_line
+end, { expr = true, desc = "Copy and paste the current selection", })
+vim.keymap.set("n", "<leader>yy",
+  function()
+    local yank_line = [["zyy]]
+    local comment_line = "<Plug>ContextCommentaryLine"
+    local paste_line = [["zp]]
+    return yank_line .. comment_line .. paste_line
+  end,
+  { expr = true, desc = "Yank the current line, comment it, and paste it below", })
+vim.keymap.set("v", "<leader>yy",
+  function()
+    local yank_and_unselect = [["zy]]
+    local move_to_end_selection = "'>"
+    local paste_selection = [["zp]]
+    local reselect_last = "gv"
+    local comment_selection = "<Plug>ContextCommentary"
+    return yank_and_unselect .. move_to_end_selection .. paste_selection .. reselect_last .. comment_selection
+  end,
+  { expr = true, desc = "Yank the current selection, comment it, and paste it below", })
 
 vim.keymap.set("n", ",", h.keys.vim_cmd_cb "w", { desc = "Save", })
 vim.keymap.set("n", "<leader>w", function() h.notify.error "Use , instead!" end, { desc = "Save", })
@@ -169,7 +196,6 @@ end
 vim.keymap.set("n", "W", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "B", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<C-x>", "<nop>", { desc = "TODO find a remap", })
-vim.keymap.set("n", "<C-g>", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>;", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>b", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>c", "<nop>", { desc = "TODO find a remap", })
@@ -180,7 +206,6 @@ vim.keymap.set("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>k", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>m", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>n", "<nop>", { desc = "TODO find a remap", })
-vim.keymap.set("n", "<leader>v", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>x", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>z", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>,", "<nop>", { desc = "TODO find a remap", })
