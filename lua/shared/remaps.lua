@@ -62,6 +62,13 @@ vim.api.nvim_create_user_command("Cprev", function() generate_circular_next_prev
 vim.keymap.set("n", "J", h.keys.vim_cmd_cb "Cnext", { desc = "Move to the next item in the quickfix list", })
 vim.keymap.set("n", "K", h.keys.vim_cmd_cb "Cprev", { desc = "Move to the prev item in the quickfix list", })
 vim.keymap.set("n", "Z", "gJ", { desc = "J without whitespace", })
+vim.keymap.set("n", "*", function()
+  -- https://superuser.com/a/299693
+  local word = vim.fn.expand "<cword>"
+  vim.cmd([[let @/ = '\<]] .. word .. [[\>']])
+  vim.api.nvim_set_option_value("hlsearch", true, {})
+end, { silent = true, desc = "*, but stay on the current search result", })
+
 
 vim.keymap.set("n", "ge", h.keys.vim_cmd_cb "copen", { desc = "Open the quickfix list", })
 vim.keymap.set("n", "gq", h.keys.vim_cmd_cb "cclose", { desc = "Close the quickfix list", })
@@ -92,9 +99,6 @@ vim.cmd [[
   nnoremap <leader>/s :%s/\<\>\C/<left><left><left><left><left>
 ]]
 vim.keymap.set("n", "<leader>/g", h.keys.vim_cmd_cb "nohlsearch", { desc = "Turn off hiGhlighting", })
-
-vim.keymap.set({ "n", "v", }, "n", "nzz")
-vim.keymap.set({ "n", "v", }, "N", "Nzz")
 
 -- prevent x, c from overwriting the clipboard
 vim.keymap.set("n", "x", [["_x]])

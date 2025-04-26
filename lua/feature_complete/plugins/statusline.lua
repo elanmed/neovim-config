@@ -1,5 +1,3 @@
-local h = require "shared.helpers"
-
 vim.g.scrollstatus_symbol_track = "-"
 vim.g.scrollstatus_symbol_bar = ""
 
