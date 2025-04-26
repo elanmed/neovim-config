@@ -142,6 +142,7 @@ else
       },
     },
   })
+  vim.lsp.enable "ts_ls"
   vim.lsp.enable "eslint"
 end
 
@@ -156,6 +157,7 @@ vim.lsp.config("bashls", {
     },
   },
 })
+vim.lsp.enable "bashls"
 
 vim.lsp.enable {
   "jsonls",
