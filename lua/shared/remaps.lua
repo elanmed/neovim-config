@@ -37,12 +37,15 @@ vim.keymap.set("n", "<leader>yp", function()
   local paste_line = [["zp]]
   return yank_line .. paste_line
 end, { expr = true, desc = "Copy and paste the current line", })
+
 vim.keymap.set("v", "<leader>yp", function()
   local yank_line = [["zy]]
   local move_to_end_selection = "`>"
   local paste_line = [["zp]]
-  return yank_line .. move_to_end_selection .. paste_line
+  local move_to_end_paste = "`]"
+  return yank_line .. move_to_end_selection .. paste_line .. move_to_end_paste
 end, { expr = true, desc = "Copy and paste the current selection", })
+
 vim.keymap.set("n", "<leader>yy",
   function()
     local yank_line = [["zyy]]
@@ -51,6 +54,7 @@ vim.keymap.set("n", "<leader>yy",
     return yank_line .. comment_line .. paste_line
   end,
   { expr = true, desc = "Yank the current line, comment it, and paste it below", })
+
 vim.keymap.set("v", "<leader>yy",
   function()
     local yank_and_unselect = [["zy]]
@@ -58,7 +62,13 @@ vim.keymap.set("v", "<leader>yy",
     local paste_selection = [["zp]]
     local reselect_last = "gv"
     local comment_selection = "<Plug>ContextCommentary"
-    return yank_and_unselect .. move_to_end_selection .. paste_selection .. reselect_last .. comment_selection
+    local move_to_end_paste = "`]"
+    return yank_and_unselect ..
+        reselect_last ..
+        comment_selection ..
+        move_to_end_selection ..
+        paste_selection ..
+        move_to_end_paste
   end,
   { expr = true, desc = "Yank the current selection, comment it, and paste it below", })
 
