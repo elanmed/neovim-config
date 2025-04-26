@@ -10,7 +10,12 @@ end
 
 fzf_lua.setup {
   winopts = {
-    preview = { default = "bat_native", },
+    preview = {
+      default = "bat_native",
+      border = "rounded",
+    },
+    border  = "none",
+    width   = 1,
   },
   files = {
     hidden = false,
@@ -38,12 +43,12 @@ fzf_lua.setup {
   marks = {
     marks = "%a",
   },
+  fzf_colors = true,
 }
 
 local with_preview_opts = {
   winopts = {
-    width   = 1,
-    height  = 1,
+    height = 1,
     preview = {
       layout   = "vertical",
       vertical = "up:35%",
@@ -51,15 +56,16 @@ local with_preview_opts = {
   },
 }
 
+--- @param cb function
 local function with_preview_cb(cb)
   return function() cb(with_preview_opts) end
 end
 
+--- @param cb function
 local function without_preview_cb(cb)
   local without_preview_opts = {
     previewer = false,
     winopts = {
-      width  = 1,
       height = 0.5,
       row    = 1,
     },
