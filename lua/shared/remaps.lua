@@ -36,10 +36,10 @@ vim.keymap.set("n", "<leader>yp", function()
   local yank_line = [["zyy]]
   local paste_line = [["zp]]
   return yank_line .. paste_line
-end, { desc = "Copy and paste the current line", })
+end, { expr = true, desc = "Copy and paste the current line", })
 vim.keymap.set("v", "<leader>yp", function()
   local yank_line = [["zyy]]
-  local move_to_end_selection = "'>"
+  local move_to_end_selection = "`>"
   local paste_line = [["zp]]
   return yank_line .. move_to_end_selection .. paste_line
 end, { expr = true, desc = "Copy and paste the current selection", })
@@ -54,7 +54,7 @@ vim.keymap.set("n", "<leader>yy",
 vim.keymap.set("v", "<leader>yy",
   function()
     local yank_and_unselect = [["zy]]
-    local move_to_end_selection = "'>"
+    local move_to_end_selection = "`>"
     local paste_selection = [["zp]]
     local reselect_last = "gv"
     local comment_selection = "<Plug>ContextCommentary"
@@ -189,7 +189,7 @@ vim.keymap.set("n", "zk", function() next_closed_fold "k" end)
 vim.keymap.set("n", "zt", "za", { desc = "Toggle fold", })
 vim.keymap.set("n", "zT", "zA", { desc = "Toggle fold", })
 vim.keymap.set("n", "z?", function()
-  h.notify.info "common fold commands: z{t,T,c,C,o,O,R(open all folds),M(close all folds)}"
+  h.notify.doing "common fold commands: z{t,T,c,C,o,O,R(open all folds),M(close all folds)}"
 end
 , { desc = "Toggle fold", })
 

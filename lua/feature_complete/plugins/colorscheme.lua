@@ -54,7 +54,7 @@ vim.api.nvim_set_hl(h.curr.namespace, "SnacksIndentScope", { fg = M.light_grey, 
 
 vim.api.nvim_set_hl(h.curr.namespace, "NotifyWarning", { fg = M.yellow, })
 vim.api.nvim_set_hl(h.curr.namespace, "NotifyError", { fg = M.red, })
-vim.api.nvim_set_hl(h.curr.namespace, "NotifyInfo", { fg = M.green, })
+vim.api.nvim_set_hl(h.curr.namespace, "NotifyDoing", { fg = M.orange, })
 vim.api.nvim_set_hl(h.curr.namespace, "NotifyToggleOn", { fg = M.green, })
 vim.api.nvim_set_hl(h.curr.namespace, "NotifyToggleOff", { fg = M.purple, })
 

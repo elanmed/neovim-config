@@ -36,7 +36,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", }, {
 
       local replace = "r"
       vim.fn.setqflist(truncated_list, replace)
-      h.notify.info "truncated the quickfix list to 100 items"
+      h.notify.doing "truncated the quickfix list to 100 items"
     end
   end,
 })
@@ -54,7 +54,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
   callback = function()
     vim.keymap.set("n", "gdu", function()
       vim.fn.setqflist(vim.fn.getqflist())
-      h.notify.info "Created a new list!"
+      h.notify.doing "Created a new list!"
     end, { buffer = true, desc = "Duplicate the current quickfix list", })
 
     vim.keymap.set("n", "<cr>", function()

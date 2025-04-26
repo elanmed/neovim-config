@@ -11,7 +11,7 @@ vim.keymap.set("n", "<leader>re", function()
     GRUG_INSTANCE_NAME = grug.open()
   end
   vim.cmd "vertical resize 135%"
-  h.notify.info "Common flags: --case-sensitive (default), --ignore-case, --word-regexp"
+  h.notify.doing "Common flags: --case-sensitive (default), --ignore-case, --word-regexp"
 end, { desc = "Open the grug-far ui", })
 
 grug.setup {

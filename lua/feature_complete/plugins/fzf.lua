@@ -87,7 +87,7 @@ vim.keymap.set("n", "<leader>lg",
 --- @return table
 local function split(input_str)
   local tbl = {}
-  for str in string.gmatch(input_str, "([^%s]+)") do
+  for str in input_str:gmatch "([^%s]+)" do
     table.insert(tbl, str)
   end
   return tbl
@@ -274,7 +274,7 @@ local function live_grep_with_args(initial_query)
 
   return fzf_lua.fzf_live(function(prompt)
     local cmd = cmd_generator(prompt or "")
-    if cmd then h.notify.info(cmd) end
+    if cmd then h.notify.doing(cmd) end
     return cmd
   end, opts)
 end

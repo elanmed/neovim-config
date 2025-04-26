@@ -126,12 +126,12 @@ dev.log = function(content)
 end
 
 --- @param message string
---- @param level "error" | "warn" | "info" | "toggle_on" | "toggle_off"
+--- @param level "error" | "warn" | "doing" | "toggle_on" | "toggle_off"
 notify.notify = function(message, level)
   local level_to_hl_group = {
     error = "NotifyError",
     warn = "NotifyWarning",
-    info = "NotifyInfo",
+    info = "NotifyDoing",
     toggle_on = "NotifyToggleOn",
     toggle_off = "NotifyToggleOff",
   }
@@ -142,7 +142,7 @@ notify.notify = function(message, level)
 end
 
 --- @param message string
-notify.info = function(message)
+notify.doing = function(message)
   notify.notify(message, "info")
 end
 
