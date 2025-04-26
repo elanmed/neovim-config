@@ -38,7 +38,7 @@ vim.keymap.set("n", "<leader>yp", function()
   return yank_line .. paste_line
 end, { expr = true, desc = "Copy and paste the current line", })
 vim.keymap.set("v", "<leader>yp", function()
-  local yank_line = [["zyy]]
+  local yank_line = [["zy]]
   local move_to_end_selection = "`>"
   local paste_line = [["zp]]
   return yank_line .. move_to_end_selection .. paste_line
