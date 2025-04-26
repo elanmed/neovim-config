@@ -68,24 +68,29 @@ M.setup = function()
   function FTPreview:highlight(opts)
     local curr_line = vim.api.nvim_get_current_line()
     local cursor_pos = vim.api.nvim_win_get_cursor(0)
-    local curr_row_1_indexed = cursor_pos[1]
-    local curr_col_0_indexed = cursor_pos[2]
 
-    local row_0_indexed = curr_row_1_indexed - 1
-    local col_1_indexed = curr_col_0_indexed + 1
+    local row_1_indexed = cursor_pos[1]
+    local row_0_indexed = row_1_indexed - 1
 
-    -- highlight starting with the char after the cursor
-    local forward_start_col_1_indexed = col_1_indexed + 1
-    local forward_subbed = curr_line:sub(forward_start_col_1_indexed)
+    local col_0_indexed = cursor_pos[2]
+    local col_1_indexed = col_0_indexed + 1
 
-    -- highlight starting with the char before the cursor
-    local backward_start_col_1_indexed = col_1_indexed - 1
-    local backward_subbed = curr_line:sub(1, backward_start_col_1_indexed + 1) -- exclusive
-    local backward_subbed_reversed = backward_subbed:reverse()
+    local orders = nil
+    if opts.forward then
+      -- highlight starting with the char after the cursor
+      local forward_start = col_1_indexed + 1
+      local forward_subbed = curr_line:sub(forward_start)
 
-    local forward_orders = self:get_char_occurrence_at_position(forward_subbed)
-    local backward_orders = self:get_char_occurrence_at_position(backward_subbed_reversed)
-    local orders = opts.forward and forward_orders or backward_orders
+      orders = self:get_char_occurrence_at_position(forward_subbed)
+    else
+      -- highlight starting with the char before the cursor
+      local backward_start = col_1_indexed - 1
+      local backward_subbed = curr_line:sub(1, backward_start + 1) -- exclusive
+      local backward_subbed_reversed = backward_subbed:reverse()
+
+      orders = self:get_char_occurrence_at_position(backward_subbed_reversed)
+    end
+
     for offset, value in pairs(orders) do
       local hl_group
       if value == 1 then
