@@ -1,14 +1,14 @@
 # neovim config
 
 - A minimalish config written in lua, uses:
-
-  - [lspconfig](https://github.com/neovim/nvim-lspconfig) for language server features
+  - [paq](https://github.com/savq/paq-nvim) as a package manager
+  - [lspconfig](https://github.com/neovim/nvim-lspconfig) for pre-built language server configs, homegrown bash script to install language servers
   - [cmp](https://github.com/hrsh7th/nvim-cmp) for completions
   - [treesitter](https://github.com/nvim-treesitter/nvim-treesitter) for syntax highlighting, fancy pair renaming
   - [flash](https://github.com/folke/flash.nvim) for a combo of [easymotion](https://github.com/easymotion/vim-easymotion) and [leap](https://github.com/ggandor/leap.nvim)
   - [vim tmux navigator](https://github.com/christoomey/vim-tmux-navigator) for moving between vim and tmux panes
-  - [fzf-lua](https://github.com/ibhagwan/fzf-lua) as a picker
-  - [grug-far](https://github.com/MagicDuck/grug-far.nvim) for an interative global find and replace interface
+  - [fzf-lua](https://github.com/ibhagwan/fzf-lua) as a primary picker, [snacks](https://github.com/folke/snacks.nvim) to cover some missing sources
+  - [grug-far](https://github.com/MagicDuck/grug-far.nvim) for an interative global find and replace
   - [bufferline](https://github.com/akinsho/bufferline.nvim) for buffer management
   - [fugitive](https://github.com/tpope/vim-fugitive), [diffview](https://github.com/sindrets/diffview.nvim) and [gitsigns](https://github.com/lewis6991/gitsigns.nvim) for git integration
   - [oil](https://github.com/stevearc/oil.nvim) for a better netrw
