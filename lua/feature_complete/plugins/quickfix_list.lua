@@ -1,6 +1,12 @@
 local h = require "shared.helpers"
 
-require "custom_plugins.quickfix_preview".setup()
+local qf_preview = require "custom_plugins.quickfix_preview"
+qf_preview.setup {
+  enable = true,
+  keymaps = {
+    toggle = "t",
+  },
+}
 
 --- @param str string
 --- @param start string
@@ -56,6 +62,18 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
       vim.fn.setqflist(vim.fn.getqflist())
       h.notify.doing "Created a new list!"
     end, { buffer = true, desc = "Duplicate the current quickfix list", })
+
+    vim.keymap.set("n", "gy", function()
+      qf_preview.close()
+      vim.fn.setqflist({}, "f") -- clear all
+      -- vim.fn.setqflist({}, "r") -- clear current
+    end, { buffer = true, desc = "Clear all quickfix lists", })
+
+    vim.keymap.set("n", "o", function()
+      local curr_line_nr = vim.fn.line "."
+      qf_preview.close()
+      vim.cmd("cc " .. curr_line_nr)
+    end, { buffer = true, })
 
     vim.keymap.set("n", "<cr>", function()
       local curr_line = vim.fn.line "."
