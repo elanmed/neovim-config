@@ -1,4 +1,4 @@
-local QuickfixPreview = require "custom_plugins.quickfix_preview.class"
+local QuickfixPreview = require "homegrown_plugins.quickfix_preview.class"
 local qf_preview = QuickfixPreview:new()
 
 local M = {}

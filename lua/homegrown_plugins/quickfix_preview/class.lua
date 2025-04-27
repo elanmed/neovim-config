@@ -46,7 +46,7 @@ function QuickfixPreview:highlight(opts)
   if not self.parsed_buffers[curr_qf_item.bufnr] then
     vim.api.nvim_buf_call(curr_qf_item.bufnr, function()
       vim.cmd "filetype detect"
-      vim.treesitter.start(curr_qf_item.bufnr)
+      pcall(vim.treesitter.start, curr_qf_item.bufnr)
     end)
     self.parsed_buffers[curr_qf_item.bufnr] = true
   end

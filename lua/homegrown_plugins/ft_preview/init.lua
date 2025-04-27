@@ -1,4 +1,4 @@
-local FTPreview = require "custom_plugins.ft_preview.class"
+local FTPreview = require "homegrown_plugins.ft_preview.class"
 local char_occurrence_preview = FTPreview:new()
 
 --- @param on_key_opts { key: "f"|"F"|"t"|"T", forward: boolean }

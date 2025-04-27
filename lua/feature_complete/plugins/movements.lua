@@ -42,8 +42,6 @@ vim.keymap.set("n", "<leader>tm", function()
   h.notify.doing "Starting multicursor"
 end)
 
-require "custom_plugins.ft_preview".setup { enable = true, }
-
 vim.api.nvim_set_hl(h.curr.namespace, "FTPreviewSecond",
   { fg = colors.yellow, bg = colors.black, underline = true, bold = true, })
 vim.api.nvim_set_hl(h.curr.namespace, "FTPreviewThird",
