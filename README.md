@@ -2,18 +2,16 @@
 
 - A minimalish config written in lua, uses:
 
-  - [lspconfig](https://github.com/neovim/nvim-lspconfig), [mason](https://github.com/williamboman/mason.nvim) for language server features
+  - [lspconfig](https://github.com/neovim/nvim-lspconfig) for language server features
   - [cmp](https://github.com/hrsh7th/nvim-cmp) for completions
-  - [treesitter](https://github.com/nvim-treesitter/nvim-treesitter) for syntax highlighting, pair renaming, and viewing a buffer's code structure
-  - [flash](https://github.com/folke/flash.nvim) for a combo of [easymotion](https://github.com/easymotion/vim-easymotion), [flit](https://github.com/ggandor/flit.nvim), and [leap](https://github.com/ggandor/leap.nvim)
+  - [treesitter](https://github.com/nvim-treesitter/nvim-treesitter) for syntax highlighting, fancy pair renaming
+  - [flash](https://github.com/folke/flash.nvim) for a combo of [easymotion](https://github.com/easymotion/vim-easymotion) and [leap](https://github.com/ggandor/leap.nvim)
   - [vim tmux navigator](https://github.com/christoomey/vim-tmux-navigator) for moving between vim and tmux panes
-  - [harpoon](https://github.com/ThePrimeagen/harpoon/tree/harpoon2) for moving between frequently-used buffers
-  - [telescope](https://github.com/nvim-telescope/telescope.nvim) as a picker
+  - [fzf-lua](https://github.com/ibhagwan/fzf-lua) as a picker
   - [grug-far](https://github.com/MagicDuck/grug-far.nvim) for an interative global find and replace interface
   - [bufferline](https://github.com/akinsho/bufferline.nvim) for buffer management
-  - [fugitive](https://github.com/tpope/vim-fugitive) and [gitsigns](https://github.com/lewis6991/gitsigns.nvim) for git integration
+  - [fugitive](https://github.com/tpope/vim-fugitive), [diffview](https://github.com/sindrets/diffview.nvim) and [gitsigns](https://github.com/lewis6991/gitsigns.nvim) for git integration
   - [oil](https://github.com/stevearc/oil.nvim) for a better netrw
-  - [bqf](https://github.com/kevinhwang91/nvim-bqf) for a better quick-fix list
   - [wilder](https://github.com/gelguy/wilder.nvim) for a better wild menu
 
 ---
@@ -25,7 +23,6 @@
 
 ```
 ├── barebones.lua
-├── coc-settings.json
 ├── feature_complete.lua
 ├── init.lua -> feature_complete.lua (symlink)
 ├── lua
@@ -38,7 +35,8 @@
 │   ├── shared
 │   │   ├── helpers.lua
 │   │   ├── options.lua
-│   │   ├── remapse.lua
+│   │   ├── homegrown_plugins.lua
+│   │   ├── remaps.lua
 │   │   └── user_commands.lua
 ```
 
