@@ -1,28 +1,6 @@
 local h = require "shared.helpers"
 local lspconfig = require "lspconfig"
 
-vim.opt.signcolumn = "yes" -- reserve a space in the gutter
-
-require "mason".setup()
--- https://github.com/williamboman/mason-lspconfig.nvim/blob/e86a4c84ff35240639643ffed56ee1c4d55f538e/doc/mason-lspconfig.txt#L164-L197
--- useful for `ensure_installed`, not strictly necessary
-require "mason-lspconfig".setup {
-  ensure_installed = {
-    "ts_ls",
-    "eslint",
-    "jsonls",
-    "lua_ls",
-    "bashls",
-    "css_variables",
-    "cssls",
-    "cssmodules_ls",
-    "stylelint_lsp",
-    "tailwindcss",
-    "denols",
-    "vimls",
-  },
-}
-
 local signs = {
   text = {
     [vim.diagnostic.severity.ERROR] = "",

@@ -15,6 +15,7 @@ vim.opt.scrolloff      = 999
 vim.opt.conceallevel   = 0    -- keep quotes keys in normal mode
 vim.opt.undofile       = true
 vim.opt.ignorecase     = true
+vim.opt.signcolumn     = "yes"
 vim.cmd "set wildchar=<C-n>" -- TODO: issues setting in lua
 
 vim.opt.spelllang      = "en_us"

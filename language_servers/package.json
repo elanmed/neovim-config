@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "vim-language-server": "*",
+    "vscode-langservers-extracted": "*",
+    "typescript": "*",
+    "typescript-language-server": "*",
+    "bash-language-server": "*",
+    "css-variables-language-server": "*",
+    "cssmodules-language-server": "*",
+    "stylelint-lsp": "*",
+    "@tailwindcss/language-server": "*"
+  }
+}

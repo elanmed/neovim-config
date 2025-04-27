@@ -13,5 +13,6 @@
   "workspace.checkThirdParty": false,
   "workspace.library": [
     "$VIMRUNTIME"
-  ]
+  ],
+  "workspace.ignoreDir": ["language_servers"]
 }
