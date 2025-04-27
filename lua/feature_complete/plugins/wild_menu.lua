@@ -1,5 +1,9 @@
 local wilder = require "wilder"
 
+-- disable wildchar
+vim.keymap.set("c", "<tab>", "<nop>")
+vim.keymap.set("c", "<s-tab>", "<nop>")
+
 -- https://github.com/gelguy/wilder.nvim?tab=readme-ov-file#neovim-lua-only-config
 wilder.setup { modes = { ":", }, next_key = "<C-n>", previous_key = "<C-p>", }
 

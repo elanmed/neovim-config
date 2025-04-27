@@ -1,12 +1,8 @@
 local h = require "shared.helpers"
 
-vim.api.nvim_create_autocmd({ "FileType", }, {
-  pattern = "wildmenu",
-  callback = function()
-    vim.keymap.set("n", "<C-n>", "<tab>")
-    vim.keymap.set("n", "<C-p>", "<S-tab>")
-  end,
-})
+-- https://github.com/neovim/neovim/issues/18000#issuecomment-1088700694
+-- vim.opt.wildchar = ("<C-n>"):byte()
+vim.cmd "set wildchar=<C-s>"
 
 vim.keymap.set("n", "L", h.keys.vim_cmd_cb "bnext", { desc = "Next buffer", })
 vim.keymap.set("n", "H", h.keys.vim_cmd_cb "bprev", { desc = "Previous buffer", })
@@ -21,11 +17,17 @@ vim.keymap.set("n", "<C-f>", function()
     vim.cmd "Explore %:p:h"
   end
 end, { desc = "Toggle netrw, focusing the current buffer", })
-vim.opt.path:append "**"              -- search in subfolder
-vim.keymap.set("n", "<C-p>", h.keys.vim_cmd_cb "wq!")
+
+vim.keymap.set("n", "<C-p>", function() h.notify.warn "Exit and use fzf instead" end)
 vim.keymap.set("i", "<C-s>", "<C-n>") -- autocomplete
+
+vim.opt.path:append "**"              -- search in subfolder
 vim.cmd "nnoremap <leader>lg :grep<space>"
 vim.cmd "nnoremap <leader>la :grep<space>"
+vim.cmd "nnoremap <leader>lh :h<space>"
+vim.keymap.set("n", "<leader>lm", h.keys.vim_cmd_cb "marks")
+vim.keymap.set("n", "<leader>lu", h.keys.vim_cmd_cb "buffers")
+
 vim.keymap.set("c", "/", function()
   if vim.fn.wildmenumode() == 1 then
     return "<C-y>"
