@@ -30,10 +30,7 @@ local function toggle_virtual_lines()
   end
 end
 
-vim.keymap.set({ "n", "v", }, "<C-g>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
-vim.keymap.set("i", "<C-g>s", "<nop>", { desc = "Disable vim surround remap", })
-vim.keymap.set("i", "<C-g>S", "<nop>", { desc = "Disable vim surround remap", })
-vim.keymap.set("i", "<C-g>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
+vim.keymap.set({ "i", "n", "v", }, "<C-g>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
 
 local lspconfig_defaults = lspconfig.util.default_config
 lspconfig_defaults.capabilities = vim.tbl_deep_extend(

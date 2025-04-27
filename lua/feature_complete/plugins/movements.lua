@@ -4,6 +4,15 @@ local marks = require "marks"
 local colors = require "feature_complete.plugins.colorscheme"
 local cinnamon = require "cinnamon"
 
+require "nvim-surround".setup {
+  keymaps = {
+    normal = "ys",
+    visual = "S",
+    delete = "ds",
+    change = "cs",
+  },
+}
+
 cinnamon.setup {
   options = {
     mode = "window",

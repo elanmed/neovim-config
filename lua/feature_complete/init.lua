@@ -29,7 +29,6 @@ bootstrap_paq {
   -- (no file)
   "nvim-lua/popup.nvim",
   "nvim-lua/plenary.nvim",
-  "tpope/vim-surround",
   "tpope/vim-repeat",
   "tpope/vim-commentary",
   "jxnblk/vim-mdx-js",
@@ -59,6 +58,7 @@ bootstrap_paq {
   "christoomey/vim-tmux-navigator",
   "smoka7/multicursors.nvim",
   "nvimtools/hydra.nvim",
+  "kylechui/nvim-surround",
   -- snacks
   "folke/snacks.nvim",
   -- statusline
