@@ -41,6 +41,7 @@ grug.setup {
 vim.api.nvim_create_autocmd({ "FileType", }, {
   pattern = "grug-far",
   callback = function()
-    vim.keymap.set("i", "<C-c>", "<Esc><leader>q", { buffer = h.curr.buffer, })
+    -- TODO: vim.keymap.set with the buffer opt doesn't work
+    vim.api.nvim_buf_set_keymap(h.curr.buffer, "i", "<C-c>", "<Esc><leader>q", {})
   end,
 })

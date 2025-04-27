@@ -293,7 +293,7 @@ vim.keymap.set("v", "<leader>lo",
     if visual_selection == "" then return end
     live_grep_with_args("~" .. visual_selection .. "~ ")
   end, { desc = "Grep the current word", })
-vim.keymap.set({ "n", }, "<leader>lo",
+vim.keymap.set("n", "<leader>lo",
   function()
     live_grep_with_args("~" .. vim.fn.expand "<cword>" .. "~ ")
   end, { desc = "Grep the current visual selection", })

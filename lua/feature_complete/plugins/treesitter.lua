@@ -1,5 +1,3 @@
-local h = require "shared.helpers"
-
 require "nvim-treesitter.configs".setup {
   ensure_installed = {
     "bash",
@@ -69,4 +67,4 @@ require "nvim-ts-autotag".setup {}
 
 vim.keymap.set("i", "<C-_>", "<C-o><Plug>ContextCommentaryLine")
 vim.keymap.set("n", "<C-_>", "<Plug>ContextCommentaryLine")
-vim.keymap.set({ "v", }, "<C-_>", "<Plug>ContextCommentarygv")
+vim.keymap.set("v", "<C-_>", "<Plug>ContextCommentarygv")

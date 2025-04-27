@@ -1,7 +1,6 @@
 local remaps = {}
 local keys = {}
 local tbl = {}
-local screen = {}
 local os = {}
 local dev = {}
 local notify = {}
@@ -81,12 +80,6 @@ tbl.size = function(table)
     count = count + 1
   end
   return count
-end
-
-screen.has_split = function()
-  local screen_cols = vim.opt.columns
-  local window_cols = vim.api.nvim_win_get_width(curr.window)
-  return screen_cols ~= window_cols
 end
 
 os.is_linux = function()
@@ -170,7 +163,6 @@ return {
   keys = keys,
   tbl = tbl,
   remaps = remaps,
-  screen = screen,
   curr = curr,
   os = os,
   dev = dev,

@@ -16,7 +16,7 @@ vim.keymap.set("n", "z.",
 
 vim.keymap.set({ "n", "v", }, "b", "<Plug>(MatchitNormalForward)") -- TODO: what is this?
 vim.keymap.set({ "n", "v", }, "<bs>", "b")
-vim.keymap.set({ "n", }, "<leader>e", h.keys.vim_cmd_cb "e")
+vim.keymap.set("n", "<leader>e", h.keys.vim_cmd_cb "e")
 
 vim.keymap.set("n", "<leader>f", "<C-w>w", { desc = "Toggle focus between windows", })
 
@@ -46,7 +46,7 @@ vim.keymap.set("v", "<leader>yp", function()
   return yank_line .. move_to_end_selection .. paste_line .. move_to_end_paste
 end, { expr = true, desc = "Copy and paste the current selection", })
 
-vim.keymap.set("n", "<leader>yy",
+vim.keymap.set("n", "<leader>yc",
   function()
     local yank_line = [["zyy]]
     local comment_line = "<Plug>ContextCommentaryLine"
@@ -55,7 +55,7 @@ vim.keymap.set("n", "<leader>yy",
   end,
   { expr = true, desc = "Yank the current line, comment it, and paste it below", })
 
-vim.keymap.set("v", "<leader>yy",
+vim.keymap.set("v", "<leader>yc",
   function()
     local yank_and_unselect = [["zy]]
     local move_to_end_selection = "`>"
@@ -72,17 +72,21 @@ vim.keymap.set("v", "<leader>yy",
   end,
   { expr = true, desc = "Yank the current selection, comment it, and paste it below", })
 
+vim.keymap.set("n", "<leader>ya",
+  function()
+    vim.fn.setreg("+", vim.fn.expand "%:p")
+  end, { desc = "Yank the Absolute path of the current buffer", })
+vim.keymap.set("n", "<leader>yr",
+  function()
+    vim.fn.setreg("+", vim.fn.expand "%:~:.")
+  end, { desc = "Yank the Relative path of the current buffer", })
+
 vim.keymap.set("n", ",", h.keys.vim_cmd_cb "w", { desc = "Save", })
 vim.keymap.set("n", "<leader>w", function() h.notify.error "Use , instead!" end, { desc = "Save", })
 vim.keymap.set("n", "<leader>q", h.keys.vim_cmd_cb "q", { desc = "Save", })
 
-vim.keymap.set("n", "<leader>ya", function() vim.fn.setreg("+", vim.fn.expand "%:p") end,
-  { desc = "Yank the Absolute path of the current buffer", })
-vim.keymap.set("n", "<leader>yr", function() vim.fn.setreg("+", vim.fn.expand "%:~:.") end,
-  { desc = "Yank the Relative path of the current buffer", })
-
-vim.keymap.set({ "v", }, "<", "<gv", { desc = "Outdent, while keeping selection", })
-vim.keymap.set({ "v", }, ">", ">gv", { desc = "Indent, while keeping selection", })
+vim.keymap.set("v", "<", "<gv", { desc = "Outdent, while keeping selection", })
+vim.keymap.set("v", ">", ">gv", { desc = "Indent, while keeping selection", })
 
 --- @param try string
 --- @param catch string

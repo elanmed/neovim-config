@@ -46,7 +46,7 @@ vim.keymap.set("n", "<leader>ln", function()
         width = 0,
         height = 0.99, -- avoid cutting off the border
         box = "vertical",
-        border = "rounded",
+        border = "none",
         title = "{title}",
         title_pos = "center",
         { win = "preview", height = 0.65, border = "rounded", },

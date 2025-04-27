@@ -29,7 +29,7 @@ local M = {}
 --- @class FTPreviewOpts
 --- @field enable boolean Enable the plugin, defaults to `false`
 
---- @param opts FTPreviewOpts
+--- @param opts FTPreviewOpts | nil
 M.setup = function(opts)
   opts = opts or {}
   local enable = opts.enable or false
