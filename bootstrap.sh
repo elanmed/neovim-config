@@ -35,8 +35,8 @@ h_install_package "$package_manager" fd-find
 if $server_flag; then
   h_echo --mode=noop "SKIPPING: running :PlugInstall"
 else
-  h_echo --mode=doing "running :PlugInstall"
-  nvim --headless "+PlugInstall" +qa
+  h_echo --mode=doing "running :PaqInstall"
+  nvim --headless "+PaqInstall" +qa
 fi
 
 h_echo --mode=doing "running the language servers install script"
