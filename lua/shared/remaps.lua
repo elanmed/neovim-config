@@ -1,7 +1,6 @@
 local h = require "shared.helpers"
 
--- delay when using vim.keymap.set
-vim.cmd "inoremap <C-t> <C-o>:Snippet<space>"
+vim.keymap.set("i", "<C-t>", "<C-o>:Snippet<space>")
 vim.keymap.set({ "n", "v", }, "<C-t>", function() h.notify.error "snippets only supported in insert mode!" end)
 vim.keymap.set("n", "q:",
   function()
@@ -125,20 +124,12 @@ vim.keymap.set("i", "<A-k>", "<esc>:m .-2<cr>==gi", { desc = "Move line up", })
 vim.keymap.set("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move line down", })
 vim.keymap.set("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move line up", })
 
--- search Case sensitive, Whole word, and All
-vim.cmd [[
-  nnoremap <leader>/c /\C<left><left>
-  nnoremap <leader>/w /\<\><left><left>
-  nnoremap <leader>/a /\<\>\C<left><left><left><left>
-]]
--- search without regex
-vim.cmd [[
-  nnoremap / /\V
-]]
--- search and replace, case sensitive and by whole word
-vim.cmd [[
-  nnoremap <leader>/s :%s/\<\>\C/<left><left><left><left><left>
-]]
+vim.keymap.set("n", "<leader>/c", "/\\C<left><left>", { desc = "/ Case sensitive", })
+vim.keymap.set("n", "<leader>/w", "/\\<\\><left><left>", { desc = "/ Word sensitive", })
+vim.keymap.set("n", "<leader>/a", "/\\<\\>\\C<left><left><left><left>", { desc = "/ case and word sensitive", })
+vim.keymap.set("n", "/", "/\\V", { desc = "/ without regex", })
+vim.keymap.set("n", "<leader>/s", ":%s/\\<\\>\\C/<left><left><left><left><left>",
+  { desc = "Search and replace in the current buffer, case and word sensitive", })
 vim.keymap.set("n", "<leader>/g", h.keys.vim_cmd_cb "nohlsearch", { desc = "Turn off hiGhlighting", })
 
 -- prevent x, c from overwriting the clipboard

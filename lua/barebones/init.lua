@@ -22,9 +22,9 @@ vim.keymap.set("n", "<C-p>", function() h.notify.warn "Exit and use fzf instead"
 vim.keymap.set("i", "<C-s>", "<C-n>") -- autocomplete
 
 vim.opt.path:append "**"              -- search in subfolder
-vim.cmd "nnoremap <leader>lg :grep<space>"
-vim.cmd "nnoremap <leader>la :grep<space>"
-vim.cmd "nnoremap <leader>lh :h<space>"
+vim.keymap.set("n", "<leader>lg", "<C-o>:grep<space>")
+vim.keymap.set("n", "<leader>la", "<C-o>:grep<space>")
+vim.keymap.set("n", "<leader>lh", "<C-o>:h<space>")
 vim.keymap.set("n", "<leader>lm", h.keys.vim_cmd_cb "marks")
 vim.keymap.set("n", "<leader>lu", h.keys.vim_cmd_cb "buffers")
 
