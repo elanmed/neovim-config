@@ -16,6 +16,7 @@ vim.opt.conceallevel   = 0    -- keep quotes keys in normal mode
 vim.opt.undofile       = true
 vim.opt.ignorecase     = true
 vim.opt.signcolumn     = "yes"
+vim.opt.wrap           = false
 
 vim.opt.spelllang      = "en_us"
 vim.opt.spell          = false -- TODO: look into
