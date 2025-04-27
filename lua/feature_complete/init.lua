@@ -1,76 +1,84 @@
 local h = require "shared.helpers"
 
-local data_dir = vim.fn.stdpath "data"
-if vim.fn.empty(vim.fn.glob(data_dir .. "/site/autoload/plug.vim")) == 1 then
-  vim.cmd("silent !curl -fLo " ..
-    data_dir ..
-    "/site/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim")
-  vim.opt.runtimepath = vim.opt.runtimepath
-  vim.api.nvim_create_autocmd({ "VimEnter", }, {
-    pattern = "*",
-    callback = h.keys.vim_cmd_cb "PlugInstall --sync",
-  })
+-- :h paq-bootstrapping
+local function clone_paq()
+  local path = vim.fn.stdpath "data" .. "/site/pack/paqs/start/paq-nvim"
+  local is_installed = vim.fn.empty(vim.fn.glob(path)) == 0
+  if not is_installed then
+    vim.fn.system { "git", "clone", "--depth=1", "https://github.com/savq/paq-nvim.git", path, }
+    return true
+  end
 end
 
-local vim = vim
-local Plug = vim.fn["plug#"]
+local function bootstrap_paq(packages)
+  local first_install = clone_paq()
+  vim.cmd.packadd "paq-nvim"
+  local paq = require "paq"
+  if first_install then
+    vim.notify "Installing plugins... If prompted, hit Enter to continue."
+  end
 
-vim.call "plug#begin"
+  paq(packages)
+  paq.install()
+end
 
--- (no file)
-Plug "nvim-lua/popup.nvim"
-Plug "nvim-lua/plenary.nvim"
-Plug "tpope/vim-surround"
-Plug "tpope/vim-repeat"
-Plug "tpope/vim-commentary"
-Plug "jxnblk/vim-mdx-js"
--- buffers
-Plug "akinsho/bufferline.nvim"
--- colorscheme
-Plug "RRethy/nvim-base16"
--- file_tree
-Plug "stevearc/oil.nvim"
-Plug "kyazdani42/nvim-web-devicons"
-Plug "declancm/cinnamon.nvim"
--- version_control
-Plug "tpope/vim-fugitive"
-Plug "lewis6991/gitsigns.nvim"
-Plug "sindrets/diffview.nvim"
--- lsp
-Plug "neovim/nvim-lspconfig"
-Plug "hrsh7th/nvim-cmp"
-Plug "hrsh7th/cmp-buffer"
-Plug "hrsh7th/cmp-nvim-lsp"
-Plug "hrsh7th/cmp-path"
-Plug "windwp/nvim-autopairs"
-Plug "stevearc/conform.nvim"
--- movements
-Plug "folke/flash.nvim"
-Plug "chentoast/marks.nvim"
-Plug "christoomey/vim-tmux-navigator"
-Plug "smoka7/multicursors.nvim"
-Plug "nvimtools/hydra.nvim"
--- statusline
-Plug "nvim-lualine/lualine.nvim"
-Plug "ojroques/vim-scrollstatus"
--- treesitter
-Plug("nvim-treesitter/nvim-treesitter", { ["do"] = h.keys.vim_cmd_cb "TSUpdate", })
-Plug "nvim-treesitter/nvim-treesitter-textobjects"
-Plug "MeanderingProgrammer/markdown.nvim"
-Plug "RRethy/nvim-treesitter-endwise"
-Plug "windwp/nvim-ts-autotag"
-Plug "JoosepAlviste/nvim-ts-context-commentstring"
--- wild_menu
-Plug "gelguy/wilder.nvim"
-Plug "romgrk/fzy-lua-native"
--- far
-Plug "MagicDuck/grug-far.nvim"
--- fzf
-Plug "ibhagwan/fzf-lua"
--- snacks
-Plug "folke/snacks.nvim"
-
-vim.call "plug#end"
+-- Call helper function
+bootstrap_paq {
+  "savq/paq-nvim",
+  -- List your packages
+  -- (no file)
+  "nvim-lua/popup.nvim",
+  "nvim-lua/plenary.nvim",
+  "tpope/vim-surround",
+  "tpope/vim-repeat",
+  "tpope/vim-commentary",
+  "jxnblk/vim-mdx-js",
+  -- buffers
+  "akinsho/bufferline.nvim",
+  -- colorscheme
+  "RRethy/nvim-base16",
+  -- far
+  "MagicDuck/grug-far.nvim",
+  -- file_tree
+  "stevearc/oil.nvim",
+  "kyazdani42/nvim-web-devicons",
+  "declancm/cinnamon.nvim",
+  -- fzf
+  "ibhagwan/fzf-lua",
+  -- lsp
+  "neovim/nvim-lspconfig",
+  "hrsh7th/nvim-cmp",
+  "hrsh7th/cmp-buffer",
+  "hrsh7th/cmp-nvim-lsp",
+  "hrsh7th/cmp-path",
+  "windwp/nvim-autopairs",
+  "stevearc/conform.nvim",
+  -- movements
+  "folke/flash.nvim",
+  "chentoast/marks.nvim",
+  "christoomey/vim-tmux-navigator",
+  "smoka7/multicursors.nvim",
+  "nvimtools/hydra.nvim",
+  -- snacks
+  "folke/snacks.nvim",
+  -- statusline
+  "nvim-lualine/lualine.nvim",
+  "ojroques/vim-scrollstatus",
+  -- treesitter
+  { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate", },
+  "nvim-treesitter/nvim-treesitter-textobjects",
+  "MeanderingProgrammer/markdown.nvim",
+  "RRethy/nvim-treesitter-endwise",
+  "windwp/nvim-ts-autotag",
+  "JoosepAlviste/nvim-ts-context-commentstring",
+  -- version_control
+  "tpope/vim-fugitive",
+  "lewis6991/gitsigns.nvim",
+  "sindrets/diffview.nvim",
+  -- wild_menu
+  "gelguy/wilder.nvim",
+  "romgrk/fzy-lua-native",
+}
 
 local base_lua_path = vim.fn.stdpath "config" .. "/lua"              -- ~/.config/nvim/lua/
 local glob_path = base_lua_path .. "/feature_complete/plugins/*.lua" -- ~/.config/nvim/lua/feature_complete/plugins/*.lua
