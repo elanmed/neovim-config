@@ -1,5 +1,3 @@
-local h = require "shared.helpers"
-
 -- :h paq-bootstrapping
 local function clone_paq()
   local path = vim.fn.stdpath "data" .. "/site/pack/paqs/start/paq-nvim"
@@ -14,12 +12,12 @@ local function bootstrap_paq(packages)
   local first_install = clone_paq()
   vim.cmd.packadd "paq-nvim"
   local paq = require "paq"
+  paq(packages)
+
   if first_install then
     vim.notify "Installing plugins... If prompted, hit Enter to continue."
+    paq.install()
   end
-
-  paq(packages)
-  paq.install()
 end
 
 -- Call helper function
