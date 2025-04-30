@@ -13,7 +13,7 @@ require "lualine".setup {
     lualine_b = {
       {
         "filename",
-        path = 3, -- absolute path, with tilde as the home directory
+        path = 4, -- filename and parent dir
       },
     },
     lualine_c = { "lsp_status", },
