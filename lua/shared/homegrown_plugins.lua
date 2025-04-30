@@ -1,5 +1,5 @@
 local h = require "shared.helpers"
-require "homegrown_plugins.ft_preview".setup { enable = true, }
+
 local qf_preview = require "homegrown_plugins.quickfix_preview"
 
 qf_preview.setup {

@@ -57,6 +57,7 @@ bootstrap_paq {
   "smoka7/multicursors.nvim",
   "nvimtools/hydra.nvim",
   "kylechui/nvim-surround",
+  "ElanMedoff/ft-highlight.nvim",
   -- snacks
   "folke/snacks.nvim",
   -- statusline

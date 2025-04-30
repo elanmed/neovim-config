@@ -4,6 +4,14 @@ local marks = require "marks"
 local colors = require "feature_complete.plugins.colorscheme"
 local cinnamon = require "cinnamon"
 
+require "ft-highlight".setup { enable = true, }
+
+vim.api.nvim_set_hl(h.curr.namespace, "FTHighlightSecond",
+  { fg = colors.yellow, bg = colors.black, underline = true, bold = true, })
+vim.api.nvim_set_hl(h.curr.namespace, "FTHighlightThird",
+  { fg = colors.red, bg = colors.black, underline = true, bold = true, })
+vim.api.nvim_set_hl(h.curr.namespace, "FTHighlightDimmed", { fg = colors.light_grey, bg = colors.black, })
+
 require "nvim-surround".setup {
   keymaps = {
     normal = "ys",
@@ -51,11 +59,6 @@ vim.keymap.set("n", "<leader>tm", function()
   h.notify.doing "Starting multicursor"
 end)
 
-vim.api.nvim_set_hl(h.curr.namespace, "FTPreviewSecond",
-  { fg = colors.yellow, bg = colors.black, underline = true, bold = true, })
-vim.api.nvim_set_hl(h.curr.namespace, "FTPreviewThird",
-  { fg = colors.red, bg = colors.black, underline = true, bold = true, })
-vim.api.nvim_set_hl(h.curr.namespace, "FTPreviewDimmed", { fg = colors.light_grey, bg = colors.black, })
 
 flash.setup {
   modes = {
