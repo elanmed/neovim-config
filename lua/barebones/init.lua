@@ -19,9 +19,8 @@ vim.keymap.set("n", "<C-f>", function()
 end, { desc = "Toggle netrw, focusing the current buffer", })
 
 vim.keymap.set("n", "<C-p>", function() h.notify.warn "Exit and use fzf instead" end)
-vim.keymap.set("i", "<C-s>", "<C-n>") -- autocomplete
 
-vim.opt.path:append "**"              -- search in subfolder
+vim.opt.path:append "**" -- search in subfolder
 vim.keymap.set("n", "<leader>lg", "<C-o>:grep<space>")
 vim.keymap.set("n", "<leader>la", "<C-o>:grep<space>")
 vim.keymap.set("n", "<leader>lh", "<C-o>:h<space>")
