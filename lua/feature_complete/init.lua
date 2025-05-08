@@ -39,7 +39,7 @@ bootstrap_paq {
   -- file_tree
   "stevearc/oil.nvim",
   "kyazdani42/nvim-web-devicons",
-  "declancm/cinnamon.nvim",
+  "karb94/neoscroll.nvim",
   -- fzf
   "ibhagwan/fzf-lua",
   -- lsp

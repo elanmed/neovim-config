@@ -7,11 +7,6 @@ vim.keymap.set("n", "q:",
     h.notify.warn "Use :q to quit or q? to open the command-line window instead!"
   end,
   { desc = "Prevent accidentally opening the command-line window", })
-vim.keymap.set("n", "z.",
-  function()
-    h.notify.warn "z. doesn't work well with smooth scrolling"
-  end,
-  { desc = "Prevent accidentally opening the command-line window", })
 
 vim.keymap.set({ "n", "v", }, "b", "<Plug>(MatchitNormalForward)") -- TODO: what is this?
 vim.keymap.set({ "n", "v", }, "<bs>", "b")
@@ -127,7 +122,6 @@ vim.keymap.set("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move line up", })
 vim.keymap.set("n", "<leader>/c", "/\\C<left><left>", { desc = "/ Case sensitive", })
 vim.keymap.set("n", "<leader>/w", "/\\<\\><left><left>", { desc = "/ Word sensitive", })
 vim.keymap.set("n", "<leader>/a", "/\\<\\>\\C<left><left><left><left>", { desc = "/ case and word sensitive", })
-vim.keymap.set("n", "/", "/\\V", { desc = "/ without regex", })
 vim.keymap.set("n", "<leader>/s", ":%s/\\<\\>\\C/<left><left><left><left><left>",
   { desc = "Search and replace in the current buffer, case and word sensitive", })
 vim.keymap.set("n", "<leader>/g", h.keys.vim_cmd_cb "nohlsearch", { desc = "Turn off hiGhlighting", })

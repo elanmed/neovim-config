@@ -11,7 +11,6 @@ vim.opt.linebreak      = true
 vim.opt.splitright     = true
 vim.opt.splitbelow     = true
 vim.opt.termguicolors  = true -- needed for modern themes
-vim.opt.scrolloff      = 999
 vim.opt.conceallevel   = 0    -- keep quotes keys in normal mode
 vim.opt.undofile       = true
 vim.opt.ignorecase     = true

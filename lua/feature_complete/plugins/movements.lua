@@ -2,9 +2,10 @@ local h = require "shared.helpers"
 local flash = require "flash"
 local marks = require "marks"
 local colors = require "feature_complete.plugins.colorscheme"
-local cinnamon = require "cinnamon"
+local neoscroll = require "neoscroll"
 
-require "ft-highlight".setup { enable = true, }
+
+require "ft-highlight".setup { enabled = true, }
 
 vim.api.nvim_set_hl(h.curr.namespace, "FTHighlightSecond",
   { fg = colors.yellow, bg = colors.black, underline = true, bold = true, })
@@ -21,35 +22,43 @@ require "nvim-surround".setup {
   },
 }
 
-cinnamon.setup {
-  options = {
-    mode = "window",
-  },
-}
+neoscroll.setup { mappings = {}, }
 
---- @param movement string
-local function cinnamon_scroll_cb(movement)
-  return function() cinnamon.scroll(movement) end
-end
+local scroll_duration = 175
 
 vim.keymap.set({ "n", "v", "i", }, "<C-u>", function()
   if vim.fn.line "." == vim.fn.line "$" then
-    cinnamon.scroll "M"
+    h.keys.send_keys("n", "M")
   else
-    cinnamon.scroll "<C-u>"
+    neoscroll.ctrl_u { duration = scroll_duration, }
   end
 end)
 vim.keymap.set({ "n", "v", "i", }, "<C-d>", function()
   if vim.fn.line "." == 1 then
-    cinnamon.scroll "M"
+    h.keys.send_keys("n", "M")
   else
-    cinnamon.scroll "<C-d>"
+    neoscroll.ctrl_d { duration = scroll_duration, }
   end
 end)
-vim.keymap.set("n", "n", cinnamon_scroll_cb "n")
-vim.keymap.set("n", "N", cinnamon_scroll_cb "N")
-vim.keymap.set("n", "}", cinnamon_scroll_cb "}")
-vim.keymap.set("n", "{", cinnamon_scroll_cb "{")
+vim.keymap.set("n", "z.", function() neoscroll.zz { half_win_duration = scroll_duration, } end)
+
+vim.opt.scrolloff = 999
+vim.api.nvim_create_autocmd({ "CursorMoved", }, {
+  callback = function()
+    local height = vim.api.nvim_win_get_height(h.curr.window)
+    local bot_half_height_ln = vim.fn.line "$" - math.floor(height / 2)
+
+    if vim.fn.line "." > bot_half_height_ln then
+      vim.opt.scrolloff = 0
+    elseif vim.fn.line "." == bot_half_height_ln then
+      neoscroll.zz { half_win_duration = scroll_duration, }
+      -- TODO: ideally I would set to 999 after the scroll is finished
+      vim.opt.scrolloff = 0
+    else
+      vim.opt.scrolloff = 999
+    end
+  end,
+})
 
 require "multicursors".setup {
   hint_config = false,
@@ -155,5 +164,4 @@ vim.keymap.set("n", "dmg", function()
   end
   h.notify.warn "No global mark in the buffer"
 end, { desc = "Delete a global mark for the buffer", })
-
 vim.keymap.set("n", "dma", h.keys.vim_cmd_cb "delmarks A-Z", { desc = "Delete all marks", })
