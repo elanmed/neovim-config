@@ -18,19 +18,36 @@ snacks.setup {
   },
 }
 
+local without_preview = {
+  layout = {
+    backdrop = false,
+    row = -1,
+    width = 0,
+    height = 0.4,
+    box = "vertical",
+    { win = "input", height = 1, border = "rounded", },
+    { win = "list", border = "none", },
+  },
+}
+
+local with_preview = {
+  layout = {
+    backdrop = false,
+    width = 0,
+    height = 0.99, -- avoid cutting off the border
+    box = "vertical",
+    border = "none",
+    title = "{title}",
+    title_pos = "center",
+    { win = "preview", height = 0.65, border = "rounded", },
+    { win = "list", border = "none", },
+    { win = "input", height = 1, border = "top", },
+  },
+}
+
 vim.keymap.set("n", "<C-p>", function()
   snacks.picker.smart {
-    layout = {
-      layout = {
-        backdrop = false,
-        row = -1,
-        width = 0,
-        height = 0.4,
-        box = "vertical",
-        { win = "input", height = 1, border = "rounded", },
-        { win = "list", border = "none", },
-      },
-    },
+    layout = without_preview,
     formatters = {
       file = {
         truncate = 100,
@@ -38,21 +55,9 @@ vim.keymap.set("n", "<C-p>", function()
     },
   }
 end, { desc = "Find files with snacks", })
-vim.keymap.set("n", "<leader>ln", function()
-  snacks.picker.undo {
-    layout = {
-      layout = {
-        backdrop = false,
-        width = 0,
-        height = 0.99, -- avoid cutting off the border
-        box = "vertical",
-        border = "none",
-        title = "{title}",
-        title_pos = "center",
-        { win = "preview", height = 0.65, border = "rounded", },
-        { win = "list", border = "none", },
-        { win = "input", height = 1, border = "top", },
-      },
-    },
-  }
-end, { desc = "View the undotree with snacks", })
+
+
+vim.keymap.set("n", "/", function() snacks.picker.lines { layout = without_preview, } end,
+  { desc = "Search in the current buffer with snacks", })
+vim.keymap.set("n", "<leader>ln", function() snacks.picker.undo { layout = with_preview, } end,
+  { desc = "View the undotree with snacks", })
