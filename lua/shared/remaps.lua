@@ -7,6 +7,7 @@ vim.keymap.set("n", "q:",
     h.notify.warn "Use :q to quit or q? to open the command-line window instead!"
   end,
   { desc = "Prevent accidentally opening the command-line window", })
+vim.keymap.set("n", "G", function() return "G" .. "zz" end, { expr = true, })
 
 vim.keymap.set({ "n", "v", }, "b", "<Plug>(MatchitNormalForward)") -- TODO: what is this?
 vim.keymap.set({ "n", "v", }, "<bs>", "b")

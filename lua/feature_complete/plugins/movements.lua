@@ -4,7 +4,6 @@ local marks = require "marks"
 local colors = require "feature_complete.plugins.colorscheme"
 local neoscroll = require "neoscroll"
 
-
 require "ft-highlight".setup { enabled = true, }
 
 vim.api.nvim_set_hl(h.curr.namespace, "FTHighlightSecond",
