@@ -4,8 +4,7 @@ vim.opt.cursorline     = true
 vim.opt.number         = true
 vim.opt.relativenumber = true
 vim.opt.errorbells     = false
--- prevents conflicts with tmux
-vim.opt.mouse          = "a"
+vim.opt.mouse          = "a" -- prevents conflicts with tmux
 vim.opt.confirm        = true
 vim.opt.linebreak      = true
 vim.opt.splitright     = true
