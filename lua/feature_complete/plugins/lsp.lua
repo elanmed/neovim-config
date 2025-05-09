@@ -168,7 +168,7 @@ cmp.setup {
     documentation = cmp.config.window.bordered(),
   },
   mapping = cmp.mapping.preset.insert {
-    ["<C-x><C-o>"] = cmp.mapping.complete(),
+    ["<C-x>"] = cmp.mapping.complete(),
     ["<C-c>"] = cmp.mapping.abort(),
     ["<CR>"] = cmp.mapping.confirm { select = true, },
   },
