@@ -112,9 +112,6 @@ end, { silent = true, desc = "*, but stay on the current search result", })
 vim.keymap.set("n", "ge", h.keys.vim_cmd_cb "copen", { desc = "Open the quickfix list", })
 vim.keymap.set("n", "gq", h.keys.vim_cmd_cb "cclose", { desc = "Close the quickfix list", })
 
-vim.keymap.set("n", "gn", "gt", { desc = "Go to the next tab", })
-vim.keymap.set("n", "gp", "gT", { desc = "Go to the prev tab", })
-
 -- https://vim.fandom.com/wiki/Moving_lines_up_or_down
 vim.keymap.set("n", "<A-j>", ":m .+1<cr>==", { desc = "Move line down", })
 vim.keymap.set("n", "<A-k>", ":m .-2<cr>==", { desc = "Move line up", })
@@ -129,6 +126,7 @@ vim.keymap.set("n", "<leader>/a", "/\\<\\>\\C<left><left><left><left>", { desc =
 vim.keymap.set("n", "<leader>/s", ":%s/\\<\\>\\C/<left><left><left><left><left>",
   { desc = "Search and replace in the current buffer, case and word sensitive", })
 vim.keymap.set("n", "<leader>/g", h.keys.vim_cmd_cb "nohlsearch", { desc = "Turn off hiGhlighting", })
+vim.keymap.set("n", "<leader>/v", "/\\V", { desc = "/ without regex", })
 
 -- prevent x, c from overwriting the clipboard
 vim.keymap.set("n", "x", [["_x]])
