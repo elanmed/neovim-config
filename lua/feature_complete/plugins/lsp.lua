@@ -76,13 +76,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
 vim.keymap.set("i", "<C-s>", function() vim.lsp.buf.signature_help { border = "single", } end,
   { desc = "LSP signature help", })
 vim.keymap.set("n", "gry", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
+vim.keymap.set("n", "gri", vim.lsp.buf.definition, { desc = "LSP go to definition", })
 vim.keymap.set("n", "K", function() vim.lsp.buf.hover { border = "single", } end, { desc = "LSP go to type definition", })
 
-vim.keymap.set("n", "gh", function() h.notify.warn "use K!" end, { desc = "LSP hover", })
-vim.keymap.set("n", "gd", function() h.notify.warn "use gri!" end, { desc = "LSP go to definition", })
-vim.keymap.set("n", "gs", function() h.notify.warn "use gry!" end, { desc = "LSP go to type definition", })
-vim.keymap.set("n", "gu", function() h.notify.warn "use grr!" end, { desc = "LSP go to references", })
-vim.keymap.set("n", "ga", function() h.notify.warn "use gra!" end, { desc = "LSP code action", })
+vim.keymap.set("n", "gh", function() h.notify.warn "use K!" end)
+vim.keymap.set("n", "gd", function() h.notify.warn "use gri!" end)
+vim.keymap.set("n", "gs", function() h.notify.warn "use gry!" end)
+vim.keymap.set("n", "gu", function() h.notify.warn "use grr!" end)
+vim.keymap.set("n", "ga", function() h.notify.warn "use gra!" end)
 
 vim.keymap.set("n", "gi", function()
     local error_diagnostics = vim.diagnostic.get(h.curr.buffer, { severity = vim.diagnostic.severity.ERROR, })
