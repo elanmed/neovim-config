@@ -1,16 +1,9 @@
 local h = require "shared.helpers"
 local flash = require "flash"
 local marks = require "marks"
-local colors = require "feature_complete.plugins.colorscheme"
 local neoscroll = require "neoscroll"
 
 require "ft-highlight".setup { enabled = true, }
-
-vim.api.nvim_set_hl(h.curr.namespace, "FTHighlightSecond",
-  { fg = colors.yellow, bg = colors.black, underline = true, bold = true, })
-vim.api.nvim_set_hl(h.curr.namespace, "FTHighlightThird",
-  { fg = colors.red, bg = colors.black, underline = true, bold = true, })
-vim.api.nvim_set_hl(h.curr.namespace, "FTHighlightDimmed", { fg = colors.light_grey, bg = colors.black, })
 
 require "nvim-surround".setup {
   keymaps = {
