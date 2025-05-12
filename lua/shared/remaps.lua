@@ -9,8 +9,7 @@ vim.keymap.set("n", "q:",
   { desc = "Prevent accidentally opening the command-line window", })
 vim.keymap.set("n", "G", function() return "G" .. "zz" end, { expr = true, })
 
-vim.keymap.set({ "n", "v", }, "b", "<Plug>(MatchitNormalForward)") -- TODO: what is this?
-vim.keymap.set({ "n", "v", }, "<bs>", "b")
+vim.keymap.set({ "n", "v", }, "<bs>", "<Plug>(MatchitNormalForward)") -- TODO: what is this?
 vim.keymap.set("n", "<leader>e", h.keys.vim_cmd_cb "e")
 
 vim.keymap.set("n", "<leader>f", "<C-w>w", { desc = "Toggle focus between windows", })
@@ -75,23 +74,22 @@ vim.keymap.set("n", "<leader>yr",
   end, { desc = "Yank the Relative path of the current buffer", })
 
 vim.keymap.set("n", ",", h.keys.vim_cmd_cb "w", { desc = "Save", })
-vim.keymap.set("n", "<leader>w", function() h.notify.error "Use , instead!" end, { desc = "Save", })
-vim.keymap.set("n", "<leader>q", h.keys.vim_cmd_cb "q", { desc = "Save", })
+vim.keymap.set("n", "<leader>q", h.keys.vim_cmd_cb "q", { desc = "Quit", })
 
 vim.keymap.set("v", "<", "<gv", { desc = "Outdent, while keeping selection", })
 vim.keymap.set("v", ">", ">gv", { desc = "Indent, while keeping selection", })
 
 --- @param try string
 --- @param catch string
-local function generate_circular_next_prev(try, catch)
+local function circular_next_prev(try, catch)
   local success, _ = pcall(vim.cmd, try)
   if not success then
     pcall(vim.cmd, catch)
   end
 end
 
-vim.api.nvim_create_user_command("Cnext", function() generate_circular_next_prev("cnext", "cfirst") end, {})
-vim.api.nvim_create_user_command("Cprev", function() generate_circular_next_prev("cprev", "clast") end, {})
+vim.api.nvim_create_user_command("Cnext", function() circular_next_prev("cnext", "cfirst") end, {})
+vim.api.nvim_create_user_command("Cprev", function() circular_next_prev("cprev", "clast") end, {})
 
 vim.keymap.set("n", "]q", h.keys.vim_cmd_cb "Cnext", { desc = "Move to the next item in the quickfix list", })
 vim.keymap.set("n", "[q", h.keys.vim_cmd_cb "Cprev", { desc = "Move to the prev item in the quickfix list", })
@@ -106,7 +104,6 @@ vim.keymap.set("n", "*", function()
   vim.api.nvim_set_option_value("hlsearch", true, {})
 end, { silent = true, desc = "*, but stay on the current search result", })
 
-
 vim.keymap.set("n", "ge", h.keys.vim_cmd_cb "copen", { desc = "Open the quickfix list", })
 vim.keymap.set("n", "gq", h.keys.vim_cmd_cb "cclose", { desc = "Close the quickfix list", })
 
@@ -118,8 +115,8 @@ vim.keymap.set("i", "<A-k>", "<esc>:m .-2<cr>==gi", { desc = "Move line up", })
 vim.keymap.set("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move line down", })
 vim.keymap.set("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move line up", })
 
-vim.keymap.set("n", "<leader>/c", "/\\C<left><left>", { desc = "/ Case sensitive", })
-vim.keymap.set("n", "<leader>/w", "/\\<\\><left><left>", { desc = "/ Word sensitive", })
+vim.keymap.set("n", "<leader>/c", "/\\C<left><left>", { desc = "/ case sensitive", })
+vim.keymap.set("n", "<leader>/w", "/\\<\\><left><left>", { desc = "/ word sensitive", })
 vim.keymap.set("n", "<leader>/a", "/\\<\\>\\C<left><left><left><left>", { desc = "/ case and word sensitive", })
 vim.keymap.set("n", "<leader>/s", ":%s/\\<\\>\\C/<left><left><left><left><left>",
   { desc = "Search and replace in the current buffer, case and word sensitive", })
@@ -192,8 +189,6 @@ vim.keymap.set("n", "z?", function()
 end
 , { desc = "Toggle fold", })
 
-vim.keymap.set("n", "W", "<nop>", { desc = "TODO find a remap", })
-vim.keymap.set("n", "B", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<C-x>", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>;", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>b", "<nop>", { desc = "TODO find a remap", })

@@ -85,17 +85,18 @@ vim.keymap.set("n", "gs", function() h.notify.warn "use gry!" end)
 vim.keymap.set("n", "gu", function() h.notify.warn "use grr!" end)
 vim.keymap.set("n", "ga", function() h.notify.warn "use gra!" end)
 
-vim.keymap.set("n", "gi", function()
-    local error_diagnostics = vim.diagnostic.get(h.curr.buffer, { severity = vim.diagnostic.severity.ERROR, })
-    if #error_diagnostics == 0 then
-      h.notify.warn "No diagnostics"
-      return
-    end
+--- @param direction "next" | "prev"
+local function next_prev_diagnostic(direction)
+  local error_diagnostics = vim.diagnostic.get(h.curr.buffer, { severity = vim.diagnostic.severity.ERROR, })
+  if #error_diagnostics == 0 then
+    h.notify.warn "No diagnostics"
+    return
+  end
 
-    vim.diagnostic.setqflist { severity = vim.diagnostic.severity.ERROR, }
-    vim.cmd "copen"
-  end,
-  { desc = "Open LSP diagnostics with the quickfix list", })
+  vim.diagnostic.jump { severity = vim.diagnostic.severity.ERROR, count = direction == "next" and 1 or -1, }
+end
+vim.keymap.set("n", "]d", function() next_prev_diagnostic "next" end)
+vim.keymap.set("n", "[d", function() next_prev_diagnostic "prev" end)
 
 vim.keymap.set("n", "gl", function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
