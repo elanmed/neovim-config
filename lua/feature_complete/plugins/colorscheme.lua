@@ -37,17 +37,14 @@ local M = {
 }
 
 vim.api.nvim_set_hl(h.curr.namespace, "MatchParen", { fg = nil, bg = M.grey, })
-vim.api.nvim_set_hl(h.curr.namespace, "LspReferenceRead", { bg = "#2e3136", }) -- between base01 and base 02
-vim.api.nvim_set_hl(h.curr.namespace, "LspReferenceText", { bg = "#2e3136", })
-vim.api.nvim_set_hl(h.curr.namespace, "LspReferenceWrite", { bg = "#2e3136", })
+vim.api.nvim_set_hl(h.curr.namespace, "LspReferenceRead", { bold = true, })
+vim.api.nvim_set_hl(h.curr.namespace, "LspReferenceText", { bold = true, })
+vim.api.nvim_set_hl(h.curr.namespace, "LspReferenceWrite", { bold = true, })
 
 vim.api.nvim_set_hl(h.curr.namespace, "WilderAccent", { fg = M.orange, })
 vim.api.nvim_set_hl(h.curr.namespace, "WildMenu", { fg = M.yellow, underline = true, bold = true, })
 
 vim.api.nvim_set_hl(h.curr.namespace, "FlashLabel", { link = "IncSearch", })
-
-vim.api.nvim_set_hl(h.curr.namespace, "MultiCursor", { link = "Search", })
-vim.api.nvim_set_hl(h.curr.namespace, "MultiCursorMain", { link = "IncSearch", })
 
 vim.api.nvim_set_hl(h.curr.namespace, "SnacksIndent", { fg = M.grey, })
 vim.api.nvim_set_hl(h.curr.namespace, "SnacksIndentScope", { fg = M.light_grey, })
