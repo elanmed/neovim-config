@@ -72,7 +72,7 @@ vim.keymap.set("n", "<leader>yr",
     vim.fn.setreg("+", vim.fn.expand "%:~:.")
   end, { desc = "Yank the Relative path of the current buffer", })
 
-vim.keymap.set("n", ",", h.keys.vim_cmd_cb "w", { desc = "Save", })
+vim.keymap.set("n", "<bs>", h.keys.vim_cmd_cb "w", { desc = "Save", })
 vim.keymap.set("n", "<leader>q", h.keys.vim_cmd_cb "q", { desc = "Quit", })
 
 vim.keymap.set("v", "<", "<gv", { desc = "Outdent, while keeping selection", })

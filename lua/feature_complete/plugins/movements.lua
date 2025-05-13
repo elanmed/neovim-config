@@ -60,7 +60,6 @@ vim.keymap.set("n", "<leader>tm", function()
   h.notify.doing "Starting multicursor"
 end)
 
-
 flash.setup {
   modes = {
     char = {
