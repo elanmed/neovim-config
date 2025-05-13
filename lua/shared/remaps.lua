@@ -9,7 +9,6 @@ vim.keymap.set("n", "q:",
   { desc = "Prevent accidentally opening the command-line window", })
 vim.keymap.set("n", "G", function() return "G" .. "zz" end, { expr = true, })
 
-vim.keymap.set({ "n", "v", }, "<bs>", "<Plug>(MatchitNormalForward)") -- TODO: what is this?
 vim.keymap.set("n", "<leader>e", h.keys.vim_cmd_cb "e")
 
 vim.keymap.set("n", "<leader>f", "<C-w>w", { desc = "Toggle focus between windows", })

@@ -4,9 +4,6 @@ local h = require "shared.helpers"
 -- vim.opt.wildchar = ("<C-n>"):byte()
 vim.cmd "set wildchar=<C-s>"
 
-vim.keymap.set("n", "L", h.keys.vim_cmd_cb "bnext", { desc = "Next buffer", })
-vim.keymap.set("n", "H", h.keys.vim_cmd_cb "bprev", { desc = "Previous buffer", })
-
 -- removing banner causes a bug where the terminal flickers
 -- vim.g.netrw_banner = 0 -- removes banner at the top
 vim.g.netrw_liststyle = 3 -- tree view
