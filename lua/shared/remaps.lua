@@ -10,8 +10,28 @@ vim.keymap.set("n", "q:",
 vim.keymap.set("n", "G", function() return "G" .. "zz" end, { expr = true, })
 
 vim.keymap.set("n", "<leader>e", h.keys.vim_cmd_cb "e")
-
 vim.keymap.set("n", "<leader>f", "<C-w>w", { desc = "Toggle focus between windows", })
+vim.keymap.set("n", ",",
+  function()
+    h.notify.warn "use <bs> instead!"
+    return ","
+  end,
+  { expr = true, }
+)
+vim.keymap.set("n", "H",
+  function()
+    h.notify.warn "use [b instead!"
+    return "H"
+  end,
+  { expr = true, }
+)
+vim.keymap.set("n", "L",
+  function()
+    h.notify.warn "use ]b instead!"
+    return "H"
+  end,
+  { expr = true, }
+)
 
 vim.keymap.set("i", "<C-e>", "<C-o>$")
 vim.keymap.set({ "n", "v", }, "<C-e>", "$")
