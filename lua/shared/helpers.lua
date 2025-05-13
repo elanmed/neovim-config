@@ -56,22 +56,6 @@ tbl.contains_key = function(table, target_key)
   return false
 end
 
---- more reliable version of vim.print
---- @param input table
---- @return string
-tbl.dump = function(input)
-  if type(input) == "table" then
-    local str = "{ "
-    for key, value in pairs(input) do
-      if type(key) ~= "number" then key = '"' .. key .. '"' end
-      str = str .. "[" .. key .. "] = " .. tbl.dump(value)
-    end
-    return str .. "} "
-  else
-    return tostring(input)
-  end
-end
-
 --- @param table table
 --- @return number
 tbl.size = function(table)
@@ -104,17 +88,7 @@ dev.log = function(content)
     notify.error "Error opening file!"
     return
   end
-
-  if type(content) == "table" then
-    local formatted_content = ""
-    for _, item in pairs(content) do
-      formatted_content = formatted_content .. " " .. (type(content) == "table" and tbl.dump(item) or tostring(item))
-    end
-    file:write("[LOG] " .. formatted_content .. "\n")
-  else
-    file:write("[LOG] " .. (type(content) == "table" and tbl.dump(content) or tostring(content)) .. "\n")
-  end
-
+  file:write(vim.inspect(content))
   file:close()
 end
 
