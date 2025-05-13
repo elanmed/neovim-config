@@ -125,12 +125,6 @@ vim.keymap.set("n", "[q", h.keys.vim_cmd_cb "Cprev", { desc = "Move to the prev 
 vim.keymap.set("n", "J", "gJ", { desc = "J without whitespace", })
 vim.keymap.set("n", "Z", function() h.notify.warn "use J!" end, { desc = "J without whitespace", })
 
-vim.keymap.set("n", "*", function()
-  -- https://superuser.com/a/299693
-  local word = vim.fn.expand "<cword>"
-  vim.cmd([[let @/ = '\<]] .. word .. [[\>']])
-  vim.api.nvim_set_option_value("hlsearch", true, {})
-end, { silent = true, desc = "*, but stay on the current search result", })
 
 vim.keymap.set("n", "ge", h.keys.vim_cmd_cb "copen", { desc = "Open the quickfix list", })
 vim.keymap.set("n", "gq", h.keys.vim_cmd_cb "cclose", { desc = "Close the quickfix list", })

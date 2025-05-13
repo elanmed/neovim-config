@@ -1,3 +1,4 @@
+local h = require "shared.helpers"
 local snacks = require "snacks"
 
 snacks.setup {
@@ -39,6 +40,14 @@ vim.keymap.set("n", "<C-p>", function()
   }
 end, { desc = "Find files with snacks", })
 
+local function star_current_search()
+  -- https://superuser.com/a/299693
+  local word = vim.fn.expand "<cword>"
+  vim.cmd([[let @/ = '\<]] .. word .. [[\>']])
+  vim.api.nvim_set_option_value("hlsearch", true, {})
+end
+
+vim.keymap.set("n", "*", star_current_search, { silent = true, desc = "*, but stay on the current search result", })
 vim.keymap.set("n", "/", function()
     snacks.picker.lines {
       layout = {
@@ -53,6 +62,11 @@ vim.keymap.set("n", "/", function()
           { win = "list", },
         },
       },
+      on_close = function()
+        vim.schedule(function()
+          star_current_search()
+        end)
+      end,
     }
   end,
   { desc = "Search in the current buffer with snacks", })
