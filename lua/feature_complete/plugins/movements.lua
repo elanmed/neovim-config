@@ -52,14 +52,6 @@ vim.api.nvim_create_autocmd({ "CursorMoved", }, {
   end,
 })
 
-require "multicursors".setup {
-  hint_config = false,
-}
-vim.keymap.set("n", "<leader>tm", function()
-  vim.cmd "MCstart"
-  h.notify.doing "Starting multicursor"
-end)
-
 flash.setup {
   modes = {
     char = {

@@ -174,7 +174,6 @@ cmp.setup {
     ["<CR>"] = cmp.mapping.confirm { select = true, },
   },
 }
-vim.keymap.set("n", "<C-s>", function() h.notify.warn "use <C-x><C-o> instead!" end)
 
 require "nvim-autopairs".setup {}
 require "conform".setup {

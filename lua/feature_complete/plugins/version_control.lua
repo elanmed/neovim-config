@@ -94,7 +94,7 @@ vim.keymap.set("v", "<leader>ge", function()
   gitsigns.reset_hunk { vim.fn.line ".", vim.fn.line "v", }
   vim.cmd "w"
 end, { desc = "Reset the current hunk", })
-vim.keymap.set("n", "<leader>gb", function()
+vim.keymap.set("n", "<leader>gu", function()
   gitsigns.reset_buffer()
   vim.cmd "w"
 end, { desc = "Reset the current bUffer", })

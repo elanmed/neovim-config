@@ -53,8 +53,6 @@ bootstrap_paq {
   "folke/flash.nvim",
   "chentoast/marks.nvim",
   "christoomey/vim-tmux-navigator",
-  "smoka7/multicursors.nvim",
-  "nvimtools/hydra.nvim",
   "kylechui/nvim-surround",
   "ElanMedoff/ft-highlight.nvim",
   -- snacks
