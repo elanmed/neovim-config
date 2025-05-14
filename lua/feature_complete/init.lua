@@ -20,10 +20,8 @@ local function bootstrap_paq(packages)
   end
 end
 
--- Call helper function
 bootstrap_paq {
   "savq/paq-nvim",
-  -- List your packages
   -- (no file)
   "nvim-lua/popup.nvim",
   "nvim-lua/plenary.nvim",
