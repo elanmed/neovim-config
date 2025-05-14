@@ -213,7 +213,6 @@ end
 
 vim.keymap.set("n", "<C-x>", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>;", "<nop>", { desc = "TODO find a remap", })
-vim.keymap.set("n", "<leader>b", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>c", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>d", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>g", "<nop>", { desc = "TODO find a remap", })

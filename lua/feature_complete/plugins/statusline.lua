@@ -10,12 +10,7 @@ require "lualine".setup {
   },
   sections = {
     lualine_a = { "mode", },
-    lualine_b = {
-      {
-        "filename",
-        path = 4, -- filename and parent dir
-      },
-    },
+    lualine_b = { "filename", },
     lualine_c = { "lsp_status", },
     lualine_x = { "ScrollStatus", "progress", },
     lualine_y = { "branch", },

@@ -80,7 +80,7 @@ vim.keymap.set("n", "<leader>lh", with_preview_cb(fzf_lua.helptags), { desc = "S
 vim.keymap.set("n", "<leader>lm", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
 vim.keymap.set("n", "<leader>l;", without_preview_cb(fzf_lua.command_history),
   { desc = "Search search history with fzf", })
-vim.keymap.set("n", "<leader>lu", with_preview_cb(fzf_lua.buffers),
+vim.keymap.set("n", "<leader>b", with_preview_cb(fzf_lua.buffers),
   { desc = "Search currently open buffers with fzf", })
 vim.keymap.set("n", "<leader>lg",
   function()
