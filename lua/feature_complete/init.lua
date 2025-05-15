@@ -27,6 +27,8 @@ bootstrap_paq {
   "nvim-lua/plenary.nvim",
   "tpope/vim-repeat",
   "jxnblk/vim-mdx-js",
+  -- buffers
+  "akinsho/bufferline.nvim",
   -- colorscheme
   "RRethy/nvim-base16",
   -- far
