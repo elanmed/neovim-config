@@ -34,9 +34,8 @@ local function shorten_bufname(item_text)
 end
 
 vim.api.nvim_create_autocmd({ "BufEnter", }, {
-  pattern = "*",
   callback = function()
-    if vim.bo.filetype ~= "qf" then return end
+    if vim.bo.buftype ~= "quickfix" then return end
 
     local qf_list = vim.fn.getqflist()
 
@@ -76,7 +75,6 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
     end, { buffer = true, desc = "Clear all quickfix lists", })
 
     vim.keymap.set("n", ">", function()
-      --- @diagnostic disable-next-line: param-type-mismatch
       local success = pcall(vim.cmd, "cnewer")
       if not success then
         h.notify.warn "No newer list!"
@@ -84,7 +82,6 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
     end, { buffer = true, desc = "Go to the next quickfix list", })
 
     vim.keymap.set("n", "<", function()
-      --- @diagnostic disable-next-line: param-type-mismatch
       local success = pcall(vim.cmd, "colder")
       if not success then
         h.notify.warn "No older list!"

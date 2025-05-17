@@ -44,8 +44,8 @@ end
 --- @field openc string Open the file under the cursor, close the quickfix list
 --- @field next string :cnext, keep the quickfix list open
 --- @field prev string :cprev, keep the quickfix list open
---- @field cnext string :cnext
---- @field cprev string :cprev
+--- @field cnext string :cnext, closing the preview first
+--- @field cprev string :cprev, closing the preview first
 
 --- @param opts QuickfixPreviewOpts | nil
 M.setup = function(opts)
@@ -125,6 +125,7 @@ M.setup = function(opts)
 
   if keymaps.cprev then
     vim.keymap.set("n", keymaps.prev, function()
+      qf_preview:close()
       try_catch("cprev", "clast")
     end, { desc = "Go to the prev file, losing focus on the quickfix list", })
   end

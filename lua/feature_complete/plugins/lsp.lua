@@ -93,7 +93,7 @@ vim.keymap.set("n", "ga", function() h.notify.warn "use gra!" end)
 local function next_prev_diagnostic(direction)
   local error_diagnostics = vim.diagnostic.get(h.curr.buffer, { severity = vim.diagnostic.severity.ERROR, })
   if #error_diagnostics == 0 then
-    h.notify.warn "No diagnostics"
+    h.notify.warn "No error diagnostics"
     return
   end
 
