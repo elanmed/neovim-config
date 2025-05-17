@@ -109,6 +109,7 @@ M.setup = function(opts)
 
       if keymaps.prev then
         vim.keymap.set("n", keymaps.prev, function()
+          qf_preview:close()
           try_catch("cprev", "clast")
           vim.cmd "copen"
         end, { buffer = true, desc = "Go to the prev file, preserving focus on the quickfix list", })
