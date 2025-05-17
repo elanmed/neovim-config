@@ -54,21 +54,21 @@ M.setup = function(opts)
 
   vim.api.nvim_create_autocmd({ "CursorMoved", }, {
     callback = function()
-      if vim.bo.filetype ~= "qf" then return end
+      if vim.bo.buftype ~= "quickfix" then return end
       qf_preview:open()
     end,
   })
 
   vim.api.nvim_create_autocmd("WinClosed", {
     callback = function()
-      if vim.bo.filetype ~= "qf" then return end
+      if vim.bo.buftype ~= "quickfix" then return end
       qf_preview:close()
     end,
   })
 
   vim.api.nvim_create_autocmd({ "FileType", }, {
     callback = function()
-      if vim.bo.filetype ~= "qf" then return end
+      if vim.bo.buftype ~= "quickfix" then return end
 
       if keymaps.toggle then
         vim.keymap.set("n", keymaps.toggle, function()

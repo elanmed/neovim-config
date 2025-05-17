@@ -43,7 +43,9 @@ function QuickfixPreview:open()
   if self.preview_disabled then return end
 
   --- @type QuickfixItem[]
-  local qf_list      = vim.fn.getqflist()
+  local qf_list = vim.fn.getqflist()
+  if vim.tbl_isempty(qf_list) then return end
+
   local curr_line_nr = vim.fn.line "."
   local curr_qf_item = qf_list[curr_line_nr]
   local path         = vim.fn.bufname(curr_qf_item.bufnr)
