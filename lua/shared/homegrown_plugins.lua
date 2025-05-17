@@ -3,9 +3,14 @@ local h = require "shared.helpers"
 local qf_preview = require "homegrown_plugins.quickfix_preview"
 
 qf_preview.setup {
-  enable = true,
   keymaps = {
+    open = "o",
+    openc = "<cr>",
     toggle = "t",
+    next = "<C-n>",
+    prev = "<C-p>",
+    cnext = "]q",
+    cprev = "[q",
   },
 }
 
@@ -49,7 +54,6 @@ vim.api.nvim_create_autocmd({ "BufEnter", }, {
 })
 
 vim.api.nvim_create_autocmd({ "FileType", }, {
-  pattern = "*",
   callback = function()
     if vim.bo.filetype ~= "qf" then return end
     vim.wo.cursorline = false
@@ -57,40 +61,19 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
 })
 
 vim.api.nvim_create_autocmd({ "FileType", }, {
-  pattern = "qf",
   callback = function()
+    if vim.bo.filetype ~= "qf" then return end
+
     vim.keymap.set("n", "gdu", function()
       vim.fn.setqflist(vim.fn.getqflist())
       h.notify.doing "Created a new list!"
     end, { buffer = true, desc = "Duplicate the current quickfix list", })
 
     vim.keymap.set("n", "gy", function()
-      qf_preview.close()
+      qf_preview:close()
       vim.fn.setqflist({}, "f") -- clear all
       -- vim.fn.setqflist({}, "r") -- clear current
     end, { buffer = true, desc = "Clear all quickfix lists", })
-
-    vim.keymap.set("n", "o", function()
-      local curr_line_nr = vim.fn.line "."
-      qf_preview.close()
-      vim.cmd("cc " .. curr_line_nr)
-    end, { buffer = true, })
-
-    vim.keymap.set("n", "<cr>", function()
-      local curr_line = vim.fn.line "."
-      vim.cmd "cclose"
-      vim.cmd("cc " .. curr_line)
-    end, { buffer = true, desc = "Go to the file under the cursor and close the quickfix list", })
-
-    vim.keymap.set("n", "<C-n>", function()
-      vim.cmd "Cnext"
-      vim.cmd "copen"
-    end, { buffer = true, desc = "Go to the next file and keep the quickfix list open", })
-
-    vim.keymap.set("n", "<C-p>", function()
-      vim.cmd "Cprev"
-      vim.cmd "copen"
-    end, { buffer = true, desc = "Go to the prev file and keep the quickfix list open", })
 
     vim.keymap.set("n", ">", function()
       --- @diagnostic disable-next-line: param-type-mismatch
