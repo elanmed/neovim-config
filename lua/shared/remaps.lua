@@ -107,24 +107,8 @@ vim.keymap.set("n", "<leader>q", h.keys.vim_cmd_cb "q", { desc = "Quit", })
 vim.keymap.set("v", "<", "<gv", { desc = "Outdent, while keeping selection", })
 vim.keymap.set("v", ">", ">gv", { desc = "Indent, while keeping selection", })
 
---- @param try string
---- @param catch string
-local function circular_next_prev(try, catch)
-  local success, _ = pcall(vim.cmd, try)
-  if not success then
-    pcall(vim.cmd, catch)
-  end
-end
-
-vim.api.nvim_create_user_command("Cnext", function() circular_next_prev("cnext", "cfirst") end, {})
-vim.api.nvim_create_user_command("Cprev", function() circular_next_prev("cprev", "clast") end, {})
-
-vim.keymap.set("n", "]q", h.keys.vim_cmd_cb "Cnext", { desc = "Move to the next item in the quickfix list", })
-vim.keymap.set("n", "[q", h.keys.vim_cmd_cb "Cprev", { desc = "Move to the prev item in the quickfix list", })
-
 vim.keymap.set("n", "J", "gJ", { desc = "J without whitespace", })
 vim.keymap.set("n", "Z", function() h.notify.warn "use J!" end, { desc = "J without whitespace", })
-
 
 vim.keymap.set("n", "ge", h.keys.vim_cmd_cb "copen", { desc = "Open the quickfix list", })
 vim.keymap.set("n", "gq", h.keys.vim_cmd_cb "cclose", { desc = "Close the quickfix list", })
