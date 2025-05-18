@@ -23,38 +23,22 @@ end
 
 --- @alias Schema PrimitiveSchema | TableSchema
 
-local type_validator = function(val)
-  return vim.tbl_contains({ "nil", "number", "string", "boolean", "function", "table", }, val) or type(val) == "function"
-end
-
 --- @param schema Schema
 local function validate(schema, val)
-  -- --- @type Schema
-  -- local schema_schema = {
-  --   type = "table",
-  --   entries = {
-  --     type = { type = type_validator, },
-  --     optional = { type = "boolean", optional = true, },
-  --     entries = {
-  --       type = function(val)
-  --         --- @type Schema
-  --         local str_entries_schema = { type = type_validator, }
-  --
-  --         --- @type Schema
-  --         local table_entries_schema = { type = "table", entries = {}, }
-  --
-  --         return validate(str_entries_schema, val) or validate(table_entries_schema, val)
-  --       end,
-  --     },
-  --   },
-  -- }
-  --
-  -- if not validate(schema_schema, schema) then return false end
-
   local optional = default(schema.optional, false)
-  if val == nil and optional then return true end
+  if val == nil and optional then return end
 
   if type(schema.type) == "string" then
+    if not vim.tbl_contains({ "nil", "number", "string", "boolean", "function", "table", }, type(schema.type)) then
+      error(
+        string.format("Expected `schema.type` to be one of the following: %s, received `%s`. Schema: %s",
+          "`nil`, `number`, `string`, `boolean`, `function`, `table`",
+          schema.type,
+          vim.inspect(schema)
+        )
+      )
+    end
+
     if schema.type == "table" then
       if type(val) ~= "table" then return false end
 
@@ -64,9 +48,9 @@ local function validate(schema, val)
             return false
           end
         end
+
         return true
-      else
-        -- TODO: can I skip a loop?
+      elseif type(schema.entries) == "table" then
         for key, entry in pairs(schema.entries) do
           if val[key] == nil then return false end
 
@@ -75,15 +59,19 @@ local function validate(schema, val)
           end
         end
 
-        for key, curr_val in pairs(val) do
-          if schema.entries[key] == nil then return false end
-
-          if not validate(schema.entries[key], curr_val) then
-            return false
-          end
+        if vim.tbl_count(val) ~= vim.tbl_count(schema.entries) then
+          return false
         end
 
         return true
+      else
+        error(
+          string.format(
+            "Expected `type(schema.entries)` to be a `string` or `table`, received `%s`. Schema: %s",
+            type(schema.entries),
+            vim.inspect(schema)
+          )
+        )
       end
     end
 
@@ -92,10 +80,34 @@ local function validate(schema, val)
     return false
   elseif type(schema.type) == "function" then
     return schema.type(val)
+  else
+    error(
+      string.format(
+        "Expected `type(schema.type)` to be a `string` or `function`, received `%s`. Schema: %s",
+        type(schema.type),
+        vim.inspect(schema)
+      )
+    )
   end
 end
 
+--- @param literal string
+local function str_literal(literal)
+  return function(val) return val == literal end
+end
+
+--- @param schemas Schema[]
+local function union(schemas)
+  return function(val)
+    return vim.tbl_contains(schemas, function(schema)
+      return validate(schema, val)
+    end)
+  end
+end
+
+
 print(
+
   validate(
     {
       type = "table",
@@ -123,6 +135,7 @@ print(
       1,
       true,
       "hello",
+      -- "hello",
     }
   )
 )
