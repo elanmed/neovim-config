@@ -150,10 +150,7 @@ vim.keymap.set("n", "k", function() return count_based_keymap "k" end,
   { expr = true, desc = "k, but respect lines that wrap", })
 
 vim.keymap.set({ "n", "v", "i", }, "<C-y>", h.keys.vim_cmd_cb "tabclose", { desc = "Close the current tab", })
-vim.keymap.set("n", "Y", function()
-  h.notify.warn "Use <leader>q instead!"
-  return "Y"
-end, { expr = true, })
+vim.keymap.set("n", "<leader>d", h.keys.vim_cmd_cb "silent! bdelete!", { desc = "Close the current tab", })
 vim.keymap.set("n", "<leader>ua", h.keys.vim_cmd_cb "silent! bufdo bdelete", { desc = "Close all buffers", })
 vim.keymap.set("n", "<leader>uo", function()
   local cur_buf = vim.api.nvim_get_current_buf()
