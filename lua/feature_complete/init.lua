@@ -53,6 +53,7 @@ bootstrap_paq {
   "christoomey/vim-tmux-navigator",
   "kylechui/nvim-surround",
   "ElanMedoff/ft-highlight.nvim",
+  "ElanMedoff/quickfix-preview.nvim",
   -- snacks
   "folke/snacks.nvim",
   -- statusline

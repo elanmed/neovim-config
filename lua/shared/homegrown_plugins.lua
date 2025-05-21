@@ -1,16 +1,16 @@
 local h = require "shared.helpers"
 
-local qf_preview = require "homegrown_plugins.quickfix_preview"
+local qf_preview = require "quickfix-preview"
 
 qf_preview.setup {
   keymaps = {
     open = "o",
     openc = "<cr>",
     toggle = "t",
-    next = "<C-n>",
-    prev = "<C-p>",
-    cnext = "]q",
-    cprev = "[q",
+    next = { key = "<C-n>", },
+    prev = { key = "<C-p>", },
+    cnext = { key = "]q", },
+    cprev = { key = "[q", },
   },
 }
 

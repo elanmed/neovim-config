@@ -27,28 +27,14 @@ vim.keymap.set("n", ",",
   end,
   { expr = true, }
 )
-vim.keymap.set("n", "H",
-  function()
-    h.notify.warn "use [b instead!"
-    return "H"
-  end,
-  { expr = true, }
-)
-vim.keymap.set("n", "L",
-  function()
-    h.notify.warn "use ]b instead!"
-    return "L"
-  end,
-  { expr = true, }
-)
 
 vim.keymap.set("i", "<C-e>", "<C-o>$")
 vim.keymap.set({ "n", "v", }, "<C-e>", "$")
 vim.keymap.set("i", "<C-a>", "<C-o>^")
 vim.keymap.set({ "n", "v", }, "<C-a>", "^")
 
-vim.keymap.set("n", "<leader>o", "o<esc>")
-vim.keymap.set("n", "<leader>O", "O<esc>")
+vim.keymap.set("n", "<leader>o", function() h.notify.warn "use ]<space> instead!" end)
+vim.keymap.set("n", "<leader>O", function() h.notify.warn "use [<space> instead!" end)
 
 vim.keymap.set("n", "E", [[viw"_dP]], { desc = "pastE without overwriting the default register", })
 vim.keymap.set("n", "<leader>p", h.keys.vim_cmd_cb "pu", { desc = "Paste on the line below", })
@@ -198,7 +184,6 @@ end
 vim.keymap.set("n", "<C-x>", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>;", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>c", "<nop>", { desc = "TODO find a remap", })
-vim.keymap.set("n", "<leader>d", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>g", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>i", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
