@@ -32,6 +32,7 @@ bootstrap_paq {
   -- cmp
   "windwp/nvim-autopairs",
   "saghen/blink.cmp",
+  "xzbdmw/colorful-menu.nvim",
   -- colorscheme
   "RRethy/nvim-base16",
   -- far

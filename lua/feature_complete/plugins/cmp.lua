@@ -1,9 +1,12 @@
+local colorful_menu = require "colorful-menu"
+colorful_menu.setup {}
+
 local blink = require "blink.cmp"
 blink.setup {
   keymap = {
     preset = "none",
     ["<C-x>"] = { "show", },
-    ["<C-y>"] = { "accept", },
+    ["<cr>"] = { "accept", "fallback", },
     ["<C-c>"] = { "cancel", },
     ["<C-n>"] = { "select_next", "fallback", },
     ["<C-p>"] = { "select_prev", "fallback", },
@@ -14,9 +17,29 @@ blink.setup {
     documentation = { auto_show = true, window = { border = "single", }, },
     ghost_text = { enabled = true, },
     list = { selection = { auto_insert = false, }, },
+    menu = {
+      draw = {
+        -- https://github.com/xzbdmw/colorful-menu.nvim#use-it-in-blinkcmp
+        columns = { { "kind_icon", }, { "label", gap = 1, }, },
+        components = {
+          label = {
+            text = function(ctx)
+              return colorful_menu.blink_components_text(ctx)
+            end,
+            highlight = function(ctx)
+              return colorful_menu.blink_components_highlight(ctx)
+            end,
+          },
+        },
+      },
+    },
   },
   sources = {
     default = { "lsp", "path", "buffer", },
+  },
+  signature = {
+    enabled = true,
+    window = { show_documentation = false, },
   },
   fuzzy = { prebuilt_binaries = { force_version = "v1.3.1", }, },
 }
