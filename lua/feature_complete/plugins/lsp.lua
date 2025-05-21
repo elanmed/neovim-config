@@ -1,5 +1,4 @@
 local h = require "shared.helpers"
-local lspconfig = require "lspconfig"
 
 local signs = {
   text = {
@@ -31,13 +30,6 @@ local function toggle_virtual_lines()
 end
 
 vim.keymap.set({ "i", "n", "v", }, "<C-g>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
-
-local lspconfig_defaults = lspconfig.util.default_config
-lspconfig_defaults.capabilities = vim.tbl_deep_extend(
-  "force",
-  lspconfig_defaults.capabilities,
-  require "cmp_nvim_lsp".default_capabilities()
-)
 
 vim.api.nvim_create_autocmd("LspAttach", {
   callback = function(args)
@@ -142,9 +134,9 @@ vim.lsp.config("bashls", {
     },
   },
 })
-vim.lsp.enable "bashls"
 
 vim.lsp.enable {
+  "bashls",
   "jsonls",
   "lua_ls",
   "css_variables",
@@ -155,28 +147,27 @@ vim.lsp.enable {
   "vimls",
 }
 
-local cmp = require "cmp"
-cmp.setup {
+local blink = require "blink.cmp"
+blink.setup {
+  keymap = {
+    preset = "none",
+    ["<C-x>"] = { "show", },
+    ["<C-y>"] = { "accept", },
+    ["<C-c>"] = { "cancel", },
+    ["<C-n>"] = { "select_next", "fallback", },
+    ["<C-p>"] = { "select_prev", "fallback", },
+    ["<C-d>"] = { "scroll_documentation_down", },
+    ["<C-u>"] = { "scroll_documentation_up", },
+  },
+  completion = {
+    documentation = { auto_show = true, window = { border = "single", }, },
+    ghost_text = { enabled = true, },
+    list = { selection = { auto_insert = false, }, },
+  },
   sources = {
-    {
-      name = "nvim_lsp",
-      -- https://github.com/hrsh7th/nvim-cmp/discussions/759#discussioncomment-9875581
-      entry_filter = function(entry)
-        return entry:get_kind() ~= cmp.lsp.CompletionItemKind.Snippet
-      end,
-    },
-    { name = "buffer", },
-    { name = "path", },
+    default = { "lsp", "path", "buffer", },
   },
-  window = {
-    completion = cmp.config.window.bordered(),
-    documentation = cmp.config.window.bordered(),
-  },
-  mapping = cmp.mapping.preset.insert {
-    ["<C-x>"] = cmp.mapping.complete(),
-    ["<C-c>"] = cmp.mapping.abort(),
-    ["<CR>"] = cmp.mapping.confirm { select = true, },
-  },
+  fuzzy = { prebuilt_binaries = { force_version = "v1.3.1", }, },
 }
 
 require "nvim-autopairs".setup {}

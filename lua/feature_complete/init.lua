@@ -29,6 +29,9 @@ bootstrap_paq {
   "jxnblk/vim-mdx-js",
   -- buffers
   "akinsho/bufferline.nvim",
+  -- cmp
+  "windwp/nvim-autopairs",
+  "saghen/blink.cmp",
   -- colorscheme
   "RRethy/nvim-base16",
   -- far
@@ -41,11 +44,6 @@ bootstrap_paq {
   "ibhagwan/fzf-lua",
   -- lsp
   "neovim/nvim-lspconfig",
-  "hrsh7th/nvim-cmp",
-  "hrsh7th/cmp-buffer",
-  "hrsh7th/cmp-nvim-lsp",
-  "hrsh7th/cmp-path",
-  "windwp/nvim-autopairs",
   "stevearc/conform.nvim",
   -- movements
   "folke/flash.nvim",
