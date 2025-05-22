@@ -66,24 +66,10 @@ end
 
 --- @param prompt string
 local function parse_search(prompt)
-  local search = ""
-  local search_index = 1
-  while search_index < (#prompt + 1) do
-    if search_index == 1 then
-      goto continue
-    end
-
-    if prompt:sub(search_index, search_index) == "~" then
-      break
-    end
-
-    search = search .. prompt:sub(search_index, search_index)
-
-    ::continue::
-    search_index = search_index + 1
-  end
-
-  return { search = "'" .. search .. "'", search_index = search_index, }
+  local end_tilde_index = prompt:find("~", 2)
+  local end_index = end_tilde_index or (#prompt + 1)
+  local search = prompt:sub(2, end_index - 1)
+  return { search = ("'%s'"):format(search), search_index = end_index, }
 end
 
 M.construct_simple_rg = function(prompt)
