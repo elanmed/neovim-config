@@ -28,22 +28,29 @@ local function record_custom_flag(opts)
   end
 end
 
---- @param opts { dir_tbl: table, file_tbl: table, negate: boolean }
+--- @param opts { dir_tbl: table, file_tbl: table, ext_tbl: table, negate: boolean }
 local function construct_rg_flag(opts)
-  local dir_tbl, file_tbl, negate = opts.dir_tbl, opts.file_tbl, opts.negate
+  local dir_tbl, file_tbl, ext_tbl, negate = opts.dir_tbl, opts.file_tbl, opts.ext_tbl, opts.negate
+
+  local ext_tbl_prefixed = vim.tbl_map(function(ext)
+    return "*." .. ext
+  end, ext_tbl)
+
+  local file_and_ext_tbl = vim.list_extend(vim.deepcopy(file_tbl), ext_tbl_prefixed)
+
   local flag = ""
   if #dir_tbl > 0 then
     flag = flag .. "'**/{" .. table.concat(dir_tbl, ",") .. "}/**"
-    if #file_tbl == 0 then
+    if #file_and_ext_tbl == 0 then
       flag = flag .. "'"
     end
   end
 
-  if #file_tbl > 0 then
+  if #file_and_ext_tbl > 0 then
     if #dir_tbl == 0 then
-      flag = flag .. "'"
+      flag = flag .. "'**"
     end
-    flag = flag .. "/{" .. table.concat(file_tbl, ",") .. "}'"
+    flag = flag .. "/{" .. table.concat(file_and_ext_tbl, ",") .. "}'"
   end
 
   if #flag > 0 then
@@ -86,11 +93,14 @@ M.construct_simple_rg = function(prompt)
 
   local parsing_file_flags = false
   local parsing_dir_flags = false
+  local parsing_ext_flags = false
 
   local include_file_flags = {}
   local negate_file_flags = {}
   local include_dir_flags = {}
   local negate_dir_flags = {}
+  local include_ext_flags = {}
+  local negate_ext_flags = {}
   local case_sensitive_flag = { "--ignore-case", }
   local whole_word_flag = { nil, }
 
@@ -133,17 +143,21 @@ M.construct_simple_rg = function(prompt)
     if flag_token == "-f" then
       parsing_file_flags = true
       parsing_dir_flags = false
+      parsing_ext_flags = false
       goto continue
     end
 
     if flag_token == "-d" then
       parsing_dir_flags = true
       parsing_file_flags = false
+      parsing_ext_flags = false
       goto continue
     end
 
-    if parsing_file_flags == true then
-      record_custom_flag { str = flag_token, include_tbl = include_file_flags, negate_tbl = negate_file_flags, }
+    if flag_token == "-e" then
+      parsing_ext_flags = true
+      parsing_dir_flags = false
+      parsing_file_flags = false
       goto continue
     end
 
@@ -152,13 +166,24 @@ M.construct_simple_rg = function(prompt)
       goto continue
     end
 
+    if parsing_file_flags == true then
+      record_custom_flag { str = flag_token, include_tbl = include_file_flags, negate_tbl = negate_file_flags, }
+      goto continue
+    end
+
+    if parsing_ext_flags == true then
+      record_custom_flag { str = flag_token, include_tbl = include_ext_flags, negate_tbl = negate_ext_flags, }
+      goto continue
+    end
+
+
     ::continue::
     flags_index = flags_index + 1
   end
 
 
-  local include_flag = construct_rg_flag { negate = false, dir_tbl = include_dir_flags, file_tbl = include_file_flags, }
-  local negate_flag = construct_rg_flag { negate = true, dir_tbl = negate_dir_flags, file_tbl = negate_file_flags, }
+  local include_flag = construct_rg_flag { negate = false, dir_tbl = include_dir_flags, file_tbl = include_file_flags, ext_tbl = include_ext_flags, }
+  local negate_flag = construct_rg_flag { negate = true, dir_tbl = negate_dir_flags, file_tbl = negate_file_flags, ext_tbl = negate_ext_flags, }
 
   local cmd = flatten {
     "rg",
