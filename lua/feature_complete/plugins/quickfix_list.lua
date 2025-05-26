@@ -1,6 +1,4 @@
-local qf_preview = require "quickfix-preview"
-
-qf_preview.setup {
+require "quickfix-preview".setup {
   pedit_prefix = "vertical rightbelow",
   pedit_postfix = "| wincmd =",
   keymaps = {
