@@ -14,6 +14,12 @@ qf_preview.setup {
     cnext = { key = "]q", },
     cprev = { key = "[q", },
   },
+  preview_win_opts = {
+    relativenumber = false,
+    number = true,
+    signcolumn = "no",
+    cursorline = true,
+  },
 }
 
 vim.api.nvim_create_autocmd({ "BufEnter", }, {
