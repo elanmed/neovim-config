@@ -116,7 +116,7 @@ function _G.GetQuickfixTextFunc()
         pad_num(item.lnum, longest_row_len, "left") ..
         ":" ..
         pad_num(item.col, longest_col_len, "right") ..
-        " | "
+        " | " .. vim.fn.trim(item.text)
 
     items[index] = formatted_item
   end
