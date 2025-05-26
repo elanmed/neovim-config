@@ -1,27 +1,5 @@
 local h = require "shared.helpers"
 
-local qf_preview = require "quickfix-preview"
-
-qf_preview.setup {
-  pedit_prefix = "vertical rightbelow",
-  pedit_postfix = "| wincmd =",
-  keymaps = {
-    open = "o",
-    openc = "<cr>",
-    toggle = "t",
-    next = { key = "<C-n>", },
-    prev = { key = "<C-p>", },
-    cnext = { key = "]q", },
-    cprev = { key = "[q", },
-  },
-  preview_win_opts = {
-    relativenumber = false,
-    number = true,
-    signcolumn = "no",
-    cursorline = true,
-  },
-}
-
 vim.api.nvim_create_autocmd({ "BufEnter", }, {
   callback = function()
     if vim.bo.buftype ~= "quickfix" then return end
