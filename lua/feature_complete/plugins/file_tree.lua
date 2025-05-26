@@ -19,6 +19,7 @@ require "oil".setup {
     ["g."] = "actions.toggle_hidden",
   },
 }
+
 -- https://github.com/folke/snacks.nvim/blob/main/docs/rename.md#oilnvim
 vim.api.nvim_create_autocmd("User", {
   pattern = "OilActionsPost",

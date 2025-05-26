@@ -1,10 +1,11 @@
 local h = require "shared.helpers"
 local flash = require "flash"
 local marks = require "marks"
+
 local neoscroll = require "neoscroll"
+neoscroll.setup { mappings = {}, }
 
 require "ft-highlight".setup { enabled = true, }
-
 require "nvim-surround".setup {
   keymaps = {
     normal = "ys",
@@ -13,8 +14,6 @@ require "nvim-surround".setup {
     change = "cs",
   },
 }
-
-neoscroll.setup { mappings = {}, }
 
 local scroll_duration = 175
 

@@ -1,7 +1,6 @@
 local h = require "shared.helpers"
 local grug = require "grug-far"
 local fzf_lua = require "fzf-lua"
-
 local simple_rg = require "homegrown_plugins.simple_rg"
 
 local ignore_dirs = { "node_modules", ".git", "dist", }
@@ -88,7 +87,6 @@ vim.keymap.set("n", "<leader>lg",
     fzf_lua.grep(opts)
   end,
   { desc = "Live grep the entire project", })
-
 
 -- https://github.com/ibhagwan/fzf-lua/wiki/Advanced#example-1-live-ripgrep
 --- @param initial_query string

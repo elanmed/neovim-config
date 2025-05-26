@@ -1,4 +1,3 @@
-local h = require "shared.helpers"
 local snacks = require "snacks"
 
 snacks.setup {
