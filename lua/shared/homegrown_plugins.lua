@@ -3,6 +3,8 @@ local h = require "shared.helpers"
 local qf_preview = require "quickfix-preview"
 
 qf_preview.setup {
+  pedit_prefix = "vertical rightbelow",
+  pedit_postfix = "| wincmd =",
   keymaps = {
     open = "o",
     openc = "<cr>",
@@ -13,25 +15,6 @@ qf_preview.setup {
     cprev = { key = "[q", },
   },
 }
-
---- @param str string
---- @param start string
-local function starts_with(str, start)
-  -- http://lua-users.org/wiki/StringRecipes
-  return str:sub(1, #start) == start
-end
-
---- @param item_text string
-local function shorten_bufname(item_text)
-  local cwd_name = vim.fn.getcwd()
-
-  if starts_with(item_text, cwd_name) then
-    local slash_offset = 1
-    return item_text:sub(#cwd_name + 1 + slash_offset)
-  end
-
-  return item_text
-end
 
 vim.api.nvim_create_autocmd({ "BufEnter", }, {
   callback = function()
@@ -90,6 +73,16 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
   end,
 })
 
+--- @param bufname string
+local function shorten_bufname(bufname)
+  return string.format(
+    "%s/%s",
+    vim.fs.basename(vim.fs.dirname(bufname)),
+    vim.fs.basename(bufname)
+  )
+end
+
+
 vim.opt.quickfixtextfunc = "v:lua.GetQuickfixTextFunc"
 
 --- @param num number
@@ -115,9 +108,9 @@ function _G.GetQuickfixTextFunc()
 
   local items = {}
   for _, item in pairs(qf_list) do
-    local curr_bufname = shorten_bufname(vim.fn.bufname(item.bufnr))
-    if #curr_bufname > longest_bufname_len then
-      longest_bufname_len = #curr_bufname
+    local bufname = shorten_bufname(vim.fn.bufname(item.bufnr))
+    if #bufname > longest_bufname_len then
+      longest_bufname_len = #bufname
     end
 
     if #tostring(item.lnum) > longest_row_len then
@@ -129,25 +122,18 @@ function _G.GetQuickfixTextFunc()
     end
   end
 
-  local misc_win_padding = 10
-  local win_width = vim.api.nvim_win_get_width(h.curr.window) - misc_win_padding
-
   for index, item in pairs(qf_list) do
-    local curr_bufname = shorten_bufname(vim.fn.bufname(item.bufnr))
-    local buffer_padding_right = longest_bufname_len - #curr_bufname
+    local bufname = shorten_bufname(vim.fn.bufname(item.bufnr))
+    local buffer_padding_right = longest_bufname_len - #bufname
     local formatted_item =
-        curr_bufname ..
+        bufname ..
         string.rep(" ", buffer_padding_right) ..
         " | " ..
         pad_num(item.lnum, longest_row_len, "left") ..
         ":" ..
         pad_num(item.col, longest_col_len, "right") ..
-        " | " ..
-        vim.fn.trim(item.text)
+        " | "
 
-    if #formatted_item > win_width then
-      formatted_item = string.sub(formatted_item, 1, win_width)
-    end
     items[index] = formatted_item
   end
 
