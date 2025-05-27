@@ -28,10 +28,10 @@ vim.keymap.set("n", ",",
   { expr = true, }
 )
 
-vim.keymap.set("i", "<C-e>", "<C-o>$")
-vim.keymap.set({ "n", "v", }, "<C-e>", "$")
-vim.keymap.set("i", "<C-a>", "<C-o>^")
-vim.keymap.set({ "n", "v", }, "<C-a>", "^")
+vim.keymap.set("i", "<C-e>", "<C-o>g$")
+vim.keymap.set({ "n", "v", }, "<C-e>", "g$")
+vim.keymap.set("i", "<C-a>", "<C-o>g^")
+vim.keymap.set({ "n", "v", }, "<C-a>", "g^")
 
 vim.keymap.set("n", "<leader>o", function() h.notify.warn "use ]<space> instead!" end)
 vim.keymap.set("n", "<leader>O", function() h.notify.warn "use [<space> instead!" end)
