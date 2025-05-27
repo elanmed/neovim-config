@@ -17,7 +17,6 @@ blink.setup {
   },
   completion = {
     documentation = { auto_show = true, window = { border = "single", }, },
-    ghost_text = { enabled = true, },
     list = { selection = { auto_insert = false, }, },
     menu = {
       draw = {
