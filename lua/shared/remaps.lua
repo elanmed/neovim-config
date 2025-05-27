@@ -42,8 +42,8 @@ vim.keymap.set("n", "<leader>o", function() h.notify.warn "use ]<space> instead!
 vim.keymap.set("n", "<leader>O", function() h.notify.warn "use [<space> instead!" end)
 
 vim.keymap.set("n", "<leader>pr", [[viw"_dP]], { desc = "pastE without overwriting the default register", })
-vim.keymap.set("n", "<leader>pa", h.keys.vim_cmd_cb "pu", { desc = "Paste on the line below", })
-vim.keymap.set("n", "<leader>pb", h.keys.vim_cmd_cb "pu!", { desc = "Paste on the line above", })
+vim.keymap.set("n", "<leader>pj", h.keys.vim_cmd_cb "pu", { desc = "Paste on the line below", })
+vim.keymap.set("n", "<leader>pk", h.keys.vim_cmd_cb "pu!", { desc = "Paste on the line above", })
 
 vim.keymap.set("n", "<leader>yp", function()
   local yank_line = [["zyy]]
