@@ -24,7 +24,7 @@ vim.keymap.set("n", "<C-p>", function()
         backdrop = false,
         row = 0,
         width = 0.8,
-        height = 0.3,
+        height = 0.4,
         box = "vertical",
         border = "rounded",
         { win = "input", height = 1, border = "bottom", },
