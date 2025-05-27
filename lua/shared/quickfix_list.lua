@@ -1,23 +1,23 @@
 local h = require "shared.helpers"
 
-vim.api.nvim_create_autocmd({ "BufEnter", }, {
-  callback = function()
-    if vim.bo.buftype ~= "quickfix" then return end
-
-    local qf_list = vim.fn.getqflist()
-
-    if #qf_list > 100 then
-      local truncated_list = {}
-      for i = 1, 100 do
-        truncated_list[i] = qf_list[i]
-      end
-
-      local replace = "r"
-      vim.fn.setqflist(truncated_list, replace)
-      h.notify.doing "truncated the quickfix list to 100 items"
-    end
-  end,
-})
+-- vim.api.nvim_create_autocmd({ "BufEnter", }, {
+--   callback = function()
+--     if vim.bo.buftype ~= "quickfix" then return end
+--
+--     local qf_list = vim.fn.getqflist()
+--
+--     if #qf_list > 100 then
+--       local truncated_list = {}
+--       for i = 1, 100 do
+--         truncated_list[i] = qf_list[i]
+--       end
+--
+--       local replace = "r"
+--       vim.fn.setqflist(truncated_list, replace)
+--       h.notify.doing "truncated the quickfix list to 100 items"
+--     end
+--   end,
+-- })
 
 vim.api.nvim_create_autocmd({ "FileType", }, {
   callback = function()
