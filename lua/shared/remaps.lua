@@ -101,7 +101,8 @@ vim.keymap.set("v", ">", ">gv", { desc = "Indent, while keeping selection", })
 vim.keymap.set("n", "J", "gJ", { desc = "J without whitespace", })
 vim.keymap.set("n", "Z", function() h.notify.warn "use J!" end, { desc = "J without whitespace", })
 
-vim.keymap.set("n", "<leader>c", h.keys.vim_cmd_cb "copen", { desc = "Open the quickfix list", })
+vim.keymap.set("n", "<leader>co", h.keys.vim_cmd_cb "copen")
+vim.keymap.set("n", "<leader>cc", h.keys.vim_cmd_cb "cclose")
 
 -- https://vim.fandom.com/wiki/Moving_lines_up_or_down
 vim.keymap.set("n", "<A-j>", ":m .+1<cr>==", { desc = "Move line down", })
