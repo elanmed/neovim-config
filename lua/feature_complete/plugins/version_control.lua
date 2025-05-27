@@ -104,7 +104,7 @@ vim.keymap.set("n", "<leader>gl", gitsigns.toggle_current_line_blame,
 
 -- fugitive
 vim.keymap.set("n", "<leader>gp", h.keys.vim_cmd_cb "Git push origin HEAD")
-vim.keymap.set("n", "<leader>gi", function()
+vim.keymap.set("n", "<leader>gd", function()
     local current_buf = vim.api.nvim_get_current_buf()
     vim.cmd "tabnew"
     vim.api.nvim_set_current_buf(current_buf)
@@ -116,4 +116,4 @@ vim.keymap.set("n", "<leader>gs", h.keys.vim_cmd_cb "Gedit :",
 
 -- diffview
 vim.keymap.set("n", "<leader>gh", h.keys.vim_cmd_cb "DiffviewFileHistory %", { desc = "", })
-vim.keymap.set("n", "<leader>gd", h.keys.vim_cmd_cb "DiffviewOpen", { desc = "Open the diff for all buffers", })
+vim.keymap.set("n", "<leader>gD", h.keys.vim_cmd_cb "DiffviewOpen", { desc = "Open the diff for all buffers", })
