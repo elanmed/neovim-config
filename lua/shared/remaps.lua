@@ -171,7 +171,8 @@ vim.keymap.set("n", "z?", function()
 end
 , { desc = "Toggle fold", })
 
-vim.keymap.set("n", "<leader>;", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>;", ":")
+
 vim.keymap.set("n", "<leader>i", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>k", "<nop>", { desc = "TODO find a remap", })
