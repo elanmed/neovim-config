@@ -6,7 +6,7 @@ blink.setup {
   keymap = {
     preset = "none",
     ["<C-x>"] = { "show", },
-    ["<Cr>"] = { "accept", "fallback", },
+    ["<C-y>"] = { "accept", },
     ["<C-c>"] = { "cancel", },
     ["<C-n>"] = { "select_next", "fallback", },
     ["<C-p>"] = { "select_prev", "fallback", },
