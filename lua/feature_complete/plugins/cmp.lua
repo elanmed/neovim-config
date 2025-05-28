@@ -40,7 +40,7 @@ blink.setup {
   },
   signature = {
     enabled = true,
-    window = { show_documentation = false, },
+    window = { show_documentation = false, border = "single", },
   },
   fuzzy = { prebuilt_binaries = { force_version = "v1.3.1", }, },
 }
