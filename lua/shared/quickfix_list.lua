@@ -36,7 +36,6 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
     end, { buffer = true, desc = "Duplicate the current quickfix list", })
 
     vim.keymap.set("n", "gy", function()
-      qf_preview:close()
       vim.fn.setqflist({}, "f") -- clear all
       -- vim.fn.setqflist({}, "r") -- clear current
     end, { buffer = true, desc = "Clear all quickfix lists", })
