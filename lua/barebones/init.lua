@@ -18,10 +18,10 @@ end, { desc = "Toggle netrw, focusing the current buffer", })
 vim.keymap.set("n", "<C-p>", function() h.notify.warn "Exit and use fzf instead" end)
 
 vim.opt.path:append "**" -- search in subfolder
-vim.keymap.set("n", "<leader>lg", "<C-o>:grep<space>")
-vim.keymap.set("n", "<leader>la", "<C-o>:grep<space>")
-vim.keymap.set("n", "<leader>lh", "<C-o>:h<space>")
-vim.keymap.set("n", "<leader>lm", h.keys.vim_cmd_cb "marks")
+vim.keymap.set("n", "<leader>f", "<C-o>:grep<space>")
+vim.keymap.set("n", "<leader>a", "<C-o>:grep<space>")
+vim.keymap.set("n", "<leader>h", "<C-o>:h<space>")
+vim.keymap.set("n", "<leader>m", h.keys.vim_cmd_cb "marks")
 vim.keymap.set("n", "<leader>b", h.keys.vim_cmd_cb "buffers")
 
 vim.keymap.set("c", "/", function()
