@@ -68,12 +68,16 @@ vim.keymap.set("i", "<C-s>",
 vim.keymap.set("n", "gry", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
 vim.keymap.set("n", "gri", vim.lsp.buf.definition, { desc = "LSP go to definition", })
 vim.keymap.set("n", "K", function() vim.lsp.buf.hover { border = "single", } end, { desc = "LSP go to type definition", })
+vim.keymap.set("n", "<leader>k", function()
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    -- https://neovim.io/doc/user/api.html#floating-windows
+    if vim.api.nvim_win_get_config(win).relative == "win" then
+      local force = false
+      vim.api.nvim_win_close(win, force)
+    end
+  end
+end)
 
-vim.keymap.set("n", "gh", function() h.notify.warn "use K!" end)
-vim.keymap.set("n", "gd", function() h.notify.warn "use gri!" end)
-vim.keymap.set("n", "gs", function() h.notify.warn "use gry!" end)
-vim.keymap.set("n", "gu", function() h.notify.warn "use grr!" end)
-vim.keymap.set("n", "ga", function() h.notify.warn "use gra!" end)
 
 --- @param direction "next" | "prev"
 local function next_prev_diagnostic(direction)
@@ -87,16 +91,6 @@ local function next_prev_diagnostic(direction)
 end
 vim.keymap.set("n", "]d", function() next_prev_diagnostic "next" end)
 vim.keymap.set("n", "[d", function() next_prev_diagnostic "prev" end)
-
-vim.keymap.set("n", "gl", function()
-  for _, win in ipairs(vim.api.nvim_list_wins()) do
-    -- https://neovim.io/doc/user/api.html#floating-windows
-    if vim.api.nvim_win_get_config(win).relative == "win" then
-      local force = false
-      vim.api.nvim_win_close(win, force)
-    end
-  end
-end)
 
 local function enable_deno_lsp()
   return h.os.file_exists(vim.fn.getcwd() .. "/.deno-enable-lsp")

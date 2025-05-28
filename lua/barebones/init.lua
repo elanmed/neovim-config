@@ -22,7 +22,7 @@ vim.keymap.set("n", "<leader>lg", "<C-o>:grep<space>")
 vim.keymap.set("n", "<leader>la", "<C-o>:grep<space>")
 vim.keymap.set("n", "<leader>lh", "<C-o>:h<space>")
 vim.keymap.set("n", "<leader>lm", h.keys.vim_cmd_cb "marks")
-vim.keymap.set("n", "<leader>lu", h.keys.vim_cmd_cb "buffers")
+vim.keymap.set("n", "<leader>b", h.keys.vim_cmd_cb "buffers")
 
 vim.keymap.set("c", "/", function()
   if vim.fn.wildmenumode() == 1 then
