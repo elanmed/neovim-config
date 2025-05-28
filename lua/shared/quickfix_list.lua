@@ -118,6 +118,10 @@ function _G.GetQuickfixTextFunc()
         pad_num(item.col, longest_col_len, "right") ..
         " | " .. vim.fn.trim(item.text)
 
+    local win_width = vim.api.nvim_win_get_width(h.curr.window)
+    if #formatted_item > win_width then
+      formatted_item = formatted_item:sub(1, #win_width)
+    end
     items[index] = formatted_item
   end
 
