@@ -37,9 +37,9 @@ local M = {
 }
 
 vim.api.nvim_set_hl(h.curr.namespace, "MatchParen", { fg = nil, bg = M.grey, })
-vim.api.nvim_set_hl(h.curr.namespace, "LspReferenceRead", { underline = true, })
-vim.api.nvim_set_hl(h.curr.namespace, "LspReferenceText", { underline = true, })
-vim.api.nvim_set_hl(h.curr.namespace, "LspReferenceWrite", { underline = true, })
+vim.api.nvim_set_hl(h.curr.namespace, "LspReferenceRead", { bold = true, })
+vim.api.nvim_set_hl(h.curr.namespace, "LspReferenceText", { bold = true, })
+vim.api.nvim_set_hl(h.curr.namespace, "LspReferenceWrite", { bold = true, })
 
 vim.api.nvim_set_hl(h.curr.namespace, "WilderAccent", { fg = M.orange, })
 vim.api.nvim_set_hl(h.curr.namespace, "WildMenu", { fg = M.yellow, underline = true, bold = true, })
