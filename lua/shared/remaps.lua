@@ -109,7 +109,8 @@ vim.keymap.set("n", "<leader>/w", "/\\<\\><left><left>", { desc = "/ word sensit
 vim.keymap.set("n", "<leader>/a", "/\\<\\>\\C<left><left><left><left>", { desc = "/ case and word sensitive", })
 vim.keymap.set("n", "<leader>/s", ":%s/\\<\\>\\C/<left><left><left><left><left>",
   { desc = "Search and replace in the current buffer, case and word sensitive", })
-vim.keymap.set("n", "<leader>/g", h.keys.vim_cmd_cb "nohlsearch", { desc = "Turn off hiGhlighting", })
+vim.keymap.set("n", "<leader>n", h.keys.vim_cmd_cb "nohlsearch", { desc = "Turn off highlighting", })
+vim.keymap.set("n", "<leader>/g", function() h.notify.warn "use <leader>n instead!" end)
 vim.keymap.set("n", "<leader>/v", "/\\V", { desc = "/ without regex", })
 
 -- prevent x, c from overwriting the clipboard
@@ -166,12 +167,7 @@ end
 
 vim.keymap.set("n", "<leader>;", ":")
 
--- <leader>gs
--- <leader>lr
-
-vim.keymap.set("n", "<leader>i", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
-vim.keymap.set("n", "<leader>n", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>w", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>z", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>,", "<nop>", { desc = "TODO find a remap", })
