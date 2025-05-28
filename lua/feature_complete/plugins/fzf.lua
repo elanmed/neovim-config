@@ -26,6 +26,7 @@ fzf_lua.setup {
   },
   fzf_opts = {
     ["--layout"] = "reverse-list",
+    ["--cycle"] = true,
   },
   keymap = {
     builtin = { false, },
