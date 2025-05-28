@@ -91,6 +91,11 @@ vim.keymap.set("n", "<leader>yr",
   function()
     vim.fn.setreg("+", vim.fn.expand "%:~:.")
   end, { desc = "Yank the Relative path of the current buffer", })
+vim.keymap.set("n", "<leader>yq",
+  function()
+    vim.fn.setqflist(vim.fn.getqflist())
+    h.notify.doing "Created a new list!"
+  end, { desc = "Duplicate the current quickfix list", })
 
 vim.keymap.set("n", "<bs>", h.keys.vim_cmd_cb "w", { desc = "Save", })
 vim.keymap.set("n", "<leader>q", h.keys.vim_cmd_cb "q", { desc = "Quit", })

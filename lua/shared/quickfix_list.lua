@@ -30,12 +30,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
   callback = function()
     if vim.bo.buftype ~= "quickfix" then return end
 
-    vim.keymap.set("n", "gdu", function()
-      vim.fn.setqflist(vim.fn.getqflist())
-      h.notify.doing "Created a new list!"
-    end, { buffer = true, desc = "Duplicate the current quickfix list", })
-
-    vim.keymap.set("n", "gy", function()
+    vim.keymap.set("n", "<leader>d", function()
       vim.fn.setqflist({}, "f") -- clear all
       -- vim.fn.setqflist({}, "r") -- clear current
     end, { buffer = true, desc = "Clear all quickfix lists", })
