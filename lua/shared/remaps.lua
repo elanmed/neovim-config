@@ -8,6 +8,7 @@ vim.keymap.set("n", "q:",
   end,
   { desc = "Prevent accidentally opening the command-line window", })
 vim.keymap.set("n", "G", function() return "G" .. "zz" end, { expr = true, })
+vim.keymap.set("n", "<leader>;", ":")
 
 vim.keymap.set("i", "<C-_>", "<C-o>gcc", { remap = true, })
 vim.keymap.set("n", "<C-_>", "gcc", { remap = true, })
@@ -165,10 +166,7 @@ vim.keymap.set("n", "z?", function()
 end
 , { desc = "Toggle fold", })
 
-vim.keymap.set("n", "<leader>;", ":")
-
-vim.keymap.set("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
-vim.keymap.set("n", "<leader>w", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>z", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>,", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>.", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>'", "<nop>", { desc = "TODO find a remap", })

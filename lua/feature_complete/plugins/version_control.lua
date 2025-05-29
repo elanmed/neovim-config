@@ -104,16 +104,17 @@ vim.keymap.set("n", "<leader>gl", gitsigns.toggle_current_line_blame,
 
 -- fugitive
 vim.keymap.set("n", "<leader>gp", h.keys.vim_cmd_cb "Git push origin HEAD")
-vim.keymap.set("n", "<leader>gd", function()
+vim.keymap.set("n", "<leader>i", function()
     local current_buf = vim.api.nvim_get_current_buf()
     vim.cmd "tabnew"
     vim.api.nvim_set_current_buf(current_buf)
     vim.cmd "Gdiffsplit"
   end,
   { desc = "Open the dIff for the current buffer", })
-vim.keymap.set("n", "<leader>i", h.keys.vim_cmd_cb "Gedit :",
+vim.keymap.set("n", "<leader>gi", function() h.notify.warn "Use <leader>i instead!" end)
+vim.keymap.set("n", "<leader>w", h.keys.vim_cmd_cb "Gedit :",
   { desc = "Open the fugitive status in the current tab", })
-vim.keymap.set("n", "<leader>gs", function() h.notify.warn "Use <leader>i instead!" end)
+vim.keymap.set("n", "<leader>gs", function() h.notify.warn "Use <leader>w instead!" end)
 
 -- diffview
 vim.keymap.set("n", "<leader>gh", h.keys.vim_cmd_cb "DiffviewFileHistory %", { desc = "", })
