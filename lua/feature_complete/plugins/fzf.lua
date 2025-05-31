@@ -111,7 +111,7 @@ local function live_grep_with_args(initial_query)
   opts = fzf_lua.core.set_fzf_field_index(opts)
 
   return fzf_lua.fzf_live(function(prompt)
-    local cmd = simple_rg.construct_simple_rg(prompt or "")
+    local cmd = simple_rg.construct_rg_cmd(prompt or "")
     if cmd then h.notify.doing(cmd) end
     return cmd
   end, opts)

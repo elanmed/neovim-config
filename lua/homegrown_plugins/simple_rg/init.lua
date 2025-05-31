@@ -29,29 +29,22 @@ local function record_custom_flag(opts)
 end
 
 --- @param opts { dir_tbl: table, file_tbl: table, ext_tbl: table, negate: boolean }
-local function construct_rg_flag(opts)
-  local ext_tbl_prefixed = vim.tbl_map(function(ext)
+local function construct_rg_flags(opts)
+  local ext_tbl_processed = vim.tbl_map(function(ext)
     return "*." .. ext
   end, opts.ext_tbl)
 
-  local file_and_ext_tbl = vim.list_extend(vim.deepcopy(opts.file_tbl), ext_tbl_prefixed)
+  local dir_tbl_processed = vim.tbl_map(function(dir)
+    return string.format("**/%s/**", dir)
+  end, opts.dir_tbl)
 
-  local flag = ""
-  if #opts.dir_tbl > 0 then
-    flag = flag .. "'**/{" .. table.concat(opts.dir_tbl, ",") .. "}/**"
-    if #file_and_ext_tbl == 0 then
-      flag = flag .. "'"
-    end
-  end
+  local file_ext_dir_tbl = vim.iter { opts.file_tbl, ext_tbl_processed, dir_tbl_processed, }
+      :flatten()
+      :totable()
 
-  if #file_and_ext_tbl > 0 then
-    if #opts.dir_tbl == 0 then
-      flag = flag .. "'**"
-    end
-    flag = flag .. "/{" .. table.concat(file_and_ext_tbl, ",") .. "}'"
-  end
+  if vim.tbl_count(file_ext_dir_tbl) > 0 then
+    local flag = string.format("'{%s}'", table.concat(file_ext_dir_tbl, ","))
 
-  if #flag > 0 then
     if opts.negate then
       flag = "!" .. flag
     end
@@ -117,7 +110,7 @@ local function parse_flags(tokens)
   return parsed
 end
 
-M.construct_simple_rg = function(prompt)
+M.construct_rg_cmd = function(prompt)
   if not prompt or prompt == "" then
     return nil
   end
@@ -132,14 +125,14 @@ M.construct_simple_rg = function(prompt)
   local tokens = split(flags_prompt)
   local flags = parse_flags(tokens)
 
-  local include_flag = construct_rg_flag {
+  local include_flag = construct_rg_flags {
     negate = false,
     dir_tbl = flags.include_dir,
     file_tbl = flags.include_file,
     ext_tbl = flags.include_ext,
   }
 
-  local negate_flag = construct_rg_flag {
+  local negate_flag = construct_rg_flags {
     negate = true,
     dir_tbl = flags.negate_dir,
     file_tbl = flags.negate_file,
