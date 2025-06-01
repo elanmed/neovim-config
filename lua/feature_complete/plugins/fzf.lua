@@ -1,7 +1,6 @@
 local h = require "shared.helpers"
 local grug = require "grug-far"
 local fzf_lua = require "fzf-lua"
-local simple_rg = require "homegrown_plugins.simple_rg"
 
 local ignore_dirs = { "node_modules", ".git", "dist", }
 local fd_cmd = "fd --type f"
@@ -95,26 +94,20 @@ vim.keymap.set("n", "<leader>lg", function() h.notify.warn "use <leader>f instea
 -- https://github.com/ibhagwan/fzf-lua/wiki/Advanced#example-1-live-ripgrep
 --- @param initial_query string
 local function live_grep_with_args(initial_query)
-  local opts = vim.tbl_deep_extend("error", {}, with_preview_opts)
-  opts.git_icons = false
-  opts.file_icons = false
-  opts.actions = fzf_lua.defaults.actions.files
-  opts.previewer = "bat_native"
-  opts.fn_transform = function(x)
-    return fzf_lua.make_entry.file(x, opts)
-  end
-  opts.query = initial_query
-  opts.fzf_opts = { ["--multi"] = true, }
+  local opts = vim.tbl_deep_extend(
+    "error",
+    {
+      git_icons = false,
+      file_icons = false,
+      previewer = "bat_native",
+      query = initial_query,
+    },
+    with_preview_opts
+  )
 
-  -- found in the live_grep implementation, necessary to preview the correct section w/bats
-  -- fzf-lua/lua/fzf-lua/providers/grep.lua
-  opts = fzf_lua.core.set_fzf_field_index(opts)
-
-  return fzf_lua.fzf_live(function(prompt)
-    local cmd = simple_rg.construct_rg_cmd(prompt or "")
-    if cmd then h.notify.doing(cmd) end
-    return cmd
-  end, opts)
+  require "rg-glob-builder".fzf_lua_adapter {
+    fzf_lua_opts = opts,
+  }
 end
 
 vim.keymap.set("n", "<leader>a", function() live_grep_with_args "~" end)

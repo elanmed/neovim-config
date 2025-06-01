@@ -53,6 +53,7 @@ bootstrap_paq {
   "kylechui/nvim-surround",
   "ElanMedoff/ft-highlight.nvim",
   "ElanMedoff/quickfix-preview.nvim",
+  "ElanMedoff/rg-glob-builder.nvim",
   -- snacks
   "folke/snacks.nvim",
   -- statusline
