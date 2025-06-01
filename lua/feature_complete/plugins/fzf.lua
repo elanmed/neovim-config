@@ -107,6 +107,9 @@ local function live_grep_with_args(initial_query)
 
   require "rg-glob-builder".fzf_lua_adapter {
     fzf_lua_opts = opts,
+    rg_glob_builder_opts = {
+      nil_unless_trailing_space = true,
+    },
   }
 end
 
