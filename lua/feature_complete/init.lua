@@ -51,9 +51,9 @@ bootstrap_paq {
   "chentoast/marks.nvim",
   "christoomey/vim-tmux-navigator",
   "kylechui/nvim-surround",
-  "ElanMedoff/ft-highlight.nvim",
-  "ElanMedoff/quickfix-preview.nvim",
-  "ElanMedoff/rg-glob-builder.nvim",
+  "elanmed/ft-highlight.nvim",
+  "elanmed/quickfix-preview.nvim",
+  "elanmed/rg-glob-builder.nvim",
   -- snacks
   "folke/snacks.nvim",
   -- statusline
