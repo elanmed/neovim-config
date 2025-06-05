@@ -124,6 +124,7 @@ vim.lsp.config("bashls", {
 })
 
 vim.lsp.enable {
+  "solargraph",
   "bashls",
   "jsonls",
   "lua_ls",
