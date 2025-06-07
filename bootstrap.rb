@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative 'helpers'
+require '~/.dotfiles/helpers'
 require 'optparse'
 require 'net/http'
 require 'uri'
@@ -49,7 +49,7 @@ url = URI('https://api.github.com/repos/LuaLS/lua-language-server/releases/lates
 response = Net::HTTP.get(url)
 data = JSON.parse(response)
 selected_asset = data['assets'].find do |asset|
-  lua_ls_regex = if is_linux
+  lua_ls_regex = if linux?
                    /lua-language-server-.*-linux-x64.tar.gz/
                  else
                    /lua-language-server-.*-darwin-arm64.tar.gz/
