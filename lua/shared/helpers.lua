@@ -6,11 +6,7 @@ local dev = {}
 local notify = {}
 
 -- sugar to avoid magic 0s
-local curr = {
-  buffer = 0,
-  window = 0,
-  namespace = 0,
-}
+local curr = { buffer = 0, window = 0, namespace = 0, }
 
 --- @param vim_cmd string
 --- @return function
@@ -21,11 +17,7 @@ end
 --- @param mode 'n' | 'v' | 'i'
 --- @param keys_to_send string
 keys.send_keys = function(mode, keys_to_send)
-  local modeToExpanded = {
-    ["n"] = "normal",
-    ["i"] = "insert",
-    ["v"] = "visual",
-  }
+  local modeToExpanded = { ["n"] = "normal", ["i"] = "insert", ["v"] = "visual", }
   vim.cmd(modeToExpanded[mode] .. "! " .. keys_to_send)
 
   -- local keys = vim.api.nvim_replace_termcodes(keys, true, false, true)
@@ -111,12 +103,4 @@ notify.toggle_off = function(message)
   _notify(message, "toggle_off")
 end
 
-return {
-  keys = keys,
-  tbl = tbl,
-  remaps = remaps,
-  curr = curr,
-  os = os,
-  dev = dev,
-  notify = notify,
-}
+return { keys = keys, tbl = tbl, remaps = remaps, curr = curr, os = os, dev = dev, notify = notify, }

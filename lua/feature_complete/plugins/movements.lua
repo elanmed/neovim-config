@@ -31,7 +31,9 @@ vim.keymap.set({ "n", "v", "i", }, "<C-d>", function()
     neoscroll.ctrl_d { duration = scroll_duration, }
   end
 end)
-vim.keymap.set("n", "z.", function() neoscroll.zz { half_win_duration = scroll_duration, } end)
+vim.keymap.set("n", "z.", function()
+  neoscroll.zz { half_win_duration = scroll_duration, }
+end)
 
 vim.opt.scrolloff = 999
 vim.api.nvim_create_autocmd({ "CursorMoved", }, {
@@ -105,6 +107,7 @@ end
 
 local global_marks = ("abcdefghijklmnopqrstuvwxyz"):upper()
 
+-- TODO: better remaps
 vim.keymap.set("n", "mg", function()
   for letter in global_marks:gmatch "." do
     local is_buffer_mark_set = not is_buffer_mark_unset(letter)

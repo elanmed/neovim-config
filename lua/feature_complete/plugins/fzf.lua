@@ -48,13 +48,10 @@ fzf_lua.setup {
 }
 
 local with_preview_opts = {
-  winopts = {
-    height = 1,
-    preview = {
-      layout   = "vertical",
-      vertical = "up:35%",
-    },
-  },
+  winopts = { height = 1, preview = {
+    layout   = "vertical",
+    vertical = "up:35%",
+  }, },
 }
 
 --- @param cb function
@@ -64,14 +61,13 @@ end
 
 --- @param cb function
 local function without_preview_cb(cb)
-  local without_preview_opts = {
-    previewer = false,
-    winopts = {
-      height = 0.5,
-      row    = 1,
-    },
-  }
-  return function() cb(without_preview_opts) end
+  local without_preview_opts = { previewer = false, winopts = {
+    height = 0.5,
+    row    = 1,
+  }, }
+  return function()
+    cb(without_preview_opts)
+  end
 end
 
 vim.keymap.set("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
@@ -92,12 +88,7 @@ vim.keymap.set("n", "<leader>f",
 local function live_grep_with_args(initial_query)
   local opts = vim.tbl_deep_extend(
     "error",
-    {
-      git_icons = false,
-      file_icons = false,
-      previewer = "bat_native",
-      query = initial_query,
-    },
+    { git_icons = false, file_icons = false, previewer = "bat_native", query = initial_query, },
     with_preview_opts
   )
 
@@ -109,7 +100,9 @@ local function live_grep_with_args(initial_query)
   }
 end
 
-vim.keymap.set("n", "<leader>a", function() live_grep_with_args "~" end)
+vim.keymap.set("n", "<leader>a", function()
+  live_grep_with_args "~"
+end)
 vim.keymap.set("v", "<leader>o",
   function()
     local require_visual_mode_active = true

@@ -1,23 +1,27 @@
 local h = require "shared.helpers"
 
 vim.keymap.set("i", "<C-t>", "<C-o>:Snippet<space>")
-vim.keymap.set({ "n", "v", }, "<C-t>", function() h.notify.error "snippets only supported in insert mode!" end)
-vim.keymap.set("n", "q:",
-  function()
+vim.keymap.set({ "n", "v", }, "<C-t>", function()
+  h.notify.error "snippets only supported in insert mode!"
+end)
+vim.keymap.set("n", "q:", function()
     h.notify.warn "Use :q to quit or q? to open the command-line window instead!"
   end,
   { desc = "Prevent accidentally opening the command-line window", })
-vim.keymap.set("n", "G", function() return "G" .. "zz" end, { expr = true, })
+vim.keymap.set("n", "G", function()
+  return "G" .. "zz"
+end, { expr = true, })
 vim.keymap.set("n", "<leader>;", ":")
 vim.keymap.set("n", "<leader>'", [["]])
 
 vim.keymap.set("i", "<C-_>", "<C-o>gcc", { remap = true, })
 vim.keymap.set("n", "<C-_>", "gcc", { remap = true, })
-vim.keymap.set("v", "<C-_>", function()
-  local comment = "gc"
-  local reselect_last = "gv"
-  return comment .. reselect_last
-end, { expr = true, remap = true, })
+vim.keymap.set("v", "<C-_>",
+  function()
+    local comment = "gc"
+    local reselect_last = "gv"
+    return comment .. reselect_last
+  end, { expr = true, remap = true, })
 
 vim.keymap.set("n", "<leader>e", h.keys.vim_cmd_cb "e")
 
