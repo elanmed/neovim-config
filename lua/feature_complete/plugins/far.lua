@@ -1,14 +1,13 @@
 local h = require "shared.helpers"
 local grug = require "grug-far"
 
--- TODO: find a cleaner way to handle this
-local GRUG_INSTANCE_NAME = ""
+local default_instance = "default_instance"
 
 vim.keymap.set("n", "<leader>re", function()
-  if grug.has_instance(GRUG_INSTANCE_NAME) then
-    grug.toggle_instance { instanceName = GRUG_INSTANCE_NAME, startInInsertMode = true, }
+  if grug.has_instance(default_instance) then
+    grug.get_instance(default_instance):open { startInInsertMode = false, }
   else
-    GRUG_INSTANCE_NAME = grug.open()
+    grug.open { startInInsertMode = false, instanceName = default_instance, }
   end
   vim.cmd "vertical resize 135%"
   h.notify.doing "Common flags: --case-sensitive (default), --ignore-case, --word-regexp"
@@ -37,11 +36,3 @@ grug.setup {
     swapReplacementInterpreter = false,
   },
 }
-
-vim.api.nvim_create_autocmd({ "FileType", }, {
-  pattern = "grug-far",
-  callback = function()
-    -- TODO: vim.keymap.set with the buffer opt doesn't work
-    vim.api.nvim_buf_set_keymap(h.curr.buffer, "i", "<C-c>", "<Esc><leader>q", {})
-  end,
-})
