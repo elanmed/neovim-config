@@ -18,6 +18,7 @@ snacks.setup {
 }
 
 vim.keymap.set("n", "<C-p>", function()
+  -- TODO: include hidden files
   snacks.picker.smart {
     layout = {
       layout = {

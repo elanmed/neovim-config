@@ -14,8 +14,8 @@ fzf_lua.setup {
       default = "bat_native",
       border = "rounded",
     },
-    border  = "none",
-    width   = 1,
+    border = "none",
+    width = 1,
   },
   files = {
     hidden = false,
@@ -49,7 +49,7 @@ fzf_lua.setup {
 
 local with_preview_opts = {
   winopts = { height = 1, preview = {
-    layout   = "vertical",
+    layout = "vertical",
     vertical = "up:35%",
   }, },
 }
@@ -63,7 +63,7 @@ end
 local function without_preview_cb(cb)
   local without_preview_opts = { previewer = false, winopts = {
     height = 0.5,
-    row    = 1,
+    row = 1,
   }, }
   return function()
     cb(without_preview_opts)
