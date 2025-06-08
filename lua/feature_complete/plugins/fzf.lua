@@ -47,12 +47,10 @@ fzf_lua.setup {
   fzf_colors = true,
 }
 
-local with_preview_opts = {
-  winopts = { height = 1, preview = {
-    layout = "vertical",
-    vertical = "up:35%",
-  }, },
-}
+local with_preview_opts = { winopts = { height = 1, preview = {
+  layout = "vertical",
+  vertical = "up:35%",
+}, }, }
 
 --- @param cb function
 local function with_preview_cb(cb)
@@ -118,14 +116,18 @@ vim.keymap.set("n", "<leader>o",
 local function get_stripped_filename()
   local filepath = vim.fn.expand "%:p"
 
-  local stripped_start = filepath:match "wf_modules.*$"
-  if not stripped_start then
+  local start_idx = filepath:find "wf_modules"
+  if not start_idx then
     h.notify.warn "`wf_modules` not found in the filepath!"
     return nil
   end
+  local stripped_start = filepath:sub(start_idx)
+  local dot_idx = stripped_start:find "%." -- % escapes
+  if dot_idx then
+    stripped_start = stripped_start:sub(1, dot_idx - 1)
+  end
 
-  local stripped_filename = stripped_start:match "(.-)%..-$"
-  return stripped_filename
+  return stripped_start
 end
 
 vim.keymap.set("n", "<leader>le",
