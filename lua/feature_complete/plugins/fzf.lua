@@ -76,9 +76,7 @@ end
 
 vim.keymap.set("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
 vim.keymap.set("n", "<leader>h", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with fzf", })
-vim.keymap.set("n", "<leader>lh", function() h.notify.warn "use <leader>h instead!" end)
 vim.keymap.set("n", "<leader>m", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
-vim.keymap.set("n", "<leader>lm", function() h.notify.warn "use <leader>m instead!" end)
 vim.keymap.set("n", "<leader>l;", without_preview_cb(fzf_lua.command_history),
   { desc = "Search search history with fzf", })
 vim.keymap.set("n", "<leader>b", with_preview_cb(fzf_lua.buffers),
@@ -89,9 +87,7 @@ vim.keymap.set("n", "<leader>f",
     fzf_lua.grep(opts)
   end,
   { desc = "Live grep the entire project", })
-vim.keymap.set("n", "<leader>lg", function() h.notify.warn "use <leader>f instead!" end)
 
--- https://github.com/ibhagwan/fzf-lua/wiki/Advanced#example-1-live-ripgrep
 --- @param initial_query string
 local function live_grep_with_args(initial_query)
   local opts = vim.tbl_deep_extend(
@@ -114,7 +110,6 @@ local function live_grep_with_args(initial_query)
 end
 
 vim.keymap.set("n", "<leader>a", function() live_grep_with_args "~" end)
-vim.keymap.set("n", "<leader>la", function() h.notify.warn "use <leader>a instead!" end)
 vim.keymap.set("v", "<leader>o",
   function()
     local require_visual_mode_active = true
@@ -126,7 +121,6 @@ vim.keymap.set("n", "<leader>o",
   function()
     live_grep_with_args("~" .. vim.fn.expand "<cword>" .. "~ ")
   end, { desc = "Grep the current visual selection", })
-vim.keymap.set({ "n", "v", }, "<leader>lo", function() h.notify.warn "use <leader>o instead!" end)
 
 local function get_stripped_filename()
   local filepath = vim.fn.expand "%:p"

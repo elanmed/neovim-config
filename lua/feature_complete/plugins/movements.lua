@@ -124,14 +124,14 @@ vim.keymap.set("n", "mg", function()
   end
 
   if next_avail_mark == nil then
-    h.notify.error "No upper case marks available!"
+    h.notify.error "No global marks available!"
     return
   end
 
   local line_one_indexed = 1
   local col_zero_indexed = 0
   vim.api.nvim_buf_set_mark(h.curr.buffer, next_avail_mark, line_one_indexed, col_zero_indexed, {})
-  h.notify.doing("Set mark " .. next_avail_mark)
+  h.notify.doing("Set global mark " .. next_avail_mark)
 end, { desc = "Set a global mark for the buffer", })
 
 vim.keymap.set("n", "dmg", function()
@@ -140,10 +140,13 @@ vim.keymap.set("n", "dmg", function()
 
     if is_buffer_mark_set then
       vim.api.nvim_del_mark(letter)
-      h.notify.doing("Deleted mark " .. letter)
+      h.notify.doing("Deleted global mark " .. letter)
       return
     end
   end
   h.notify.warn "No global mark in the buffer"
 end, { desc = "Delete a global mark for the buffer", })
-vim.keymap.set("n", "dma", h.keys.vim_cmd_cb "delmarks A-Z", { desc = "Delete all marks", })
+vim.keymap.set("n", "dma", function()
+  vim.cmd "delmarks A-Z"
+  h.notify.doing "Deleted all global marks"
+end, { desc = "Delete all global marks", })

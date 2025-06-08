@@ -33,18 +33,6 @@ keys.send_keys = function(mode, keys_to_send)
 end
 
 --- @param table table
---- @param target_value any
---- @return boolean
-tbl.contains_value = function(table, target_value)
-  for _, value in pairs(table) do
-    if value == target_value then
-      return true
-    end
-  end
-  return false
-end
-
---- @param table table
 --- @param target_key any
 --- @return boolean
 tbl.contains_key = function(table, target_key)
@@ -54,16 +42,6 @@ tbl.contains_key = function(table, target_key)
     end
   end
   return false
-end
-
---- @param table table
---- @return number
-tbl.size = function(table)
-  local count = 0
-  for _ in pairs(table) do
-    count = count + 1
-  end
-  return count
 end
 
 os.is_linux = function()
@@ -93,8 +71,8 @@ dev.log = function(content)
 end
 
 --- @param message string
---- @param level "error" | "warn" | "doing" | "toggle_on" | "toggle_off"
-notify.notify = function(message, level)
+--- @param level "error" | "warn" | "doing" | "info" | "toggle_on" | "toggle_off"
+local function _notify(message, level)
   local level_to_hl_group = {
     error = "NotifyError",
     warn = "NotifyWarning",
@@ -110,27 +88,27 @@ end
 
 --- @param message string
 notify.doing = function(message)
-  notify.notify(message, "info")
+  _notify(message, "info")
 end
 
 --- @param message string
 notify.warn = function(message)
-  notify.notify(message, "warn")
+  _notify(message, "warn")
 end
 
 --- @param message string
 notify.error = function(message)
-  notify.notify(message, "error")
+  _notify(message, "error")
 end
 
 --- @param message string
 notify.toggle_on = function(message)
-  notify.notify(message, "toggle_on")
+  _notify(message, "toggle_on")
 end
 
 --- @param message string
 notify.toggle_off = function(message)
-  notify.notify(message, "toggle_off")
+  _notify(message, "toggle_off")
 end
 
 return {

@@ -9,6 +9,7 @@ vim.keymap.set("n", "q:",
   { desc = "Prevent accidentally opening the command-line window", })
 vim.keymap.set("n", "G", function() return "G" .. "zz" end, { expr = true, })
 vim.keymap.set("n", "<leader>;", ":")
+vim.keymap.set("n", "<leader>'", [["]])
 
 vim.keymap.set("i", "<C-_>", "<C-o>gcc", { remap = true, })
 vim.keymap.set("n", "<C-_>", "gcc", { remap = true, })
@@ -111,7 +112,6 @@ vim.keymap.set("n", "<leader>/a", "/\\<\\>\\C<left><left><left><left>", { desc =
 vim.keymap.set("n", "<leader>/s", ":%s/\\<\\>\\C/<left><left><left><left><left>",
   { desc = "Search and replace in the current buffer, case and word sensitive", })
 vim.keymap.set("n", "<leader>n", h.keys.vim_cmd_cb "nohlsearch", { desc = "Turn off highlighting", })
-vim.keymap.set("n", "<leader>/g", function() h.notify.warn "use <leader>n instead!" end)
 vim.keymap.set("n", "<leader>/v", "/\\V", { desc = "/ without regex", })
 
 -- prevent x, c from overwriting the clipboard
@@ -140,14 +140,14 @@ vim.keymap.set("n", "<leader>uo", function()
 end)
 
 -- https://stackoverflow.com/a/9407015
-local function next_closed_fold(dir)
+local function next_closed_fold(direction)
   local view = vim.fn.winsaveview()
   local prev_line_num = 0
   local curr_line_num = view.lnum
   local is_open = true
 
   while curr_line_num ~= prev_line_num and is_open do
-    h.keys.send_keys("n", "z" .. dir)
+    h.keys.send_keys("n", "z" .. direction)
     prev_line_num = curr_line_num
     curr_line_num = vim.fn.line "."
     is_open = vim.fn.foldclosed(curr_line_num) < 0
@@ -169,4 +169,3 @@ end
 vim.keymap.set("n", "<leader>z", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>,", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>.", "<nop>", { desc = "TODO find a remap", })
-vim.keymap.set("n", "<leader>'", "<nop>", { desc = "TODO find a remap", })

@@ -11,7 +11,7 @@ bufferline.setup {
 
       local excluded_filetypes = { "grug-far", "fugitive", }
       local filetype = vim.api.nvim_get_option_value("filetype", { buf = buf_number, })
-      if h.tbl.contains_value(excluded_filetypes, filetype) then
+      if vim.tbl_contains(excluded_filetypes, filetype) then
         return false
       end
 

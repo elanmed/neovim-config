@@ -31,4 +31,3 @@ vim.opt.shiftwidth     = 2    -- number of spaces to insert/delete when in inser
 vim.opt.foldmethod     = "indent"
 vim.opt.foldcolumn     = "0"
 vim.opt.foldlevelstart = 99
-vim.opt.foldmethod     = "expr"
