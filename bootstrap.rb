@@ -20,11 +20,12 @@ def bootstrap_nvim(server:, package_manager:)
 
   if server
     puts 'SKIPPING: running :PaqInstall'.noop
-  else
-    puts 'running :PaqInstall'.doing
-    `nvim --headless "+PaqInstall" +q`
-    puts '\n'
+    return
   end
+
+  puts 'running :PaqInstall'.doing
+  `nvim --headless "+PaqInstall" +q`
+  puts '\n'
 
   puts 'installing language servers from package.json'.doing
   `npm install --prefix ~/.dotfiles/neovim/.config/nvim/language_servers/`
