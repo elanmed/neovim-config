@@ -86,20 +86,28 @@ end)
 
 
 --- @param direction "next" | "prev"
---- @param severity vim.diagnostic.Severity
+--- @param severity? vim.diagnostic.Severity
 local function next_prev_diagnostic(direction, severity)
-  local diagnostics = vim.diagnostic.get(h.curr.buffer, { severity = severity, })
+  local diagnostics
+  if severity then
+    diagnostics = vim.diagnostic.get(h.curr.buffer, { severity = severity, })
+  else
+    diagnostics = vim.diagnostic.get(h.curr.buffer)
+  end
+
   if #diagnostics == 0 then
-    h.notify.warn(string.format("No %s diagnostics", vim.diagnostic.severity[severity]))
+    h.notify.warn(string.format("No %s diagnostics", vim.diagnostic.severity[severity] or "ANY"))
     return
   end
 
   vim.diagnostic.jump { severity = severity, count = direction == "next" and 1 or -1, }
 end
-vim.keymap.set("n", "]d", function() next_prev_diagnostic("next", vim.diagnostic.severity.ERROR) end)
-vim.keymap.set("n", "[d", function() next_prev_diagnostic("prev", vim.diagnostic.severity.ERROR) end)
+vim.keymap.set("n", "]d", function() next_prev_diagnostic "next" end)
+vim.keymap.set("n", "[d", function() next_prev_diagnostic "prev" end)
 vim.keymap.set("n", "]w", function() next_prev_diagnostic("next", vim.diagnostic.severity.WARN) end)
 vim.keymap.set("n", "[w", function() next_prev_diagnostic("prev", vim.diagnostic.severity.WARN) end)
+vim.keymap.set("n", "]e", function() next_prev_diagnostic("next", vim.diagnostic.severity.ERROR) end)
+vim.keymap.set("n", "[e", function() next_prev_diagnostic("prev", vim.diagnostic.severity.ERROR) end)
 
 local function enable_deno_lsp()
   return h.os.file_exists(vim.fn.getcwd() .. "/.deno-enable-lsp")

@@ -41,8 +41,8 @@ vim.keymap.set("n", "<C-p>", function()
 end, { desc = "Find files with snacks", })
 
 local function star_curr_word()
-  -- https://superuser.com/a/299693
   local word = vim.fn.expand "<cword>"
+  -- https://superuser.com/a/299693
   vim.cmd([[let @/ = '\<]] .. word .. [[\>']])
   vim.api.nvim_set_option_value("hlsearch", true, {})
 end

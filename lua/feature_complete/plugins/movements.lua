@@ -107,7 +107,6 @@ end
 
 local global_marks = ("abcdefghijklmnopqrstuvwxyz"):upper()
 
--- TODO: better remaps
 vim.keymap.set("n", "mg", function()
   for letter in global_marks:gmatch "." do
     local is_buffer_mark_set = not is_buffer_mark_unset(letter)
