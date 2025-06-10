@@ -52,4 +52,21 @@ M.get_prev_qf_index = function(circular)
   return curr_qf_index - 1
 end
 
+M.find_main_window = function()
+  for _, win_id in ipairs(vim.api.nvim_list_wins()) do
+    local buf_id = vim.api.nvim_win_get_buf(win_id)
+    local buf_type = vim.api.nvim_get_option_value("buftype", { buf = buf_id, })
+    local win_config = vim.api.nvim_win_get_config(win_id)
+    local is_preview_win = vim.api.nvim_get_option_value("previewwindow", { win = win_id, })
+
+    if is_preview_win then goto continue end
+    if buf_type == "quickfix" then goto continue end
+    if win_config.relative ~= "" then goto continue end
+
+    ::continue::
+  end
+
+  return nil
+end
+
 return M

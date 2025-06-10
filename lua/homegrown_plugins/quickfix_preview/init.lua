@@ -176,20 +176,40 @@ M.setup = function(opts)
 
       if keymaps.select_close_preview then
         vim.keymap.set("n", keymaps.select_close_preview, function()
-          local curr_line_nr = vim.fn.line "."
+          --- @type QuickfixItem
+          local qf_item = vim.fn.getqflist()[vim.fn.line "."]
 
           qf_preview:close()
-          vim.cmd("cc " .. curr_line_nr)
+
+          local main_win = helpers.find_main_window()
+          if main_win then
+            vim.api.nvim_set_current_win(main_win)
+          else
+            vim.notify "Can't find a main window!"
+            return
+          end
+          vim.cmd("edit " .. vim.fn.fnameescape(vim.fn.bufname(qf_item.bufnr)))
+          vim.api.nvim_win_set_cursor(0, { qf_item.lnum, qf_item.col - 1, })
         end, { buffer = true, desc = "Open the file undor the cursor, keeping the quickfix list open", })
       end
 
       if keymaps.select_close_quickfix then
         vim.keymap.set("n", keymaps.select_close_quickfix, function()
-          local curr_line_nr = vim.fn.line "."
+          --- @type QuickfixItem
+          local qf_item = vim.fn.getqflist()[vim.fn.line "."]
 
           qf_preview:close()
           vim.cmd "cclose"
-          vim.cmd("cc " .. curr_line_nr)
+
+          local main_win = helpers.find_main_window()
+          if main_win then
+            vim.api.nvim_set_current_win(main_win)
+          else
+            vim.notify "Can't find a main window!"
+            return
+          end
+          vim.cmd("edit " .. vim.fn.fnameescape(vim.fn.bufname(qf_item.bufnr)))
+          vim.api.nvim_win_set_cursor(0, { qf_item.lnum, qf_item.col - 1, })
         end, { buffer = true, desc = "Open the file under the cursor, closing the quickfix list", })
       end
 
