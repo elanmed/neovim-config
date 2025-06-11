@@ -142,6 +142,7 @@ vim.lsp.enable {
   "stylelint_lsp",
   "tailwindcss",
   "vimls",
+  "fennel_ls",
 }
 
 local blink = require "blink.cmp"
@@ -182,6 +183,7 @@ require "conform".setup {
     typescript = { "prettier", },
     typescriptreact = { "prettier", },
     yaml = { "prettier", },
+    fennel = { "fnlfmt", },
   },
   format_after_save = {
     lsp_format = "fallback",

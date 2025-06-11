@@ -8,6 +8,14 @@ vim.api.nvim_create_user_command("PrintRemaps", function()
   vim.cmd "redir! > remaps.txt | silent map | redir END"
 end, {})
 
+vim.api.nvim_create_user_command("SourceFennel", function()
+  local path_raw = vim.fn.expand "%"
+  local path_replaced = path_raw:gsub("/fnl/", "/lua/"):gsub(".fnl", ".lua")
+  local cmd = "source " .. path_replaced
+  h.notify.doing(cmd)
+  vim.cmd(cmd)
+end, {})
+
 vim.api.nvim_create_user_command("Snippet", function(opts)
   local snippet_trigger_to_file_mapping = {
     bef = { file = "before.ts", movement = "ji\t", },

@@ -73,6 +73,7 @@ bootstrap_paq {
   -- wild_menu
   "gelguy/wilder.nvim",
   "romgrk/fzy-lua-native",
+  "Olical/nfnl",
 }
 
 local base_lua_path = vim.fn.stdpath "config" .. "/lua"              -- ~/.config/nvim/lua/
