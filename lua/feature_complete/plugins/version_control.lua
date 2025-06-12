@@ -116,4 +116,4 @@ vim.keymap.set("n", "<leader>w", h.keys.vim_cmd_cb "Gedit :",
 
 -- diffview
 vim.keymap.set("n", "<leader>gh", h.keys.vim_cmd_cb "DiffviewFileHistory %", { desc = "", })
-vim.keymap.set("n", "<leader>gD", h.keys.vim_cmd_cb "DiffviewOpen", { desc = "Open the diff for all buffers", })
+vim.keymap.set("n", "<leader>gd", h.keys.vim_cmd_cb "DiffviewOpen", { desc = "Open the diff for all buffers", })

@@ -19,7 +19,7 @@ grug.setup {
     qflist = { n = "<leader>rq", },
     syncLocations = { n = "<leader>rs", },
     syncLine = { n = "<leader>rl", },
-    close = { n = "<leader>q", },
+    close = { n = "<leader>re", },
     historyOpen = { n = "<leader>rh", },
     historyAdd = false,
     refresh = { n = "<leader>e", },
