@@ -43,7 +43,8 @@ blink.setup {
     enabled = true,
     window = { show_documentation = false, border = "single", },
   },
-  fuzzy = { prebuilt_binaries = { force_version = "v1.3.1", }, },
+  -- fuzzy = { prebuilt_binaries = { force_version = "v1.3.1", }, },
+  fuzzy = { implementation = "lua", },
 }
 
 require "nvim-autopairs".setup {}
