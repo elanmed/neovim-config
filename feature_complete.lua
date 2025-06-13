@@ -7,7 +7,3 @@ require "shared.remaps"
 require "shared.user_commands"
 require "shared.quickfix_list"
 require "feature_complete"
-
--- TODO:
--- Quickfix preview with a custom window
--- Trailing space bug
