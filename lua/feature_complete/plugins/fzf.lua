@@ -79,8 +79,7 @@ vim.keymap.set("n", "<leader>f",
   function()
     local opts = vim.tbl_deep_extend("error", { search = "", }, with_preview_opts)
     fzf_lua.grep(opts)
-  end,
-  { desc = "Live grep the entire project", })
+  end, { desc = "Live grep the entire project", })
 
 --- @param initial_query string
 local function live_grep_with_args(initial_query)

@@ -64,14 +64,14 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
     vim.keymap.set("n", "dd", function()
       local curr_line = vim.fn.line "."
       local qf_list = vim.fn.getqflist()
-      local is_last_line = curr_line == #qf_list
+      local is_last_line = curr_line == vim.tbl_count(qf_list)
 
       local filtered_qf_list = filter(function(_, idx)
         return idx ~= curr_line
       end, qf_list)
 
       vim.fn.setqflist(filtered_qf_list, "r")
-      if #qf_list == 1 then
+      if vim.tbl_count(qf_list) == 1 then
         qf_preview.close()
         return
       end

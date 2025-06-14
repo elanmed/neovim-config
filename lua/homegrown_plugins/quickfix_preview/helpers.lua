@@ -31,7 +31,7 @@ M.get_next_qf_index = function(circular)
   local curr_qf_index = vim.fn.line "."
 
   local qf_list = vim.fn.getqflist()
-  if curr_qf_index == #qf_list then
+  if curr_qf_index == vim.tbl_count(qf_list) then
     if circular then
       return 1
     else
@@ -48,7 +48,7 @@ M.get_prev_qf_index = function(circular)
   local qf_list = vim.fn.getqflist()
   if curr_qf_index == 1 then
     if circular then
-      return #qf_list
+      return vim.tbl_count(qf_list)
     else
       return curr_qf_index
     end

@@ -2,13 +2,8 @@ local h = require "helpers"
 
 --- @param bufname string
 local function shorten_bufname(bufname)
-  return string.format(
-    "%s/%s",
-    vim.fs.basename(vim.fs.dirname(bufname)),
-    vim.fs.basename(bufname)
-  )
+  return vim.fs.basename(vim.fs.dirname(bufname)) .. "/" .. vim.fs.basename(bufname)
 end
-
 
 vim.opt.quickfixtextfunc = "v:lua.GetQuickfixTextFunc"
 
@@ -41,7 +36,6 @@ function _G.GetQuickfixTextFunc()
     end
     return false
   end
-
 
   local items = {}
   for _, item in pairs(qf_list) do

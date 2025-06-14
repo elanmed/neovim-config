@@ -88,14 +88,9 @@ end)
 --- @param direction "next" | "prev"
 --- @param severity? vim.diagnostic.Severity
 local function next_prev_diagnostic(direction, severity)
-  local diagnostics
-  if severity then
-    diagnostics = vim.diagnostic.get(h.curr.buffer, { severity = severity, })
-  else
-    diagnostics = vim.diagnostic.get(h.curr.buffer)
-  end
+  local diagnostics = vim.diagnostic.get(h.curr.buffer, severity and { severity = severity, } or nil)
 
-  if #diagnostics == 0 then
+  if vim.tbl_count(diagnostics) == 0 then
     h.notify.warn(string.format("No %s diagnostics", vim.diagnostic.severity[severity] or "ANY"))
     return
   end

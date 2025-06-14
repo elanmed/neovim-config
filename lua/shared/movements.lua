@@ -55,10 +55,12 @@ vim.keymap.set("n", "dmg", function()
   end
   h.notify.warn "No global mark in the buffer"
 end, { desc = "Delete a global mark for the buffer", })
+
 vim.keymap.set("n", "dmG", function()
   vim.cmd "delmarks A-Z"
   h.notify.doing "Deleted all global marks"
 end, { desc = "Delete all global marks", })
+
 vim.keymap.set("n", "dma", function()
   vim.cmd "delmarks a-zA-Z"
   h.notify.doing "Deleted all marks"
