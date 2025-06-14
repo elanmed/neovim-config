@@ -162,6 +162,38 @@ M.setup = function(opts)
     callback = function()
       if vim.bo.buftype ~= "quickfix" then return end
 
+      local function select_close_preview()
+        local qf_item_index = vim.fn.line "."
+        --- @type QuickfixItem
+        local qf_item = vim.fn.getqflist()[qf_item_index]
+
+        qf_preview:close()
+
+        local main_win = helpers.find_main_window()
+        if not main_win then
+          vim.notify("Can't find a window!", vim.log.levels.ERROR)
+          return
+        end
+
+        vim.api.nvim_set_current_win(main_win)
+        vim.cmd("edit " .. vim.fn.fnameescape(vim.fn.bufname(qf_item.bufnr)))
+        vim.api.nvim_win_set_cursor(0, { qf_item.lnum, qf_item.col - 1, })
+        vim.fn.setqflist({}, "a", { ["idx"] = qf_item_index, })
+      end
+
+      if keymaps.select_close_preview then
+        vim.keymap.set("n", keymaps.select_close_preview, function()
+          select_close_preview()
+        end, { buffer = true, desc = "Open the file undor the cursor, keeping the quickfix list open", })
+      end
+
+      if keymaps.select_close_quickfix then
+        vim.keymap.set("n", keymaps.select_close_quickfix, function()
+          select_close_preview()
+          vim.cmd "cclose"
+        end, { buffer = true, desc = "Open the file under the cursor, closing the quickfix list", })
+      end
+
       if keymaps.toggle then
         vim.keymap.set("n", keymaps.toggle, function()
           if qf_preview:is_closed() then
@@ -172,21 +204,6 @@ M.setup = function(opts)
             qf_preview:set_preview_disabled(true)
           end
         end, { buffer = true, desc = "Toggle the quickfix preview", })
-      end
-
-      if keymaps.select_close_preview then
-        vim.keymap.set("n", keymaps.select_close_preview, function()
-          qf_preview:close()
-          helpers.send_cr()
-        end, { buffer = true, desc = "Open the file undor the cursor, keeping the quickfix list open", })
-      end
-
-      if keymaps.select_close_quickfix then
-        vim.keymap.set("n", keymaps.select_close_quickfix, function()
-          qf_preview:close()
-          helpers.send_cr()
-          vim.cmd "cclose"
-        end, { buffer = true, desc = "Open the file under the cursor, closing the quickfix list", })
       end
 
       if keymaps.next then

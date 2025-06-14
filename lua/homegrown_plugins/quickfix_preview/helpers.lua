@@ -28,19 +28,23 @@ end
 
 --- @param circular boolean
 M.get_next_qf_index = function(circular)
-  local curr_qf_index = M.get_curr_qf_index()
-  if curr_qf_index == nil then return nil end
+  local curr_qf_index = vim.fn.line "."
+
   local qf_list = vim.fn.getqflist()
   if curr_qf_index == #qf_list then
-    if circular then return 1 else return curr_qf_index end
+    if circular then
+      return 1
+    else
+      return curr_qf_index
+    end
   end
   return curr_qf_index + 1
 end
 
 --- @param circular boolean
 M.get_prev_qf_index = function(circular)
-  local curr_qf_index = M.get_curr_qf_index()
-  if curr_qf_index == nil then return nil end
+  local curr_qf_index = vim.fn.line "."
+
   local qf_list = vim.fn.getqflist()
   if curr_qf_index == 1 then
     if circular then
