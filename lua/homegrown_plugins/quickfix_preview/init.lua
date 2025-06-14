@@ -176,26 +176,16 @@ M.setup = function(opts)
 
       if keymaps.select_close_preview then
         vim.keymap.set("n", keymaps.select_close_preview, function()
-          local curr_line_nr = vim.fn.line "."
-
           qf_preview:close()
-          vim.cmd("cc " .. curr_line_nr)
-          vim.schedule(function()
-            vim.cmd "edit"
-          end)
+          helpers.send_cr()
         end, { buffer = true, desc = "Open the file undor the cursor, keeping the quickfix list open", })
       end
 
       if keymaps.select_close_quickfix then
         vim.keymap.set("n", keymaps.select_close_quickfix, function()
-          local curr_line_nr = vim.fn.line "."
-
           qf_preview:close()
+          helpers.send_cr()
           vim.cmd "cclose"
-          vim.cmd("cc " .. curr_line_nr)
-          vim.schedule(function()
-            vim.cmd "edit"
-          end)
         end, { buffer = true, desc = "Open the file under the cursor, closing the quickfix list", })
       end
 
