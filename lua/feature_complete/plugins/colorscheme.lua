@@ -1,4 +1,4 @@
-local h = require "shared.helpers"
+local h = require "helpers"
 local base16 = require "base16-colorscheme"
 
 -- tomorrow-night

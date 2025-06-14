@@ -1,4 +1,4 @@
-local h = require "shared.helpers"
+local h = require "helpers"
 local snacks = require "snacks"
 
 vim.keymap.set("n", "<C-f>", h.keys.vim_cmd_cb "Oil", { desc = "Toggle oil", })

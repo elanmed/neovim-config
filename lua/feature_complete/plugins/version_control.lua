@@ -1,4 +1,4 @@
-local h = require "shared.helpers"
+local h = require "helpers"
 
 local actions = require "diffview.actions"
 local diffview = require "diffview"

@@ -1,4 +1,4 @@
-local h = require "shared.helpers"
+local h = require "helpers"
 local bufferline = require "bufferline"
 
 bufferline.setup {

@@ -1,4 +1,4 @@
-local h = require "shared.helpers"
+local h = require "helpers"
 
 --- @param bufname string
 local function shorten_bufname(bufname)
@@ -83,3 +83,23 @@ function _G.GetQuickfixTextFunc()
 
   return items
 end
+
+vim.api.nvim_create_autocmd({ "FileType", }, {
+  callback = function()
+    if vim.bo.buftype ~= "quickfix" then return end
+
+    vim.keymap.set("n", ">", function()
+      local success = pcall(vim.cmd, "cnewer")
+      if not success then
+        h.notify.warn "No newer list!"
+      end
+    end, { buffer = true, desc = "Go to the next quickfix list", })
+
+    vim.keymap.set("n", "<", function()
+      local success = pcall(vim.cmd, "colder")
+      if not success then
+        h.notify.warn "No older list!"
+      end
+    end, { buffer = true, desc = "Go to the pre quickfix list", })
+  end,
+})

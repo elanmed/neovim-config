@@ -1,4 +1,4 @@
-local h = require "shared.helpers"
+local h = require "helpers"
 local grug = require "grug-far"
 
 local default_instance = "default_instance"

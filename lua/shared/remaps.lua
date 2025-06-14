@@ -1,4 +1,4 @@
-local h = require "shared.helpers"
+local h = require "helpers"
 
 vim.keymap.set("i", "<C-t>", "<C-o>:Snippet<space>")
 vim.keymap.set({ "n", "v", }, "<C-t>", function()

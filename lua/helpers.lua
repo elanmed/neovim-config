@@ -103,4 +103,24 @@ notify.toggle_off = function(message)
   _notify(message, "toggle_off")
 end
 
-return { keys = keys, tbl = tbl, remaps = remaps, curr = curr, os = os, dev = dev, notify = notify, }
+--- @param dir string i.e. "/feature_complete/plugins/"
+local require_dir = function(dir)
+  if dir:sub(1, 1) ~= "/" then
+    dir = "/" .. dir
+  end
+
+  if dir:sub(-1) ~= "/" then
+    dir = dir .. "/"
+  end
+
+  local base_lua_path = vim.fn.stdpath "config" .. "/lua" -- ~/.config/nvim/lua/
+  local glob_path = base_lua_path .. dir .. "*.lua"       -- ~/.config/nvim/lua/feature_complete/plugins/*.lua
+  for _, path in pairs(vim.split(vim.fn.glob(glob_path), "\n")) do
+    -- convert absolute filename to relative
+    -- ~/.config/nvim/lua/feature_complete/plugins/*.lua -> feature_complete/plugins/*
+    local relfilename = path:gsub(base_lua_path, ""):gsub(".lua", "")
+    require(relfilename)
+  end
+end
+
+return { keys = keys, tbl = tbl, remaps = remaps, curr = curr, os = os, dev = dev, notify = notify, require_dir = require_dir, }

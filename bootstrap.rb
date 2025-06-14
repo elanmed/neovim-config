@@ -27,6 +27,10 @@ def bootstrap_nvim(server:, package_manager:)
   `nvim --headless "+PaqInstall" +q`
   puts '\n'
 
+  puts 'running :UpdateRemotePlugins'.doing
+  `nvim --headless "+UpdateRemotePlugins" +q`
+  puts '\n'
+
   puts 'installing language servers from package.json'.doing
   `npm install --prefix ~/.dotfiles/neovim/.config/nvim/language_servers/`
 

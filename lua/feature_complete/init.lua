@@ -1,3 +1,5 @@
+local h = require "helpers"
+
 -- :h paq-bootstrapping
 local function clone_paq()
   local path = vim.fn.stdpath "data" .. "/site/pack/paqs/start/paq-nvim"
@@ -73,14 +75,6 @@ bootstrap_paq {
   -- wild_menu
   "gelguy/wilder.nvim",
   "romgrk/fzy-lua-native",
-  "Olical/nfnl",
 }
 
-local base_lua_path = vim.fn.stdpath "config" .. "/lua"              -- ~/.config/nvim/lua/
-local glob_path = base_lua_path .. "/feature_complete/plugins/*.lua" -- ~/.config/nvim/lua/feature_complete/plugins/*.lua
-for _, path in pairs(vim.split(vim.fn.glob(glob_path), "\n")) do
-  -- convert absolute filename to relative
-  -- ~/.config/nvim/lua/feature_complete/plugins/*.lua -> feature_complete/plugins/*
-  local relfilename = path:gsub(base_lua_path, ""):gsub(".lua", "")
-  require(relfilename)
-end
+h.require_dir "feature_complete/plugins"

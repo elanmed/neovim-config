@@ -1,4 +1,4 @@
-local h = require "shared.helpers"
+local h = require "helpers"
 
 -- require "quickfix-preview".setup {
 --   pedit_prefix = "vertical rightbelow",
@@ -77,19 +77,5 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
       end
       vim.api.nvim_win_set_cursor(h.curr.window, { is_last_line and curr_line - 1 or curr_line, 0, })
     end, { buffer = true, desc = "Delete the current qf item", })
-
-    vim.keymap.set("n", ">", function()
-      local success = pcall(vim.cmd, "cnewer")
-      if not success then
-        h.notify.warn "No newer list!"
-      end
-    end, { buffer = true, desc = "Go to the next quickfix list", })
-
-    vim.keymap.set("n", "<", function()
-      local success = pcall(vim.cmd, "colder")
-      if not success then
-        h.notify.warn "No older list!"
-      end
-    end, { buffer = true, desc = "Go to the pre quickfix list", })
   end,
 })
