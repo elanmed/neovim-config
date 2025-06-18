@@ -1,27 +1,8 @@
 local h = require "helpers"
 
--- require "quickfix-preview".setup {
---   pedit_prefix = "vertical rightbelow",
---   pedit_postfix = "| wincmd =",
---   keymaps = {
---     select_close_preview = "o",
---     select_close_quickfix = "<cr>",
---     toggle = "t",
---     next = { key = "<C-n>", },
---     prev = { key = "<C-p>", },
---     cnext = { key = "]q", },
---     cprev = { key = "[q", },
---   },
---   preview_win_opts = {
---     relativenumber = false,
---     number = true,
---     signcolumn = "no",
---     cursorline = true,
---   },
--- }
-
-local qf_preview = require "homegrown_plugins.quickfix_preview.init"
-qf_preview.setup {
+require "quickfix-preview".setup {
+  pedit_prefix = "vertical rightbelow",
+  pedit_postfix = "| wincmd =",
   keymaps = {
     select_close_preview = "o",
     select_close_quickfix = "<cr>",
@@ -31,13 +12,32 @@ qf_preview.setup {
     cnext = { key = "]q", },
     cprev = { key = "[q", },
   },
-  get_preview_win_opts = function()
-    return { relativenumber = false, number = true, signcolumn = "no", cursorline = true, winblend = 5, }
-  end,
-  get_open_win_opts = function()
-    return { border = "rounded", }
-  end,
+  preview_win_opts = {
+    relativenumber = false,
+    number = true,
+    signcolumn = "no",
+    cursorline = true,
+  },
 }
+
+-- local qf_preview = require "homegrown_plugins.quickfix_preview.init"
+-- qf_preview.setup {
+--   keymaps = {
+--     select_close_preview = "o",
+--     select_close_quickfix = "<cr>",
+--     toggle = "t",
+--     next = { key = "<C-n>", },
+--     prev = { key = "<C-p>", },
+--     cnext = { key = "]q", },
+--     cprev = { key = "[q", },
+--   },
+--   get_preview_win_opts = function()
+--     return { relativenumber = false, number = true, signcolumn = "no", cursorline = true, winblend = 5, }
+--   end,
+--   get_open_win_opts = function()
+--     return { border = "rounded", }
+--   end,
+-- }
 
 --- @param predicate fun(curr_item, idx: number): boolean
 --- @param list table
@@ -56,7 +56,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
     if vim.bo.buftype ~= "quickfix" then return end
 
     vim.keymap.set("n", "<leader>d", function()
-      qf_preview.close()
+      vim.cmd "pclose"
       vim.fn.setqflist({}, "f") -- clear all
       -- vim.fn.setqflist({}, "r") -- clear current
     end, { buffer = true, desc = "Clear all quickfix lists", })
@@ -72,7 +72,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
 
       vim.fn.setqflist(filtered_qf_list, "r")
       if vim.tbl_count(qf_list) == 1 then
-        qf_preview.close()
+        vim.cmd "pclose"
         return
       end
       vim.api.nvim_win_set_cursor(h.curr.window, { is_last_line and curr_line - 1 or curr_line, 0, })

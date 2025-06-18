@@ -82,6 +82,8 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
   callback = function()
     if vim.bo.buftype ~= "quickfix" then return end
 
+    vim.keymap.set("n", "<Esc>", h.keys.vim_cmd_cb "cclose", { buffer = true, })
+
     vim.keymap.set("n", ">", function()
       local success = pcall(vim.cmd, "cnewer")
       if not success then
