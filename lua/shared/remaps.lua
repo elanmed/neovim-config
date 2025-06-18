@@ -15,7 +15,10 @@ vim.keymap.set("v", "<", "<gv", { desc = "Outdent, while keeping selection", })
 vim.keymap.set("v", ">", ">gv", { desc = "Indent, while keeping selection", })
 vim.keymap.set("n", "J", "gJ", { desc = "J without whitespace", })
 vim.keymap.set("n", "<leader>co", h.keys.vim_cmd_cb "copen")
-vim.keymap.set("n", "<leader>cc", h.keys.vim_cmd_cb "cclose")
+vim.keymap.set("n", "<leader>cc", function()
+  vim.cmd "pclose"
+  vim.cmd "cclose"
+end)
 -- https://vim.fandom.com/wiki/Moving_lines_up_or_down
 vim.keymap.set("n", "<A-j>", ":m .+1<cr>==", { desc = "Move line down", })
 vim.keymap.set("n", "<A-k>", ":m .-2<cr>==", { desc = "Move line up", })
