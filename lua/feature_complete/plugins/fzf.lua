@@ -73,7 +73,7 @@ vim.keymap.set("n", "<leader>h", with_preview_cb(fzf_lua.helptags), { desc = "Se
 vim.keymap.set("n", "<leader>m", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
 vim.keymap.set("n", "<leader>l;", without_preview_cb(fzf_lua.command_history),
   { desc = "Search search history with fzf", })
-vim.keymap.set("n", "<leader>b", with_preview_cb(fzf_lua.buffers),
+vim.keymap.set("n", "<leader>b", without_preview_cb(fzf_lua.buffers),
   { desc = "Search currently open buffers with fzf", })
 vim.keymap.set("n", "<leader>f",
   function()
@@ -97,9 +97,7 @@ local function live_grep_with_args(initial_query)
   }
 end
 
-vim.keymap.set("n", "<leader>a", function()
-  live_grep_with_args "~"
-end)
+vim.keymap.set("n", "<leader>a", function() live_grep_with_args "~" end)
 vim.keymap.set("v", "<leader>o",
   function()
     local require_visual_mode_active = true

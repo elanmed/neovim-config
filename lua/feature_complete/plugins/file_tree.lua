@@ -14,10 +14,12 @@ require "oil".setup {
   },
   use_default_keymaps = false,
   keymaps = {
-    ["?"] = "actions.show_help",
+    ["g?"] = "actions.show_help",
     ["<cr>"] = "actions.select",
-    ["<C-f>"] = "actions.close",
     ["-"] = "actions.parent",
+    ["<c-i>"] = "actions.select",
+    ["<c-o>"] = "actions.parent",
+    ["<C-f>"] = "actions.close",
     ["g."] = "actions.toggle_hidden",
   },
 }

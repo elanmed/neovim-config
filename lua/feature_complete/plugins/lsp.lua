@@ -12,7 +12,6 @@ require "conform".setup {
     typescript = { "prettier", },
     typescriptreact = { "prettier", },
     yaml = { "prettier", },
-    fennel = { "fnlfmt", },
   },
   format_after_save = {
     lsp_format = "fallback",

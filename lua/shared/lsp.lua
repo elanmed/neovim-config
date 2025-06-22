@@ -76,7 +76,7 @@ vim.keymap.set("n", "gri", vim.lsp.buf.definition, { desc = "LSP go to definitio
 vim.keymap.set("n", "K", function() vim.lsp.buf.hover { border = "single", } end, { desc = "LSP go to type definition", })
 vim.keymap.set("n", "<leader>k", function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
-    -- https://neovim.io/doc/user/api.html#floating-windows
+    -- :h floating-windows
     if vim.api.nvim_win_get_config(win).relative == "win" then
       local force = false
       vim.api.nvim_win_close(win, force)
