@@ -1,5 +1,4 @@
 local h = require "helpers"
-local base16 = require "base16-colorscheme"
 
 -- tomorrow-night
 local colors = {
@@ -20,7 +19,7 @@ local colors = {
   base0E = "#b294bb",
   base0F = "#a3685a",
 }
-base16.setup(colors)
+require "base16-colorscheme".setup(colors)
 local M = {
   black = colors.base00,
   grey = colors.base02,

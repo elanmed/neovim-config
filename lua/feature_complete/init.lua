@@ -33,7 +33,7 @@ bootstrap_paq {
   -- buffers
   "akinsho/bufferline.nvim",
   -- cmp
-  "windwp/nvim-autopairs",
+  "echasnovski/mini.pairs",
   "saghen/blink.cmp",
   "xzbdmw/colorful-menu.nvim",
   -- colorscheme
@@ -42,7 +42,7 @@ bootstrap_paq {
   "MagicDuck/grug-far.nvim",
   -- file_tree
   "stevearc/oil.nvim",
-  "kyazdani42/nvim-web-devicons",
+  "echasnovski/mini.icons",
   "karb94/neoscroll.nvim",
   -- fzf
   "ibhagwan/fzf-lua",

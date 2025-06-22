@@ -47,4 +47,4 @@ blink.setup {
   fuzzy = { implementation = "lua", },
 }
 
-require "nvim-autopairs".setup {}
+require "mini.pairs".setup()
