@@ -71,7 +71,7 @@ gitsigns.setup {
 }
 
 -- gitsigns
--- https://github.com/lewis6991/gitsigns.nvim?tab=readme-ov-file#keymaps
+-- https://github.com/lewis6991/gitsigns.nvim#-keymaps
 vim.keymap.set("n", ")", function()
   if vim.wo.diff then
     vim.cmd.normal { "]c", bang = true, }
