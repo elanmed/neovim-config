@@ -18,7 +18,7 @@
 
 - Uses a unique project structure that supports:
   1. A barebones config that requires no external dependencies
-  2. An feature-complete config with plugins managed by [plug](https://github.com/junegunn/vim-plug)
+  2. An feature-complete config with plugins managed by paq
   3. Options, remaps, and utilities shared between the two
 
 ```
