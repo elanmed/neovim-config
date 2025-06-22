@@ -29,7 +29,6 @@ bootstrap_paq {
   "nvim-lua/plenary.nvim",
   "tpope/vim-repeat",
   "jxnblk/vim-mdx-js",
-  "elanmed/quickfix-preview.nvim",
   -- buffers
   "akinsho/bufferline.nvim",
   -- cmp
@@ -56,6 +55,8 @@ bootstrap_paq {
   "christoomey/vim-tmux-navigator",
   "kylechui/nvim-surround",
   "elanmed/ft-highlight.nvim",
+  -- quickfix
+  "elanmed/quickfix-preview.nvim",
   -- snacks
   "folke/snacks.nvim",
   -- statusline
