@@ -6,12 +6,18 @@ local neoscroll = require "neoscroll"
 neoscroll.setup { mappings = {}, }
 
 require "ft-highlight".setup()
-require "nvim-surround".setup {
-  keymaps = {
-    normal = "ys",
-    visual = "S",
+require "mini.surround".setup {
+  mappings = {
+    add = "ys",
     delete = "ds",
-    change = "cs",
+    replace = "cs",
+
+    find = "",
+    find_left = "",
+    highlight = "",
+    update_n_lines = "",
+    suffix_last = "",
+    suffix_next = "",
   },
 }
 
