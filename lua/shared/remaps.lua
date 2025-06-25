@@ -9,7 +9,13 @@ vim.keymap.set("n", "q:", function()
 end, { desc = "Prevent accidentally opening the command-line window", })
 
 vim.keymap.set("n", "G", function() return "G" .. "zz" end, { expr = true, })
-vim.keymap.set("n", "<bs>", h.keys.vim_cmd_cb "w", { desc = "Save", })
+vim.keymap.set("n", "<bs>", function()
+  if vim.bo.readonly then
+    h.notify.error "Buffer is readonly, aborting"
+    return
+  end
+  vim.cmd "w"
+end, { desc = "Save", })
 vim.keymap.set("n", "<leader>q", h.keys.vim_cmd_cb "q", { desc = "Quit", })
 vim.keymap.set("v", "<", "<gv", { desc = "Outdent, while keeping selection", })
 vim.keymap.set("v", ">", ">gv", { desc = "Indent, while keeping selection", })
