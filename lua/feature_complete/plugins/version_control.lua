@@ -108,7 +108,6 @@ neogit.setup {
 }
 
 -- neogit
-vim.keymap.set("n", "<leader>gp", h.keys.vim_cmd_cb "!git push origin HEAD")
 vim.keymap.set("n", "<leader>i", h.keys.vim_cmd_cb "DiffviewOpen --selected-file=%",
   { desc = "Open the dIff for all buffers", })
 vim.keymap.set("n", "<leader>w", function()
