@@ -53,7 +53,7 @@ bootstrap_paq {
   "folke/flash.nvim",
   "chentoast/marks.nvim",
   "christoomey/vim-tmux-navigator",
-  "echasnovski/mini.surround",
+  "kylechui/nvim-surround",
   "elanmed/ft-highlight.nvim",
   -- quickfix
   "elanmed/quickfix-preview.nvim",
