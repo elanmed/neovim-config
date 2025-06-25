@@ -32,7 +32,7 @@ bootstrap_paq {
   -- buffers
   "akinsho/bufferline.nvim",
   -- cmp
-  "echasnovski/mini.pairs",
+  "windwp/nvim-autopairs",
   "saghen/blink.cmp",
   "xzbdmw/colorful-menu.nvim",
   -- colorscheme
@@ -65,7 +65,6 @@ bootstrap_paq {
   -- treesitter
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate", },
   "nvim-treesitter/nvim-treesitter-textobjects",
-  "MeanderingProgrammer/markdown.nvim",
   "RRethy/nvim-treesitter-endwise",
   "windwp/nvim-ts-autotag",
   "JoosepAlviste/nvim-ts-context-commentstring",

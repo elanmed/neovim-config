@@ -41,27 +41,5 @@ require "nvim-treesitter.configs".setup {
   },
 }
 
-require "render-markdown".setup {
-  render_modes = false,
-  overrides = {
-    buftype = {
-      nofile = {
-        win_options = {
-          concealcursor = {
-            -- vim option
-            -- when in normal mode, conceal text for a line when the cursor is positioned on it
-            rendered = "n",
-          },
-        },
-        anti_conceal = {
-          -- render-markdown option
-          -- always conceal text for a line when the cursor is positioned on it
-          enabled = false,
-        },
-      },
-    },
-  },
-}
-
 require "ts_context_commentstring".setup {}
 require "nvim-ts-autotag".setup {}
