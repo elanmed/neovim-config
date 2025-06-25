@@ -102,18 +102,19 @@ vim.keymap.set("n", "<leader>gw", gitsigns.preview_hunk, { desc = "Preview the c
 vim.keymap.set("n", "<leader>gl", gitsigns.toggle_current_line_blame,
   { desc = "Toggle git blame for the current line", })
 
--- fugitive
-vim.keymap.set("n", "<leader>gp", h.keys.vim_cmd_cb "Git push origin HEAD")
-vim.keymap.set("n", "<leader>i", function()
-    local current_buf = vim.api.nvim_get_current_buf()
-    vim.cmd "tabnew"
-    vim.api.nvim_set_current_buf(current_buf)
-    vim.cmd "Gdiffsplit"
+local neogit = require "neogit"
+neogit.setup {
+  disable_signs = true,
+}
+
+-- neogit
+vim.keymap.set("n", "<leader>gp", h.keys.vim_cmd_cb "!git push origin HEAD")
+vim.keymap.set("n", "<leader>i", h.keys.vim_cmd_cb "DiffviewOpen --selected-file=%",
+  { desc = "Open the dIff for all buffers", })
+vim.keymap.set("n", "<leader>w", function()
+    neogit.open { kind = "floating", }
   end,
-  { desc = "Open the dIff for the current buffer", })
-vim.keymap.set("n", "<leader>w", h.keys.vim_cmd_cb "Gedit :",
   { desc = "Open the fugitive status in the current tab", })
 
 -- diffview
 vim.keymap.set("n", "<leader>gh", h.keys.vim_cmd_cb "DiffviewFileHistory %", { desc = "", })
-vim.keymap.set("n", "<leader>gd", h.keys.vim_cmd_cb "DiffviewOpen", { desc = "Open the diff for all buffers", })

@@ -41,7 +41,7 @@ bootstrap_paq {
   "MagicDuck/grug-far.nvim",
   -- file_tree
   "stevearc/oil.nvim",
-  "echasnovski/mini.icons",
+  "nvim-tree/nvim-web-devicons",
   "karb94/neoscroll.nvim",
   -- fzf
   "ibhagwan/fzf-lua",
@@ -71,6 +71,8 @@ bootstrap_paq {
   "JoosepAlviste/nvim-ts-context-commentstring",
   -- version_control
   "tpope/vim-fugitive",
+  "echasnovski/mini.diff",
+  "NeogitOrg/neogit",
   "lewis6991/gitsigns.nvim",
   "sindrets/diffview.nvim",
   -- wild_menu
