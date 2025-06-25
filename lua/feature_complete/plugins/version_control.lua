@@ -72,14 +72,14 @@ gitsigns.setup {
 
 -- gitsigns
 -- https://github.com/lewis6991/gitsigns.nvim#-keymaps
-vim.keymap.set("n", ")", function()
+vim.keymap.set("n", "]g", function()
   if vim.wo.diff then
     vim.cmd.normal { "]c", bang = true, }
   else
     gitsigns.nav_hunk "next"
   end
 end, { desc = "Go to the next git hunk", })
-vim.keymap.set("n", "(", function()
+vim.keymap.set("n", "[g", function()
   if vim.wo.diff then
     vim.cmd.normal { "[c", bang = true, }
   else
