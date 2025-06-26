@@ -69,7 +69,7 @@ bootstrap_paq {
   "windwp/nvim-ts-autotag",
   "JoosepAlviste/nvim-ts-context-commentstring",
   -- version_control
-  "NeogitOrg/neogit",
+  "tpope/vim-fugitive",
   "lewis6991/gitsigns.nvim",
   "sindrets/diffview.nvim",
   -- wild_menu
