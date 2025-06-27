@@ -3,7 +3,7 @@ local snacks = require "snacks"
 
 vim.keymap.set("n", "<C-f>", h.keys.vim_cmd_cb "Oil", { desc = "Toggle oil", })
 vim.keymap.set("n", "-", h.keys.vim_cmd_cb "Oil", { desc = "Toggle oil", })
-vim.keymap.set("n", "<leader>i", snacks.explorer.reveal, { desc = "Open snacks explorer", })
+vim.keymap.set("n", "<leader>ti", snacks.explorer.reveal, { desc = "Open snacks explorer", })
 
 require "oil".setup {
   default_file_explorer = true,
