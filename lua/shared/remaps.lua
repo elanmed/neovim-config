@@ -176,7 +176,6 @@ vim.keymap.set("n", "z?", function()
   h.notify.doing "common fold commands: z{t,T,c,C,o,O,R(open all folds),M(close all folds)}"
 end, { desc = "Toggle fold", })
 
-vim.keymap.set("n", "<leader>i", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>w", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>z", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>,", "<nop>", { desc = "TODO find a remap", })
