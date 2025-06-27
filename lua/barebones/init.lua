@@ -4,6 +4,8 @@ local h = require "helpers"
 -- vim.opt.wildchar = ("<C-n>"):byte()
 vim.cmd "set wildchar=<C-n>"
 
+vim.opt.scrolloff = 999
+
 -- removing banner causes a bug where the terminal flickers
 -- vim.g.netrw_banner = 0 -- removes banner at the top
 -- vim.g.netrw_liststyle = 3 -- tree view
