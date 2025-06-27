@@ -36,14 +36,14 @@ diffview.setup {
       { "n", "<leader>go", actions.conflict_choose_all "ours", { desc = "Use the OURS version of a conflict for the whole file", }, },
       { "n", "<leader>gt", actions.conflict_choose_all "theirs", { desc = "Use the THEIRS version of a conflict for the whole file", }, },
       { "n", "<leader>ga", actions.conflict_choose_all "all", { desc = "Use all the versions of a conflict for the whole file", }, },
-      { "n", "-", actions.toggle_stage_entry, { desc = "Stage / unstage the selected entry", }, },
+      { "n", "s", actions.toggle_stage_entry, { desc = "Stage / unstage the selected entry", }, },
       { "n", "o", actions.goto_file_edit, { desc = "Open the file in the previous tabpage", }, },
       { "n", "<leader>e", actions.refresh_files, { desc = "Refresh files", }, },
 
       { "n", "<cr>", actions.select_entry, { desc = "Open the diff for the selected entry", }, },
       { "n", "<C-n>", actions.select_next_entry, { desc = "Open the diff for the next file", }, },
-      { "n", "<tab>", actions.select_next_entry, { desc = "Open the diff for the next file", }, },
       { "n", "<C-p>", actions.select_prev_entry, { desc = "Open the diff for the previous file", }, },
+      { "n", "<tab>", actions.select_next_entry, { desc = "Open the diff for the next file", }, },
       { "n", "<s-tab>", actions.select_prev_entry, { desc = "Open the diff for the previous file", }, },
       { "n", "gg", actions.select_first_entry, { desc = "Open the diff for the next file", }, },
       { "n", "G", actions.select_last_entry, { desc = "Open the diff for the previous file", }, },
@@ -51,8 +51,8 @@ diffview.setup {
     file_history_panel = {
       { "n", "<cr>", actions.select_entry, { desc = "Open the diff for the selected entry", }, },
       { "n", "<C-n>", actions.select_next_entry, { desc = "Open the diff for the next file", }, },
-      { "n", "<tab>", actions.select_next_entry, { desc = "Open the diff for the next file", }, },
       { "n", "<C-p>", actions.select_prev_entry, { desc = "Open the diff for the previous file", }, },
+      { "n", "<tab>", actions.select_next_entry, { desc = "Open the diff for the next file", }, },
       { "n", "<s-tab>", actions.select_prev_entry, { desc = "Open the diff for the previous file", }, },
       { "n", "gg", actions.select_first_entry, { desc = "Open the diff for the next file", }, },
       { "n", "G", actions.select_last_entry, { desc = "Open the diff for the previous file", }, },
@@ -102,22 +102,6 @@ vim.keymap.set("n", "<leader>gw", gitsigns.preview_hunk, { desc = "Preview the c
 vim.keymap.set("n", "<leader>gl", gitsigns.toggle_current_line_blame,
   { desc = "Toggle git blame for the current line", })
 
-local neogit = require "neogit"
-neogit.setup {
-  disable_signs = true,
-}
-
--- fugitive
-vim.keymap.set("n", "<leader>i", function()
-    local current_buf = vim.api.nvim_get_current_buf()
-    vim.cmd "tabnew"
-    vim.api.nvim_set_current_buf(current_buf)
-    vim.cmd "Gdiffsplit"
-  end,
-  { desc = "Open the dIff for the current buffer", })
-vim.keymap.set("n", "<leader>w", h.keys.vim_cmd_cb "Gedit :",
-  { desc = "Open the fugitive status in the current tab", })
-
 -- diffview
 vim.keymap.set("n", "<leader>gh", h.keys.vim_cmd_cb "DiffviewFileHistory %", { desc = "", })
-vim.keymap.set("n", "<leader>gd", h.keys.vim_cmd_cb "DiffviewOpen", { desc = "", })
+vim.keymap.set("n", "<leader>gd", h.keys.vim_cmd_cb "DiffviewOpen --selected-file=%", { desc = "", })
