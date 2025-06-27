@@ -36,6 +36,18 @@ tbl.contains_key = function(table, target_key)
   return false
 end
 
+--- @param predicate fun(curr_item, idx: number): boolean
+--- @param list table
+tbl.filter = function(predicate, list)
+  local filtered_list = {}
+  for index, val in pairs(list) do
+    if (predicate(val, index)) then -- vim.tbl_filter doesn't pass the index
+      table.insert(filtered_list, val)
+    end
+  end
+  return filtered_list
+end
+
 os.is_linux = function()
   return vim.fn.has "macunix" == 0
 end

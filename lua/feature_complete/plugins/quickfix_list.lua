@@ -20,18 +20,6 @@ require "quickfix-preview".setup {
   },
 }
 
---- @param predicate fun(curr_item, idx: number): boolean
---- @param list table
-local function filter(predicate, list)
-  local filtered_list = {}
-  for index, val in pairs(list) do
-    if (predicate(val, index)) then -- vim.tbl_filter doesn't pass the index
-      table.insert(filtered_list, val)
-    end
-  end
-  return filtered_list
-end
-
 vim.api.nvim_create_autocmd({ "FileType", }, {
   callback = function()
     if vim.bo.buftype ~= "quickfix" then return end
@@ -47,7 +35,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
       local qf_list = vim.fn.getqflist()
       local is_last_line = curr_line == vim.tbl_count(qf_list)
 
-      local filtered_qf_list = filter(function(_, idx)
+      local filtered_qf_list = h.tbl.filter(function(_, idx)
         return idx ~= curr_line
       end, qf_list)
 
