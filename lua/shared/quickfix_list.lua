@@ -90,6 +90,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
 
     vim.keymap.set("n", "<Esc>", h.keys.vim_cmd_cb "cclose", { buffer = true, })
     vim.keymap.set("n", "<C-c>", h.keys.vim_cmd_cb "cclose", { buffer = true, })
+    vim.keymap.set("n", "q", h.keys.vim_cmd_cb "cclose", { buffer = true, nowait = true, })
 
     vim.keymap.set("n", ">", function()
       local success = pcall(vim.cmd, "cnewer")
