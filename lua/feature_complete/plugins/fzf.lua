@@ -88,6 +88,12 @@ vim.keymap.set("n", "<leader>i", without_preview_cb(git_status),
   { desc = "Search git hunks with fzf", })
 vim.keymap.set("n", "<leader>b", without_preview_cb(fzf_lua.buffers),
   { desc = "Search currently open buffers with fzf", })
+vim.keymap.set("n", "<leader>lt", without_preview_cb(fzf_lua.tabs),
+  { desc = "Search currently open tabs with fzf", })
+vim.keymap.set("n", "<leader>lq", with_preview_cb(fzf_lua.quickfix),
+  { desc = "Search the current qf list with fzf", })
+vim.keymap.set("n", "<leader>lf", with_preview_cb(fzf_lua.quickfix_stack),
+  { desc = "Search the qf lists with fzf", })
 
 --- @param initial_query string
 local function live_grep_with_args(initial_query)
