@@ -88,11 +88,6 @@ vim.keymap.set("n", "<leader>i", without_preview_cb(git_status),
   { desc = "Search git hunks with fzf", })
 vim.keymap.set("n", "<leader>b", without_preview_cb(fzf_lua.buffers),
   { desc = "Search currently open buffers with fzf", })
-vim.keymap.set("n", "<leader>f",
-  function()
-    local opts = vim.tbl_deep_extend("error", { search = "", }, with_preview_opts)
-    fzf_lua.grep(opts)
-  end, { desc = "Live grep the entire project", })
 
 --- @param initial_query string
 local function live_grep_with_args(initial_query)
