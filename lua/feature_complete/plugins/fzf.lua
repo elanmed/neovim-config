@@ -70,7 +70,7 @@ vim.keymap.set("n", "<leader>h", with_preview_cb(fzf_lua.helptags), { desc = "Se
 vim.keymap.set("n", "<leader>m", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
 vim.keymap.set("n", "<leader>l;", without_preview_cb(fzf_lua.command_history),
   { desc = "Search search history with fzf", })
-vim.keymap.set("n", "<leader>i", without_preview_cb(fzf_lua.git_hunks),
+vim.keymap.set("n", "<leader>i", without_preview_cb(fzf_lua.git_status),
   { desc = "Search git hunks with fzf", })
 vim.keymap.set("n", "<leader>b", without_preview_cb(fzf_lua.buffers),
   { desc = "Search currently open buffers with fzf", })
