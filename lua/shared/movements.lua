@@ -19,7 +19,7 @@ vim.keymap.set("n", "mg", function()
     local is_buffer_mark_set = not is_buffer_mark_unset(letter)
 
     if is_buffer_mark_set then
-      h.notify.warn("Mark " .. letter .. " is already set for this buffer!")
+      h.notify.error("Mark " .. letter .. " is already set for this buffer!")
       return
     end
   end
@@ -53,7 +53,7 @@ vim.keymap.set("n", "dmg", function()
       return
     end
   end
-  h.notify.warn "No global mark in the buffer"
+  h.notify.error "No global mark in the buffer"
 end, { desc = "Delete a global mark for the buffer", })
 
 vim.keymap.set("n", "dmG", function()

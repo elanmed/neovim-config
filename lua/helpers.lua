@@ -79,7 +79,6 @@ end
 local function _notify(message, level)
   local level_to_hl_group = {
     error = "NotifyError",
-    warn = "NotifyWarning",
     info = "NotifyDoing",
     toggle_on = "NotifyToggleOn",
     toggle_off = "NotifyToggleOff",
@@ -93,11 +92,6 @@ end
 --- @param message string
 notify.doing = function(message)
   _notify(message, "info")
-end
-
---- @param message string
-notify.warn = function(message)
-  _notify(message, "warn")
 end
 
 --- @param message string

@@ -95,14 +95,14 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
     vim.keymap.set("n", ">", function()
       local success = pcall(vim.cmd, "cnewer")
       if not success then
-        h.notify.warn "No newer list!"
+        h.notify.error "No newer list!"
       end
     end, { buffer = true, desc = "Go to the next quickfix list", })
 
     vim.keymap.set("n", "<", function()
       local success = pcall(vim.cmd, "colder")
       if not success then
-        h.notify.warn "No older list!"
+        h.notify.error "No older list!"
       end
     end, { buffer = true, desc = "Go to the pre quickfix list", })
   end,

@@ -129,7 +129,7 @@ local function get_stripped_filename()
 
   local start_idx = filepath:find "wf_modules"
   if not start_idx then
-    h.notify.warn "`wf_modules` not found in the filepath!"
+    h.notify.error "`wf_modules` not found in the filepath!"
     return nil
   end
   local stripped_start = filepath:sub(start_idx)

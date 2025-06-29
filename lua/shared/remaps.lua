@@ -5,7 +5,7 @@ vim.keymap.set({ "n", "v", }, "<C-t>", function()
   h.notify.error "snippets only supported in insert mode!"
 end)
 vim.keymap.set("n", "q:", function()
-  h.notify.warn "Use :q to quit or q? to open the command-line window instead!"
+  h.notify.error "Use :q to quit or q? to open the command-line window instead!"
 end, { desc = "Prevent accidentally opening the command-line window", })
 
 vim.keymap.set("n", "G", function() return "G" .. "zz" end, { expr = true, })

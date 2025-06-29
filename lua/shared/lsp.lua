@@ -91,7 +91,7 @@ local function next_prev_diagnostic(direction, severity)
   local diagnostics = vim.diagnostic.get(h.curr.buffer, severity and { severity = severity, } or nil)
 
   if vim.tbl_count(diagnostics) == 0 then
-    h.notify.warn(string.format("No %s diagnostics", vim.diagnostic.severity[severity] or "ANY"))
+    h.notify.error(string.format("No %s diagnostics", vim.diagnostic.severity[severity] or "ANY"))
     return
   end
 

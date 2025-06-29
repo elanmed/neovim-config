@@ -48,7 +48,6 @@ vim.api.nvim_set_hl(h.curr.namespace, "FlashLabel", { link = "IncSearch", })
 vim.api.nvim_set_hl(h.curr.namespace, "SnacksIndent", { fg = M.grey, })
 vim.api.nvim_set_hl(h.curr.namespace, "SnacksIndentScope", { fg = M.light_grey, })
 
-vim.api.nvim_set_hl(h.curr.namespace, "NotifyWarning", { fg = M.yellow, })
 vim.api.nvim_set_hl(h.curr.namespace, "NotifyError", { fg = M.red, })
 vim.api.nvim_set_hl(h.curr.namespace, "NotifyDoing", { fg = M.orange, })
 vim.api.nvim_set_hl(h.curr.namespace, "NotifyToggleOn", { fg = M.green, })
