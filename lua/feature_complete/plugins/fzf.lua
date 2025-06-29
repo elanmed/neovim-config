@@ -2,6 +2,11 @@ local h = require "helpers"
 local grug = require "grug-far"
 local fzf_lua = require "fzf-lua"
 
+local guicursor = vim.opt.guicursor:get()
+-- :h cursor-blinking
+table.insert(guicursor, "a:blinkon0")
+vim.opt.guicursor = guicursor
+
 local ignore_dirs = { "node_modules", ".git", "dist", }
 local fd_cmd = "fd --type f"
 for _, ignore_dir in pairs(ignore_dirs) do
