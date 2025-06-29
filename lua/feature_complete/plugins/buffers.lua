@@ -9,7 +9,7 @@ bufferline.setup {
       local buf_name = vim.fn.bufname(buf_number)
       if buf_name == "" then return false end
 
-      local excluded_filetypes = { "grug-far", "fugitive", }
+      local excluded_filetypes = { "grug-far", }
       local filetype = vim.api.nvim_get_option_value("filetype", { buf = buf_number, })
       if vim.tbl_contains(excluded_filetypes, filetype) then
         return false
