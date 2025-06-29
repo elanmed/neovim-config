@@ -37,7 +37,7 @@ blink.setup {
     },
   },
   sources = {
-    default = { "lsp", "path", "buffer", },
+    default = { "buffer", "lsp", "path", },
   },
   signature = {
     enabled = true,
