@@ -48,7 +48,6 @@ require "nvim-surround".setup {
   },
 }
 
-
 vim.keymap.set({ "n", "v", "i", }, "<C-u>", function()
   if vim.fn.line "." == vim.fn.line "$" then
     h.keys.send_keys("n", "M")
@@ -66,7 +65,6 @@ end)
 vim.keymap.set("n", "z.", function()
   neoscroll.zz { half_win_duration = scroll_duration, }
 end)
-
 
 flash.setup {
   modes = {
