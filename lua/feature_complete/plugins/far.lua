@@ -9,7 +9,7 @@ vim.keymap.set("n", "<leader>r", function()
   else
     grug.open { startInInsertMode = false, instanceName = default_instance, }
   end
-  vim.cmd "vertical resize 135%"
+  vim.cmd "wincmd ="
   h.notify.doing "Common flags: --case-sensitive (default), --ignore-case, --word-regexp"
 end, { desc = "Open the grug-far ui", })
 

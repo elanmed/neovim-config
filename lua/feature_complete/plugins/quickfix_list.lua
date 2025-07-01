@@ -1,5 +1,3 @@
-local h = require "helpers"
-
 require "quickfix-preview".setup {
   pedit_prefix = "vertical rightbelow",
   pedit_postfix = "| wincmd =",

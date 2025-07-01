@@ -62,13 +62,13 @@ vim.keymap.set("n", "<leader>pr", function()
   local delete = "d"
   local paste_before_cursor = "P"
   return select_inner_word .. empty_register .. delete .. paste_before_cursor
-end, { expr = true, desc = "pastE without overwriting the default register", })
+end, { expr = true, desc = "Paste without overwriting the default register", })
 vim.keymap.set("v", "<leader>pr", function()
   local empty_register = [["_]]
   local delete = "d"
   local paste_before_cursor = "P"
   return empty_register .. delete .. paste_before_cursor
-end, { expr = true, desc = "pastE without overwriting the default register", })
+end, { expr = true, desc = "Paste without overwriting the default register", })
 vim.keymap.set("n", "<leader>pj", h.keys.vim_cmd_cb "pu", { desc = "Paste on the line below", })
 vim.keymap.set("n", "<leader>pk", h.keys.vim_cmd_cb "pu!", { desc = "Paste on the line above", })
 vim.keymap.set("i", "<C-_>", "<C-o>gcc", { remap = true, })

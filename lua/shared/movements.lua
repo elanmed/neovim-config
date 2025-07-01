@@ -1,15 +1,15 @@
 local h = require "helpers"
 
---- @param mark string
-local function is_global_mark_unset(mark)
-  local maybe_mark = vim.api.nvim_get_mark(mark, {})
-  return maybe_mark[1] == 0 and maybe_mark[2] == 0 and maybe_mark[3] == 0 and maybe_mark[4] == ""
+--- @param mark_name string
+local function is_global_mark_unset(mark_name)
+  local mark = vim.api.nvim_get_mark(mark_name, {})
+  return mark[1] == 0 and mark[2] == 0 and mark[3] == 0 and mark[4] == ""
 end
 
---- @param mark string
-local function is_buffer_mark_unset(mark)
-  local maybe_mark = vim.api.nvim_buf_get_mark(h.curr.buffer, mark)
-  return maybe_mark[1] == 0 and maybe_mark[2] == 0
+--- @param mark_name string
+local function is_buffer_mark_unset(mark_name)
+  local mark = vim.api.nvim_buf_get_mark(h.curr.buffer, mark_name)
+  return mark[1] == 0 and mark[2] == 0
 end
 
 local global_marks = ("abcdefghijklmnopqrstuvwxyz"):upper()
