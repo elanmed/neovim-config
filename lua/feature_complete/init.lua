@@ -70,7 +70,6 @@ bootstrap_paq {
   "JoosepAlviste/nvim-ts-context-commentstring",
   -- version_control
   "lewis6991/gitsigns.nvim",
-  "sindrets/diffview.nvim",
   -- wild_menu
   "gelguy/wilder.nvim",
   "romgrk/fzy-lua-native",
