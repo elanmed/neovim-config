@@ -82,7 +82,7 @@ end
 
 vim.keymap.set("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
 vim.keymap.set("n", "<leader>h", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with fzf", })
-vim.keymap.set("n", "<leader>m", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
+vim.keymap.set("n", "<leader>m", without_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
 vim.keymap.set("n", "<c-p>", function()
   local opts = vim.tbl_extend("error", without_preview_opts, { file_icons = true, })
   fzf_lua.files(opts)
