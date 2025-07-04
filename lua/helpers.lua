@@ -1,4 +1,3 @@
-local remaps = {}
 local keys = {}
 local tbl = {}
 local os = {}
@@ -129,4 +128,4 @@ local require_dir = function(dir)
   end
 end
 
-return { keys = keys, tbl = tbl, remaps = remaps, curr = curr, os = os, dev = dev, notify = notify, require_dir = require_dir, }
+return { keys = keys, tbl = tbl, curr = curr, os = os, dev = dev, notify = notify, require_dir = require_dir, }

@@ -60,7 +60,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     -- :h vim.lsp.foldexpr()
     if client:supports_method "textDocument/foldingRange" then
       local win = vim.api.nvim_get_current_win()
-      vim.wo[win][0].foldexpr = "v:lua.vim.lsp.foldexpr()"
+      vim.wo[win][h.curr.buffer].foldexpr = "v:lua.vim.lsp.foldexpr()"
     end
   end,
 })
@@ -127,7 +127,7 @@ vim.lsp.config("bashls", {
 })
 
 vim.lsp.enable {
-  "ruby-lsp",
+  "ruby_lsp",
   "bashls",
   "jsonls",
   "lua_ls",
