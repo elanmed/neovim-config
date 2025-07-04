@@ -8,7 +8,7 @@ end
 
 --- @param mark_name string
 local function is_buffer_mark_unset(mark_name)
-  local mark = vim.api.nvim_buf_get_mark(h.curr.buffer, mark_name)
+  local mark = vim.api.nvim_buf_get_mark(0, mark_name)
   return mark[1] == 0 and mark[2] == 0
 end
 
@@ -39,7 +39,7 @@ vim.keymap.set("n", "mg", function()
 
   local line_one_indexed = 1
   local col_zero_indexed = 0
-  vim.api.nvim_buf_set_mark(h.curr.buffer, next_avail_mark, line_one_indexed, col_zero_indexed, {})
+  vim.api.nvim_buf_set_mark(0, next_avail_mark, line_one_indexed, col_zero_indexed, {})
   h.notify.doing("Set global mark " .. next_avail_mark)
 end, { desc = "Set a global mark for the buffer", })
 

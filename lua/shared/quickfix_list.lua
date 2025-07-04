@@ -67,7 +67,7 @@ function _G.GetQuickfixTextFunc()
 
     local misc_padding = 10
     local win_width = (
-      vim.api.nvim_win_get_width(h.curr.window) / (has_preview_win() and 1 or 2)
+      vim.api.nvim_win_get_width(0) / (has_preview_win() and 1 or 2)
     ) - misc_padding
     if #formatted_item > win_width then
       formatted_item = formatted_item:sub(1, win_width)
@@ -84,8 +84,8 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
 
     -- TODO: why does this require vim.schedule, and why can't it be in colorscheme.lua
     vim.schedule(function()
-      vim.api.nvim_set_hl(h.curr.namespace, "qfLineNr", {})
-      vim.api.nvim_set_hl(h.curr.namespace, "qfText", {})
+      vim.api.nvim_set_hl(0, "qfLineNr", {})
+      vim.api.nvim_set_hl(0, "qfText", {})
     end)
 
     vim.keymap.set("n", "<Esc>", h.keys.vim_cmd_cb "cclose", { buffer = true, })

@@ -3,7 +3,7 @@ local flash = require "flash"
 local marks = require "marks"
 
 local function get_bottom_half_start_line()
-  local height = vim.api.nvim_win_get_height(h.curr.window)
+  local height = vim.api.nvim_win_get_height(0)
   local bottom_half_start_line = vim.fn.line "$" - math.floor(height / 2)
   return bottom_half_start_line
 end

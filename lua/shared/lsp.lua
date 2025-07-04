@@ -43,14 +43,14 @@ vim.api.nvim_create_autocmd("LspAttach", {
     if client:supports_method "textDocument/documentHighlight" then
       vim.opt.updatetime = 100 -- how long until the cursor events fire
       vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
-        buffer = h.curr.buffer,
+        buffer = 0,
         callback = function()
           vim.lsp.buf.document_highlight()
         end,
       })
 
       vim.api.nvim_create_autocmd({ "CursorMoved", }, {
-        buffer = h.curr.buffer,
+        buffer = 0,
         callback = function()
           vim.lsp.buf.clear_references()
         end,
@@ -60,7 +60,7 @@ vim.api.nvim_create_autocmd("LspAttach", {
     -- :h vim.lsp.foldexpr()
     if client:supports_method "textDocument/foldingRange" then
       local win = vim.api.nvim_get_current_win()
-      vim.wo[win][h.curr.buffer].foldexpr = "v:lua.vim.lsp.foldexpr()"
+      vim.wo[win][0].foldexpr = "v:lua.vim.lsp.foldexpr()"
     end
   end,
 })
@@ -88,7 +88,7 @@ end)
 --- @param direction "next" | "prev"
 --- @param severity? vim.diagnostic.Severity
 local function next_prev_diagnostic(direction, severity)
-  local diagnostics = vim.diagnostic.get(h.curr.buffer, severity and { severity = severity, } or nil)
+  local diagnostics = vim.diagnostic.get(0, severity and { severity = severity, } or nil)
 
   if vim.tbl_count(diagnostics) == 0 then
     h.notify.error(string.format("No %s diagnostics", vim.diagnostic.severity[severity] or "ANY"))

@@ -4,9 +4,6 @@ local os = {}
 local dev = {}
 local notify = {}
 
--- sugar to avoid magic 0s
-local curr = { buffer = 0, window = 0, namespace = 0, }
-
 --- @param vim_cmd string
 --- @return function
 keys.vim_cmd_cb = function(vim_cmd)
@@ -128,4 +125,4 @@ local require_dir = function(dir)
   end
 end
 
-return { keys = keys, tbl = tbl, curr = curr, os = os, dev = dev, notify = notify, require_dir = require_dir, }
+return { keys = keys, tbl = tbl, os = os, dev = dev, notify = notify, require_dir = require_dir, }

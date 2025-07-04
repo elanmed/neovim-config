@@ -35,22 +35,22 @@ local M = {
   brown = colors.base0F,
 }
 
-vim.api.nvim_set_hl(h.curr.namespace, "MatchParen", { fg = nil, bg = M.grey, })
-vim.api.nvim_set_hl(h.curr.namespace, "LspReferenceRead", { bold = true, })
-vim.api.nvim_set_hl(h.curr.namespace, "LspReferenceText", { bold = true, })
-vim.api.nvim_set_hl(h.curr.namespace, "LspReferenceWrite", { bold = true, })
+vim.api.nvim_set_hl(0, "MatchParen", { fg = nil, bg = M.grey, })
+vim.api.nvim_set_hl(0, "LspReferenceRead", { bold = true, })
+vim.api.nvim_set_hl(0, "LspReferenceText", { bold = true, })
+vim.api.nvim_set_hl(0, "LspReferenceWrite", { bold = true, })
 
-vim.api.nvim_set_hl(h.curr.namespace, "WilderAccent", { fg = M.orange, })
-vim.api.nvim_set_hl(h.curr.namespace, "WildMenu", { fg = M.yellow, underline = true, bold = true, })
+vim.api.nvim_set_hl(0, "WilderAccent", { fg = M.orange, })
+vim.api.nvim_set_hl(0, "WildMenu", { fg = M.yellow, underline = true, bold = true, })
 
-vim.api.nvim_set_hl(h.curr.namespace, "FlashLabel", { link = "IncSearch", })
+vim.api.nvim_set_hl(0, "FlashLabel", { link = "IncSearch", })
 
-vim.api.nvim_set_hl(h.curr.namespace, "SnacksIndent", { fg = M.grey, })
-vim.api.nvim_set_hl(h.curr.namespace, "SnacksIndentScope", { fg = M.light_grey, })
+vim.api.nvim_set_hl(0, "SnacksIndent", { fg = M.grey, })
+vim.api.nvim_set_hl(0, "SnacksIndentScope", { fg = M.light_grey, })
 
-vim.api.nvim_set_hl(h.curr.namespace, "NotifyError", { fg = M.red, })
-vim.api.nvim_set_hl(h.curr.namespace, "NotifyDoing", { fg = M.orange, })
-vim.api.nvim_set_hl(h.curr.namespace, "NotifyToggleOn", { fg = M.green, })
-vim.api.nvim_set_hl(h.curr.namespace, "NotifyToggleOff", { fg = M.purple, })
+vim.api.nvim_set_hl(0, "NotifyError", { fg = M.red, })
+vim.api.nvim_set_hl(0, "NotifyDoing", { fg = M.orange, })
+vim.api.nvim_set_hl(0, "NotifyToggleOn", { fg = M.green, })
+vim.api.nvim_set_hl(0, "NotifyToggleOff", { fg = M.purple, })
 
 return M
