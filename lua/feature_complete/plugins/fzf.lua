@@ -68,13 +68,71 @@ local function without_preview_cb(cb)
   end
 end
 
+--- @param str string
+local function starts_with(str, start)
+  if #start > #str then return false end
+  return str:sub(1, #start) == start
+end
+
+local function old_and_all_files(opts)
+  local Job = require "plenary.job"
+  local cwd = vim.fn.getcwd()
+
+  local contents = function(fzf_cb)
+    local seen = {}
+
+    local function add_entry(file, co)
+      if seen[file] then return end
+      seen[file] = true
+
+      local entry = fzf_lua.make_entry.file(file, { file_icons = true, color_icons = true, })
+      if not entry then return end
+      fzf_cb(entry, function(err)
+        coroutine.resume(co)
+        if err then
+          fzf_cb(nil)
+        end
+      end)
+      coroutine.yield()
+    end
+
+    coroutine.wrap(function()
+      local co = coroutine.running()
+
+      for _, oldfile in ipairs(vim.v.oldfiles) do
+        local readable = vim.fn.filereadable(oldfile) == 1
+        if readable and starts_with(oldfile, cwd) then
+          local trailing_slash_offset = 1
+          add_entry(oldfile:sub(#cwd + 1 + trailing_slash_offset), co)
+        end
+      end
+
+      Job:new {
+        command = "fd",
+        args = { "--type", "f", },
+        on_stdout = function(_, line)
+          add_entry(line, co)
+        end,
+        on_exit = function()
+          fzf_cb(nil)
+        end,
+      }:start()
+    end)()
+  end
+
+  local fzf_exec_opts = {
+    actions = fzf_lua.defaults.actions.files,
+    fzf_opts = { ["--multi"] = true, },
+    previewer = "bat_native",
+  }
+  opts = vim.tbl_extend("error", fzf_exec_opts, opts or {})
+  fzf_lua.fzf_exec(contents, opts)
+end
+
 vim.keymap.set("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
 vim.keymap.set("n", "<leader>h", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with fzf", })
-vim.keymap.set("n", "<leader>m", without_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
-vim.keymap.set("n", "<c-p>", function()
-  local opts = vim.tbl_extend("error", without_preview_opts, { file_icons = true, })
-  fzf_lua.files(opts)
-end, { desc = "Search files with fzf", })
+vim.keymap.set("n", "<leader>m", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
+vim.keymap.set("n", "<c-p>", without_preview_cb(old_and_all_files), { desc = "Search files with fzf", })
 vim.keymap.set("n", "<leader>l;", without_preview_cb(fzf_lua.command_history),
   { desc = "Search search history with fzf", })
 vim.keymap.set("n", "<leader>i", function()
