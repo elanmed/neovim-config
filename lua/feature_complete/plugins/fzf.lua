@@ -68,50 +68,50 @@ local function without_preview_cb(cb)
   end
 end
 
---- @param str string
-local function starts_with(str, start)
-  if #start > #str then return false end
-  return str:sub(1, #start) == start
-end
+
+local Job = require "plenary.job"
 
 local function old_and_all_files(opts)
-  local Job = require "plenary.job"
-  local cwd = vim.fn.getcwd()
+  opts = opts or {}
+  local cwd = opts.cwd or vim.fn.getcwd()
 
   local contents = function(fzf_cb)
     local seen = {}
 
-    local function add_entry(file, co)
-      if seen[file] then return end
-      seen[file] = true
-
-      local entry = fzf_lua.make_entry.file(file, { file_icons = true, color_icons = true, })
-      if not entry then return end
-      fzf_cb(entry, function(err)
-        coroutine.resume(co)
-        if err then
-          fzf_cb(nil)
-        end
-      end)
-      coroutine.yield()
-    end
-
+    -- based on https://github.com/ibhagwan/fzf-lua/blob/main/lua/fzf-lua/providers/oldfiles.lua#L47
     coroutine.wrap(function()
       local co = coroutine.running()
 
       for _, oldfile in ipairs(vim.v.oldfiles) do
+        -- TODO: fzf_lua.oldfiles has more robust checks
+        -- https://github.com/ibhagwan/fzf-lua/blob/main/lua/fzf-lua/providers/oldfiles.lua#L23
         local readable = vim.fn.filereadable(oldfile) == 1
-        if readable and starts_with(oldfile, cwd) then
-          local trailing_slash_offset = 1
-          add_entry(oldfile:sub(#cwd + 1 + trailing_slash_offset), co)
+
+        if readable and vim.startswith(oldfile, cwd) then
+          local relative_file = oldfile:sub(#cwd + 2) -- remove leading /
+          if seen[relative_file] then return end
+          seen[relative_file] = true
+
+          local entry = fzf_lua.make_entry.file(relative_file, opts)
+          if not entry then return end
+          fzf_cb(entry, function(err)
+            coroutine.resume(co)
+            if err then fzf_cb(nil) end
+          end)
+          coroutine.yield()
         end
       end
 
       Job:new {
         command = "fd",
         args = { "--type", "f", },
-        on_stdout = function(_, line)
-          add_entry(line, co)
+        on_stdout = function(err, file)
+          if err then return end
+          if seen[file] then return end
+          seen[file] = true
+          local entry = fzf_lua.make_entry.file(file, opts)
+
+          fzf_cb(entry)
         end,
         on_exit = function()
           fzf_cb(nil)
@@ -120,13 +120,9 @@ local function old_and_all_files(opts)
     end)()
   end
 
-  local fzf_exec_opts = {
-    actions = fzf_lua.defaults.actions.files,
-    fzf_opts = { ["--multi"] = true, },
-    previewer = "bat_native",
-  }
-  opts = vim.tbl_extend("error", fzf_exec_opts, opts or {})
-  fzf_lua.fzf_exec(contents, opts)
+  local default_opts = { actions = fzf_lua.defaults.actions.files, fzf_opts = { ["--multi"] = true, }, }
+  local fzf_exec_opts = vim.tbl_extend("force", default_opts, opts)
+  fzf_lua.fzf_exec(contents, fzf_exec_opts)
 end
 
 vim.keymap.set("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
