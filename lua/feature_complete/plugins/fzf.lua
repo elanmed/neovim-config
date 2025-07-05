@@ -68,18 +68,6 @@ local function without_preview_cb(cb)
   end
 end
 
-local function git_status(arg_opts)
-  local git_status_opts = {
-    fn_transform = function(x)
-      return require "fzf-lua".make_entry.file(x, { file_icons = true, color_icons = true, })
-    end,
-  }
-  local opts = vim.tbl_extend("error", git_status_opts, arg_opts)
-
-  -- https://github.com/ibhagwan/fzf-lua/blob/1e5933eef1a25d790b5f800b43d6eb841478247a/lua/fzf-lua/defaults.lua#L348-L349
-  fzf_lua.fzf_exec("git -c color.status=false --no-optional-locks status --porcelain=v1", opts)
-end
-
 vim.keymap.set("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
 vim.keymap.set("n", "<leader>h", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with fzf", })
 vim.keymap.set("n", "<leader>m", without_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
@@ -89,7 +77,12 @@ vim.keymap.set("n", "<c-p>", function()
 end, { desc = "Search files with fzf", })
 vim.keymap.set("n", "<leader>l;", without_preview_cb(fzf_lua.command_history),
   { desc = "Search search history with fzf", })
-vim.keymap.set("n", "<leader>i", without_preview_cb(git_status),
+vim.keymap.set("n", "<leader>i", function()
+    local opts = vim.tbl_extend("error", without_preview_opts, {
+      actions = { ["right"] = false, ["left"] = false, ["ctrl-x"] = false, },
+    })
+    fzf_lua.git_status(opts)
+  end,
   { desc = "Search git hunks with fzf", })
 vim.keymap.set("n", "<leader>b", without_preview_cb(fzf_lua.buffers),
   { desc = "Search currently open buffers with fzf", })
