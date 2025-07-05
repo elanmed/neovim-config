@@ -25,25 +25,7 @@ vim.keymap.set("n", "<leader>a", ":grep<space>")
 vim.keymap.set("n", "<leader>h", ":help<space>")
 vim.keymap.set("n", "<leader>m", h.keys.vim_cmd_cb "marks")
 vim.keymap.set("n", "<leader>l;", h.keys.vim_cmd_cb "history")
-vim.keymap.set("n", "<leader>b", function()
-  local buffers = vim.api.nvim_list_bufs()
-
-  local items = {}
-  for _, buf in ipairs(buffers) do
-    if vim.api.nvim_buf_is_loaded(buf) then
-      local name = vim.api.nvim_buf_get_name(buf)
-      if name ~= "" and name ~= "[No Name]" then
-        table.insert(items, { buf = buf, name = name, })
-      end
-    end
-  end
-
-  vim.ui.select(
-    items,
-    { prompt = "Select buffer:", format_item = function(item) return item.name end, },
-    function(choice) if choice then vim.api.nvim_set_current_buf(choice.buf) end end
-  )
-end)
+vim.keymap.set("n", "<leader>b", ":b<space>")
 
 vim.keymap.set("c", "/", function()
   if vim.fn.wildmenumode() == 1 then
