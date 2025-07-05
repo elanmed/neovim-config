@@ -1,6 +1,7 @@
 local h = require "helpers"
 local grug = require "grug-far"
 local fzf_lua = require "fzf-lua"
+local Job = require "plenary.job"
 
 local guicursor = vim.opt.guicursor:get()
 -- :h cursor-blinking
@@ -30,6 +31,7 @@ fzf_lua.setup {
   fzf_opts = {
     ["--layout"] = "reverse-list",
     ["--cycle"] = true,
+    ["--multi"] = true,
   },
   keymap = {
     builtin = { false, },
@@ -68,9 +70,6 @@ local function without_preview_cb(cb)
   end
 end
 
-
-local Job = require "plenary.job"
-
 local function old_and_all_files(opts)
   opts = opts or {}
   local cwd = opts.cwd or vim.fn.getcwd()
@@ -104,7 +103,7 @@ local function old_and_all_files(opts)
 
       Job:new {
         command = "fd",
-        args = { "--type", "f", },
+        args = vim.tbl_extend("error", { "--type", "f", "--exclude", }, ignore_dirs),
         on_stdout = function(err, file)
           if err then return end
           if seen[file] then return end
@@ -120,7 +119,7 @@ local function old_and_all_files(opts)
     end)()
   end
 
-  local default_opts = { actions = fzf_lua.defaults.actions.files, fzf_opts = { ["--multi"] = true, }, }
+  local default_opts = { actions = fzf_lua.defaults.actions.files, }
   local fzf_exec_opts = vim.tbl_extend("force", default_opts, opts)
   fzf_lua.fzf_exec(contents, fzf_exec_opts)
 end
@@ -128,7 +127,10 @@ end
 vim.keymap.set("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
 vim.keymap.set("n", "<leader>h", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with fzf", })
 vim.keymap.set("n", "<leader>m", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
-vim.keymap.set("n", "<c-p>", without_preview_cb(old_and_all_files), { desc = "Search files with fzf", })
+vim.keymap.set("n", "<c-p>", function()
+  local opts = vim.tbl_extend("error", without_preview_opts, { file_icons = true, color_icons = true, })
+  old_and_all_files(opts)
+end, { desc = "Search files with fzf", })
 vim.keymap.set("n", "<leader>l;", without_preview_cb(fzf_lua.command_history),
   { desc = "Search search history with fzf", })
 vim.keymap.set("n", "<leader>i", function()
