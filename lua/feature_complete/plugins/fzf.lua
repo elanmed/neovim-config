@@ -1,18 +1,12 @@
 local h = require "helpers"
 local grug = require "grug-far"
 local fzf_lua = require "fzf-lua"
-local Job = require "plenary.job"
+local job = require "plenary.job"
 
 local guicursor = vim.opt.guicursor:get()
 -- :h cursor-blinking
 table.insert(guicursor, "a:blinkon0")
 vim.opt.guicursor = guicursor
-
-local ignore_dirs = { "node_modules", ".git", "dist", }
-local fd_cmd = "fd --type f"
-for _, ignore_dir in pairs(ignore_dirs) do
-  fd_cmd = fd_cmd .. " --exclude " .. ignore_dir
-end
 
 fzf_lua.setup {
   winopts = {
@@ -22,11 +16,6 @@ fzf_lua.setup {
     },
     border = "none",
     width = 1,
-  },
-  files = {
-    git_icons = false,
-    file_icons = false,
-    cmd = fd_cmd,
   },
   fzf_opts = {
     ["--layout"] = "reverse-list",
@@ -77,18 +66,14 @@ local function old_and_all_files(opts)
   local contents = function(fzf_cb)
     local seen = {}
 
-    -- based on https://github.com/ibhagwan/fzf-lua/blob/main/lua/fzf-lua/providers/oldfiles.lua#L47
     coroutine.wrap(function()
       local co = coroutine.running()
 
       for _, oldfile in ipairs(vim.v.oldfiles) do
-        -- TODO: fzf_lua.oldfiles has more robust checks
-        -- https://github.com/ibhagwan/fzf-lua/blob/main/lua/fzf-lua/providers/oldfiles.lua#L23
         local readable = vim.fn.filereadable(oldfile) == 1
 
         if readable and vim.startswith(oldfile, cwd) then
-          local relative_file = oldfile:sub(#cwd + 2) -- remove leading /
-          if seen[relative_file] then return end
+          local relative_file = oldfile:sub(#cwd + 2)
           seen[relative_file] = true
 
           local entry = fzf_lua.make_entry.file(relative_file, opts)
@@ -101,13 +86,19 @@ local function old_and_all_files(opts)
         end
       end
 
-      Job:new {
+      local ignore_dirs = { "node_modules", ".git", "dist", }
+      local fd_args = { "--type", "f", }
+      for _, ignore_dir in pairs(ignore_dirs) do
+        table.insert(fd_args, "--exclude")
+        table.insert(fd_args, ignore_dir)
+      end
+
+      job:new {
         command = "fd",
-        args = vim.tbl_extend("error", { "--type", "f", "--exclude", }, ignore_dirs),
+        args = fd_args,
         on_stdout = function(err, file)
           if err then return end
           if seen[file] then return end
-          seen[file] = true
           local entry = fzf_lua.make_entry.file(file, opts)
 
           fzf_cb(entry)
