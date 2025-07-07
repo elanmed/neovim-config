@@ -31,11 +31,6 @@ fzf_lua.setup {
       ["shift-tab"] = "up+deselect",
     },
   },
-  actions = {
-    files = {
-      ["enter"] = fzf_lua.actions.file_edit_or_qf,
-    },
-  },
   marks = {
     marks = "%a",
   },
@@ -123,14 +118,14 @@ vim.keymap.set("n", "<c-p>", function()
   old_and_all_files(opts)
 end, { desc = "Search files with fzf", })
 vim.keymap.set("n", "<leader>l;", without_preview_cb(fzf_lua.command_history),
-  { desc = "Search search history with fzf", })
+  { desc = "Search command history with fzf", })
 vim.keymap.set("n", "<leader>i", function()
     local opts = vim.tbl_extend("error", without_preview_opts, {
       actions = { ["right"] = false, ["left"] = false, ["ctrl-x"] = false, },
     })
     fzf_lua.git_status(opts)
   end,
-  { desc = "Search git hunks with fzf", })
+  { desc = "Search git status with fzf", })
 vim.keymap.set("n", "<leader>b", without_preview_cb(fzf_lua.buffers),
   { desc = "Search currently open buffers with fzf", })
 vim.keymap.set("n", "<leader>lt", without_preview_cb(fzf_lua.tabs),

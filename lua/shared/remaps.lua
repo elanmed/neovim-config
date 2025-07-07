@@ -139,11 +139,11 @@ vim.keymap.set("n", "<leader>uo", function()
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
     if buf == cur_buf then
       goto continue
-    elseif vim.api.nvim_get_option_value("modified", { buf = buf, }) then
-      goto continue
-    else
-      vim.api.nvim_buf_delete(buf, { force = true, })
     end
+    if vim.api.nvim_get_option_value("modified", { buf = buf, }) then
+      goto continue
+    end
+    vim.api.nvim_buf_delete(buf, { force = true, })
 
     ::continue::
   end

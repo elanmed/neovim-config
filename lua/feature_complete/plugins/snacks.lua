@@ -18,29 +18,6 @@ snacks.setup {
   },
 }
 
--- vim.keymap.set("n", "<C-p>", function()
---   snacks.picker.smart {
---     hidden = true,
---     layout = {
---       layout = {
---         backdrop = false,
---         row = 0,
---         width = 0.8,
---         height = 0.4,
---         box = "vertical",
---         border = "rounded",
---         { win = "input", height = 1, border = "bottom", },
---         { win = "list", },
---       },
---     },
---     formatters = {
---       file = {
---         truncate = 100,
---       },
---     },
---   }
--- end, { desc = "Find files with snacks", })
-
 local function star_curr_word()
   local word = vim.fn.expand "<cword>"
   -- https://superuser.com/a/299693
@@ -71,7 +48,7 @@ vim.keymap.set("n", "/", function()
   end,
   { desc = "Search in the current buffer with snacks", })
 
-vim.keymap.set("n", "<leader>ln", function()
+vim.keymap.set("n", "<leader>lu", function()
     snacks.picker.undo {
       layout = {
         layout = {
