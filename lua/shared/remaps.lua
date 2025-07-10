@@ -45,6 +45,9 @@ vim.keymap.set("n", "<leader>x", h.keys.vim_cmd_cb "tabclose", { desc = "Close t
 vim.keymap.set("n", "<leader>d", h.keys.vim_cmd_cb "silent! bdelete!", { desc = "Close the current buffer", })
 vim.keymap.set("n", "<leader>;", ":")
 vim.keymap.set("n", "<leader>'", [["0]])
+vim.keymap.set("n", "<leader>w", function()
+  vim.fn.setreg("0", vim.fn.getreg '"')
+end, { desc = "Set the yank register with the value of the default register", })
 vim.keymap.set("n", "<leader>e", h.keys.vim_cmd_cb "e")
 vim.keymap.set("n", "j", "gj", { desc = "j with display lines", })
 vim.keymap.set("n", "k", "gk", { desc = "k with display lines", })
@@ -54,21 +57,8 @@ vim.keymap.set("i", "<C-e>", "<C-o>g$")
 vim.keymap.set({ "n", "v", }, "<C-e>", "g$")
 vim.keymap.set("i", "<C-a>", "<C-o>g^")
 vim.keymap.set({ "n", "v", }, "<C-a>", "g^")
-vim.keymap.set("n", "<leader>pr", function()
-  local select_inner_word = "viw"
-  local empty_register = [["_]]
-  local delete = "d"
-  local paste_before_cursor = "P"
-  return select_inner_word .. empty_register .. delete .. paste_before_cursor
-end, { expr = true, desc = "Paste without overwriting the default register", })
-vim.keymap.set("v", "<leader>pr", function()
-  local empty_register = [["_]]
-  local delete = "d"
-  local paste_before_cursor = "P"
-  return empty_register .. delete .. paste_before_cursor
-end, { expr = true, desc = "Paste without overwriting the default register", })
-vim.keymap.set("n", "<leader>pj", h.keys.vim_cmd_cb "pu", { desc = "Paste on the line below", })
-vim.keymap.set("n", "<leader>pk", h.keys.vim_cmd_cb "pu!", { desc = "Paste on the line above", })
+vim.keymap.set("n", "<leader>p", h.keys.vim_cmd_cb "pu", { desc = "Paste on the line below", })
+vim.keymap.set("n", "<leader>P", h.keys.vim_cmd_cb "pu!", { desc = "Paste on the line above", })
 vim.keymap.set("i", "<C-_>", "<C-o>gcc", { remap = true, })
 vim.keymap.set("n", "<C-_>", "gcc", { remap = true, })
 vim.keymap.set("v", "<C-_>",
@@ -181,7 +171,15 @@ vim.keymap.set("n", "z?", function()
   h.notify.doing "common fold commands: z{t,T,c,C,o,O,R(open all folds),M(close all folds)}"
 end, { desc = "Toggle fold", })
 
-vim.keymap.set("n", "<leader>w", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "q", "<nop>", { desc = "Avoid accidentally recording a macro", })
+vim.keymap.set("n", "<leader>.r", function()
+  if vim.fn.reg_recording() == "" then
+    return "qq"
+  elseif vim.fn.reg_recording() == "q" then
+    return "q"
+  end
+end, { expr = true, desc = "Record a macro", })
+vim.keymap.set("n", "<leader>.e", "@Q", { desc = "Execute a macro", })
+
 vim.keymap.set("n", "<leader>z", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>,", "<nop>", { desc = "TODO find a remap", })
-vim.keymap.set("n", "<leader>.", "<nop>", { desc = "TODO find a remap", })
