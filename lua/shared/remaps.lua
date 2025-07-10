@@ -8,7 +8,7 @@ vim.keymap.set("n", "q:", function()
   h.notify.error "Use :q to quit or q? to open the command-line window instead!"
 end, { desc = "Prevent accidentally opening the command-line window", })
 
-vim.keymap.set("n", "G", function() return "G" .. "zz" end, { expr = true, })
+vim.keymap.set("n", "G", "G" .. "zz")
 vim.keymap.set("n", "<bs>", function()
   if vim.bo.readonly then
     h.notify.error "Buffer is readonly, aborting"
@@ -17,8 +17,8 @@ vim.keymap.set("n", "<bs>", function()
   vim.cmd "w"
 end, { desc = "Save", })
 vim.keymap.set("n", "<leader>q", h.keys.vim_cmd_cb "q", { desc = "Quit", })
-vim.keymap.set("v", "<", "<gv", { desc = "Outdent, while keeping selection", })
-vim.keymap.set("v", ">", ">gv", { desc = "Indent, while keeping selection", })
+vim.keymap.set("v", "<", "<" .. "gv", { desc = "Outdent, while keeping selection", })
+vim.keymap.set("v", ">", ">" .. "gv", { desc = "Indent, while keeping selection", })
 vim.keymap.set("n", "J", "gJ", { desc = "J without whitespace", })
 vim.keymap.set("n", "<leader>co", h.keys.vim_cmd_cb "copen")
 vim.keymap.set("n", "<leader>cc", function()
@@ -79,39 +79,46 @@ vim.keymap.set("v", "<C-_>",
   end, { expr = true, remap = true, })
 
 vim.keymap.set("n", "<leader>yp", function()
-  local yank_line = [["zyy]]
-  local paste_line = [["zp]]
-  return yank_line .. paste_line
+  local z_register = [["z]]
+  local yank_line = "yy"
+  local paste = "p"
+  return z_register .. yank_line .. z_register .. paste
 end, { expr = true, desc = "Copy and paste the current line", })
 
 vim.keymap.set("v", "<leader>yp", function()
-  local yank_and_unselect = [["zy]]
+  local z_register = [["z]]
+  local yank_and_unselect = "y"
   local move_to_end_selection = "`>"
-  local paste_line = [["zp]]
-  return yank_and_unselect .. move_to_end_selection .. paste_line .. move_to_end_selection
+  local paste_line = "p"
+  return z_register .. yank_and_unselect .. move_to_end_selection .. z_register .. paste_line .. move_to_end_selection
 end, { expr = true, desc = "Copy and paste the current selection", })
 
 vim.keymap.set("n", "<leader>yc",
   function()
-    local yank_line = [["zyy]]
+    local z_register = [["z]]
+    local yank_line = "yy"
     local comment_line = "gcc"
-    local paste_line = [["zp]]
-    return yank_line .. comment_line .. paste_line
+    local paste_line = "p"
+    return z_register .. yank_line .. comment_line .. z_register .. paste_line
   end,
   { expr = true, remap = true, desc = "Yank the current line, comment it, and paste it below", })
 
 vim.keymap.set("v", "<leader>yc",
   function()
-    local yank_and_unselect = [["zy]]
+    local z_register = [["z]]
+    local yank_and_unselect = "y"
     local move_to_end_selection = "`>"
-    local paste_selection = [["zp]]
+    local paste = "p"
     local reselect_last = "gv"
     local comment_selection = "gc"
-    return yank_and_unselect ..
+    return
+        z_register ..
+        yank_and_unselect ..
         reselect_last ..
         comment_selection ..
         move_to_end_selection ..
-        paste_selection ..
+        z_register ..
+        paste ..
         move_to_end_selection
   end, { expr = true, remap = true, desc = "Yank the current selection, comment it, and paste it below", })
 
