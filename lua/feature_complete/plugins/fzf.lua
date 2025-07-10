@@ -82,7 +82,7 @@ local function old_and_all_files(opts)
       end
 
       local ignore_dirs = { "node_modules", ".git", "dist", }
-      local fd_args = { "--type", "f", }
+      local fd_args = { "--hidden", "--type", "f", }
       for _, ignore_dir in pairs(ignore_dirs) do
         table.insert(fd_args, "--exclude")
         table.insert(fd_args, ignore_dir)
