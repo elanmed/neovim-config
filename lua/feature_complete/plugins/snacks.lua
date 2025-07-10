@@ -40,9 +40,9 @@ vim.keymap.set("n", "/", function()
         },
       },
       on_close = function()
-        vim.schedule(function()
-          star_curr_word()
-        end)
+        -- vim.schedule(function()
+        --   star_curr_word()
+        -- end)
       end,
     }
   end,
