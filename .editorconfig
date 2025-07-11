@@ -10,5 +10,3 @@ align_continuous_rect_table_field = false
 align_array_table = false
 end_statement_with_semicolon = same_line
 space_after_comment_dash = true
-break_all_list_when_line_exceed = true
-auto_collapse_lines = true
