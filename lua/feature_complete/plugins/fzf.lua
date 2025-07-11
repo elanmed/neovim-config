@@ -54,79 +54,106 @@ local function without_preview_cb(cb)
   end
 end
 
-local function fre_and_all_files(fzf_lua_opts)
-  fzf_lua_opts = fzf_lua_opts or {}
+local function fre_and_all_files(opts)
+  opts = opts or {}
   local cwd = vim.fn.getcwd()
 
   local contents = function(fzf_cb)
     local seen = {}
-    local MAX_FRE = 10
+    local MAX_FRE = 20
 
     --- @param on_exit function
     local function run_fre(on_exit)
-      job:new {
-        command = "fre",
-        args = { "--sorted", "--truncate", MAX_FRE, },
-        on_stdout = function(err, file)
-          if err then return end
-          local rel_file = file:sub(#cwd + 2)
-          if seen[rel_file] then return end
-          seen[rel_file] = true
-          local entry = fzf_lua.make_entry.file(rel_file, fzf_lua_opts)
+      vim.system({ "fre", "--sorted", "--truncate", tostring(MAX_FRE), }, {
+        text = true,
+        stdout = function(err, data)
+          if err or type(data) == "nil" then return end
+          local files = vim.split(data, "\n")
 
-          fzf_cb(entry)
+          coroutine.wrap(function()
+            local co = coroutine.running()
+            for _, abs_file in ipairs(files) do
+              -- `fre` can have files from any directory
+              if not vim.startswith(abs_file, cwd) then goto continue end
+              -- `fre` can have duplicates, need to check `seen`
+              if seen[abs_file] then goto continue end
+              seen[abs_file] = true
+
+              local rel_file = vim.fs.relpath(cwd, abs_file)
+              local entry = fzf_lua.make_entry.file(rel_file, opts)
+              if not entry then return end
+              fzf_cb(entry, function()
+                coroutine.resume(co)
+              end)
+              coroutine.yield()
+
+              ::continue::
+            end
+          end)()
         end,
-        on_exit = function()
-          on_exit()
-        end,
-      }:start()
+      }, function()
+        on_exit()
+      end)
     end
 
     local function run_fd()
       local ignore_dirs = { "node_modules", ".git", "dist", }
-      local fd_args = { "--hidden", "--type", "f", }
+      local fd_cmd = { "fd", "--hidden", "--type", "f", }
       for _, ignore_dir in pairs(ignore_dirs) do
-        table.insert(fd_args, "--exclude")
-        table.insert(fd_args, ignore_dir)
+        table.insert(fd_cmd, "--exclude")
+        table.insert(fd_cmd, ignore_dir)
       end
 
-      job:new {
-        command = "fd",
-        args = fd_args,
-        on_stdout = function(err, file)
-          if err then return end
-          if seen[file] then return end
-          local entry = fzf_lua.make_entry.file(file, fzf_lua_opts)
+      vim.system(fd_cmd, {
+          text = true,
+          stdout = function(err, data)
+            if err or type(data) == "nil" then return end
+            local files = vim.split(data, "\n")
 
-          fzf_cb(entry)
-        end,
-        on_exit = function()
+            coroutine.wrap(function()
+              local co = coroutine.running()
+              for _, rel_file in ipairs(files) do
+                local abs_file = vim.fs.joinpath(cwd, rel_file)
+                -- `fd` only searches in the current director, no need to filter out
+                -- `fd` has no duplicates, no need to add to `seen`
+                if seen[abs_file] then goto continue end
+
+                local entry = fzf_lua.make_entry.file(rel_file, opts)
+                if not entry then return end
+                fzf_cb(entry, function()
+                  coroutine.resume(co)
+                end)
+                coroutine.yield()
+
+                ::continue::
+              end
+            end)()
+          end,
+        },
+        function()
           fzf_cb(nil)
-        end,
-      }:start()
+        end)
     end
 
     run_fre(run_fd)
+    -- run_fre(function()    end)
   end
 
   local wrapped_default = function(action)
-    return function(selected, o)
+    return function(selected, action_opts)
       for _, sel in ipairs(selected) do
-        local file = fzf_lua.path.entry_to_file(sel, o, o._uri)
-        job:new {
-          command = "fre",
-          args = { "--add", file.path, },
-        }:start()
+        local file = fzf_lua.path.entry_to_file(sel, action_opts)
+        vim.system { "fre", "--add", file.path, }
       end
 
-      return action(selected, fzf_lua_opts)
+      return action(selected, opts)
     end
   end
 
   local default_opts = { actions = {
     default = wrapped_default(fzf_lua.actions.file_edit_or_qf),
   }, }
-  local fzf_exec_opts = vim.tbl_extend("force", default_opts, fzf_lua_opts)
+  local fzf_exec_opts = vim.tbl_extend("force", default_opts, opts)
   fzf_lua.fzf_exec(contents, fzf_exec_opts)
 end
 
