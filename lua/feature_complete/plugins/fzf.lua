@@ -65,12 +65,11 @@ local function fre_and_all_files(opts)
 
   local contents = function(fzf_cb)
     local seen = {}
-    local MAX_FRE = 20
 
     --- @param on_exit function
     local function run_fre(on_exit)
       vim.system(
-        { "fre", "--sorted", "--truncate", tostring(MAX_FRE), },
+        { "fre", "--sorted", "--truncate", },
         {
           text = true,
           stdout = function(err, data)
