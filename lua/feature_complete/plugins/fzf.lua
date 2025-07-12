@@ -1,7 +1,7 @@
 local h = require "helpers"
 local grug = require "grug-far"
 local fzf_lua = require "fzf-lua"
-local job = require "plenary.job"
+local Job = require "plenary.job"
 
 local guicursor = vim.opt.guicursor:get()
 -- :h cursor-blinking
@@ -61,86 +61,57 @@ end
 
 local function fre_and_all_files(opts)
   opts = opts or {}
-  local cwd = vim.fn.getcwd()
+  local cwd = opts.cwd or vim.fn.getcwd()
 
   local contents = function(fzf_cb)
     local seen = {}
 
     --- @param on_exit function
     local function run_fre(on_exit)
-      vim.system(
-        { "fre", "--sorted", "--truncate", },
-        {
-          text = true,
-          stdout = function(err, data)
-            if err then return vim.notify(err, vim.log.levels.ERROR) end
-            if type(data) == "nil" then return end
-            local abs_files = vim.split(data, "\n")
+      Job:new {
+        command = "fre",
+        args = { "--sorted", },
+        on_stdout = function(err, abs_file)
+          if err then return vim.notify(err, vim.log.levels.ERROR) end
+          -- `fre` can have files from any directory
+          if not vim.startswith(abs_file, cwd) then return end
+          -- `fre` can have duplicates, need to check `seen`
+          if seen[abs_file] then return end
+          seen[abs_file] = true
 
-            coroutine.wrap(function()
-              local co = coroutine.running()
-              for _, abs_file in ipairs(abs_files) do
-                -- `fre` can have files from any directory
-                if not vim.startswith(abs_file, cwd) then goto continue end
-                -- `fre` can have duplicates, need to check `seen`
-                if seen[abs_file] then goto continue end
-                seen[abs_file] = true
-
-                local rel_file = vim.fs.relpath(cwd, abs_file)
-                local entry = fzf_lua.make_entry.file(rel_file, opts)
-                if not entry then return end
-                fzf_cb(entry, function()
-                  coroutine.resume(co)
-                end)
-                coroutine.yield()
-
-                ::continue::
-              end
-            end)()
-          end,
-        }, function()
-          on_exit()
-        end)
+          local rel_file = vim.fs.relpath(cwd, abs_file)
+          local entry = fzf_lua.make_entry.file(rel_file, opts)
+          fzf_cb(entry)
+        end,
+        on_exit = on_exit,
+      }:start()
     end
 
     local function run_fd()
-      local ignore_dirs = { "node_modules", ".git", "dist", }
-      local fd_cmd = { "fd", "--hidden", "--type", "f", }
+      local ignore_dirs = { "node_modules", ".git", "dist", "nvm", }
+      local fd_args = { "--hidden", "--absolute-path", "--type", "f", "--base-directory", cwd, }
       for _, ignore_dir in ipairs(ignore_dirs) do
-        table.insert(fd_cmd, "--exclude")
-        table.insert(fd_cmd, ignore_dir)
+        table.insert(fd_args, "--exclude")
+        table.insert(fd_args, ignore_dir)
       end
 
-      vim.system(fd_cmd, {
-          text = true,
-          stdout = function(err, data)
-            if err then return vim.notify(err, vim.log.levels.ERROR) end
-            if type(data) == "nil" then return end
-            local rel_files = vim.split(data, "\n")
+      Job:new {
+        command = "fd",
+        args = fd_args,
+        on_stdout = function(err, abs_file)
+          if err then return vim.notify(err, vim.log.levels.ERROR) end
+          -- `fd` only searches in the cwd, no need to filter out
+          -- `fd` has no duplicates, no need to add to `seen`
+          if seen[abs_file] then return end
 
-            coroutine.wrap(function()
-              local co = coroutine.running()
-              for _, rel_file in ipairs(rel_files) do
-                local abs_file = vim.fs.joinpath(cwd, rel_file)
-                -- `fd` only searches in the current director, no need to filter out
-                -- `fd` has no duplicates, no need to add to `seen`
-                if seen[abs_file] then goto continue end
-
-                local entry = fzf_lua.make_entry.file(rel_file, opts)
-                if not entry then return end
-                fzf_cb(entry, function()
-                  coroutine.resume(co)
-                end)
-                coroutine.yield()
-
-                ::continue::
-              end
-            end)()
-          end,
-        },
-        function()
+          local rel_file = vim.fs.relpath(cwd, abs_file)
+          local entry = fzf_lua.make_entry.file(rel_file, opts)
+          fzf_cb(entry)
+        end,
+        on_exit = function()
           fzf_cb(nil)
-        end)
+        end,
+      }:start()
     end
 
     run_fre(run_fd)
@@ -153,7 +124,7 @@ local function fre_and_all_files(opts)
         vim.system { "fre", "--add", file.path, }
       end
 
-      return action(selected, opts)
+      return action(selected, action_opts)
     end
   end
 
@@ -165,67 +136,12 @@ local function fre_and_all_files(opts)
   fzf_lua.fzf_exec(contents, fzf_exec_opts)
 end
 
-local function old_and_all_files(opts)
-  opts = opts or {}
-  local cwd = opts.cwd or vim.fn.getcwd()
-
-  local contents = function(fzf_cb)
-    local seen = {}
-
-    coroutine.wrap(function()
-      local co = coroutine.running()
-
-      for _, oldfile in ipairs(vim.v.oldfiles) do
-        local readable = vim.fn.filereadable(oldfile) == 1
-
-        if readable and vim.startswith(oldfile, cwd) then
-          local relative_file = oldfile:sub(#cwd + 2)
-          seen[relative_file] = true
-
-          local entry = fzf_lua.make_entry.file(relative_file, opts)
-          if not entry then return end
-          fzf_cb(entry, function(err)
-            coroutine.resume(co)
-            if err then fzf_cb(nil) end
-          end)
-          coroutine.yield()
-        end
-      end
-
-      local ignore_dirs = { "node_modules", ".git", "dist", }
-      local fd_args = { "--hidden", "--type", "f", }
-      for _, ignore_dir in pairs(ignore_dirs) do
-        table.insert(fd_args, "--exclude")
-        table.insert(fd_args, ignore_dir)
-      end
-
-      job:new {
-        command = "fd",
-        args = fd_args,
-        on_stdout = function(err, file)
-          if err then return end
-          if seen[file] then return end
-          local entry = fzf_lua.make_entry.file(file, opts)
-
-          fzf_cb(entry)
-        end,
-        on_exit = function()
-          fzf_cb(nil)
-        end,
-      }:start()
-    end)()
-  end
-
-  local default_opts = { actions = fzf_lua.defaults.actions.files, }
-  local fzf_exec_opts = vim.tbl_extend("force", default_opts, opts)
-  fzf_lua.fzf_exec(contents, fzf_exec_opts)
-end
-
 vim.keymap.set("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
 vim.keymap.set("n", "<leader>h", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with fzf", })
 vim.keymap.set("n", "<leader>m", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
 vim.keymap.set("n", "<c-p>", function()
-  local opts = vim.tbl_extend("error", without_preview_opts, { file_icons = true, color_icons = true, })
+  local opts = vim.tbl_extend("error", without_preview_opts,
+    { file_icons = true, color_icons = true, })
   fre_and_all_files(opts)
 end, { desc = "Search files with fzf", })
 vim.keymap.set("n", "<leader>l;", without_preview_cb(fzf_lua.command_history),
