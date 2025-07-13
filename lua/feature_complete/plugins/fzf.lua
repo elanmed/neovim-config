@@ -1,7 +1,6 @@
 local h = require "helpers"
 local grug = require "grug-far"
 local fzf_lua = require "fzf-lua"
-local Job = require "plenary.job"
 
 local guicursor = vim.opt.guicursor:get()
 -- :h cursor-blinking
@@ -59,56 +58,12 @@ local function without_preview_cb(cb)
   end
 end
 
-local function fre_and_fd(opts)
-  opts = opts or {}
-  local cwd = opts.cwd or vim.fn.getcwd()
-
-  local wrapped_enter = function(action)
-    return function(selected, action_opts)
-      for _, sel in ipairs(selected) do
-        local file = fzf_lua.path.entry_to_file(sel, action_opts, action_opts._uri)
-        vim.system { "fre", "--add", file.path, }
-      end
-
-      return action(selected, action_opts)
-    end
-  end
-
-  local actions = vim.tbl_extend("force", fzf_lua.defaults.actions.files, {
-    enter = wrapped_enter(fzf_lua.defaults.actions.files.enter),
-  })
-  local seen = {}
-  local default_opts = {
-    actions = actions,
-    multiprocess = true,
-    fn_transform = function(abs_file)
-      if not vim.startswith(abs_file, cwd) then return end
-      if seen[abs_file] then return end
-      seen[abs_file] = true
-
-      local rel_file = vim.fs.relpath(cwd, abs_file)
-      return fzf_lua.make_entry.file(rel_file, opts)
-    end,
-  }
-
-  local ignore_dirs = { "node_modules", ".git", "dist", "nvm", }
-  local fd_cmd = { "fd", "--hidden", "--absolute-path", "--type", "f", "--base-directory", cwd, }
-  for _, ignore_dir in ipairs(ignore_dirs) do
-    table.insert(fd_cmd, "--exclude")
-    table.insert(fd_cmd, ignore_dir)
-  end
-
-  local fzf_exec_opts = vim.tbl_extend("force", default_opts, opts)
-  local cmd = ("cat <(fre --sorted) <(%s)"):format(table.concat(fd_cmd, " "))
-  fzf_lua.fzf_exec(cmd, fzf_exec_opts)
-end
-
 vim.keymap.set("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
 vim.keymap.set("n", "<leader>h", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with fzf", })
 vim.keymap.set("n", "<leader>m", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
 vim.keymap.set("n", "<c-p>", function()
   local opts = vim.tbl_extend("error", without_preview_opts, { file_icons = true, color_icons = true, })
-  fre_and_fd(opts)
+  require "fzf-lua-frecency".frecency(opts)
 end, { desc = "Search files with fzf", })
 vim.keymap.set("n", "<leader>l;", without_preview_cb(fzf_lua.command_history),
   { desc = "Search command history with fzf", })
