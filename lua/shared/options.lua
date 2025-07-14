@@ -1,4 +1,4 @@
--- vim.opt.colorcolumn = "120"
+vim.opt.cursorcolumn = true
 vim.opt.clipboard = "unnamedplus" -- os clipboard
 vim.opt.cursorline = true
 vim.opt.number = true
@@ -27,3 +27,8 @@ vim.opt.shiftwidth = 2   -- number of spaces to insert/delete when in insert mod
 vim.opt.foldlevelstart = 99
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+
+vim.api.nvim_create_autocmd("TextYankPost", {
+  pattern = "*",
+  callback = function() vim.highlight.on_yank() end,
+})
