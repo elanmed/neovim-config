@@ -34,6 +34,7 @@ fzf_lua.setup {
     marks = "%a",
   },
   fzf_colors = true,
+  sort_lastused = true,
 }
 
 local with_preview_opts = {
