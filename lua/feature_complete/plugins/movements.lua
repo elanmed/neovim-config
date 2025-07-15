@@ -102,6 +102,6 @@ marks.setup {
     toggle = "<leader>mt",
     next = "]a",
     prev = "[a",
-    delete_buf = "<leader>mb",
+    delete_buf = "<leader>md",
   },
 }
