@@ -1,4 +1,3 @@
-vim.opt.cursorcolumn = true
 vim.opt.clipboard = "unnamedplus" -- os clipboard
 vim.opt.cursorline = true
 vim.opt.number = true
