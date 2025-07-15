@@ -99,10 +99,9 @@ marks.setup {
   excluded_filetypes = { "oil", },
   default_mappings = false,
   mappings = {
-    toggle = "mt",
+    toggle = "<leader>mt",
     next = "]a",
     prev = "[a",
-    delete_line = "dml",
-    delete_buf = "dmb",
+    delete_buf = "<leader>mb",
   },
 }

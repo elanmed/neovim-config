@@ -14,7 +14,7 @@ end
 
 local global_marks = ("abcdefghijklmnopqrstuvwxyz"):upper()
 
-vim.keymap.set("n", "mg", function()
+vim.keymap.set("n", "gm", function()
   for letter in global_marks:gmatch "." do
     local is_buffer_mark_set = not is_buffer_mark_unset(letter)
 
@@ -43,7 +43,7 @@ vim.keymap.set("n", "mg", function()
   h.notify.doing("Set global mark " .. next_avail_mark)
 end, { desc = "Set a global mark for the buffer", })
 
-vim.keymap.set("n", "dmg", function()
+vim.keymap.set("n", "dgm", function()
   for letter in global_marks:gmatch "." do
     local is_buffer_mark_set = not is_buffer_mark_unset(letter)
 
@@ -56,12 +56,14 @@ vim.keymap.set("n", "dmg", function()
   h.notify.error "No global mark in the buffer"
 end, { desc = "Delete a global mark for the buffer", })
 
-vim.keymap.set("n", "dmG", function()
+-- TODO: better remaps
+vim.keymap.set("n", "dGM", function()
   vim.cmd "delmarks A-Z"
   h.notify.doing "Deleted all global marks"
 end, { desc = "Delete all global marks", })
 
-vim.keymap.set("n", "dma", function()
+-- TODO: better remaps
+vim.keymap.set("n", "dA", function()
   vim.cmd "delmarks a-zA-Z"
   h.notify.doing "Deleted all marks"
 end, { desc = "Delete all marks", })

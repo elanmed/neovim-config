@@ -1,5 +1,3 @@
-local h = require "helpers"
-
 -- tomorrow-night
 local colors = {
   base00 = "#1d1f21",

@@ -61,7 +61,7 @@ end
 
 vim.keymap.set("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
 vim.keymap.set("n", "<leader>h", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with fzf", })
-vim.keymap.set("n", "<leader>m", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
+vim.keymap.set("n", "<leader>lm", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
 vim.keymap.set("n", "<c-p>", function()
   local ignore_dirs = { "node_modules", ".git", "dist", }
   local fd_cmd = { "fd", "--absolute-path", "--hidden", "--type", "f", }

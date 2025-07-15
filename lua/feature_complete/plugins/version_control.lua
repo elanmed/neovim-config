@@ -7,7 +7,7 @@ gitsigns.setup {
     border = "rounded",
   },
   on_attach = function()
-    vim.keymap.set("n", "<leader>gw", gitsigns.preview_hunk, { desc = "Preview the current hunk", })
+    vim.keymap.set("n", "<leader>gp", gitsigns.preview_hunk, { desc = "Preview the current hunk", })
 
     -- https://github.com/lewis6991/gitsigns.nvim#-keymaps
     vim.keymap.set("n", "]g", function()
@@ -26,19 +26,14 @@ gitsigns.setup {
       end
     end, { desc = "Go to the prev git hunk", })
 
-    vim.keymap.set("n", "<leader>ge", function()
+    vim.keymap.set("n", "<leader>gr", function()
       gitsigns.reset_hunk()
       vim.cmd "w"
     end, { desc = "Reset the current hunk", })
 
-    vim.keymap.set("v", "<leader>ge", function()
+    vim.keymap.set("v", "<leader>gr", function()
       gitsigns.reset_hunk { vim.fn.line ".", vim.fn.line "v", }
       vim.cmd "w"
     end, { desc = "Reset the current hunk", })
-
-    vim.keymap.set("n", "<leader>gu", function()
-      gitsigns.reset_buffer()
-      vim.cmd "w"
-    end, { desc = "Reset the current bUffer", })
   end,
 }
