@@ -76,6 +76,9 @@ vim.keymap.set("n", "<c-p>", function()
     {
       file_icons = true,
       color_icons = true,
+      fzf_opts = {
+        ["--no-sort"] = false,
+      },
       fzf_lua_frecency = {
         display_score = true,
         fd_cmd = table.concat(fd_cmd, " "),
