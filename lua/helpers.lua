@@ -15,9 +15,6 @@ end
 keys.send_keys = function(mode, keys_to_send)
   local modeToExpanded = { ["n"] = "normal", ["i"] = "insert", ["v"] = "visual", }
   vim.cmd(modeToExpanded[mode] .. "! " .. keys_to_send)
-
-  -- local keys = vim.api.nvim_replace_termcodes(keys, true, false, true)
-  -- vim.api.nvim_feedkeys(keys, "n", false)
 end
 
 --- @param table table
