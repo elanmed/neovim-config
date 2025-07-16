@@ -19,8 +19,9 @@ vim.opt.expandtab = true   -- use spaces in tabs
 vim.opt.tabstop = 2        -- number of columns in a tab
 vim.opt.softtabstop = 2    -- number of spaces to delete when deleting a tab
 vim.opt.shiftwidth = 2     -- number of spaces to insert/delete when in insert mode
-vim.opt.foldlevelstart = 4
-vim.opt.foldmethod = "indent"
+vim.opt.foldlevelstart = 99
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 -- disable vim backups
 vim.opt.swapfile = false
 vim.opt.backup = false
