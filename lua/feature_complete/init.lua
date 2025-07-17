@@ -28,6 +28,7 @@ bootstrap_paq {
   "nvim-lua/popup.nvim",
   "nvim-lua/plenary.nvim",
   "tpope/vim-repeat",
+  "tpope/vim-speeddating",
   "jxnblk/vim-mdx-js",
   -- buffers
   "akinsho/bufferline.nvim",
