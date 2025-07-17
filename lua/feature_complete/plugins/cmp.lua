@@ -39,6 +39,7 @@ blink.setup {
       },
     },
   },
+  cmdline = { sources = { enabled = false, }, },
   sources = {
     default = { "buffer", "lsp", "path", },
     -- https://cmp.saghen.dev/configuration/snippets.html#disable-all-snippets

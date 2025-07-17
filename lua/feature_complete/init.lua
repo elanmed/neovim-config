@@ -45,7 +45,14 @@ bootstrap_paq {
   "nvim-tree/nvim-web-devicons",
   "karb94/neoscroll.nvim",
   -- fzf
-  "ibhagwan/fzf-lua",
+  {
+    "ibhagwan/fzf-lua",
+    build = function()
+      local plugin_path = vim.fn.stdpath "data" .. "/site/pack/paqs/start/fzf-lua"
+      vim.fn.system { "git", "-C", plugin_path, "fetch", "--unshallow", }
+      vim.fn.system { "git", "-C", plugin_path, "checkout", "e297fea843bd703b162894e880d2ba90b1fe9dae", }
+    end,
+  },
   "elanmed/rg-glob-builder.nvim",
   "elanmed/fzf-lua-frecency.nvim",
   -- lsp
