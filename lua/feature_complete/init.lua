@@ -22,6 +22,14 @@ local function bootstrap_paq(packages)
   end
 end
 
+local function build_pin_commit(plugin, commit)
+  return function()
+    local plugin_path = vim.fn.stdpath "data" .. "/site/pack/paqs/start/" .. plugin
+    vim.fn.system { "git", "-C", plugin_path, "fetch", "--unshallow", }
+    vim.fn.system { "git", "-C", plugin_path, "checkout", commit, }
+  end
+end
+
 bootstrap_paq {
   "savq/paq-nvim",
   -- (no file)
@@ -36,11 +44,7 @@ bootstrap_paq {
   "windwp/nvim-autopairs",
   {
     "saghen/blink.cmp",
-    build = function()
-      local plugin_path = vim.fn.stdpath "data" .. "/site/pack/paqs/start/blink.cmp"
-      vim.fn.system { "git", "-C", plugin_path, "fetch", "--unshallow", }
-      vim.fn.system { "git", "-C", plugin_path, "checkout", "586ee87534f5bf65f1c8dea2d1da2a57e8cddd36", }
-    end,
+    build = build_pin_commit("blink.cmp", "586ee87534f5bf65f1c8dea2d1da2a57e8cddd36"),
   },
   "xzbdmw/colorful-menu.nvim",
   -- colorscheme
