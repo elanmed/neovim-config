@@ -14,9 +14,9 @@ vim.keymap.set("n", "<bs>", function()
     h.notify.error "Buffer is readonly, aborting"
     return
   end
-  vim.cmd "w"
+  vim.cmd "write"
 end, { desc = "Save", })
-vim.keymap.set("n", "<leader>q", h.keys.vim_cmd_cb "q", { desc = "Quit", })
+vim.keymap.set("n", "<leader>q", h.keys.vim_cmd_cb "quit", { desc = "Quit", })
 vim.keymap.set("v", "<", "<" .. "gv", { desc = "Outdent, while keeping selection", })
 vim.keymap.set("v", ">", ">" .. "gv", { desc = "Indent, while keeping selection", })
 vim.keymap.set("n", "J", "gJ", { desc = "J without whitespace", })
@@ -32,13 +32,13 @@ vim.keymap.set("i", "<A-j>", "<esc>:m .+1<cr>==gi", { desc = "Move line down", }
 vim.keymap.set("i", "<A-k>", "<esc>:m .-2<cr>==gi", { desc = "Move line up", })
 vim.keymap.set("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move line down", })
 vim.keymap.set("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move line up", })
-vim.keymap.set("n", "<leader>/c", "/\\C<left><left>", { desc = "/ case sensitive", })
-vim.keymap.set("n", "<leader>/w", "/\\<\\><left><left>", { desc = "/ word sensitive", })
-vim.keymap.set("n", "<leader>f", "/\\<\\>\\C<left><left><left><left>", { desc = "/ case and word sensitive", })
-vim.keymap.set("n", "<leader>/s", ":%s/\\<\\>\\C/<left><left><left><left><left>",
+vim.keymap.set("n", "g/c", "/\\C<left><left>", { desc = "/ case sensitive", })
+vim.keymap.set("n", "g/w", "/\\<\\><left><left>", { desc = "/ word sensitive", })
+vim.keymap.set("n", "g//", "/\\<\\>\\C<left><left><left><left>", { desc = "/ case and word sensitive", })
+vim.keymap.set("n", "g/v", "/\\V", { desc = "/ without regex", })
+vim.keymap.set("n", "g/s", ":%s/\\<\\>\\C/<left><left><left><left><left>",
   { desc = "Search and replace in the current buffer, case and word sensitive", })
 vim.keymap.set("n", "<leader>n", h.keys.vim_cmd_cb "nohlsearch", { desc = "Turn off highlighting", })
-vim.keymap.set("n", "<leader>/v", "/\\V", { desc = "/ without regex", })
 vim.keymap.set("n", "<leader>x", h.keys.vim_cmd_cb "tabclose", { desc = "Close the current tab", })
 vim.keymap.set("n", "<leader>d", h.keys.vim_cmd_cb "silent! bdelete!", { desc = "Close the current buffer", })
 vim.keymap.set("n", "<leader>;", ":")
@@ -176,6 +176,7 @@ vim.keymap.set("n", "<leader>.r", function()
 end, { expr = true, desc = "Record a macro", })
 vim.keymap.set("n", "<leader>.e", "@Q", { desc = "Execute a macro", })
 
+vim.keymap.set("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>/", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>'", "<nop>", { desc = "TODO find a remap", })
-vim.keymap.set("n", "<leader>z", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>,", "<nop>", { desc = "TODO find a remap", })

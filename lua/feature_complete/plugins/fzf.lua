@@ -62,7 +62,7 @@ end
 vim.keymap.set("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
 vim.keymap.set("n", "<leader>h", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with fzf", })
 vim.keymap.set("n", "<leader>lm", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
-vim.keymap.set("n", "<c-p>", function()
+vim.keymap.set("n", "<leader>f", function()
   local ignore_dirs = { "node_modules", ".git", "dist", }
   local fd_cmd = { "fd", "--absolute-path", "--hidden", "--type", "f", }
   for _, ignore_dir in pairs(ignore_dirs) do
@@ -150,7 +150,7 @@ local function get_stripped_filename()
   return stripped_start
 end
 
-vim.keymap.set("n", "<leader>le",
+vim.keymap.set("n", "<leader>lw",
   function()
     local stripped_filename = get_stripped_filename()
     if stripped_filename == nil then return end
@@ -158,7 +158,7 @@ vim.keymap.set("n", "<leader>le",
     live_grep_with_args("~" .. stripped_filename .. "~ ")
   end, { desc = "Grep the current file name starting with `wf_modules`", })
 
-vim.keymap.set("n", "<leader>ye",
+vim.keymap.set("n", "<leader>yw",
   function()
     local stripped_filename = get_stripped_filename()
     if stripped_filename == nil then return end

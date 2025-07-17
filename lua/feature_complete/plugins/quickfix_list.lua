@@ -7,14 +7,13 @@ require "quickfix-preview".setup {
     toggle = "t",
     next = { key = "<C-n>", },
     prev = { key = "<C-p>", },
-    cnext = { key = "]q", },
-    cprev = { key = "[q", },
+    cnext = { key = "<C-n>", },
+    cprev = { key = "<C-p>", },
   },
   preview_win_opts = {
     relativenumber = false,
     number = true,
     signcolumn = "no",
-    cursorline = true,
   },
 }
 
