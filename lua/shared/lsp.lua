@@ -38,42 +38,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
     local methods = vim.lsp.protocol.Methods
     local bufnr = args.buf
 
-    -- https://gist.github.com/MariaSolOs/2e44a86f569323c478e5a078d0cf98cc
-    if client:supports_method(methods.textDocument_completion) then
-      --- @param keys string
-      local function feedkeys(keys)
-        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), "n", true)
-      end
-
-      local function pumvisible()
-        return tonumber(vim.fn.pumvisible()) ~= 0
-      end
-
-      vim.lsp.completion.enable(true, client.id, bufnr, { autotrigger = false, })
-
-      vim.keymap.set("i", "<cr>", function()
-        return pumvisible() and "<C-y>" or "<cr>"
-      end, { expr = true, })
-
-      vim.keymap.set("i", "<C-n>", function()
-        if pumvisible() then
-          feedkeys "<C-n>"
-        else
-          if next(vim.lsp.get_clients { bufnr = 0, }) then
-            vim.lsp.completion.get()
-          else
-            if vim.bo.omnifunc == "" then
-              feedkeys "<C-x><C-n>"
-            else
-              feedkeys "<C-x><C-o>"
-            end
-          end
-        end
-      end)
-
-      vim.keymap.set("i", "<C-u>", "<C-x><C-n>", { desc = "Buffer completions", })
-    end
-
     if client:supports_method(methods.textDocument_documentHighlight) then
       vim.opt.updatetime = 100 -- how long until the cursor events fire
       vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
