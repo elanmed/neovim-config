@@ -34,7 +34,14 @@ bootstrap_paq {
   "akinsho/bufferline.nvim",
   -- cmp
   "windwp/nvim-autopairs",
-  "saghen/blink.cmp",
+  {
+    "saghen/blink.cmp",
+    build = function()
+      local plugin_path = vim.fn.stdpath "data" .. "/site/pack/paqs/start/blink.cmp"
+      vim.fn.system { "git", "-C", plugin_path, "fetch", "--unshallow", }
+      vim.fn.system { "git", "-C", plugin_path, "checkout", "586ee87534f5bf65f1c8dea2d1da2a57e8cddd36", }
+    end,
+  },
   "xzbdmw/colorful-menu.nvim",
   -- colorscheme
   "RRethy/nvim-base16",
@@ -45,14 +52,7 @@ bootstrap_paq {
   "nvim-tree/nvim-web-devicons",
   "karb94/neoscroll.nvim",
   -- fzf
-  {
-    "ibhagwan/fzf-lua",
-    build = function()
-      local plugin_path = vim.fn.stdpath "data" .. "/site/pack/paqs/start/fzf-lua"
-      vim.fn.system { "git", "-C", plugin_path, "fetch", "--unshallow", }
-      vim.fn.system { "git", "-C", plugin_path, "checkout", "e297fea843bd703b162894e880d2ba90b1fe9dae", }
-    end,
-  },
+  "ibhagwan/fzf-lua",
   "elanmed/rg-glob-builder.nvim",
   "elanmed/fzf-lua-frecency.nvim",
   -- lsp

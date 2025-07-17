@@ -63,28 +63,29 @@ vim.keymap.set("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua searc
 vim.keymap.set("n", "<leader>h", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with fzf", })
 vim.keymap.set("n", "<leader>lm", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
 vim.keymap.set("n", "<leader>f", function()
-  local ignore_dirs = { "node_modules", ".git", "dist", }
-  local fd_cmd = { "fd", "--absolute-path", "--hidden", "--type", "f", }
-  for _, ignore_dir in pairs(ignore_dirs) do
-    table.insert(fd_cmd, "--exclude")
-    table.insert(fd_cmd, ignore_dir)
-  end
-
-  local opts = vim.tbl_extend(
-    "error",
-    without_preview_opts,
-    {
-      file_icons = true,
-      color_icons = true,
-      fzf_opts = {
-        ["--no-sort"] = false,
-      },
-      fzf_lua_frecency = {
-        display_score = true,
-        fd_cmd = table.concat(fd_cmd, " "),
-      },
-    })
-  require "fzf-lua-frecency".frecency(opts)
+  -- local ignore_dirs = { "node_modules", ".git", "dist", }
+  -- local fd_cmd = { "fd", "--absolute-path", "--hidden", "--type", "f", }
+  -- for _, ignore_dir in pairs(ignore_dirs) do
+  --   table.insert(fd_cmd, "--exclude")
+  --   table.insert(fd_cmd, ignore_dir)
+  -- end
+  --
+  -- local opts = vim.tbl_extend(
+  --   "error",
+  --   without_preview_opts,
+  --   {
+  --     file_icons = true,
+  --     color_icons = true,
+  --     fzf_opts = {
+  --       ["--no-sort"] = false,
+  --     },
+  --     fzf_lua_frecency = {
+  --       display_score = true,
+  --       fd_cmd = table.concat(fd_cmd, " "),
+  --     },
+  --   })
+  -- require "fzf-lua-frecency".frecency(opts)
+  fzf_lua.files()
 end, { desc = "Search files with fzf", })
 vim.keymap.set("n", "<leader>l;", without_preview_cb(fzf_lua.command_history),
   { desc = "Search command history with fzf", })
