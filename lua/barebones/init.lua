@@ -23,7 +23,7 @@ vim.keymap.set("n", "<C-p>", ":find<space>")
 vim.opt.path:append "**" -- search in subdirectories
 vim.keymap.set("n", "<leader>a", ":grep<space>")
 vim.keymap.set("n", "<leader>h", ":help<space>")
-vim.keymap.set("n", "<leader>m", h.keys.vim_cmd_cb "marks")
+vim.keymap.set("n", "<leader>lm", h.keys.vim_cmd_cb "marks")
 vim.keymap.set("n", "<leader>l;", h.keys.vim_cmd_cb "history")
 vim.keymap.set("n", "<leader>b", ":b<space>")
 
