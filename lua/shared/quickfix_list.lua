@@ -2,7 +2,7 @@ local h = require "helpers"
 
 --- @param bufname string
 local function shorten_bufname(bufname)
-  return vim.fs.basename(vim.fs.dirname(bufname)) .. "/" .. vim.fs.basename(bufname)
+  return vim.fs.basename(vim.fs.joinpath(vim.fs.dirname(bufname), vim.fs.basename(bufname)))
 end
 
 vim.opt.quickfixtextfunc = "v:lua.GetQuickfixTextFunc"
@@ -40,17 +40,9 @@ function _G.GetQuickfixTextFunc()
   local items = {}
   for _, item in pairs(qf_list) do
     local bufname = shorten_bufname(vim.fn.bufname(item.bufnr))
-    if #bufname > longest_bufname_len then
-      longest_bufname_len = #bufname
-    end
-
-    if #tostring(item.lnum) > longest_row_len then
-      longest_row_len = #tostring(item.lnum)
-    end
-
-    if #tostring(item.col) > longest_col_len then
-      longest_col_len = #tostring(item.col)
-    end
+    longest_bufname_len = math.max(#bufname, longest_bufname_len)
+    longest_row_len = math.max(#tostring(item.lnum), longest_row_len)
+    longest_col_len = math.max(#tostring(item.col), longest_col_len)
   end
 
   for index, item in pairs(qf_list) do
