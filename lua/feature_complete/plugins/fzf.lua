@@ -71,7 +71,7 @@ vim.keymap.set("n", "<leader>f", function()
     table.insert(fd_cmd, ignore_dir)
   end
 
-  local opts = vim.tbl_extend(
+  local opts = vim.tbl_deep_extend(
     "error",
     without_preview_opts,
     {
@@ -90,7 +90,7 @@ end, { desc = "Search files with fzf", })
 vim.keymap.set("n", "<leader>l;", without_preview_cb(fzf_lua.command_history),
   { desc = "Search command history with fzf", })
 vim.keymap.set("n", "<leader>i", function()
-    local opts = vim.tbl_extend("error", without_preview_opts, {
+    local opts = vim.tbl_deep_extend("error", without_preview_opts, {
       actions = { ["right"] = false, ["left"] = false, ["ctrl-x"] = false, },
     })
     fzf_lua.git_status(opts)

@@ -22,3 +22,5 @@ bufferline.setup {
 
 vim.keymap.set("n", "L", h.keys.vim_cmd_cb "BufferLineCycleNext", { desc = "Move to the buffer to the right", })
 vim.keymap.set("n", "H", h.keys.vim_cmd_cb "BufferLineCyclePrev", { desc = "Move to the buffer to the left", })
+vim.keymap.set("n", "]b", "<nop>")
+vim.keymap.set("n", "[b", "<nop>")

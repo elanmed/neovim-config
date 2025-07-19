@@ -4,14 +4,14 @@ colorful_menu.setup {}
 local blink = require "blink.cmp"
 local blink_types = require "blink.cmp.types"
 
+vim.keymap.set("i", "<C-n>", "<nop>")
 blink.setup {
   keymap = {
     preset = "none",
-    ["<C-x>"] = { "show", },
+    ["<C-n>"] = { "show", "select_next", "fallback", },
     ["<Cr>"] = { "accept", "fallback", },
     ["<C-y>"] = { "accept", },
     ["<C-c>"] = { "cancel", },
-    ["<C-n>"] = { "select_next", "fallback", },
     ["<C-p>"] = { "select_prev", "fallback", },
     ["<Down>"] = { "select_next", "fallback", },
     ["<Up>"] = { "select_prev", "fallback", },
@@ -19,9 +19,8 @@ blink.setup {
     ["<C-u>"] = { "scroll_documentation_up", },
   },
   completion = {
-    ghost_text = { enabled = true, },
     documentation = { window = { border = "single", }, auto_show = true, auto_show_delay_ms = 0, },
-    list = { selection = { preselect = false, auto_insert = false, }, },
+    list = { selection = { preselect = false, auto_insert = true, }, },
     menu = {
       draw = {
         -- https://github.com/xzbdmw/colorful-menu.nvim#use-it-in-blinkcmp
