@@ -61,6 +61,7 @@ local function without_preview_cb(cb)
 end
 
 vim.keymap.set("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
+vim.keymap.set("n", "<leader>ls", with_preview_cb(fzf_lua.lsp_finder), { desc = "Resume fzf-lua search", })
 vim.keymap.set("n", "<leader>h", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with fzf", })
 vim.keymap.set("n", "<leader>lm", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
 vim.keymap.set("n", "<leader>f", function()
@@ -115,23 +116,20 @@ local function live_grep_with_args(initial_query)
 
   require "rg-glob-builder".fzf_lua_adapter {
     fzf_lua_opts = opts,
-    rg_glob_builder_opts = {
-      nil_unless_trailing_space = true,
-    },
   }
 end
 
-vim.keymap.set("n", "<leader>a", function() live_grep_with_args "~" end)
+vim.keymap.set("n", "<leader>a", function() live_grep_with_args "" end)
 vim.keymap.set("v", "<leader>o",
   function()
     local require_visual_mode_active = true
     local visual_selection = grug.get_current_visual_selection(require_visual_mode_active)
     if visual_selection == "" then return end
-    live_grep_with_args("~" .. visual_selection .. "~ ")
+    live_grep_with_args(visual_selection .. " -- ")
   end, { desc = "Grep the current word", })
 vim.keymap.set("n", "<leader>o",
   function()
-    live_grep_with_args("~" .. vim.fn.expand "<cword>" .. "~ ")
+    live_grep_with_args(vim.fn.expand "<cword>" .. " -- ")
   end, { desc = "Grep the current visual selection", })
 
 local function get_stripped_filename()

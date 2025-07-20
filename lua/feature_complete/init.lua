@@ -33,7 +33,6 @@ end
 bootstrap_paq {
   "savq/paq-nvim",
   -- (no file)
-  "nvim-lua/popup.nvim",
   "nvim-lua/plenary.nvim",
   "tpope/vim-repeat",
   "tpope/vim-speeddating",
