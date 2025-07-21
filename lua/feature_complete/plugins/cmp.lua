@@ -8,7 +8,7 @@ vim.keymap.set("i", "<C-n>", "<nop>")
 blink.setup {
   keymap = {
     preset = "none",
-    ["<C-n>"] = { "show", "select_next", "fallback", },
+    ["<C-n>"] = { "show", "select_next", },
     ["<Cr>"] = { "accept", "fallback", },
     ["<C-y>"] = { "accept", "fallback", },
     ["<C-c>"] = { "cancel", "fallback", },
