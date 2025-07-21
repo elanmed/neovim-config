@@ -175,6 +175,7 @@ vim.keymap.set("n", "<leader>.r", function()
   end
 end, { expr = true, desc = "Record a macro", })
 vim.keymap.set("n", "<leader>.e", "@Q", { desc = "Execute a macro", })
+vim.keymap.set("n", "<leader>V", "G" .. "V" .. "gg", { desc = "Execute a macro", })
 
 vim.keymap.set("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>/", "<nop>", { desc = "TODO find a remap", })
