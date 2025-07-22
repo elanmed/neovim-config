@@ -76,8 +76,6 @@ vim.keymap.set("n", "<leader>f", function()
     "error",
     without_preview_opts,
     {
-      file_icons = true,
-      color_icons = true,
       fzf_opts = {
         ["--no-sort"] = false,
       },
