@@ -10,11 +10,6 @@ require "quickfix-preview".setup {
     cnext = { key = "<C-n>", },
     cprev = { key = "<C-p>", },
   },
-  preview_win_opts = {
-    relativenumber = false,
-    number = true,
-    signcolumn = "no",
-  },
 }
 
 vim.api.nvim_create_autocmd({ "FileType", }, {
