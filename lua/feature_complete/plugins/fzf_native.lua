@@ -1,6 +1,27 @@
 local h = require "helpers"
 local grug = require "grug-far"
 
+local prev_rg_query_file = vim.fs.joinpath(
+  os.getenv "HOME",
+  ".dotfiles/neovim/.config/nvim/fzf_scripts/prev-rg-query.txt"
+)
+local remove_frecency_file_script = vim.fs.joinpath(
+  os.getenv "HOME",
+  "/.dotfiles/neovim/.config/nvim/fzf_scripts/remove-frecency-file.sh"
+)
+local rg_with_globs_script = vim.fs.joinpath(
+  os.getenv "HOME",
+  "/.dotfiles/neovim/.config/nvim/fzf_scripts/rg-with-globs.sh"
+)
+local frecency_and_fd_files_script = vim.fs.joinpath(
+  os.getenv "HOME",
+  "/.dotfiles/neovim/.config/nvim/fzf_scripts/frecency-and-fd-files.sh"
+)
+local frecency_files_script = vim.fs.joinpath(
+  os.getenv "HOME",
+  "/.dotfiles/neovim/.config/nvim/fzf_scripts/frecency-files.sh"
+)
+
 local function extend(...)
   local result = {}
   for _, list in ipairs { ..., } do
@@ -83,18 +104,8 @@ vim.keymap.set("n", "<leader>i", function()
   -- vim.cmd "GFiles?"
 end)
 
-local prev_rg_query_file = vim.fs.joinpath(
-  os.getenv "HOME",
-  ".dotfiles/neovim/.config/nvim/fzf_scripts/prev-rg-query.txt"
-)
-
 -- https://junegunn.github.io/fzf/tips/ripgrep-integration/
 local function rg_with_globs(default_query)
-  local rg_with_globs_script = vim.fs.joinpath(
-    os.getenv "HOME",
-    "/.dotfiles/neovim/.config/nvim/fzf_scripts/rg-with-globs.sh"
-  )
-
   default_query = default_query or ""
   local rg_options = {
     "--query", default_query,
@@ -139,21 +150,22 @@ local function rg_with_globs(default_query)
 end
 
 vim.keymap.set("n", "<leader>f", function()
+  local sorted_files_path = require "fzf-lua-frecency.helpers".get_sorted_files_path()
+  local source = table.concat({
+    frecency_and_fd_files_script,
+    vim.fn.getcwd(),
+    sorted_files_path,
+  }, " ")
+
   local fd_options = {
     "--prompt", "Frecency> ",
     "--delimiter", ":",
     "--preview=bat --style=numbers --color=always {2}",
+    ("--bind=ctrl-x:execute(%s %s {2})+reload(%s)"):format(remove_frecency_file_script, vim.fn.getcwd(), source),
   }
-  local frecency_and_fd_files_script = vim.fs.joinpath(os.getenv "HOME",
-    "/.dotfiles/neovim/.config/nvim/fzf_scripts/frecency-and-fd-files.sh")
-  local sorted_files_path = require "fzf-lua-frecency.helpers".get_sorted_files_path()
 
   local spec = {
-    source = table.concat({
-      frecency_and_fd_files_script,
-      vim.fn.getcwd(),
-      sorted_files_path,
-    }, " "),
+    source = source,
     options = extend(fd_options, default_opts_tbl, single_opts_tbl),
     window = with_preview_window_opts,
     sink = function(entry)
@@ -172,10 +184,6 @@ vim.keymap.set("n", "<leader>f", function()
 end)
 
 vim.keymap.set("n", "<leader>zf", function()
-  local remove_frecency_file_script = vim.fs.joinpath(os.getenv "HOME",
-    "/.dotfiles/neovim/.config/nvim/fzf_scripts/remove-frecency-file.sh")
-  local frecency_files_script = vim.fs.joinpath(os.getenv "HOME",
-    "/.dotfiles/neovim/.config/nvim/fzf_scripts/frecency-files.sh")
   local sorted_files_path = require "fzf-lua-frecency.helpers".get_sorted_files_path()
 
   local source = table.concat({
