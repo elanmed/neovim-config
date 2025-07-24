@@ -1,3 +1,6 @@
+local h = require "helpers"
+local grug = require "grug-far"
+
 local function extend(...)
   local result = {}
   for _, list in ipairs { ..., } do
@@ -44,8 +47,7 @@ local without_preview_window_opts = vim.tbl_extend("force", base_window_opts, { 
 local with_preview_window_opts = vim.tbl_extend("force", base_window_opts, { height = 0.85, })
 
 local function set_preview_window_opts(preview)
-  -- vim.api.nvim_set_var("fzf_layout", { window = preview and with_preview_window_opts or without_preview_window_opts, })
-  vim.api.nvim_set_var("fzf_layout", { window = with_preview_window_opts, })
+  vim.api.nvim_set_var("fzf_layout", { window = preview and with_preview_window_opts or without_preview_window_opts, })
 end
 
 vim.api.nvim_set_var("fzf_vim", {
@@ -89,59 +91,74 @@ vim.keymap.set("n", "<leader>zi", function()
   -- vim.cmd "GFiles?"
 end)
 
-vim.keymap.set("n", "<leader>za", function()
+-- https://junegunn.github.io/fzf/tips/ripgrep-integration/
+local function live_grep_with_args(default_query)
   local script = os.getenv "HOME" .. "/.dotfiles/neovim/.config/nvim/rg-cmd.sh"
 
-  -- https://junegunn.github.io/fzf/tips/ripgrep-integration/
-  local function rg_with_custom_flags()
-    local spec = {
-      source = ":",
-      options = {
-        "--cycle",
-        "--style=full",
-        "--disabled",
-        "--ansi",
-        "--prompt", "Rg> ",
-        "--header=-e by *.[ext] :: -f by file :: -d by **/[dir]/** :: -c by case sensitive :: -nc by case insensitive :: -w by whole word :: -nw by partial word",
-        "--delimiter", ":",
-        ("--bind=change:reload:%s {q} || true"):format(script),
-        "--preview=bat --style=numbers --color=always --highlight-line {2} {1}",
-      },
-    }
+  default_query = default_query or ""
+  local rg_options = {
+    "--query", default_query,
+    "--cycle",
+    "--style=full",
+    "--disabled",
+    "--ansi",
+    "--prompt", "Rg> ",
+    "--header=-e by *.[ext] :: -f by file :: -d by **/[dir]/** :: -c by case sensitive :: -nc by case insensitive :: -w by whole word :: -nw by partial word",
+    "--delimiter", ":",
+    ("--bind=change:reload:%s {q} || true"):format(script),
+    "--preview=bat --style=numbers --color=always --highlight-line {2} {1}",
+  }
 
-    vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
+  local spec = {
+    source = ":",
+    options = extend(rg_options, default_opts_tbl, multi_opts_tbl),
+    window = with_preview_window_opts,
+  }
+
+  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
+end
+
+vim.keymap.set("n", "<leader>a", function() live_grep_with_args "" end)
+vim.keymap.set("v", "<leader>o",
+  function()
+    local require_visual_mode_active = true
+    local visual_selection = grug.get_current_visual_selection(require_visual_mode_active)
+    if visual_selection == "" then return end
+    live_grep_with_args(visual_selection .. " -- ")
+  end, { desc = "Grep the current word", })
+vim.keymap.set("n", "<leader>o", function()
+  live_grep_with_args(vim.fn.expand "<cword>" .. " -- ")
+end, { desc = "Grep the current visual selection", })
+
+local function get_stripped_filename()
+  local filepath = vim.fn.expand "%:p"
+
+  local start_idx = filepath:find "wf_modules"
+  if not start_idx then
+    h.notify.error "`wf_modules` not found in the filepath!"
+    return nil
+  end
+  local stripped_start = filepath:sub(start_idx)
+  local dot_idx = stripped_start:find "%." -- % escapes
+  if dot_idx then
+    stripped_start = stripped_start:sub(1, dot_idx - 1)
   end
 
-  rg_with_custom_flags()
-end)
+  return stripped_start
+end
 
--- vim.keymap.set("n", "<leader>zm", function()
---   local marks = {}
---   for _, entry in pairs(vim.fn.getmarklist()) do
---     local file = vim.fs.normalize(entry.file)
---     if not vim.startswith(file, vim.fn.getcwd()) then
---       goto continue
---     end
---     local rel = vim.fs.relpath(vim.fn.getcwd(), file)
---     local formatted = ("%s:%s"):format(entry.mark, rel)
---     table.insert(marks, formatted)
---
---     ::continue::
---   end
---
---   vim.fn["fzf#run"] {
---     source = marks,
---     options = table.concat({
---         [[--preview="echo {} | awk -F':' '{print \$NF}' | xargs bat --style=plain --color=always"]],
---       },
---       " "),
---     sinklist = function(list)
---       local qf_list = vim.tbl_map(function(file)
---         local trimmed_file = (file):match "([^:]+)$"
---         return { filename = vim.fs.relpath(vim.fn.getcwd(), trimmed_file), }
---       end, list)
---       vim.fn.setqflist(qf_list, "a")
---       vim.cmd "copen"
---     end,
---   }
--- end)
+vim.keymap.set("n", "<leader>lw",
+  function()
+    local stripped_filename = get_stripped_filename()
+    if stripped_filename == nil then return end
+
+    live_grep_with_args("~" .. stripped_filename .. "~ ")
+  end, { desc = "Grep the current file name starting with `wf_modules`", })
+
+vim.keymap.set("n", "<leader>yw",
+  function()
+    local stripped_filename = get_stripped_filename()
+    if stripped_filename == nil then return end
+
+    vim.fn.setreg("+", stripped_filename)
+  end, { desc = "Yank a file name starting with `wf_modules`", })
