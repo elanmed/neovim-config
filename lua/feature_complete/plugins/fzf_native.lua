@@ -87,12 +87,8 @@ vim.keymap.set("n", "<leader>i", function()
   -- vim.cmd "GFiles?"
 end)
 
--- TODO:
--- resume
--- store last command
-
-local next_rg_cmd_script = os.getenv "HOME" .. "/.dotfiles/neovim/.config/nvim/next-rg-cmd.sh"
-local prev_rg_query_file = os.getenv "HOME" .. "/.dotfiles/neovim/.config/nvim/prev-rg-query.txt"
+local next_rg_cmd_script = vim.fs.joinpath(os.getenv "HOME", "/.dotfiles/neovim/.config/nvim/next-rg-cmd.sh")
+local prev_rg_query_file = vim.fs.joinpath(os.getenv "HOME", "/.dotfiles/neovim/.config/nvim/prev-rg-query.txt")
 
 -- https://junegunn.github.io/fzf/tips/ripgrep-integration/
 local function live_grep_with_args(default_query)
