@@ -135,6 +135,37 @@ local function live_grep_with_args(default_query)
   vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
 end
 
+vim.keymap.set("n", "<leader>f", function()
+  local fd_options = {
+    "--prompt", "Frecency> ",
+    "--delimiter", ":",
+    "--preview=bat --style=numbers --color=always {2}",
+  }
+  local fd_cmd_script = vim.fs.joinpath(os.getenv "HOME", "/.dotfiles/neovim/.config/nvim/fd-cmd.sh")
+  local sorted_files_path = require "fzf-lua-frecency.helpers".get_sorted_files_path()
+
+  local spec = {
+    source = table.concat({
+      fd_cmd_script,
+      vim.fn.getcwd(),
+      sorted_files_path,
+    }, " "),
+    options = extend(fd_options, default_opts_tbl, single_opts_tbl),
+    window = with_preview_window_opts,
+    sink = function(entry)
+      local filename = entry:match "([^:]+)$"
+      local abs_file = vim.fs.joinpath(vim.fn.getcwd(), filename)
+      vim.schedule(function()
+        require "fzf-lua-frecency.algo".update_file_score(abs_file, {
+          update_type = "increase",
+        })
+      end)
+      vim.cmd("e " .. filename)
+    end,
+  }
+
+  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
+end)
 vim.keymap.set("n", "<leader>a", function() live_grep_with_args "" end)
 vim.keymap.set("n", "<leader>zr", function()
   local file = io.open(prev_rg_query_file, "r")

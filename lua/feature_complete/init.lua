@@ -56,7 +56,6 @@ bootstrap_paq {
   "karb94/neoscroll.nvim",
   -- fzf
   "junegunn/fzf.vim",
-  "ibhagwan/fzf-lua",
   "elanmed/rg-glob-builder.nvim",
   "elanmed/fzf-lua-frecency.nvim",
   -- lsp
