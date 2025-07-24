@@ -113,7 +113,7 @@ local require_dir = function(dir)
   end
 
   local base_lua_path = vim.fn.stdpath "config" .. "/lua" -- ~/.config/nvim/lua/
-  local glob_path = base_lua_path .. dir .. "*.lua"       -- ~/.config/nvim/lua/feature_complete/plugins/*.lua
+  local glob_path = base_lua_path .. dir .. "*.lua" -- ~/.config/nvim/lua/feature_complete/plugins/*.lua
   for _, path in pairs(vim.split(vim.fn.glob(glob_path), "\n")) do
     -- convert absolute filename to relative
     -- ~/.config/nvim/lua/feature_complete/plugins/*.lua -> feature_complete/plugins/*
