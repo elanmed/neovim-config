@@ -21,10 +21,6 @@ local default_opts_tbl = {
   "--bind=ctrl-u:preview-page-up",
 }
 
-local preview_opts_tbl = {
-  "--preview='~/.local/share/nvim/site/pack/paqs/start/fzf.vim/bin/preview.sh {}'",
-}
-
 local multi_opts_tbl = {
   "--multi",
   "--bind=ctrl-a:toggle-all",
@@ -95,10 +91,11 @@ end)
 -- resume
 -- store last command
 
+local next_rg_cmd_script = os.getenv "HOME" .. "/.dotfiles/neovim/.config/nvim/next-rg-cmd.sh"
+local prev_rg_query_file = os.getenv "HOME" .. "/.dotfiles/neovim/.config/nvim/prev-rg-query.txt"
+
 -- https://junegunn.github.io/fzf/tips/ripgrep-integration/
 local function live_grep_with_args(default_query)
-  local script = os.getenv "HOME" .. "/.dotfiles/neovim/.config/nvim/rg-cmd.sh"
-
   default_query = default_query or ""
   local rg_options = {
     "--query", default_query,
@@ -110,8 +107,8 @@ local function live_grep_with_args(default_query)
     "--header=-e by *.[ext] :: -f by file :: -d by **/[dir]/** :: -c by case sensitive :: -nc by case insensitive :: -w by whole word :: -nw by partial word",
     "--delimiter", ":",
     "--preview=bat --style=numbers --color=always --highlight-line {2} {1}",
-    ("--bind=start:reload:%s {q} || true"):format(script),
-    ("--bind=change:reload:%s {q} || true"):format(script),
+    ("--bind=start:reload:%s {q} || true"):format(next_rg_cmd_script),
+    ("--bind=change:reload:%s {q} || true"):format(next_rg_cmd_script),
   }
 
   local spec = {
@@ -143,6 +140,14 @@ local function live_grep_with_args(default_query)
 end
 
 vim.keymap.set("n", "<leader>a", function() live_grep_with_args "" end)
+vim.keymap.set("n", "<leader>zr", function()
+  local file = io.open(prev_rg_query_file, "r")
+  if not file then return end
+  local prev_rg_query = file:read "*a"
+  prev_rg_query = prev_rg_query:gsub("\n$", "")
+  file:close()
+  live_grep_with_args(prev_rg_query)
+end)
 vim.keymap.set("v", "<leader>o",
   function()
     local require_visual_mode_active = true
