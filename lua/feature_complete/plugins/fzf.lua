@@ -62,7 +62,7 @@ end
 
 vim.keymap.set("n", "<leader>lr", fzf_lua.resume, { desc = "Resume fzf-lua search", })
 vim.keymap.set("n", "<leader>ls", with_preview_cb(fzf_lua.lsp_finder), { desc = "Resume fzf-lua search", })
-vim.keymap.set("n", "<leader>h", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with fzf", })
+vim.keymap.set("n", "<leader>lh", with_preview_cb(fzf_lua.helptags), { desc = "Search help tags with fzf", })
 vim.keymap.set("n", "<leader>lm", with_preview_cb(fzf_lua.marks), { desc = "Search help tags with fzf", })
 vim.keymap.set("n", "<leader>f", function()
   local ignore_dirs = { "node_modules", ".git", "dist", }
@@ -95,7 +95,7 @@ vim.keymap.set("n", "<leader>i", function()
     fzf_lua.git_status(opts)
   end,
   { desc = "Search git status with fzf", })
-vim.keymap.set("n", "<leader>b", without_preview_cb(fzf_lua.buffers),
+vim.keymap.set("n", "<leader>lb", without_preview_cb(fzf_lua.buffers),
   { desc = "Search currently open buffers with fzf", })
 vim.keymap.set("n", "<leader>lt", without_preview_cb(fzf_lua.tabs),
   { desc = "Search currently open tabs with fzf", })

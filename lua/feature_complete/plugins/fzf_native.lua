@@ -14,6 +14,8 @@ local default_opts_tbl = {
   "--cycle",
   "--style=full",
   "--preview-window=up:50%",
+  "--bind=ctrl-d:preview-page-down",
+  "--bind=ctrl-u:preview-page-up",
 }
 
 local preview_opts_tbl = {
@@ -39,10 +41,11 @@ local base_window_opts = {
   border = "none",
 }
 local without_preview_window_opts = vim.tbl_extend("force", base_window_opts, { height = 0.5, })
-local with_preview_window_opts = vim.tbl_extend("force", base_window_opts, { height = 0.8, })
+local with_preview_window_opts = vim.tbl_extend("force", base_window_opts, { height = 0.85, })
 
 local function set_preview_window_opts(preview)
-  vim.api.nvim_set_var("fzf_layout", { window = preview and with_preview_window_opts or without_preview_window_opts, })
+  -- vim.api.nvim_set_var("fzf_layout", { window = preview and with_preview_window_opts or without_preview_window_opts, })
+  vim.api.nvim_set_var("fzf_layout", { window = with_preview_window_opts, })
 end
 
 vim.api.nvim_set_var("fzf_vim", {
@@ -52,7 +55,7 @@ vim.api.nvim_set_var("fzf_vim", {
   files_options = fzf_opts(default_opts_tbl, multi_opts_tbl, { "--prompt='Files> '", }),
 })
 
-vim.keymap.set("n", "<leader>zh", function()
+vim.keymap.set("n", "<leader>h", function()
   set_preview_window_opts(true)
   vim.cmd "Helptags"
 end)
@@ -60,7 +63,7 @@ vim.keymap.set("n", "<leader>zm", function()
   set_preview_window_opts(false)
   vim.cmd "Marks"
 end)
-vim.keymap.set("n", "<leader>zb", function()
+vim.keymap.set("n", "<leader>b", function()
   set_preview_window_opts(true)
   vim.cmd "Buffers"
 end)
@@ -84,6 +87,32 @@ vim.keymap.set("n", "<leader>zi", function()
   })
   -- TODO: fzf_vim options entry
   -- vim.cmd "GFiles?"
+end)
+
+vim.keymap.set("n", "<leader>za", function()
+  local script = os.getenv "HOME" .. "/.dotfiles/neovim/.config/nvim/rg-cmd.sh"
+
+  -- https://junegunn.github.io/fzf/tips/ripgrep-integration/
+  local function rg_with_custom_flags()
+    local spec = {
+      source = ":",
+      options = {
+        "--cycle",
+        "--style=full",
+        "--disabled",
+        "--ansi",
+        "--prompt", "Rg> ",
+        "--header=-e by *.[ext] :: -f by file :: -d by **/[dir]/** :: -c by case sensitive :: -nc by case insensitive :: -w by whole word :: -nw by partial word",
+        "--delimiter", ":",
+        ("--bind=change:reload:%s {q} || true"):format(script),
+        "--preview=bat --style=numbers --color=always --highlight-line {2} {1}",
+      },
+    }
+
+    vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
+  end
+
+  rg_with_custom_flags()
 end)
 
 -- vim.keymap.set("n", "<leader>zm", function()
