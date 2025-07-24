@@ -44,7 +44,7 @@ local base_window_opts = {
   border = "none",
 }
 local without_preview_window_opts = vim.tbl_extend("force", base_window_opts, { height = 0.5, })
-local with_preview_window_opts = vim.tbl_extend("force", base_window_opts, { height = 0.85, })
+local with_preview_window_opts = vim.tbl_extend("force", base_window_opts, { height = 1, })
 
 local function set_preview_window_opts(preview)
   vim.api.nvim_set_var("fzf_layout", { window = preview and with_preview_window_opts or without_preview_window_opts, })
@@ -82,7 +82,7 @@ vim.keymap.set("n", "<leader>z;", function()
   -- TODO: fzf_vim options entry
   -- vim.cmd "History:"
 end)
-vim.keymap.set("n", "<leader>zi", function()
+vim.keymap.set("n", "<leader>i", function()
   set_preview_window_opts(true)
   vim.fn["fzf#vim#gitfiles"]("?", {
     options = fzf_opts(default_opts_tbl, single_opts_tbl),
@@ -90,6 +90,10 @@ vim.keymap.set("n", "<leader>zi", function()
   -- TODO: fzf_vim options entry
   -- vim.cmd "GFiles?"
 end)
+
+-- TODO:
+-- resume
+-- store last command
 
 -- https://junegunn.github.io/fzf/tips/ripgrep-integration/
 local function live_grep_with_args(default_query)
@@ -105,14 +109,34 @@ local function live_grep_with_args(default_query)
     "--prompt", "Rg> ",
     "--header=-e by *.[ext] :: -f by file :: -d by **/[dir]/** :: -c by case sensitive :: -nc by case insensitive :: -w by whole word :: -nw by partial word",
     "--delimiter", ":",
-    ("--bind=change:reload:%s {q} || true"):format(script),
     "--preview=bat --style=numbers --color=always --highlight-line {2} {1}",
+    ("--bind=start:reload:%s {q} || true"):format(script),
+    ("--bind=change:reload:%s {q} || true"):format(script),
   }
 
   local spec = {
     source = ":",
     options = extend(rg_options, default_opts_tbl, multi_opts_tbl),
     window = with_preview_window_opts,
+    sinklist = function(list)
+      if #list == 1 then
+        local split_entry = vim.split(list[1], ":")
+        local filename = split_entry[1]
+        vim.cmd("e " .. filename)
+        return
+      end
+
+      local qf_list = vim.tbl_map(function(entry)
+        local split_entry = vim.split(entry, ":")
+        local filename = split_entry[1]
+        local row = split_entry[2]
+        local col = split_entry[3]
+        local text = split_entry[4]
+        return { filename = filename, lnum = row, col = col, text = text, }
+      end, list)
+      vim.fn.setqflist(qf_list, "a")
+      vim.cmd "copen"
+    end,
   }
 
   vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
