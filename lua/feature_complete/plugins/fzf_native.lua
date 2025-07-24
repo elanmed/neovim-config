@@ -37,7 +37,7 @@ end
 local default_opts_tbl = {
   "--cycle",
   "--style=full",
-  "--preview-window=up:50%",
+  "--preview-window=up:40%",
   "--bind=ctrl-d:preview-page-down",
   "--bind=ctrl-u:preview-page-up",
 }
@@ -71,7 +71,6 @@ vim.api.nvim_set_var("fzf_vim", {
   helptags_options = fzf_opts(default_opts_tbl, single_opts_tbl),
   marks_options = fzf_opts(default_opts_tbl, single_opts_tbl),
   buffers_options = fzf_opts(default_opts_tbl, single_opts_tbl),
-  files_options = fzf_opts(default_opts_tbl, multi_opts_tbl, { "--prompt='Files> '", }),
 })
 
 vim.keymap.set("n", "<leader>h", function()
@@ -117,12 +116,11 @@ local function rg_with_globs(default_query)
     "--header=-e by *.[ext] :: -f by file :: -d by **/[dir]/** :: -c by case sensitive :: -nc by case insensitive :: -w by whole word :: -nw by partial word",
     "--delimiter", ":",
     "--preview=bat --style=numbers --color=always --highlight-line {2} {1}",
-    ("--bind=start:reload:%s {q} || true"):format(rg_with_globs_script),
-    ("--bind=change:reload:%s {q} || true"):format(rg_with_globs_script),
+    ("--bind=start:reload:%s {q} || :"):format(rg_with_globs_script),
+    ("--bind=change:reload:%s {q} || :"):format(rg_with_globs_script),
   }
 
   local spec = {
-    source = ":",
     options = extend(rg_options, default_opts_tbl, multi_opts_tbl),
     window = with_preview_window_opts,
     sinklist = function(list)
@@ -157,7 +155,7 @@ vim.keymap.set("n", "<leader>f", function()
     sorted_files_path,
   }, " ")
 
-  local fd_options = {
+  local frecency_and_fd_opts = {
     "--prompt", "Frecency> ",
     "--delimiter", ":",
     "--preview=bat --style=numbers --color=always {2}",
@@ -166,7 +164,7 @@ vim.keymap.set("n", "<leader>f", function()
 
   local spec = {
     source = source,
-    options = extend(fd_options, default_opts_tbl, single_opts_tbl),
+    options = extend(frecency_and_fd_opts, default_opts_tbl, single_opts_tbl),
     window = with_preview_window_opts,
     sink = function(entry)
       local filename = entry:match "([^:]+)$"
@@ -185,13 +183,12 @@ end)
 
 vim.keymap.set("n", "<leader>zf", function()
   local sorted_files_path = require "fzf-lua-frecency.helpers".get_sorted_files_path()
-
   local source = table.concat({
     frecency_files_script,
     vim.fn.getcwd(),
     sorted_files_path,
   }, " ")
-  local fd_options = {
+  local frecency_opts = {
     "--prompt", "Frecency with scores> ",
     "--delimiter", ":",
     "--preview=bat --style=numbers --color=always {2}",
@@ -200,7 +197,7 @@ vim.keymap.set("n", "<leader>zf", function()
 
   local spec = {
     source = source,
-    options = extend(fd_options, default_opts_tbl, single_opts_tbl),
+    options = extend(frecency_opts, default_opts_tbl, single_opts_tbl),
     window = with_preview_window_opts,
     sink = function(entry)
       local filename = entry:match "([^:]+)$"
