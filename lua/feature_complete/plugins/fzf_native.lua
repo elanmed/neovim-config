@@ -65,10 +65,6 @@ vim.keymap.set("n", "<leader>b", function()
   set_preview_window_opts(true)
   vim.cmd "Buffers"
 end)
-vim.keymap.set("n", "<leader>zf", function()
-  set_preview_window_opts(true)
-  vim.cmd "Files"
-end)
 
 vim.keymap.set("n", "<leader>z;", function()
   set_preview_window_opts(false)
@@ -87,11 +83,18 @@ vim.keymap.set("n", "<leader>i", function()
   -- vim.cmd "GFiles?"
 end)
 
-local next_rg_cmd_script = vim.fs.joinpath(os.getenv "HOME", "/.dotfiles/neovim/.config/nvim/next-rg-cmd.sh")
-local prev_rg_query_file = vim.fs.joinpath(os.getenv "HOME", "/.dotfiles/neovim/.config/nvim/prev-rg-query.txt")
+local prev_rg_query_file = vim.fs.joinpath(
+  os.getenv "HOME",
+  ".dotfiles/neovim/.config/nvim/fzf_scripts/prev-rg-query.txt"
+)
 
 -- https://junegunn.github.io/fzf/tips/ripgrep-integration/
-local function live_grep_with_args(default_query)
+local function rg_with_globs(default_query)
+  local rg_with_globs_script = vim.fs.joinpath(
+    os.getenv "HOME",
+    "/.dotfiles/neovim/.config/nvim/fzf_scripts/rg-with-globs.sh"
+  )
+
   default_query = default_query or ""
   local rg_options = {
     "--query", default_query,
@@ -103,8 +106,8 @@ local function live_grep_with_args(default_query)
     "--header=-e by *.[ext] :: -f by file :: -d by **/[dir]/** :: -c by case sensitive :: -nc by case insensitive :: -w by whole word :: -nw by partial word",
     "--delimiter", ":",
     "--preview=bat --style=numbers --color=always --highlight-line {2} {1}",
-    ("--bind=start:reload:%s {q} || true"):format(next_rg_cmd_script),
-    ("--bind=change:reload:%s {q} || true"):format(next_rg_cmd_script),
+    ("--bind=start:reload:%s {q} || true"):format(rg_with_globs_script),
+    ("--bind=change:reload:%s {q} || true"):format(rg_with_globs_script),
   }
 
   local spec = {
@@ -141,12 +144,13 @@ vim.keymap.set("n", "<leader>f", function()
     "--delimiter", ":",
     "--preview=bat --style=numbers --color=always {2}",
   }
-  local fd_cmd_script = vim.fs.joinpath(os.getenv "HOME", "/.dotfiles/neovim/.config/nvim/fd-cmd.sh")
+  local frecency_and_fd_files_script = vim.fs.joinpath(os.getenv "HOME",
+    "/.dotfiles/neovim/.config/nvim/fzf_scripts/frecency-and-fd-files.sh")
   local sorted_files_path = require "fzf-lua-frecency.helpers".get_sorted_files_path()
 
   local spec = {
     source = table.concat({
-      fd_cmd_script,
+      frecency_and_fd_files_script,
       vim.fn.getcwd(),
       sorted_files_path,
     }, " "),
@@ -166,24 +170,57 @@ vim.keymap.set("n", "<leader>f", function()
 
   vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
 end)
-vim.keymap.set("n", "<leader>a", function() live_grep_with_args "" end)
+
+vim.keymap.set("n", "<leader>zf", function()
+  local remove_frecency_file_script = vim.fs.joinpath(os.getenv "HOME",
+    "/.dotfiles/neovim/.config/nvim/fzf_scripts/remove-frecency-file.sh")
+  local frecency_files_script = vim.fs.joinpath(os.getenv "HOME",
+    "/.dotfiles/neovim/.config/nvim/fzf_scripts/frecency-files.sh")
+  local sorted_files_path = require "fzf-lua-frecency.helpers".get_sorted_files_path()
+
+  local source = table.concat({
+    frecency_files_script,
+    vim.fn.getcwd(),
+    sorted_files_path,
+  }, " ")
+  local fd_options = {
+    "--prompt", "Frecency with scores> ",
+    "--delimiter", ":",
+    "--preview=bat --style=numbers --color=always {2}",
+    ("--bind=ctrl-x:execute(%s %s {2})+reload(%s)"):format(remove_frecency_file_script, vim.fn.getcwd(), source),
+  }
+
+  local spec = {
+    source = source,
+    options = extend(fd_options, default_opts_tbl, single_opts_tbl),
+    window = with_preview_window_opts,
+    sink = function(entry)
+      local filename = entry:match "([^:]+)$"
+      vim.cmd("e " .. filename)
+    end,
+  }
+
+  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
+end)
+
+vim.keymap.set("n", "<leader>a", function() rg_with_globs "" end)
 vim.keymap.set("n", "<leader>zr", function()
   local file = io.open(prev_rg_query_file, "r")
   if not file then return end
   local prev_rg_query = file:read "*a"
   prev_rg_query = prev_rg_query:gsub("\n$", "")
   file:close()
-  live_grep_with_args(prev_rg_query)
+  rg_with_globs(prev_rg_query)
 end)
 vim.keymap.set("v", "<leader>o",
   function()
     local require_visual_mode_active = true
     local visual_selection = grug.get_current_visual_selection(require_visual_mode_active)
     if visual_selection == "" then return end
-    live_grep_with_args(visual_selection .. " -- ")
+    rg_with_globs(visual_selection .. " -- ")
   end, { desc = "Grep the current word", })
 vim.keymap.set("n", "<leader>o", function()
-  live_grep_with_args(vim.fn.expand "<cword>" .. " -- ")
+  rg_with_globs(vim.fn.expand "<cword>" .. " -- ")
 end, { desc = "Grep the current visual selection", })
 
 local function get_stripped_filename()
@@ -208,7 +245,7 @@ vim.keymap.set("n", "<leader>lw",
     local stripped_filename = get_stripped_filename()
     if stripped_filename == nil then return end
 
-    live_grep_with_args("~" .. stripped_filename .. "~ ")
+    rg_with_globs("~" .. stripped_filename .. "~ ")
   end, { desc = "Grep the current file name starting with `wf_modules`", })
 
 vim.keymap.set("n", "<leader>yw",
