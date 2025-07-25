@@ -219,7 +219,7 @@ local function get_stripped_filename()
   return stripped_start
 end
 
-vim.keymap.set("n", "<leader>lw",
+vim.keymap.set("n", "<leader>zw",
   function()
     local stripped_filename = get_stripped_filename()
     if stripped_filename == nil then return end
