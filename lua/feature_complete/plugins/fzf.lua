@@ -149,11 +149,7 @@ end
 
 vim.keymap.set("n", "<leader>f", function()
   local sorted_files_path = require "fzf-lua-frecency.helpers".get_sorted_files_path()
-  local source = table.concat({
-    frecency_and_fd_files_script,
-    vim.fn.getcwd(),
-    sorted_files_path,
-  }, " ")
+  local source = table.concat({ frecency_and_fd_files_script, vim.fn.getcwd(), sorted_files_path, }, " ")
 
   local frecency_and_fd_opts = {
     "--prompt", "Frecency> ",
@@ -174,33 +170,6 @@ vim.keymap.set("n", "<leader>f", function()
           update_type = "increase",
         })
       end)
-      vim.cmd("e " .. filename)
-    end,
-  }
-
-  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
-end)
-
-vim.keymap.set("n", "<leader>zf", function()
-  local sorted_files_path = require "fzf-lua-frecency.helpers".get_sorted_files_path()
-  local source = table.concat({
-    frecency_files_script,
-    vim.fn.getcwd(),
-    sorted_files_path,
-  }, " ")
-  local frecency_opts = {
-    "--prompt", "Frecency with scores> ",
-    "--delimiter", ":",
-    "--preview=bat --style=numbers --color=always {2}",
-    ("--bind=ctrl-x:execute(%s %s {2})+reload(%s)"):format(remove_frecency_file_script, vim.fn.getcwd(), source),
-  }
-
-  local spec = {
-    source = source,
-    options = extend(frecency_opts, default_opts_tbl, single_opts_tbl),
-    window = with_preview_window_opts,
-    sink = function(entry)
-      local filename = entry:match "([^:]+)$"
       vim.cmd("e " .. filename)
     end,
   }
