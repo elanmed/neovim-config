@@ -38,21 +38,21 @@ end
 local default_opts_tbl = {
   "--cycle",
   "--style", "full",
-  "--preview-window=up:40%",
-  "--bind=ctrl-d:preview-page-down",
-  "--bind=ctrl-u:preview-page-up",
+  "--preview-window", "up:40%",
+  "--bind", "ctrl-d:preview-page-down",
+  "--bind", "ctrl-u:preview-page-up",
 }
 
 local multi_opts_tbl = {
   "--multi",
-  "--bind=ctrl-a:toggle-all",
-  "--bind=tab:select+down",
-  "--bind=shift-tab:up+deselect",
+  "--bind", "ctrl-a:toggle-all",
+  "--bind", "tab:select+down",
+  "--bind", "shift-tab:up+deselect",
 }
 
 local single_opts_tbl = {
-  "--bind=tab:down",
-  "--bind=shift-tab:up",
+  "--bind", "tab:down",
+  "--bind", "shift-tab:up",
 }
 
 local base_window_opts = {
@@ -107,6 +107,9 @@ end)
 -- https://junegunn.github.io/fzf/tips/ripgrep-integration/
 local function rg_with_globs(default_query)
   default_query = default_query or ""
+  local header =
+  "-e by *.[ext] :: -f by file :: -d by **/[dir]/** :: -c by case sensitive :: -nc by case insensitive :: -w by whole word :: -nw by partial word"
+
   local rg_options = {
     "--query", default_query,
     "--cycle",
@@ -114,13 +117,12 @@ local function rg_with_globs(default_query)
     "--disabled",
     "--ansi",
     "--prompt", "Rg> ",
-    "--header",
-    "-e by *.[ext] :: -f by file :: -d by **/[dir]/** :: -c by case sensitive :: -nc by case insensitive :: -w by whole word :: -nw by partial word",
+    "--header", header,
     "--delimiter", ":",
     "--preview", "bat --style=numbers --color=always {1} --highlight-line {2}",
     "--preview-window", "+{2}+3/3",
-    ("--bind=start:reload:%s {q} || :"):format(rg_with_globs_script),
-    ("--bind=change:reload:%s {q} || :"):format(rg_with_globs_script),
+    "--bind", ("start:reload:%s {q} || :"):format(rg_with_globs_script),
+    "--bind", ("change:reload:%s {q} || :"):format(rg_with_globs_script),
   }
 
   local spec = {
@@ -157,8 +159,8 @@ vim.keymap.set("n", "<leader>f", function()
   local frecency_and_fd_opts = {
     "--prompt", "Frecency> ",
     "--delimiter", ":",
-    "--preview=bat --style=numbers --color=always {2}",
-    ("--bind=ctrl-x:execute(%s %s {2})+reload(%s)"):format(remove_frecency_file_script, vim.fn.getcwd(), source),
+    "--preview", "bat --style=numbers --color=always {2}",
+    "--bind", ("ctrl-x:execute(%s %s {2})+reload(%s)"):format(remove_frecency_file_script, vim.fn.getcwd(), source),
   }
 
   local spec = {
