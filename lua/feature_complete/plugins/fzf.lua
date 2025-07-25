@@ -1,6 +1,11 @@
 local h = require "helpers"
 local grug = require "grug-far"
 
+local guicursor = vim.opt.guicursor:get()
+-- :h cursor-blinking
+table.insert(guicursor, "a:blinkon0")
+vim.opt.guicursor = guicursor
+
 local prev_rg_query_file = vim.fs.joinpath(
   os.getenv "HOME",
   ".dotfiles/neovim/.config/nvim/fzf_scripts/prev-rg-query.txt"
@@ -17,10 +22,6 @@ local frecency_and_fd_files_script = vim.fs.joinpath(
   os.getenv "HOME",
   "/.dotfiles/neovim/.config/nvim/fzf_scripts/frecency-and-fd-files.sh"
 )
-local frecency_files_script = vim.fs.joinpath(
-  os.getenv "HOME",
-  "/.dotfiles/neovim/.config/nvim/fzf_scripts/frecency-files.sh"
-)
 
 local function extend(...)
   local result = {}
@@ -36,7 +37,7 @@ end
 
 local default_opts_tbl = {
   "--cycle",
-  "--style=full",
+  "--style", "full",
   "--preview-window=up:40%",
   "--bind=ctrl-d:preview-page-down",
   "--bind=ctrl-u:preview-page-up",
@@ -109,13 +110,15 @@ local function rg_with_globs(default_query)
   local rg_options = {
     "--query", default_query,
     "--cycle",
-    "--style=full",
+    "--style", "full",
     "--disabled",
     "--ansi",
     "--prompt", "Rg> ",
-    "--header=-e by *.[ext] :: -f by file :: -d by **/[dir]/** :: -c by case sensitive :: -nc by case insensitive :: -w by whole word :: -nw by partial word",
+    "--header",
+    "-e by *.[ext] :: -f by file :: -d by **/[dir]/** :: -c by case sensitive :: -nc by case insensitive :: -w by whole word :: -nw by partial word",
     "--delimiter", ":",
-    "--preview=bat --style=numbers --color=always --highlight-line {2} {1}",
+    "--preview", "bat --style=numbers --color=always {1} --highlight-line {2}",
+    "--preview-window", "+{2}+3/3",
     ("--bind=start:reload:%s {q} || :"):format(rg_with_globs_script),
     ("--bind=change:reload:%s {q} || :"):format(rg_with_globs_script),
   }
