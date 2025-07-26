@@ -10,7 +10,20 @@ require "quickfix-preview".setup {
     cnext = { key = "<C-n>", },
     cprev = { key = "<C-p>", },
   },
+  preview_win_opts = {
+    relativenumber = false,
+    signcolumn = "no",
+  },
 }
+
+vim.api.nvim_create_autocmd({ "BufEnter", }, {
+  callback = function()
+    if not vim.api.nvim_get_option_value("previewwindow", { win = 0, }) then
+      vim.opt.relativenumber = true
+      vim.opt.signcolumn = "yes"
+    end
+  end,
+})
 
 vim.api.nvim_create_autocmd({ "FileType", }, {
   callback = function()
