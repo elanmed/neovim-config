@@ -3,8 +3,8 @@ cwd="$1"
 sorted_files_path="$2"
 
 cat \
-  <(cat "$sorted_files_path" 2>/dev/null | awk '{print "■ :" $0}') \
-  <(fd --absolute-path --hidden --type f --exclude node_modules --exclude .git --exclude dist | awk '{print "○ :" $0}') |
+  <(cat "$sorted_files_path" 2>/dev/null | awk '{print "■ |" $0}') \
+  <(fd --absolute-path --hidden --type f --exclude node_modules --exclude .git --exclude dist | awk '{print "○ |" $0}') |
   awk '!seen[substr($0, 4)]++' |
   while read -r abs_path; do
     # substring abs_path from 0 to 3

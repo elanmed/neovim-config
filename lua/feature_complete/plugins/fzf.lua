@@ -118,11 +118,11 @@ local function rg_with_globs(default_query)
     "--ansi",
     "--prompt", "Rg> ",
     "--header", header,
-    "--delimiter", ":",
+    "--delimiter", "|",
     "--preview", "bat --style=numbers --color=always {1} --highlight-line {2}",
     "--preview-window", "+{2}+3/3",
-    "--bind", ("start:reload:%s {q} || :"):format(rg_with_globs_script),
-    "--bind", ("change:reload:%s {q} || :"):format(rg_with_globs_script),
+    "--bind", ("start:reload:%s {q} || '|'"):format(rg_with_globs_script),
+    "--bind", ("change:reload:%s {q} || '|'"):format(rg_with_globs_script),
   }
 
   local spec = {
@@ -130,21 +130,25 @@ local function rg_with_globs(default_query)
     window = with_preview_window_opts,
     sinklist = function(list)
       if #list == 1 then
-        local split_entry = vim.split(list[1], ":")
+        local split_entry = vim.split(list[1], "|")
         local filename = split_entry[1]
+        local row_one_index = tonumber(split_entry[2])
+        local col_one_index = tonumber(split_entry[3])
+        local col_zero_index = col_one_index - 1
         vim.cmd("e " .. filename)
+        vim.api.nvim_win_set_cursor(0, { row_one_index, col_zero_index, })
         return
       end
 
       local qf_list = vim.tbl_map(function(entry)
-        local split_entry = vim.split(entry, ":")
+        local split_entry = vim.split(entry, "|")
         local filename = split_entry[1]
         local row = split_entry[2]
         local col = split_entry[3]
         local text = split_entry[4]
         return { filename = filename, lnum = row, col = col, text = text, }
       end, list)
-      vim.fn.setqflist(qf_list, "a")
+      vim.fn.setqflist(qf_list)
       vim.cmd "copen"
     end,
   }
@@ -158,7 +162,7 @@ vim.keymap.set("n", "<leader>f", function()
 
   local frecency_and_fd_opts = {
     "--prompt", "Frecency> ",
-    "--delimiter", ":",
+    "--delimiter", "|",
     "--preview", "bat --style=numbers --color=always {2}",
     "--bind", ("ctrl-x:execute(%s %s {2})+reload(%s)"):format(remove_frecency_file_script, vim.fn.getcwd(), source),
   }
@@ -168,7 +172,7 @@ vim.keymap.set("n", "<leader>f", function()
     options = extend(frecency_and_fd_opts, default_opts_tbl, single_opts_tbl),
     window = with_preview_window_opts,
     sink = function(entry)
-      local filename = entry:match "([^:]+)$"
+      local filename = vim.split(entry, "|")[2]
       local abs_file = vim.fs.joinpath(vim.fn.getcwd(), filename)
       vim.schedule(function()
         require "fzf-lua-frecency.algo".update_file_score(abs_file, {
