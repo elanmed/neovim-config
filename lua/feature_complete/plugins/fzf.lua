@@ -104,6 +104,30 @@ vim.keymap.set("n", "<leader>i", function()
   -- vim.cmd "GFiles?"
 end)
 
+local function sinklist(list)
+  if vim.tbl_count(list) == 1 then
+    local split_entry = vim.split(list[1], "|")
+    local filename = split_entry[1]
+    local row_one_index = tonumber(split_entry[2])
+    local col_one_index = tonumber(split_entry[3])
+    local col_zero_index = col_one_index - 1
+    vim.cmd("e " .. filename)
+    vim.api.nvim_win_set_cursor(0, { row_one_index, col_zero_index, })
+    return
+  end
+
+  local qf_list = vim.tbl_map(function(entry)
+    local split_entry = vim.split(entry, "|")
+    local filename = split_entry[1]
+    local row = split_entry[2]
+    local col = split_entry[3]
+    local text = split_entry[4]
+    return { filename = filename, lnum = row, col = col, text = text, }
+  end, list)
+  vim.fn.setqflist(qf_list)
+  vim.cmd "copen"
+end
+
 -- https://junegunn.github.io/fzf/tips/ripgrep-integration/
 local function rg_with_globs(default_query)
   default_query = default_query or ""
@@ -115,12 +139,11 @@ local function rg_with_globs(default_query)
     "--cycle",
     "--style", "full",
     "--disabled",
-    "--ansi",
     "--prompt", "Rg> ",
     "--header", header,
     "--delimiter", "|",
     "--preview", "bat --style=numbers --color=always {1} --highlight-line {2}",
-    "--preview-window", "+{2}+3/3",
+    "--preview-window", "+{2}/3",
     "--bind", ("start:reload:%s {q} || '|'"):format(rg_with_globs_script),
     "--bind", ("change:reload:%s {q} || '|'"):format(rg_with_globs_script),
   }
@@ -128,29 +151,7 @@ local function rg_with_globs(default_query)
   local spec = {
     options = extend(rg_options, default_opts_tbl, multi_opts_tbl),
     window = with_preview_window_opts,
-    sinklist = function(list)
-      if #list == 1 then
-        local split_entry = vim.split(list[1], "|")
-        local filename = split_entry[1]
-        local row_one_index = tonumber(split_entry[2])
-        local col_one_index = tonumber(split_entry[3])
-        local col_zero_index = col_one_index - 1
-        vim.cmd("e " .. filename)
-        vim.api.nvim_win_set_cursor(0, { row_one_index, col_zero_index, })
-        return
-      end
-
-      local qf_list = vim.tbl_map(function(entry)
-        local split_entry = vim.split(entry, "|")
-        local filename = split_entry[1]
-        local row = split_entry[2]
-        local col = split_entry[3]
-        local text = split_entry[4]
-        return { filename = filename, lnum = row, col = col, text = text, }
-      end, list)
-      vim.fn.setqflist(qf_list)
-      vim.cmd "copen"
-    end,
+    sinklist = sinklist,
   }
 
   vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
@@ -186,8 +187,37 @@ vim.keymap.set("n", "<leader>f", function()
   vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
 end)
 
-vim.keymap.set("n", "<leader>a", function() rg_with_globs "" end)
 vim.keymap.set("n", "<leader>zr", function()
+  vim.lsp.buf.references({ includeDeclaration = false, }, {
+    on_list = function(list)
+      local references_opts = {
+        "--prompt", "References> ",
+        "--delimiter", "|",
+        "--preview", "bat --style=numbers --color=always {1} --highlight-line {2}",
+        "--preview-window", "+{2}/3",
+      }
+
+      local source = {}
+      for _, entry in pairs(list.items) do
+        local source_entry = ("%s|%s|%s|%s"):format(entry.filename, entry.lnum, entry.col, entry.text)
+        table.insert(source, source_entry)
+      end
+
+      local spec = {
+        source = source,
+        options = extend(references_opts, default_opts_tbl, multi_opts_tbl),
+        window = with_preview_window_opts,
+        sinklist = sinklist,
+
+      }
+
+      vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
+    end,
+  })
+end)
+
+vim.keymap.set("n", "<leader>a", function() rg_with_globs "" end)
+vim.keymap.set("n", "<leader>ze", function()
   local file = io.open(prev_rg_query_file, "r")
   if not file then return end
   local prev_rg_query = file:read "*a"

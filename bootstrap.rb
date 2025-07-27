@@ -17,6 +17,7 @@ def bootstrap_nvim(server:, package_manager:)
   install_package(package_manager, 'ripgrep')
   install_package(package_manager, 'fd')
   install_package(package_manager, 'fd-find')
+  install_package(package_manager, 'git-delta')
 
   if server
     puts 'SKIPPING: running :PaqInstall'.noop
