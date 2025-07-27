@@ -52,6 +52,12 @@ local single_opts_tbl = {
   "--bind", "shift-tab:up",
 }
 
+local rich_preview_opts_tbl = {
+  "--delimiter", "|",
+  "--preview", "bat --style=numbers --color=always {1} --highlight-line {2}",
+  "--preview-window", "+{2}/3",
+}
+
 local base_window_opts = {
   width = 1,
   relative = true,
@@ -138,15 +144,12 @@ local function rg_with_globs(default_query)
     "--disabled",
     "--prompt", "Rg> ",
     "--header", header,
-    "--delimiter", "|",
-    "--preview", "bat --style=numbers --color=always {1} --highlight-line {2}",
-    "--preview-window", "+{2}/3",
     "--bind", ("start:reload:%s {q} || '|'"):format(rg_with_globs_script),
     "--bind", ("change:reload:%s {q} || '|'"):format(rg_with_globs_script),
   }
 
   local spec = {
-    options = extend(rg_options, default_opts_tbl, multi_opts_tbl),
+    options = extend(rg_options, default_opts_tbl, multi_opts_tbl, rich_preview_opts_tbl),
     window = with_preview_window_opts,
     sinklist = sinklist,
   }
@@ -184,44 +187,61 @@ vim.keymap.set("n", "<leader>f", function()
   vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
 end)
 
+
 vim.keymap.set("n", "<leader>zl", function()
   local StreamingFzf = streaming_fzf.new()
 
-  vim.lsp.buf.references({ includeDeclaration = false, }, {
-    on_list = function(list)
-      local source = {}
-      for _, entry in pairs(list.items) do
-        local source_entry = ("%s|%s|%s|%s"):format(entry.filename, entry.lnum, entry.col, entry.text)
-        table.insert(source, source_entry)
-      end
-      StreamingFzf:update_results(source)
-    end,
+  local params = vim.tbl_extend("force", vim.lsp.util.make_position_params(0, "utf-8"), {
+    context = { includeDeclaration = false, },
   })
+
+  vim.lsp.buf_request(0, "textDocument/references", params, function(err, result)
+    if err then
+      h.notify.error(("ERROR! %s"):format(err.message))
+      StreamingFzf:update_results {}
+      return
+    end
+
+    if not result or #result == 0 then
+      h.notify.error "No references!"
+      StreamingFzf:update_results {}
+      return
+    end
+
+    local items = vim.lsp.util.locations_to_items(result, "utf-8")
+    local source = {}
+    for _, entry in pairs(items) do
+      local source_entry = ("%s|%s|%s|%s"):format(entry.filename, entry.lnum, entry.col, entry.text)
+      print(source_entry)
+      table.insert(source, source_entry)
+    end
+    StreamingFzf:update_results(source)
+  end)
 
   local references_opts = {
     "--prompt", "References> ",
-    "--delimiter", "|",
-    "--preview", "bat --style=numbers --color=always {1} --highlight-line {2}",
-    "--preview-window", "+{2}/3",
   }
 
   local spec = {
     source = StreamingFzf:create_monitor_cmd(),
-    options = extend(references_opts, default_opts_tbl, multi_opts_tbl),
+    options = extend(references_opts, default_opts_tbl, multi_opts_tbl, rich_preview_opts_tbl),
     window = with_preview_window_opts,
     sinklist = sinklist,
   }
 
   vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
-  StreamingFzf:cleanup()
 end)
 
 vim.keymap.set("n", "<leader>zf", function()
   vim.cmd "cclose"
+  local qf_list = (vim.fn.getqflist { items = 0, }).items
+  if #qf_list == 0 then
+    h.notify.error "Quickfix list is empty!"
+    return
+  end
   local StreamingFzf = streaming_fzf.new()
 
   vim.schedule(function()
-    local qf_list = vim.fn.getqflist()
     local source = {}
     for _, entry in pairs(qf_list) do
       local filename = vim.api.nvim_buf_get_name(entry.bufnr)
@@ -233,20 +253,60 @@ vim.keymap.set("n", "<leader>zf", function()
 
   local quickfix_list_opts = {
     "--prompt", "Quickfix list> ",
-    "--delimiter", "|",
-    "--preview", "bat --style=numbers --color=always {1} --highlight-line {2}",
-    "--preview-window", "+{2}/3",
   }
 
   local spec = {
     source = StreamingFzf:create_monitor_cmd(),
-    options = extend(quickfix_list_opts, default_opts_tbl, multi_opts_tbl),
+    options = extend(quickfix_list_opts, default_opts_tbl, multi_opts_tbl, rich_preview_opts_tbl),
     window = with_preview_window_opts,
     sinklist = sinklist,
   }
 
   vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
-  StreamingFzf:cleanup()
+end)
+
+vim.keymap.set("n", "<leader>zs", function()
+  vim.cmd "cclose"
+  local StreamingFzf = streaming_fzf.new()
+
+  vim.schedule(function()
+    local qf_count = (vim.fn.getqflist { nr = "$", }).nr
+    if qf_count == 0 then
+      h.notify.error "Quickfix stack is empty!"
+      StreamingFzf:update_results {}
+      return
+    end
+
+    local source = {}
+    for i = 1, qf_count do
+      local qf_list_info = (vim.fn.getqflist { nr = i, all = true, })
+      local source_entry = ("%s| Title: %s | Size: %s | First item: %s"):format(
+        qf_list_info.nr,
+        qf_list_info.title,
+        qf_list_info.size,
+        qf_list_info.items[1].text
+      )
+      table.insert(source, source_entry)
+    end
+    StreamingFzf:update_results(source)
+  end)
+
+  local quickfix_list_opts = {
+    "--prompt", "Quickfix stack> ",
+  }
+
+  local spec = {
+    source = StreamingFzf:create_monitor_cmd(),
+    options = extend(quickfix_list_opts, default_opts_tbl, single_opts_tbl),
+    window = without_preview_window_opts,
+    sink = function(entry)
+      local qf_id = vim.split(entry, "|")[1]
+      vim.cmd("chistory " .. qf_id)
+      vim.cmd "copen"
+    end,
+  }
+
+  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
 end)
 
 vim.keymap.set("n", "<leader>a", function() rg_with_globs "" end)

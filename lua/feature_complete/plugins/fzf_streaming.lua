@@ -6,8 +6,10 @@ function StreamingFzf.new()
   self.temp_file = vim.fn.tempname()
   self.done_file = self.temp_file .. ".done"
 
-  vim.fn.writefile({}, self.temp_file)
+  vim.fn.delete(self.temp_file)
   vim.fn.delete(self.done_file)
+
+  vim.fn.writefile({}, self.temp_file)
 
   return self
 end
@@ -22,11 +24,6 @@ end
 function StreamingFzf:update_results(source)
   vim.fn.writefile(source, self.temp_file)
   vim.fn.writefile({}, self.done_file)
-end
-
-function StreamingFzf:cleanup()
-  vim.fn.delete(self.temp_file)
-  vim.fn.delete(self.done_file)
 end
 
 return StreamingFzf
