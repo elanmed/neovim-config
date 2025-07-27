@@ -1,5 +1,6 @@
 local h = require "helpers"
 local grug = require "grug-far"
+local streaming_fzf = require "feature_complete.plugins.fzf_streaming"
 
 local guicursor = vim.opt.guicursor:get()
 -- :h cursor-blinking
@@ -42,8 +43,8 @@ local default_opts_tbl = {
 local multi_opts_tbl = {
   "--multi",
   "--bind", "ctrl-a:toggle-all",
-  "--bind", "tab:select+down",
-  "--bind", "shift-tab:up+deselect",
+  "--bind", "tab:select+up",
+  "--bind", "shift-tab:down+deselect",
 }
 
 local single_opts_tbl = {
@@ -184,11 +185,7 @@ vim.keymap.set("n", "<leader>f", function()
 end)
 
 vim.keymap.set("n", "<leader>zl", function()
-  local temp_file = vim.fn.tempname()
-  local done_file = temp_file .. ".done"
-
-  vim.fn.writefile({}, temp_file)
-  vim.fn.delete(done_file)
+  local StreamingFzf = streaming_fzf.new()
 
   vim.lsp.buf.references({ includeDeclaration = false, }, {
     on_list = function(list)
@@ -197,15 +194,9 @@ vim.keymap.set("n", "<leader>zl", function()
         local source_entry = ("%s|%s|%s|%s"):format(entry.filename, entry.lnum, entry.col, entry.text)
         table.insert(source, source_entry)
       end
-      vim.fn.writefile(source, temp_file)
-      vim.fn.writefile({}, done_file)
+      StreamingFzf:update_results(source)
     end,
   })
-
-  local monitor_cmd = string.format(
-    "while [[ ! -f %s ]]; do cat %s; sleep 0.2; done; cat %s",
-    done_file, temp_file, temp_file
-  )
 
   local references_opts = {
     "--prompt", "References> ",
@@ -215,13 +206,47 @@ vim.keymap.set("n", "<leader>zl", function()
   }
 
   local spec = {
-    source = monitor_cmd,
+    source = StreamingFzf:create_monitor_cmd(),
     options = extend(references_opts, default_opts_tbl, multi_opts_tbl),
     window = with_preview_window_opts,
     sinklist = sinklist,
   }
 
   vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
+  StreamingFzf:cleanup()
+end)
+
+vim.keymap.set("n", "<leader>zf", function()
+  vim.cmd "cclose"
+  local StreamingFzf = streaming_fzf.new()
+
+  vim.schedule(function()
+    local qf_list = vim.fn.getqflist()
+    local source = {}
+    for _, entry in pairs(qf_list) do
+      local filename = vim.api.nvim_buf_get_name(entry.bufnr)
+      local source_entry = ("%s|%s|%s|%s"):format(filename, entry.lnum, entry.col, entry.text)
+      table.insert(source, source_entry)
+    end
+    StreamingFzf:update_results(source)
+  end)
+
+  local quickfix_list_opts = {
+    "--prompt", "Quickfix list> ",
+    "--delimiter", "|",
+    "--preview", "bat --style=numbers --color=always {1} --highlight-line {2}",
+    "--preview-window", "+{2}/3",
+  }
+
+  local spec = {
+    source = StreamingFzf:create_monitor_cmd(),
+    options = extend(quickfix_list_opts, default_opts_tbl, multi_opts_tbl),
+    window = with_preview_window_opts,
+    sinklist = sinklist,
+  }
+
+  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
+  StreamingFzf:cleanup()
 end)
 
 vim.keymap.set("n", "<leader>a", function() rg_with_globs "" end)
