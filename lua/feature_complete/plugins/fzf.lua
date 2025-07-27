@@ -31,10 +31,6 @@ local function extend(...)
   return result
 end
 
-local function fzf_opts(...)
-  return table.concat(extend(...), " ")
-end
-
 local default_opts_tbl = {
   "--cycle",
   "--style", "full",
@@ -69,9 +65,9 @@ local function set_preview_window_opts(preview)
 end
 
 vim.api.nvim_set_var("fzf_vim", {
-  helptags_options = fzf_opts(default_opts_tbl, single_opts_tbl),
-  marks_options = fzf_opts(default_opts_tbl, single_opts_tbl),
-  buffers_options = fzf_opts(default_opts_tbl, single_opts_tbl),
+  helptags_options = extend(default_opts_tbl, single_opts_tbl),
+  marks_options = extend(default_opts_tbl, single_opts_tbl),
+  buffers_options = extend(default_opts_tbl, single_opts_tbl),
 })
 
 vim.keymap.set("n", "<leader>h", function()
@@ -90,7 +86,7 @@ end)
 vim.keymap.set("n", "<leader>z;", function()
   set_preview_window_opts(false)
   vim.fn["fzf#vim#command_history"] {
-    options = fzf_opts(default_opts_tbl, single_opts_tbl),
+    options = extend(default_opts_tbl, single_opts_tbl),
   }
   -- TODO: fzf_vim options entry
   -- vim.cmd "History:"
@@ -98,7 +94,7 @@ end)
 vim.keymap.set("n", "<leader>i", function()
   set_preview_window_opts(true)
   vim.fn["fzf#vim#gitfiles"]("?", {
-    options = fzf_opts(default_opts_tbl, single_opts_tbl),
+    options = extend(default_opts_tbl, single_opts_tbl),
   })
   -- TODO: fzf_vim options entry
   -- vim.cmd "GFiles?"
@@ -187,37 +183,49 @@ vim.keymap.set("n", "<leader>f", function()
   vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
 end)
 
-vim.keymap.set("n", "<leader>zr", function()
+vim.keymap.set("n", "<leader>zl", function()
+  local temp_file = vim.fn.tempname()
+  local done_file = temp_file .. ".done"
+
+  vim.fn.writefile({}, temp_file)
+  vim.fn.delete(done_file)
+
   vim.lsp.buf.references({ includeDeclaration = false, }, {
     on_list = function(list)
-      local references_opts = {
-        "--prompt", "References> ",
-        "--delimiter", "|",
-        "--preview", "bat --style=numbers --color=always {1} --highlight-line {2}",
-        "--preview-window", "+{2}/3",
-      }
-
       local source = {}
       for _, entry in pairs(list.items) do
         local source_entry = ("%s|%s|%s|%s"):format(entry.filename, entry.lnum, entry.col, entry.text)
         table.insert(source, source_entry)
       end
-
-      local spec = {
-        source = source,
-        options = extend(references_opts, default_opts_tbl, multi_opts_tbl),
-        window = with_preview_window_opts,
-        sinklist = sinklist,
-
-      }
-
-      vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
+      vim.fn.writefile(source, temp_file)
+      vim.fn.writefile({}, done_file)
     end,
   })
+
+  local monitor_cmd = string.format(
+    "while [[ ! -f %s ]]; do cat %s; sleep 0.2; done; cat %s",
+    done_file, temp_file, temp_file
+  )
+
+  local references_opts = {
+    "--prompt", "References> ",
+    "--delimiter", "|",
+    "--preview", "bat --style=numbers --color=always {1} --highlight-line {2}",
+    "--preview-window", "+{2}/3",
+  }
+
+  local spec = {
+    source = monitor_cmd,
+    options = extend(references_opts, default_opts_tbl, multi_opts_tbl),
+    window = with_preview_window_opts,
+    sinklist = sinklist,
+  }
+
+  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
 end)
 
 vim.keymap.set("n", "<leader>a", function() rg_with_globs "" end)
-vim.keymap.set("n", "<leader>ze", function()
+vim.keymap.set("n", "<leader>zr", function()
   local file = io.open(prev_rg_query_file, "r")
   if not file then return end
   local prev_rg_query = file:read "*a"
