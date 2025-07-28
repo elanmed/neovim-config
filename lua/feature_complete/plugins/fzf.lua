@@ -1,6 +1,6 @@
 local h = require "helpers"
 local grug = require "grug-far"
-local streaming_fzf = require "feature_complete.plugins.fzf_streaming"
+local FzfStream = require "feature_complete.plugins.fzf_stream"
 
 local guicursor = vim.opt.guicursor:get()
 -- :h cursor-blinking
@@ -139,8 +139,6 @@ local function rg_with_globs(default_query)
 
   local rg_options = {
     "--query", default_query,
-    "--cycle",
-    "--style", "full",
     "--disabled",
     "--prompt", "Rg> ",
     "--header", header,
@@ -189,7 +187,7 @@ end)
 
 
 vim.keymap.set("n", "<leader>zl", function()
-  local StreamingFzf = streaming_fzf.new()
+  local fzf_stream = FzfStream.new()
 
   local params = vim.tbl_extend("force", vim.lsp.util.make_position_params(0, "utf-8"), {
     context = { includeDeclaration = false, },
@@ -198,13 +196,13 @@ vim.keymap.set("n", "<leader>zl", function()
   vim.lsp.buf_request(0, "textDocument/references", params, function(err, result)
     if err then
       h.notify.error(("ERROR! %s"):format(err.message))
-      StreamingFzf:update_results {}
+      fzf_stream:update_results {}
       return
     end
 
     if not result or #result == 0 then
       h.notify.error "No references!"
-      StreamingFzf:update_results {}
+      fzf_stream:update_results {}
       return
     end
 
@@ -212,10 +210,9 @@ vim.keymap.set("n", "<leader>zl", function()
     local source = {}
     for _, entry in pairs(items) do
       local source_entry = ("%s|%s|%s|%s"):format(entry.filename, entry.lnum, entry.col, entry.text)
-      print(source_entry)
       table.insert(source, source_entry)
     end
-    StreamingFzf:update_results(source)
+    fzf_stream:update_results(source)
   end)
 
   local references_opts = {
@@ -223,7 +220,7 @@ vim.keymap.set("n", "<leader>zl", function()
   }
 
   local spec = {
-    source = StreamingFzf:create_monitor_cmd(),
+    source = fzf_stream:create_monitor_cmd(),
     options = extend(references_opts, default_opts_tbl, multi_opts_tbl, rich_preview_opts_tbl),
     window = with_preview_window_opts,
     sinklist = sinklist,
@@ -239,7 +236,7 @@ vim.keymap.set("n", "<leader>zf", function()
     h.notify.error "Quickfix list is empty!"
     return
   end
-  local StreamingFzf = streaming_fzf.new()
+  local fzf_stream = FzfStream.new()
 
   vim.schedule(function()
     local source = {}
@@ -248,7 +245,7 @@ vim.keymap.set("n", "<leader>zf", function()
       local source_entry = ("%s|%s|%s|%s"):format(filename, entry.lnum, entry.col, entry.text)
       table.insert(source, source_entry)
     end
-    StreamingFzf:update_results(source)
+    fzf_stream:update_results(source)
   end)
 
   local quickfix_list_opts = {
@@ -256,7 +253,7 @@ vim.keymap.set("n", "<leader>zf", function()
   }
 
   local spec = {
-    source = StreamingFzf:create_monitor_cmd(),
+    source = fzf_stream:create_monitor_cmd(),
     options = extend(quickfix_list_opts, default_opts_tbl, multi_opts_tbl, rich_preview_opts_tbl),
     window = with_preview_window_opts,
     sinklist = sinklist,
@@ -267,13 +264,13 @@ end)
 
 vim.keymap.set("n", "<leader>zs", function()
   vim.cmd "cclose"
-  local StreamingFzf = streaming_fzf.new()
+  local fzf_stream = FzfStream.new()
 
   vim.schedule(function()
     local qf_count = (vim.fn.getqflist { nr = "$", }).nr
     if qf_count == 0 then
       h.notify.error "Quickfix stack is empty!"
-      StreamingFzf:update_results {}
+      fzf_stream:update_results {}
       return
     end
 
@@ -288,7 +285,7 @@ vim.keymap.set("n", "<leader>zs", function()
       )
       table.insert(source, source_entry)
     end
-    StreamingFzf:update_results(source)
+    fzf_stream:update_results(source)
   end)
 
   local quickfix_list_opts = {
@@ -296,7 +293,7 @@ vim.keymap.set("n", "<leader>zs", function()
   }
 
   local spec = {
-    source = StreamingFzf:create_monitor_cmd(),
+    source = fzf_stream:create_monitor_cmd(),
     options = extend(quickfix_list_opts, default_opts_tbl, single_opts_tbl),
     window = without_preview_window_opts,
     sink = function(entry)

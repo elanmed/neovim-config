@@ -1,8 +1,8 @@
-local StreamingFzf = {}
-StreamingFzf.__index = StreamingFzf
+local FzfStream = {}
+FzfStream.__index = FzfStream
 
-function StreamingFzf.new()
-  local self = setmetatable({}, StreamingFzf)
+function FzfStream.new()
+  local self = setmetatable({}, FzfStream)
   self.temp_file = vim.fn.tempname()
   self.done_file = self.temp_file .. ".done"
 
@@ -14,16 +14,16 @@ function StreamingFzf.new()
   return self
 end
 
-function StreamingFzf:create_monitor_cmd()
+function FzfStream:create_monitor_cmd()
   return string.format(
     "while [[ ! -f %s ]]; do cat %s; sleep 0.2; done; cat %s",
     self.done_file, self.temp_file, self.temp_file
   )
 end
 
-function StreamingFzf:update_results(source)
+function FzfStream:update_results(source)
   vim.fn.writefile(source, self.temp_file)
   vim.fn.writefile({}, self.done_file)
 end
 
-return StreamingFzf
+return FzfStream
