@@ -3,13 +3,16 @@ FzfStream.__index = FzfStream
 
 function FzfStream.new()
   local self = setmetatable({}, FzfStream)
-  self.temp_file = vim.fn.tempname()
-  self.done_file = self.temp_file .. ".done"
+  self.content_file = vim.fn.tempname()
+  self.done_file = self.content_file .. ".done"
+  self.partial_file = self.content_file .. ".partial"
 
-  vim.fn.delete(self.temp_file)
+  -- TODO: is this necessary, or will tempname always give a unique file
+  vim.fn.delete(self.content_file)
   vim.fn.delete(self.done_file)
+  vim.fn.delete(self.partial_file)
 
-  vim.fn.writefile({}, self.temp_file)
+  vim.fn.writefile({}, self.content_file)
 
   return self
 end
@@ -17,13 +20,21 @@ end
 function FzfStream:create_monitor_cmd()
   return string.format(
     "while [[ ! -f %s ]]; do cat %s; sleep 0.2; done; cat %s",
-    self.done_file, self.temp_file, self.temp_file
+    self.done_file, self.content_file, self.content_file
   )
 end
 
 function FzfStream:update_results(source)
-  vim.fn.writefile(source, self.temp_file)
-  vim.fn.writefile({}, self.done_file)
+  if source then
+    local curr_content = vim.fn.readfile(self.content_file)
+    local updated_content = vim.list_extend(curr_content, source)
+
+    vim.fn.writefile(updated_content, self.partial_file)
+    -- avoids partial reads by cat
+    vim.fn.rename(self.partial_file, self.content_file)
+  else
+    vim.fn.writefile({}, self.done_file)
+  end
 end
 
 return FzfStream

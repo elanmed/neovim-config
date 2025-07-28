@@ -196,23 +196,22 @@ vim.keymap.set("n", "<leader>zl", function()
   vim.lsp.buf_request(0, "textDocument/references", params, function(err, result)
     if err then
       h.notify.error(("ERROR! %s"):format(err.message))
-      fzf_stream:update_results {}
+      fzf_stream:update_results(nil)
       return
     end
 
     if not result or #result == 0 then
       h.notify.error "No references!"
-      fzf_stream:update_results {}
+      fzf_stream:update_results(nil)
       return
     end
 
     local items = vim.lsp.util.locations_to_items(result, "utf-8")
-    local source = {}
     for _, entry in pairs(items) do
       local source_entry = ("%s|%s|%s|%s"):format(entry.filename, entry.lnum, entry.col, entry.text)
-      table.insert(source, source_entry)
+      fzf_stream:update_results { source_entry, }
     end
-    fzf_stream:update_results(source)
+    fzf_stream:update_results(nil)
   end)
 
   local references_opts = {
@@ -231,21 +230,22 @@ end)
 
 vim.keymap.set("n", "<leader>zf", function()
   vim.cmd "cclose"
-  local qf_list = (vim.fn.getqflist { items = 0, }).items
-  if #qf_list == 0 then
-    h.notify.error "Quickfix list is empty!"
-    return
-  end
   local fzf_stream = FzfStream.new()
 
   vim.schedule(function()
-    local source = {}
+    local qf_list = (vim.fn.getqflist { items = 0, }).items
+    if #qf_list == 0 then
+      h.notify.error "Quickfix list is empty!"
+      fzf_stream:update_results(nil)
+      return
+    end
+
     for _, entry in pairs(qf_list) do
       local filename = vim.api.nvim_buf_get_name(entry.bufnr)
       local source_entry = ("%s|%s|%s|%s"):format(filename, entry.lnum, entry.col, entry.text)
-      table.insert(source, source_entry)
+      fzf_stream:update_results { source_entry, }
     end
-    fzf_stream:update_results(source)
+    fzf_stream:update_results(nil)
   end)
 
   local quickfix_list_opts = {
@@ -270,11 +270,10 @@ vim.keymap.set("n", "<leader>zs", function()
     local qf_count = (vim.fn.getqflist { nr = "$", }).nr
     if qf_count == 0 then
       h.notify.error "Quickfix stack is empty!"
-      fzf_stream:update_results {}
+      fzf_stream:update_results(nil)
       return
     end
 
-    local source = {}
     for i = 1, qf_count do
       local qf_list_info = (vim.fn.getqflist { nr = i, all = true, })
       local source_entry = ("%s| Title: %s | Size: %s | First item: %s"):format(
@@ -283,9 +282,9 @@ vim.keymap.set("n", "<leader>zs", function()
         qf_list_info.size,
         qf_list_info.items[1].text
       )
-      table.insert(source, source_entry)
+      fzf_stream:update_results { source_entry, }
     end
-    fzf_stream:update_results(source)
+    fzf_stream:update_results(nil)
   end)
 
   local quickfix_list_opts = {
