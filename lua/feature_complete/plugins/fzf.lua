@@ -142,8 +142,8 @@ local function rg_with_globs(default_query)
     "--disabled",
     "--prompt", "Rg> ",
     "--header", header,
-    "--bind", ("start:reload:%s {q} || '|'"):format(rg_with_globs_script),
-    "--bind", ("change:reload:%s {q} || '|'"):format(rg_with_globs_script),
+    "--bind", ("start:reload:%s {q}"):format(rg_with_globs_script),
+    "--bind", ("change:reload:%s {q}"):format(rg_with_globs_script),
   }
 
   local spec = {
@@ -347,7 +347,7 @@ vim.keymap.set("n", "<leader>zw",
     local stripped_filename = get_stripped_filename()
     if stripped_filename == nil then return end
 
-    rg_with_globs("~" .. stripped_filename .. "~ ")
+    rg_with_globs(stripped_filename .. " -- ")
   end, { desc = "Grep the current file name starting with `wf_modules`", })
 
 vim.keymap.set("n", "<leader>yw",
