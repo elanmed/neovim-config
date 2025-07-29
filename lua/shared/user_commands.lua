@@ -32,12 +32,14 @@ vim.api.nvim_create_user_command("Snippet", function(opts)
     return
   end
 
-  if not h.tbl.contains_key(snippet_trigger_to_file_mapping, snippet_trigger) then
-    h.notify.error(snippet_trigger .. " is not a valid snippet trigger!")
+  local snippet_triggers = vim.tbl_keys(snippet_trigger_to_file_mapping)
+  if not vim.tbl_contains(snippet_triggers, snippet_trigger) then
+    vim.notify(snippet_trigger .. " is not a valid snippet trigger!", vim.log.levels.ERROR)
     return
   end
 
-  local snippets_path = vim.fn.stdpath "config" .. "/snippets/"
-  vim.cmd("-1read " .. snippets_path .. snippet_trigger_to_file_mapping[snippet_trigger].file)
-  h.keys.send_keys("n", snippet_trigger_to_file_mapping[snippet_trigger].movement)
+  local snippets_path = vim.fs.joinpath(vim.fn.stdpath "config", "snippets")
+  local snippet_file = vim.fs.joinpath(snippets_path, snippet_trigger_to_file_mapping[snippet_trigger].file)
+  vim.cmd("-1read " .. snippet_file)
+  vim.cmd("normal! " .. snippet_trigger_to_file_mapping[snippet_trigger].movement)
 end, { nargs = "*", })

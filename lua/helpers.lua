@@ -104,20 +104,15 @@ end
 
 --- @param dir string i.e. "/feature_complete/plugins/"
 local require_dir = function(dir)
-  if dir:sub(1, 1) ~= "/" then
-    dir = "/" .. dir
-  end
-
-  if dir:sub(-1) ~= "/" then
-    dir = dir .. "/"
-  end
-
-  local base_lua_path = vim.fn.stdpath "config" .. "/lua" -- ~/.config/nvim/lua/
-  local glob_path = base_lua_path .. dir .. "*.lua" -- ~/.config/nvim/lua/feature_complete/plugins/*.lua
-  for _, path in pairs(vim.split(vim.fn.glob(glob_path), "\n")) do
+  local base_lua_path = vim.fs.joinpath(vim.fn.stdpath "config", "lua") -- ~/.config/nvim/lua/
+  local glob_path = vim.fs.joinpath(base_lua_path, dir, "*.lua") -- ~/.config/nvim/lua/feature_complete/plugins/*.lua
+  local paths_str = vim.fn.glob(glob_path)
+  local paths_tbl = vim.split(paths_str, "\n")
+  for _, path in pairs(paths_tbl) do
     -- convert absolute filename to relative
     -- ~/.config/nvim/lua/feature_complete/plugins/*.lua -> feature_complete/plugins/*
-    local relfilename = path:gsub(base_lua_path, ""):gsub(".lua", "")
+    -- local relfilename = path:gsub(base_lua_path, ""):gsub(".lua", "")
+    local relfilename = vim.fs.relpath(base_lua_path, path):gsub(".lua", "")
     require(relfilename)
   end
 end
