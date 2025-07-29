@@ -48,7 +48,7 @@ vim.keymap.set("n", "/", function()
   end,
   { desc = "Search in the current buffer with snacks", })
 
-vim.keymap.set("n", "<leader>lu", function()
+vim.keymap.set("n", "<leader>l", function()
     snacks.picker.undo {
       layout = {
         layout = {
