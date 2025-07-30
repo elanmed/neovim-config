@@ -73,7 +73,6 @@ end
 
 vim.api.nvim_set_var("fzf_vim", {
   helptags_options = extend(default_opts_tbl, single_opts_tbl),
-  marks_options = extend(default_opts_tbl, single_opts_tbl),
   buffers_options = extend(default_opts_tbl, single_opts_tbl),
 })
 
@@ -81,15 +80,18 @@ vim.keymap.set("n", "<leader>h", function()
   set_preview_window_opts(true)
   vim.cmd "Helptags"
 end)
-vim.keymap.set("n", "<leader>zm", function()
-  set_preview_window_opts(false)
-  vim.cmd "Marks"
-end)
 vim.keymap.set("n", "<leader>b", function()
   set_preview_window_opts(true)
   vim.cmd "Buffers"
 end)
 
+vim.keymap.set("n", "<leader>zm", function()
+  set_preview_window_opts(false)
+  local global_marks = ("abcdefghijklmnopqrstuvwxyz"):upper()
+  vim.fn["fzf#vim#marks"](global_marks, {
+    options = extend(default_opts_tbl, single_opts_tbl),
+  })
+end)
 vim.keymap.set("n", "<leader>z;", function()
   set_preview_window_opts(false)
   vim.fn["fzf#vim#command_history"] {
