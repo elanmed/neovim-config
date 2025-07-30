@@ -3,14 +3,17 @@ local snacks = require "snacks"
 local mini_files = require "mini.files"
 mini_files.setup {
   mappings = {
-    close = "<C-f>",
+    close = "<esc>",
+    go_in_plus = "<cr>",
   },
   options = {
     permanent_delete = false,
   },
 }
 
-vim.keymap.set("n", "<C-f>", function() mini_files.open() end, { desc = "Toggle oil", })
+vim.keymap.set("n", "<C-f>", function()
+  if not mini_files.close() then mini_files.open(vim.api.nvim_buf_get_name(0)) end
+end, { desc = "Toggle oil", })
 vim.keymap.set("n", "<leader>t", snacks.explorer.reveal, { desc = "Open snacks explorer", })
 
 -- require "oil".setup {
