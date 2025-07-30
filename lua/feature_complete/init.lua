@@ -41,6 +41,7 @@ bootstrap_paq {
   "akinsho/bufferline.nvim",
   -- cmp
   "windwp/nvim-autopairs",
+  "echasnovski/mini.files",
   {
     "saghen/blink.cmp",
     build = build_pin_commit("blink.cmp", "586ee87534f5bf65f1c8dea2d1da2a57e8cddd36"),
