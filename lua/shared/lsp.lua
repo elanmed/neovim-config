@@ -63,8 +63,9 @@ vim.keymap.set("i", "<C-s>",
   end,
   { desc = "LSP signature help", }
 )
-vim.keymap.set("n", "gry", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
-vim.keymap.set("n", "gri", vim.lsp.buf.definition, { desc = "LSP go to definition", })
+vim.keymap.set("n", "glr", vim.lsp.buf.references, { desc = "LSP go to type definition", })
+vim.keymap.set("n", "glt", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
+vim.keymap.set("n", "gli", vim.lsp.buf.definition, { desc = "LSP go to definition", })
 vim.keymap.set("n", "K", function() vim.lsp.buf.hover { border = "single", } end, { desc = "LSP go to type definition", })
 vim.keymap.set("n", "<leader>k", function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do

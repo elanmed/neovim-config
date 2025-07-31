@@ -37,6 +37,8 @@ bootstrap_paq {
   "tpope/vim-repeat",
   "tpope/vim-speeddating",
   "jxnblk/vim-mdx-js",
+  "echasnovski/mini.move",
+  "echasnovski/mini.operators",
   -- buffers
   -- "akinsho/bufferline.nvim",
   "echasnovski/mini.tabline",
@@ -92,6 +94,7 @@ bootstrap_paq {
   "JoosepAlviste/nvim-ts-context-commentstring",
   -- version_control
   "lewis6991/gitsigns.nvim",
+  "echasnovski/mini.diff",
   -- wild_menu
   "gelguy/wilder.nvim",
   "romgrk/fzy-lua-native",

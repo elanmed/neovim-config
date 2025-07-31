@@ -17,21 +17,12 @@ vim.keymap.set("n", "<bs>", function()
   vim.cmd "write"
 end, { desc = "Save", })
 vim.keymap.set("n", "<leader>q", h.keys.vim_cmd_cb "quit", { desc = "Quit", })
-vim.keymap.set("v", "<", "<" .. "gv", { desc = "Outdent, while keeping selection", })
-vim.keymap.set("v", ">", ">" .. "gv", { desc = "Indent, while keeping selection", })
 vim.keymap.set("n", "J", "gJ", { desc = "J without whitespace", })
 vim.keymap.set("n", "<leader>co", h.keys.vim_cmd_cb "copen")
 vim.keymap.set("n", "<leader>cc", function()
   vim.cmd "pclose"
   vim.cmd "cclose"
 end)
--- https://vim.fandom.com/wiki/Moving_lines_up_or_down
-vim.keymap.set("n", "<A-j>", ":m .+1<cr>==", { desc = "Move line down", })
-vim.keymap.set("n", "<A-k>", ":m .-2<cr>==", { desc = "Move line up", })
-vim.keymap.set("i", "<A-j>", "<esc>:m .+1<cr>==gi", { desc = "Move line down", })
-vim.keymap.set("i", "<A-k>", "<esc>:m .-2<cr>==gi", { desc = "Move line up", })
-vim.keymap.set("v", "<A-j>", ":m '>+1<cr>gv=gv", { desc = "Move line down", })
-vim.keymap.set("v", "<A-k>", ":m '<-2<cr>gv=gv", { desc = "Move line up", })
 vim.keymap.set("n", "g/c", "/\\C<left><left>", { desc = "/ case sensitive", })
 vim.keymap.set("n", "g/w", "/\\<\\><left><left>", { desc = "/ word sensitive", })
 vim.keymap.set("n", "g//", "/\\<\\>\\C<left><left><left><left>", { desc = "/ case and word sensitive", })
@@ -62,21 +53,6 @@ vim.keymap.set("v", "<C-_>",
     local reselect_last = "gv"
     return comment .. reselect_last
   end, { expr = true, remap = true, })
-
-vim.keymap.set("n", "<leader>yp", function()
-  local z_register = [["z]]
-  local yank_line = "yy"
-  local paste = "p"
-  return z_register .. yank_line .. z_register .. paste
-end, { expr = true, desc = "Copy and paste the current line", })
-
-vim.keymap.set("v", "<leader>yp", function()
-  local z_register = [["z]]
-  local yank_and_unselect = "y"
-  local move_to_end_selection = "`>"
-  local paste_line = "p"
-  return z_register .. yank_and_unselect .. move_to_end_selection .. z_register .. paste_line .. move_to_end_selection
-end, { expr = true, desc = "Copy and paste the current selection", })
 
 vim.keymap.set("n", "<leader>yc",
   function()
