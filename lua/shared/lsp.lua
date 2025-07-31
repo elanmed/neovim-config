@@ -64,6 +64,7 @@ vim.keymap.set("i", "<C-s>",
   { desc = "LSP signature help", }
 )
 vim.keymap.set("n", "glr", vim.lsp.buf.references, { desc = "LSP go to type definition", })
+vim.keymap.set("n", "gla", vim.lsp.buf.code_action, { desc = "LSP go to type definition", })
 vim.keymap.set("n", "glt", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
 vim.keymap.set("n", "gli", vim.lsp.buf.definition, { desc = "LSP go to definition", })
 vim.keymap.set("n", "K", function() vim.lsp.buf.hover { border = "single", } end, { desc = "LSP go to type definition", })
