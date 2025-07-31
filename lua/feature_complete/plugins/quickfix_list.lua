@@ -1,6 +1,4 @@
 require "quickfix-preview".setup {
-  pedit_prefix = "vertical rightbelow",
-  pedit_postfix = "| wincmd =",
   keymaps = {
     select_close_preview = "o",
     select_close_quickfix = "<cr>",
