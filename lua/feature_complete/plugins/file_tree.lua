@@ -12,10 +12,7 @@ mini_files.setup {
     mark_set = "",
     reset = "q",
     reveal_cwd = "",
-    show_help = "g?",
     synchronize = "<bs>",
-    trim_left = "",
-    trim_right = "",
   },
   options = {
     permanent_delete = false,
