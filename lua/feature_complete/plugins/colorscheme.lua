@@ -41,11 +41,10 @@ vim.api.nvim_set_hl(0, "LspReferenceWrite", { bold = true, })
 vim.api.nvim_set_hl(0, "WilderAccent", { fg = M.orange, })
 vim.api.nvim_set_hl(0, "WildMenu", { fg = M.yellow, underline = true, bold = true, })
 
--- vim.api.nvim_set_hl(0, "FlashLabel", { link = "IncSearch", })
-vim.api.nvim_set_hl(0, "MiniJump2dSpot", { link = "IncSearch", })
+vim.api.nvim_set_hl(0, "FlashLabel", { link = "IncSearch", })
 
-vim.api.nvim_set_hl(0, "SnacksIndent", { fg = M.grey, })
-vim.api.nvim_set_hl(0, "SnacksIndentScope", { fg = M.light_grey, })
+-- vim.api.nvim_set_hl(0, "SnacksIndent", { fg = M.grey, })
+-- vim.api.nvim_set_hl(0, "SnacksIndentScope", { fg = M.light_grey, })
 
 vim.api.nvim_set_hl(0, "NotifyError", { fg = M.red, })
 vim.api.nvim_set_hl(0, "NotifyDoing", { fg = M.orange, })

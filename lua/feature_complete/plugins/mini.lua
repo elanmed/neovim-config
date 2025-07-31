@@ -20,3 +20,8 @@ require "mini.operators".setup {
   evaluate = { prefix = "", },
   sort = { prefix = "", },
 }
+require "mini.notify".setup {
+  lsp_progress = {
+    duration_last = 5000,
+  },
+}

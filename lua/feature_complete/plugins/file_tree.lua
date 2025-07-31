@@ -20,7 +20,9 @@ mini_files.setup {
 }
 
 vim.keymap.set("n", "<C-f>", function()
-  if not mini_files.close() then mini_files.open(vim.api.nvim_buf_get_name(0)) end
+  if not mini_files.close() then
+    mini_files.open(vim.api.nvim_buf_get_name(0))
+  end
 end, { desc = "Toggle oil", })
 vim.keymap.set("n", "<leader>t", snacks.explorer.reveal, { desc = "Open snacks explorer", })
 
