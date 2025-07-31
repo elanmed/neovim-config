@@ -1,6 +1,7 @@
 local h = require "helpers"
 local grug = require "grug-far"
 local FzfStream = require "feature_complete.plugins.fzf_stream"
+local mini_files = require "mini.files"
 
 local guicursor = vim.opt.guicursor:get()
 -- :h cursor-blinking
@@ -160,6 +161,9 @@ local function rg_with_globs(default_query)
 end
 
 vim.keymap.set("n", "<leader>f", function()
+  if vim.bo.filetype == "minifiles" then
+    mini_files.close()
+  end
   local sorted_files_path = require "fzf-lua-frecency.helpers".get_sorted_files_path()
   local source = table.concat({ frecency_and_fd_files_script, vim.fn.getcwd(), sorted_files_path, }, " ")
 
