@@ -39,6 +39,7 @@ bootstrap_paq {
   "jxnblk/vim-mdx-js",
   "echasnovski/mini.move",
   "echasnovski/mini.operators",
+  "echasnovski/mini.jump2d",
   -- buffers
   -- "akinsho/bufferline.nvim",
   "echasnovski/mini.tabline",

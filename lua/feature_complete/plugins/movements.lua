@@ -66,34 +66,53 @@ vim.keymap.set("n", "z.", function()
   neoscroll.zz { half_win_duration = scroll_duration, }
 end)
 
-flash.setup {
-  modes = {
-    char = {
-      enabled = false,
-    },
-  },
-  prompt = {
-    prefix = { { "󱐋 ", "FlashPromptIcon", }, },
-  },
-}
+-- flash.setup {
+--   modes = {
+--     char = {
+--       enabled = false,
+--     },
+--   },
+--   prompt = {
+--     prefix = { { "󱐋 ", "FlashPromptIcon", }, },
+--   },
+-- }
 
-vim.keymap.set("n", "s", function() flash.jump { forward = true, } end)
-vim.keymap.set("n", "S", function() flash.jump { forward = false, } end)
-vim.keymap.set("n", "<leader>v", function() flash.treesitter() end)
-vim.keymap.set("n", "<leader>s", function()
-  -- https://github.com/folke/flash.nvim#-examples
-  flash.jump {
-    forward = true,
-    search = {
-      mode = "search",
-      max_length = 0,
-    },
-    label = {
-      after = { 0, 0, },
-    },
-    pattern = "^",
+local mini_jump2d = require "mini.jump2d"
+mini_jump2d.setup()
+
+vim.keymap.set("n", "s", function()
+  mini_jump2d.start {
+    spotter = mini_jump2d.gen_spotter.vimpattern "\\k\\+",
+    allowed_lines = { cursor_before = false, cursor_after = true, },
+    allowed_windows = { not_current = false, },
   }
 end)
+vim.keymap.set("n", "S", function()
+  mini_jump2d.start {
+    spotter = mini_jump2d.gen_spotter.vimpattern "\\k\\+",
+    allowed_lines = { cursor_before = true, cursor_after = false, },
+    allowed_windows = { not_current = false, },
+  }
+end)
+vim.keymap.set("n", "<leader>s", function() mini_jump2d.start(mini_jump2d.builtin_opts.line_start) end)
+
+vim.keymap.set("n", "<leader>v", function() flash.treesitter() end)
+-- vim.keymap.set("n", "s", function() flash.jump { forward = true, } end)
+-- vim.keymap.set("n", "S", function() flash.jump { forward = false, } end)
+-- vim.keymap.set("n", "<leader>s", function()
+--   -- https://github.com/folke/flash.nvim#-examples
+--   flash.jump {
+--     forward = true,
+--     search = {
+--       mode = "search",
+--       max_length = 0,
+--     },
+--     label = {
+--       after = { 0, 0, },
+--     },
+--     pattern = "^",
+--   }
+-- end)
 
 marks.setup {
   excluded_filetypes = { "oil", },
