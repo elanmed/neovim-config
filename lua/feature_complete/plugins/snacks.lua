@@ -1,7 +1,6 @@
 local snacks = require "snacks"
 
 snacks.setup {
-  indent = { enabled = true, animate = { enabled = false, }, },
   explorer = { enabled = true, replace_netrw = false, },
   bigfile = {},
   picker = {
@@ -18,35 +17,27 @@ snacks.setup {
   },
 }
 
-local function star_curr_word()
-  local word = vim.fn.expand "<cword>"
-  -- https://superuser.com/a/299693
-  vim.cmd([[let @/ = '\<]] .. word .. [[\>']])
-  vim.api.nvim_set_option_value("hlsearch", true, {})
-end
-
-vim.keymap.set("n", "*", star_curr_word, { silent = true, desc = "*, but stay on the current search result", })
-vim.keymap.set("n", "/", function()
-    snacks.picker.lines {
-      layout = {
-        layout = {
-          backdrop = false,
-          row = -1,
-          width = 0,
-          height = 0.4,
-          box = "vertical",
-          { win = "input", height = 1, border = "rounded", },
-          { win = "list", },
-        },
-      },
-      on_close = function()
-        -- vim.schedule(function()
-        --   star_curr_word()
-        -- end)
-      end,
-    }
-  end,
-  { desc = "Search in the current buffer with snacks", })
+-- vim.keymap.set("n", "/", function()
+--     snacks.picker.lines {
+--       layout = {
+--         layout = {
+--           backdrop = false,
+--           row = -1,
+--           width = 0,
+--           height = 0.4,
+--           box = "vertical",
+--           { win = "input", height = 1, border = "rounded", },
+--           { win = "list", },
+--         },
+--       },
+--       on_close = function()
+--         -- vim.schedule(function()
+--         --   star_curr_word()
+--         -- end)
+--       end,
+--     }
+--   end,
+--   { desc = "Search in the current buffer with snacks", })
 
 vim.keymap.set("n", "<leader>l", function()
     snacks.picker.undo {
@@ -54,12 +45,12 @@ vim.keymap.set("n", "<leader>l", function()
         layout = {
           backdrop = false,
           width = 0,
-          height = 0.99, -- avoid cutting off the border
+          height = 0.95,
           box = "vertical",
           border = "none",
           { win = "preview", height = 0.65, border = "rounded", },
-          { win = "list", },
-          { win = "input", height = 1, border = "top", },
+          { win = "list", border = "rounded", },
+          { win = "input", height = 1, border = "rounded", },
         },
       },
     }

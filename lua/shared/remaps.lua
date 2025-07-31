@@ -176,6 +176,12 @@ vim.keymap.set("n", "<leader>.r", function()
 end, { expr = true, desc = "Record a macro", })
 vim.keymap.set("n", "<leader>.e", "@Q", { desc = "Execute a macro", })
 vim.keymap.set("n", "<leader>V", "G" .. "V" .. "gg", { desc = "Execute a macro", })
+vim.keymap.set("n", "*", function()
+  local word = vim.fn.expand "<cword>"
+  -- https://superuser.com/a/299693
+  vim.cmd([[let @/ = '\<]] .. word .. [[\>']])
+  vim.api.nvim_set_option_value("hlsearch", true, {})
+end, { silent = true, desc = "*, but stay on the current search result", })
 
 vim.keymap.set("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>/", "<nop>", { desc = "TODO find a remap", })

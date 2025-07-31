@@ -38,22 +38,26 @@ bootstrap_paq {
   "tpope/vim-speeddating",
   "jxnblk/vim-mdx-js",
   -- buffers
-  "akinsho/bufferline.nvim",
+  -- "akinsho/bufferline.nvim",
+  "echasnovski/mini.tabline",
   -- cmp
-  "windwp/nvim-autopairs",
-  "echasnovski/mini.files",
-  {
-    "saghen/blink.cmp",
-    build = build_pin_commit("blink.cmp", "586ee87534f5bf65f1c8dea2d1da2a57e8cddd36"),
-  },
-  "xzbdmw/colorful-menu.nvim",
+  -- "windwp/nvim-autopairs",
+  -- {
+  --   "saghen/blink.cmp",
+  --   build = build_pin_commit("blink.cmp", "586ee87534f5bf65f1c8dea2d1da2a57e8cddd36"),
+  -- },
+  -- "xzbdmw/colorful-menu.nvim",
+  "echasnovski/mini.pairs",
+  "echasnovski/mini.completion",
   -- colorscheme
   "RRethy/nvim-base16",
   -- far
   "MagicDuck/grug-far.nvim",
   -- file_tree
-  "stevearc/oil.nvim",
-  "nvim-tree/nvim-web-devicons",
+  -- "stevearc/oil.nvim",
+  "echasnovski/mini.files",
+  "echasnovski/mini.icons",
+  -- "nvim-tree/nvim-web-devicons",
   "karb94/neoscroll.nvim",
   -- fzf
   "junegunn/fzf",
@@ -68,18 +72,21 @@ bootstrap_paq {
   "folke/flash.nvim",
   "chentoast/marks.nvim",
   "christoomey/vim-tmux-navigator",
-  "kylechui/nvim-surround",
+  -- "kylechui/nvim-surround",
+  "echasnovski/mini.surround",
   "elanmed/ft-highlight.nvim",
   -- quickfix
   "elanmed/quickfix-preview.nvim",
   -- snacks
   "folke/snacks.nvim",
+  "echasnovski/mini.indentscope",
   -- statusline
-  "nvim-lualine/lualine.nvim",
-  "ojroques/vim-scrollstatus",
+  -- "nvim-lualine/lualine.nvim",
+  -- "ojroques/vim-scrollstatus",
   -- treesitter
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate", },
-  "nvim-treesitter/nvim-treesitter-textobjects",
+  -- "nvim-treesitter/nvim-treesitter-textobjects",
+  "echasnovski/mini.ai",
   "RRethy/nvim-treesitter-endwise",
   "windwp/nvim-ts-autotag",
   "JoosepAlviste/nvim-ts-context-commentstring",

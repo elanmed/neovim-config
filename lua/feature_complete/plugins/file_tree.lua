@@ -4,7 +4,18 @@ local mini_files = require "mini.files"
 mini_files.setup {
   mappings = {
     close = "<esc>",
+    go_in = "l",
     go_in_plus = "<cr>",
+    go_out = "h",
+    go_out_plus = "",
+    mark_goto = "",
+    mark_set = "",
+    reset = "q",
+    reveal_cwd = "",
+    show_help = "g?",
+    synchronize = "<bs>",
+    trim_left = "",
+    trim_right = "",
   },
   options = {
     permanent_delete = false,

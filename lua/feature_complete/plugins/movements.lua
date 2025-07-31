@@ -39,14 +39,14 @@ vim.api.nvim_create_autocmd({ "CursorMoved", }, {
 })
 
 require "ft-highlight".setup()
-require "nvim-surround".setup {
-  keymaps = {
-    normal = "ys",
-    visual = "S",
-    delete = "ds",
-    change = "cs",
-  },
-}
+-- require "nvim-surround".setup {
+--   keymaps = {
+--     normal = "ys",
+--     visual = "S",
+--     delete = "ds",
+--     change = "cs",
+--   },
+-- }
 
 vim.keymap.set({ "n", "v", "i", }, "<C-u>", function()
   if vim.fn.line "." == vim.fn.line "$" then

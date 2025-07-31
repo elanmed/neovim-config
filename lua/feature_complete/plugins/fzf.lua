@@ -97,16 +97,18 @@ vim.keymap.set("n", "<leader>z;", function()
   vim.fn["fzf#vim#command_history"] {
     options = extend(default_opts_tbl, single_opts_tbl),
   }
-  -- TODO: fzf_vim options entry
-  -- vim.cmd "History:"
 end)
 vim.keymap.set("n", "<leader>i", function()
   set_preview_window_opts(true)
   vim.fn["fzf#vim#gitfiles"]("?", {
     options = extend(default_opts_tbl, single_opts_tbl),
   })
-  -- TODO: fzf_vim options entry
-  -- vim.cmd "GFiles?"
+end)
+vim.keymap.set("n", "/", function()
+  set_preview_window_opts(false)
+  vim.fn["fzf#vim#buffer_lines"] {
+    options = extend(default_opts_tbl, single_opts_tbl),
+  }
 end)
 
 local function sinklist(list)
