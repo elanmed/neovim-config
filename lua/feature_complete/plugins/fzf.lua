@@ -211,8 +211,13 @@ vim.keymap.set("n", "<leader>zl", function()
 
     local items = vim.lsp.util.locations_to_items(result, "utf-8")
     for _, entry in pairs(items) do
-      local source_entry = ("%s|%s|%s|%s"):format(entry.filename, entry.lnum, entry.col, entry.text)
+      if not vim.startswith(entry.filename, vim.fn.getcwd()) then goto continue end
+
+      local rel_path = vim.fs.relpath(vim.fn.getcwd(), entry.filename)
+      local source_entry = ("%s|%s|%s|%s"):format(rel_path, entry.lnum, entry.col, entry.text)
       fzf_stream:update_results { source_entry, }
+
+      ::continue::
     end
     fzf_stream:update_results(nil)
   end)
