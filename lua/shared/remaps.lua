@@ -1,4 +1,5 @@
 local h = require "helpers"
+local mini_bufremove = require "mini.bufremove"
 
 vim.keymap.set("i", "<C-t>", "<C-o>:Snippet<space>")
 vim.keymap.set({ "n", "v", }, "<C-t>", function()
@@ -31,7 +32,9 @@ vim.keymap.set("n", "g/s", ":%s/\\<\\>\\C/<left><left><left><left><left>",
   { desc = "Search and replace in the current buffer, case and word sensitive", })
 vim.keymap.set("n", "<leader>n", h.keys.vim_cmd_cb "nohlsearch", { desc = "Turn off highlighting", })
 vim.keymap.set("n", "<leader>x", h.keys.vim_cmd_cb "tabclose", { desc = "Close the current tab", })
-vim.keymap.set("n", "<leader>d", h.keys.vim_cmd_cb "silent! bdelete!", { desc = "Close the current buffer", })
+vim.keymap.set("n", "<leader>d", function()
+  mini_bufremove.delete(0)
+end, { desc = "Close the current buffer", })
 vim.keymap.set("n", "<leader>;", ":")
 vim.keymap.set("n", "x", [["_x]])
 vim.keymap.set("n", "X", [["_X]])
@@ -109,7 +112,7 @@ vim.keymap.set("n", "<leader>uo", function()
     if vim.api.nvim_get_option_value("modified", { buf = buf, }) then
       goto continue
     end
-    vim.api.nvim_buf_delete(buf, { force = true, })
+    mini_bufremove.delete(buf, true)
 
     ::continue::
   end
