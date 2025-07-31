@@ -139,7 +139,7 @@ end
 local function rg_with_globs(default_query)
   default_query = default_query or ""
   local header =
-  "-e by *.[ext] :: -f by file :: -d by **/[dir]/** :: -c by case sensitive :: -nc by case insensitive :: -w by whole word :: -nw by partial word"
+  "-e by *.[ext] | -f by file | -d by **/[dir]/** | -c by case sensitive | -nc by case insensitive | -w by whole word | -nw by partial word"
 
   local rg_options = {
     "--query", default_query,
@@ -166,14 +166,13 @@ vim.keymap.set("n", "<leader>f", function()
   local frecency_and_fd_opts = {
     "--prompt", "Frecency> ",
     "--delimiter", "|",
-    "--preview", "bat --style=numbers --color=always {2}",
     "--bind", ("ctrl-x:execute(%s %s {2})+reload(%s)"):format(remove_frecency_file_script, vim.fn.getcwd(), source),
   }
 
   local spec = {
     source = source,
     options = extend(frecency_and_fd_opts, default_opts_tbl, single_opts_tbl),
-    window = with_preview_window_opts,
+    window = without_preview_window_opts,
     sink = function(entry)
       local filename = vim.split(entry, "|")[2]
       local abs_file = vim.fs.joinpath(vim.fn.getcwd(), filename)
