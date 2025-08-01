@@ -160,6 +160,12 @@ local function rg_with_globs(default_query)
   vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
 end
 
+vim.keymap.set("n", "<leader>ze", function()
+  require "fzf-lua-frecency".frecency {
+    hidden = true,
+    cwd_only = true,
+  }
+end)
 vim.keymap.set("n", "<leader>f", function()
   if vim.bo.filetype == "minifiles" then
     mini_files.close()
