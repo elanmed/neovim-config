@@ -1,5 +1,8 @@
 #!/bin/bash
 cwd="$1"
+
+# exclude the shortest (one %) match from the end (%)
+cwd="${cwd%/}"
 sorted_files_path="$2"
 
 cat \
@@ -13,9 +16,9 @@ cat \
     # substring abs_path from 3 onwards
     without_first_three_chars="${abs_path:3}"
 
-    # from the left (#), remove the shortest match (one #) matching the pattern "$cwd"/
-    # i.e. from path/to/file remove path/to/
-    rel_path="${without_first_three_chars#"$cwd"/}"
-
-    echo "${first_three_chars}${rel_path}"
+    if [[ $without_first_three_chars == "$cwd"/* ]]; then
+      # Remove the cwd prefix to get relative path
+      rel_path="${without_first_three_chars#"$cwd"/}"
+      echo "${first_three_chars}${rel_path}"
+    fi
   done
