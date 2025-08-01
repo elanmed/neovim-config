@@ -1,6 +1,5 @@
 local mini_cmp = require "mini.completion"
 
-vim.keymap.set("i", "<C-x>", "<C-x><C-u>")
 vim.keymap.set("i", "<C-n>", "<nop>")
 
 local kind_priority = { Snippet = -1, }
@@ -15,10 +14,8 @@ mini_cmp.setup {
     process_items = process_items,
   },
   mappings = {
-    force_twostep = "",
+    force_twostep = "<C-n>",
     force_fallback = "",
-    scroll_down = "<C-d>",
-    scroll_up = "<C-u>",
   },
 }
 
