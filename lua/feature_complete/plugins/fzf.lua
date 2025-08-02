@@ -147,8 +147,8 @@ local function rg_with_globs(default_query)
     "--disabled",
     "--prompt", "Rg> ",
     "--header", header,
-    "--bind", ("start:reload:%s {q}"):format(rg_with_globs_script),
-    "--bind", ("change:reload:%s {q}"):format(rg_with_globs_script),
+    "--bind", ("start:reload:%s {q} || true"):format(rg_with_globs_script),
+    "--bind", ("change:reload:%s {q} || true"):format(rg_with_globs_script),
   }
 
   local spec = {
