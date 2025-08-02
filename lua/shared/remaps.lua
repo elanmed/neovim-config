@@ -1,6 +1,7 @@
 local h = require "helpers"
-local mini_bufremove = require "mini.bufremove"
 
+vim.keymap.set("n", "L", h.keys.vim_cmd_cb "bnext")
+vim.keymap.set("n", "H", h.keys.vim_cmd_cb "bprev")
 vim.keymap.set("i", "<C-t>", "<C-o>:Snippet<space>")
 vim.keymap.set({ "n", "v", }, "<C-t>", function()
   h.notify.error "snippets only supported in insert mode!"
@@ -33,7 +34,12 @@ vim.keymap.set("n", "g/s", ":%s/\\<\\>\\C/<left><left><left><left><left>",
 vim.keymap.set("n", "<leader>n", h.keys.vim_cmd_cb "nohlsearch", { desc = "Turn off highlighting", })
 vim.keymap.set("n", "<leader>x", h.keys.vim_cmd_cb "tabclose", { desc = "Close the current tab", })
 vim.keymap.set("n", "<leader>d", function()
-  mini_bufremove.delete(0)
+  local mini_ok, mini_bufremove = pcall(require, "mini.bufremove")
+  if mini_ok then
+    mini_bufremove.delete(0)
+  else
+    vim.cmd "silent! bdelete!"
+  end
 end, { desc = "Close the current buffer", })
 vim.keymap.set("n", "<leader>;", ":")
 vim.keymap.set("n", "x", [["_x]])
@@ -103,6 +109,7 @@ vim.keymap.set("n", "<leader>yq",
 
 vim.keymap.set("n", "<leader>ua", h.keys.vim_cmd_cb "silent! bufdo bdelete", { desc = "Close all buffers", })
 vim.keymap.set("n", "<leader>uo", function()
+  local mini_ok, mini_bufremove = pcall(require, "mini.bufremove")
   local cur_buf = vim.api.nvim_get_current_buf()
 
   for _, buf in ipairs(vim.api.nvim_list_bufs()) do
@@ -112,7 +119,11 @@ vim.keymap.set("n", "<leader>uo", function()
     if vim.api.nvim_get_option_value("modified", { buf = buf, }) then
       goto continue
     end
-    mini_bufremove.delete(buf, true)
+    if mini_ok then
+      mini_bufremove.delete(buf, true)
+    else
+      vim.api.nvim_buf_delete(buf, { force = true, })
+    end
 
     ::continue::
   end
