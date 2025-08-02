@@ -17,7 +17,12 @@ local colors = {
   base0E = "#b294bb",
   base0F = "#a3685a",
 }
-require "base16-colorscheme".setup(colors)
+
+-- require "base16-colorscheme".setup(colors)
+require "mini.base16".setup {
+  palette = colors,
+}
+
 local M = {
   black = colors.base00,
   grey = colors.base02,
@@ -33,10 +38,9 @@ local M = {
   brown = colors.base0F,
 }
 
-vim.api.nvim_set_hl(0, "MatchParen", { fg = nil, bg = M.grey, })
-vim.api.nvim_set_hl(0, "LspReferenceRead", { bold = true, })
-vim.api.nvim_set_hl(0, "LspReferenceText", { bold = true, })
-vim.api.nvim_set_hl(0, "LspReferenceWrite", { bold = true, })
+-- vim.api.nvim_set_hl(0, "LspReferenceRead", { link = "MatchParen", })
+-- vim.api.nvim_set_hl(0, "LspReferenceText", { link = "MatchParen", })
+-- vim.api.nvim_set_hl(0, "LspReferenceWrite", { link = "MatchParen", })
 
 vim.api.nvim_set_hl(0, "WilderAccent", { fg = M.orange, })
 vim.api.nvim_set_hl(0, "WildMenu", { fg = M.yellow, underline = true, bold = true, })
@@ -45,6 +49,14 @@ vim.api.nvim_set_hl(0, "FlashLabel", { link = "IncSearch", })
 
 -- vim.api.nvim_set_hl(0, "SnacksIndent", { fg = M.grey, })
 -- vim.api.nvim_set_hl(0, "SnacksIndentScope", { fg = M.light_grey, })
+
+vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal", })
+
+vim.api.nvim_set_hl(0, "MiniTablineCurrent", { bold = true, fg = M.yellow, bg = M.grey, })
+vim.api.nvim_set_hl(0, "MiniTablineModifiedCurrent", { link = "MiniTablineCurrent", })
+
+vim.api.nvim_set_hl(0, "MiniTablineModifiedVisible", { link = "MiniTablineVisible", })
+vim.api.nvim_set_hl(0, "MiniTablineModifiedHidden", { link = "MiniTablineHidden", })
 
 vim.api.nvim_set_hl(0, "NotifyError", { fg = M.red, })
 vim.api.nvim_set_hl(0, "NotifyDoing", { fg = M.orange, })
