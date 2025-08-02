@@ -46,7 +46,6 @@ bootstrap_paq {
   -- movements
   "folke/flash.nvim",
   "chentoast/marks.nvim",
-  "christoomey/vim-tmux-navigator",
   "elanmed/ft-highlight.nvim",
   "karb94/neoscroll.nvim",
   -- quickfix

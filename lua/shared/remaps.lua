@@ -54,9 +54,9 @@ vim.keymap.set("n", "j", "gj", { desc = "j with display lines", })
 vim.keymap.set("n", "k", "gk", { desc = "k with display lines", })
 vim.keymap.set("n", "$", "g$", { desc = "k with display lines", })
 vim.keymap.set("n", "0", "g0", { desc = "k with display lines", })
-vim.keymap.set("i", "<C-_>", "<C-o>gcc", { remap = true, })
-vim.keymap.set("n", "<C-_>", "gcc", { remap = true, })
-vim.keymap.set("v", "<C-_>",
+vim.keymap.set("i", "<C-/>", "<C-o>gcc", { remap = true, })
+vim.keymap.set("n", "<C-/>", "gcc", { remap = true, })
+vim.keymap.set("v", "<C-/>",
   function()
     local comment = "gc"
     local reselect_last = "gv"
@@ -177,3 +177,7 @@ vim.keymap.set("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>/", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>'", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>,", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<C-j>", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<C-k>", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<C-j>", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<C-h>", "<nop>", { desc = "TODO find a remap", })
