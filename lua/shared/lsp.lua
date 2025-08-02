@@ -31,35 +31,35 @@ end
 
 vim.keymap.set({ "i", "n", "v", }, "<C-g>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
 
-vim.api.nvim_create_autocmd("LspAttach", {
-  callback = function(args)
-    local client = vim.lsp.get_client_by_id(args.data.client_id)
-    if not client then return end
-    local methods = vim.lsp.protocol.Methods
-    local bufnr = args.buf
-
-    if client:supports_method(methods.textDocument_documentHighlight) then
-      vim.opt.updatetime = 100 -- how long until the cursor events fire
-      vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
-        buffer = bufnr,
-        callback = function()
-          vim.lsp.buf.document_highlight()
-        end,
-      })
-
-      vim.api.nvim_create_autocmd({ "CursorMoved", }, {
-        buffer = bufnr,
-        callback = function()
-          vim.lsp.buf.clear_references()
-        end,
-      })
-    end
-  end,
-})
+-- vim.api.nvim_create_autocmd("LspAttach", {
+--   callback = function(args)
+--     local client = vim.lsp.get_client_by_id(args.data.client_id)
+--     if not client then return end
+--     local methods = vim.lsp.protocol.Methods
+--     local bufnr = args.buf
+--
+--     if client:supports_method(methods.textDocument_documentHighlight) then
+--       vim.opt.updatetime = 100 -- how long until the cursor events fire
+--       vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
+--         buffer = bufnr,
+--         callback = function()
+--           vim.lsp.buf.document_highlight()
+--         end,
+--       })
+--
+--       vim.api.nvim_create_autocmd({ "CursorMoved", }, {
+--         buffer = bufnr,
+--         callback = function()
+--           vim.lsp.buf.clear_references()
+--         end,
+--       })
+--     end
+--   end,
+-- })
 
 vim.keymap.set("i", "<C-s>",
   function()
-    vim.lsp.buf.signature_help { border = "single", }
+    vim.lsp.buf.signature_help { border = "rounded", }
   end,
   { desc = "LSP signature help", }
 )
@@ -67,7 +67,8 @@ vim.keymap.set("n", "glr", vim.lsp.buf.references, { desc = "LSP go to type defi
 vim.keymap.set("n", "gla", vim.lsp.buf.code_action, { desc = "LSP go to type definition", })
 vim.keymap.set("n", "glt", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
 vim.keymap.set("n", "gli", vim.lsp.buf.definition, { desc = "LSP go to definition", })
-vim.keymap.set("n", "K", function() vim.lsp.buf.hover { border = "single", } end, { desc = "LSP go to type definition", })
+vim.keymap.set("n", "K", function() vim.lsp.buf.hover { border = "rounded", } end,
+  { desc = "LSP go to type definition", })
 vim.keymap.set("n", "<leader>k", function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     -- :h floating-windows
@@ -77,7 +78,6 @@ vim.keymap.set("n", "<leader>k", function()
     end
   end
 end)
-
 
 --- @param direction "next" | "prev"
 --- @param severity? vim.diagnostic.Severity
