@@ -105,12 +105,6 @@ vim.keymap.set("n", "<leader>i", function()
     options = extend(default_opts_tbl, single_opts_tbl),
   })
 end)
-vim.keymap.set("n", "/", function()
-  set_preview_window_opts(false)
-  vim.fn["fzf#vim#buffer_lines"] {
-    options = extend(default_opts_tbl, single_opts_tbl),
-  }
-end)
 
 local function sinklist(list)
   if vim.tbl_count(list) == 1 then

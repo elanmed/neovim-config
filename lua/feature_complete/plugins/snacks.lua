@@ -17,27 +17,27 @@ snacks.setup {
   },
 }
 
--- vim.keymap.set("n", "/", function()
---     snacks.picker.lines {
---       layout = {
---         layout = {
---           backdrop = false,
---           row = -1,
---           width = 0,
---           height = 0.4,
---           box = "vertical",
---           { win = "input", height = 1, border = "rounded", },
---           { win = "list", },
---         },
---       },
---       on_close = function()
---         -- vim.schedule(function()
---         --   star_curr_word()
---         -- end)
---       end,
---     }
---   end,
---   { desc = "Search in the current buffer with snacks", })
+vim.keymap.set("n", "/", function()
+    snacks.picker.lines {
+      layout = {
+        layout = {
+          backdrop = false,
+          row = -1,
+          width = 0,
+          height = 0.4,
+          box = "vertical",
+          { win = "list", border = "rounded", },
+          { win = "input", height = 1, border = "rounded", },
+        },
+      },
+      on_close = function()
+        -- vim.schedule(function()
+        --   star_curr_word()
+        -- end)
+      end,
+    }
+  end,
+  { desc = "Search in the current buffer with snacks", })
 
 vim.keymap.set("n", "<leader>l", function()
     snacks.picker.undo {
