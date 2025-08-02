@@ -42,11 +42,11 @@ bootstrap_paq {
   -- "akinsho/bufferline.nvim",
   -- cmp
   -- "windwp/nvim-autopairs",
-  -- {
-  --   "saghen/blink.cmp",
-  --   build = build_pin_commit("blink.cmp", "586ee87534f5bf65f1c8dea2d1da2a57e8cddd36"),
-  -- },
-  -- "xzbdmw/colorful-menu.nvim",
+  {
+    "saghen/blink.cmp",
+    build = build_pin_commit("blink.cmp", "586ee87534f5bf65f1c8dea2d1da2a57e8cddd36"),
+  },
+  "xzbdmw/colorful-menu.nvim",
   -- colorscheme
   "RRethy/nvim-base16",
   -- far
