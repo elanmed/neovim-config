@@ -79,7 +79,6 @@ flash.setup {
 
 vim.keymap.set("n", "<leader>v", function() flash.treesitter() end)
 vim.keymap.set("n", "gs", function() flash.jump { forward = true, } end)
-vim.keymap.set("n", "GS", function() flash.jump { forward = false, } end)
 vim.keymap.set("n", "gS", function() flash.jump { forward = false, } end)
 vim.keymap.set("n", "<leader>s", function()
   -- https://github.com/folke/flash.nvim#-examples
