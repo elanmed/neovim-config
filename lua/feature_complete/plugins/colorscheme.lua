@@ -18,7 +18,6 @@ local colors = {
   base0F = "#a3685a",
 }
 
--- require "base16-colorscheme".setup(colors)
 require "mini.base16".setup {
   palette = colors,
 }
@@ -46,9 +45,6 @@ vim.api.nvim_set_hl(0, "WilderAccent", { fg = M.orange, })
 vim.api.nvim_set_hl(0, "WildMenu", { fg = M.yellow, underline = true, bold = true, })
 
 vim.api.nvim_set_hl(0, "FlashLabel", { link = "IncSearch", })
-
--- vim.api.nvim_set_hl(0, "SnacksIndent", { fg = M.grey, })
--- vim.api.nvim_set_hl(0, "SnacksIndentScope", { fg = M.light_grey, })
 
 vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal", })
 
