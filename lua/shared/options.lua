@@ -34,5 +34,5 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 vim.opt.statusline = table.concat({
   " ", "%f", "%=",
-  "%l:%c | ", "%p%%", " ",
+  "%l:%c", " ",
 }, "")

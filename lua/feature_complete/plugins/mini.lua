@@ -21,3 +21,21 @@ hipatterns.setup {
     hex_color = hipatterns.gen_highlighter.hex_color(),
   },
 }
+
+local map = require "mini.map"
+map.setup {
+  integrations = {
+    map.gen_integration.builtin_search(),
+    map.gen_integration.diff(),
+    map.gen_integration.diagnostic(),
+  },
+  symbols = {
+    encode = map.gen_encode_symbols.dot "3x2",
+  },
+}
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    map.open()
+  end,
+})
