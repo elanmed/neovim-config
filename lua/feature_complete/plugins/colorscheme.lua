@@ -24,8 +24,12 @@ require "mini.base16".setup {
 
 local M = {
   black = colors.base00,
-  grey = colors.base02,
-  light_grey = colors.base03,
+  extra_dark_grey = colors.base01,
+  dark_grey = colors.base02,
+  grey = colors.base03,
+  light_grey = colors.base04,
+  extra_light_grey = colors.base05,
+  dark_white = colors.base06,
   white = colors.base07,
   red = colors.base08,
   orange = colors.base09,
@@ -48,7 +52,7 @@ vim.api.nvim_set_hl(0, "FlashLabel", { link = "IncSearch", })
 
 vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal", })
 
-vim.api.nvim_set_hl(0, "MiniTablineCurrent", { bold = true, fg = M.yellow, bg = M.grey, })
+vim.api.nvim_set_hl(0, "MiniTablineCurrent", { bold = true, fg = M.yellow, bg = M.dark_grey, })
 vim.api.nvim_set_hl(0, "MiniTablineModifiedCurrent", { link = "MiniTablineCurrent", })
 
 vim.api.nvim_set_hl(0, "MiniTablineModifiedVisible", { link = "MiniTablineVisible", })
