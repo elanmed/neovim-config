@@ -14,7 +14,7 @@ local prev_rg_query_file = vim.fs.joinpath(
 )
 local remove_frecency_file_script = vim.fs.joinpath(
   os.getenv "HOME",
-  "/.dotfiles/neovim/.config/nvim/fzf_scripts/remove-frecency-file.sh"
+  "/.dotfiles/neovim/.config/nvim/fzf_scripts/remove-frecency-file.lua"
 )
 local rg_with_globs_script = vim.fs.joinpath(
   os.getenv "HOME",
@@ -22,7 +22,7 @@ local rg_with_globs_script = vim.fs.joinpath(
 )
 local frecency_and_fd_files_script = vim.fs.joinpath(
   os.getenv "HOME",
-  "/.dotfiles/neovim/.config/nvim/fzf_scripts/frecency-and-fd-files.sh"
+  "/.dotfiles/neovim/.config/nvim/fzf_scripts/frecency-and-fd-files.lua"
 )
 
 local function extend(...)
@@ -165,12 +165,27 @@ vim.keymap.set("n", "<leader>f", function()
     mini_files.close()
   end
   local sorted_files_path = require "fzf-lua-frecency.helpers".get_sorted_files_path()
-  local source = table.concat({ frecency_and_fd_files_script, vim.fn.getcwd(), sorted_files_path, }, " ")
+  local source = table.concat({
+    "nvim",
+    "--headless",
+    "-l",
+    frecency_and_fd_files_script,
+    sorted_files_path,
+    vim.fn.getcwd(),
+  }, " ")
 
   local frecency_and_fd_opts = {
     "--prompt", "Frecency> ",
     "--delimiter", "|",
-    "--bind", ("ctrl-x:execute(%s %s {2})+reload(%s)"):format(remove_frecency_file_script, vim.fn.getcwd(), source),
+    "--bind", ("ctrl-x:execute(%s %s {2})+reload(%s)"):format(
+    table.concat({
+      "nvim",
+      "--headless",
+      "-l",
+      remove_frecency_file_script,
+    }, " "),
+    vim.fn.getcwd(),
+    source),
   }
 
   local spec = {
