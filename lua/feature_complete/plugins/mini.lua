@@ -30,7 +30,7 @@ map.setup {
     map.gen_integration.diagnostic(),
   },
   symbols = {
-    encode = map.gen_encode_symbols.dot "3x2",
+    encode = map.gen_encode_symbols.dot "4x2",
   },
 }
 
