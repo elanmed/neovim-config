@@ -3,6 +3,7 @@ local snacks = require "snacks"
 snacks.setup {
   explorer = { enabled = true, replace_netrw = false, },
   bigfile = {},
+  image = { enabled = true, },
   picker = {
     win = {
       input = {

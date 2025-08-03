@@ -24,19 +24,16 @@ end
 
 bootstrap_paq {
   "savq/paq-nvim",
-  -- (no file)
-  "nvim-lua/plenary.nvim",
+  "echasnovski/mini.nvim",
   "tpope/vim-speeddating",
   "jxnblk/vim-mdx-js",
-  -- mini
-  "echasnovski/mini.nvim",
   -- cmp
   "saghen/blink.cmp",
   "xzbdmw/colorful-menu.nvim",
   -- far
   "MagicDuck/grug-far.nvim",
   -- fzf
-  { "junegunn/fzf", build = function() vim.fn["fzf#install"]() end, },
+  "junegunn/fzf.vim",
   "ibhagwan/fzf-lua",
   "elanmed/rg-glob-builder.nvim",
   "elanmed/fzf-lua-frecency.nvim",
