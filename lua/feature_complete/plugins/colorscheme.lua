@@ -41,10 +41,6 @@ local M = {
   brown = colors.base0F,
 }
 
--- vim.api.nvim_set_hl(0, "LspReferenceRead", { link = "MatchParen", })
--- vim.api.nvim_set_hl(0, "LspReferenceText", { link = "MatchParen", })
--- vim.api.nvim_set_hl(0, "LspReferenceWrite", { link = "MatchParen", })
-
 vim.api.nvim_set_hl(0, "WilderAccent", { fg = M.orange, })
 vim.api.nvim_set_hl(0, "WildMenu", { fg = M.yellow, underline = true, bold = true, })
 
@@ -52,6 +48,8 @@ vim.api.nvim_set_hl(0, "FlashLabel", { link = "IncSearch", })
 
 vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal", })
 
+vim.api.nvim_set_hl(0, "MiniCursorword", { bg = M.extra_dark_grey, })
+vim.api.nvim_set_hl(0, "MiniCursorwordCurrent", { bg = M.extra_dark_grey, })
 vim.api.nvim_set_hl(0, "MiniTablineCurrent", { bold = true, fg = M.yellow, bg = M.dark_grey, })
 vim.api.nvim_set_hl(0, "MiniTablineModifiedCurrent", { link = "MiniTablineCurrent", })
 
