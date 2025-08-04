@@ -28,6 +28,16 @@ function _G.GetQuickfixTextFunc()
   local longest_col_len = 0
   local qf_list = vim.fn.getqflist()
 
+
+  local function has_preview_win()
+    for _, win_id in ipairs(vim.api.nvim_list_wins()) do
+      if vim.api.nvim_get_option_value("previewwindow", { win = win_id, }) then
+        return true
+      end
+    end
+    return false
+  end
+
   local items = {}
   for _, item in pairs(qf_list) do
     local bufname = shorten_bufname(vim.fn.bufname(item.bufnr))
@@ -49,7 +59,9 @@ function _G.GetQuickfixTextFunc()
         " | " .. vim.fn.trim(item.text)
 
     local misc_padding = 10
-    local win_width = vim.api.nvim_win_get_width(0) - misc_padding
+    local win_width = (
+      vim.api.nvim_win_get_width(0) / (has_preview_win() and 1 or 2)
+    ) - misc_padding
     if #formatted_item > win_width then
       formatted_item = formatted_item:sub(1, win_width)
     end
