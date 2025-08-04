@@ -119,11 +119,7 @@ local function sinklist(list)
   end
 
   local qf_list = vim.tbl_map(function(entry)
-    local split_entry = vim.split(entry, "|")
-    local filename = split_entry[1]
-    local row = split_entry[2]
-    local col = split_entry[3]
-    local text = split_entry[4]
+    local filename, row, col, text = table.unpack(vim.split(entry, "|"))
     return { filename = filename, lnum = row, col = col, text = text, }
   end, list)
   vim.fn.setqflist(qf_list)

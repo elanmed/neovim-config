@@ -7,11 +7,9 @@ function FzfStream.new()
   self.done_file = self.content_file .. ".done"
   self.partial_file = self.content_file .. ".partial"
 
-  -- TODO: is this necessary, or will tempname always give a unique file
   vim.fn.delete(self.content_file)
   vim.fn.delete(self.done_file)
   vim.fn.delete(self.partial_file)
-
   vim.fn.writefile({}, self.content_file)
 
   return self

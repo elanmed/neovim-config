@@ -25,7 +25,7 @@ vim.keymap.set("n", "/", function()
           backdrop = false,
           row = -1,
           width = 0,
-          height = 0.4,
+          height = 0.5,
           box = "vertical",
           { win = "list", border = "rounded", },
           { win = "input", height = 1, border = "rounded", },
