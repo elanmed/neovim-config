@@ -72,18 +72,17 @@ local function set_preview_window_opts(preview)
   vim.api.nvim_set_var("fzf_layout", { window = preview and with_preview_window_opts or without_preview_window_opts, })
 end
 
-vim.api.nvim_set_var("fzf_vim", {
-  helptags_options = extend(default_opts_tbl, single_opts_tbl),
-  buffers_options = extend(default_opts_tbl, single_opts_tbl),
-})
-
 vim.keymap.set("n", "<leader>h", function()
   set_preview_window_opts(true)
-  vim.cmd "Helptags"
+  vim.fn["fzf#vim#helptags"](
+    vim.fn["fzf#vim#with_preview"] { placeholder = "--tag {2}:{3}:{4}", }
+  )
 end)
 vim.keymap.set("n", "<leader>b", function()
   set_preview_window_opts(true)
-  vim.cmd "Buffers"
+  vim.fn["fzf#vim#buffers"](
+    vim.fn["fzf#vim#with_preview"] { placeholder = "{1}", }
+  )
 end)
 
 vim.keymap.set("n", "<leader>zm", function()
