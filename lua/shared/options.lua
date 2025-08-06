@@ -2,7 +2,6 @@ vim.opt.clipboard = "unnamedplus" -- os clipboard
 vim.opt.cursorline = true
 vim.opt.number = true
 vim.opt.relativenumber = true
-vim.opt.mouse = "a" -- prevents conflicts with tmux
 vim.opt.confirm = true
 vim.opt.splitright = true
 vim.opt.splitbelow = true
