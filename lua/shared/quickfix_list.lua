@@ -28,7 +28,6 @@ function _G.GetQuickfixTextFunc()
   local longest_col_len = 0
   local qf_list = vim.fn.getqflist()
 
-
   local function has_preview_win()
     for _, win_id in ipairs(vim.api.nvim_list_wins()) do
       if vim.api.nvim_get_option_value("previewwindow", { win = win_id, }) then
