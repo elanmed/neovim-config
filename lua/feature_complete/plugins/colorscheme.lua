@@ -58,4 +58,19 @@ vim.api.nvim_set_hl(0, "NotifyDoing", { fg = M.orange, })
 vim.api.nvim_set_hl(0, "NotifyToggleOn", { fg = M.green, })
 vim.api.nvim_set_hl(0, "NotifyToggleOff", { fg = M.purple, })
 
+local diagnostic_hls = {
+  DiagnosticUnderlineError = "undercurl",
+  DiagnosticUnderlineWarn = "undercurl",
+  DiagnosticUnderlineInfo = "undercurl",
+  DiagnosticUnderlineHint = "underdotted",
+  DiagnosticUnderlineOk = "underdotted",
+}
+
+for diagnostic_hl, under_type in pairs(diagnostic_hls) do
+  local curr_hl = vim.api.nvim_get_hl(0, { name = diagnostic_hl, })
+  curr_hl[under_type] = true
+  curr_hl.underline = false
+  vim.api.nvim_set_hl(0, diagnostic_hl, curr_hl)
+end
+
 return M
