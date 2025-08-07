@@ -75,13 +75,19 @@ end
 vim.keymap.set("n", "<leader>h", function()
   set_preview_window_opts(true)
   vim.fn["fzf#vim#helptags"](
-    vim.fn["fzf#vim#with_preview"] { placeholder = "--tag {2}:{3}:{4}", }
+    vim.fn["fzf#vim#with_preview"] {
+      options = extend(default_opts_tbl, single_opts_tbl),
+      placeholder = "--tag {2}:{3}:{4}",
+    }
   )
 end)
 vim.keymap.set("n", "<leader>b", function()
   set_preview_window_opts(true)
   vim.fn["fzf#vim#buffers"](
-    vim.fn["fzf#vim#with_preview"] { placeholder = "{1}", }
+    vim.fn["fzf#vim#with_preview"] {
+      options = extend(default_opts_tbl, single_opts_tbl),
+      placeholder = "{1}",
+    }
   )
 end)
 
