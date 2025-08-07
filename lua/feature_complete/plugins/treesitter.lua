@@ -23,6 +23,7 @@ require "nvim-treesitter.configs".setup {
     "vim",
     "vimdoc",
     "yaml",
+    "fennel",
   },
   highlight = {
     enable = true,
