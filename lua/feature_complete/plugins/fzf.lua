@@ -175,18 +175,18 @@ vim.keymap.set("n", "<leader>f", function()
     vim.fn.getcwd(),
   }, " ")
 
+  local remove_frecency_file_source = table.concat({
+    "nvim",
+    "--headless",
+    "-l",
+    remove_frecency_file_script,
+    vim.fn.getcwd(),
+  }, " ")
+
   local frecency_and_fd_opts = {
     "--prompt", "Frecency> ",
     "--delimiter", "|",
-    "--bind", ("ctrl-x:execute(%s %s {2})+reload(%s)"):format(
-    table.concat({
-      "nvim",
-      "--headless",
-      "-l",
-      remove_frecency_file_script,
-    }, " "),
-    vim.fn.getcwd(),
-    source),
+    "--bind", ("ctrl-x:execute(%s {2})+reload(%s)"):format(remove_frecency_file_source, source),
   }
 
   local spec = {
