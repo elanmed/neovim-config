@@ -72,7 +72,7 @@ vim.keymap.set("n", "]e", function() next_prev_diagnostic("next", vim.diagnostic
 vim.keymap.set("n", "[e", function() next_prev_diagnostic("prev", vim.diagnostic.severity.ERROR) end)
 
 local function enable_deno_lsp()
-  return h.os.file_exists(vim.fn.getcwd() .. "/.deno-enable-lsp")
+  return vim.fn.filereadable(vim.fs.joinpath(vim.fn.getcwd(), ".deno-enable-lsp")) == h.vimscript_true
 end
 
 if enable_deno_lsp() then

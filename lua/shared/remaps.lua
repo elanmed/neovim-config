@@ -119,6 +119,7 @@ vim.keymap.set("n", "<leader>uo", function()
     if vim.api.nvim_get_option_value("modified", { buf = buf, }) then
       goto continue
     end
+
     if mini_ok then
       mini_bufremove.delete(buf, true)
     else

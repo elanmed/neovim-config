@@ -4,6 +4,9 @@ local os = {}
 local dev = {}
 local notify = {}
 
+local vimscript_true = 1
+local vimscript_false = 0
+
 --- @param vim_cmd string
 --- @return function
 keys.vim_cmd_cb = function(vim_cmd)
@@ -42,18 +45,7 @@ tbl.filter = function(predicate, list)
 end
 
 os.is_linux = function()
-  return vim.fn.has "macunix" == 0
-end
-
---- @param name string
-os.file_exists = function(name)
-  local file = io.open(name, "r")
-  if file == nil then
-    return false
-  else
-    io.close(file)
-    return true
-  end
+  return vim.fn.has "macunix" == vimscript_false
 end
 
 --- @param content any
@@ -117,4 +109,13 @@ local require_dir = function(dir)
   end
 end
 
-return { keys = keys, tbl = tbl, os = os, dev = dev, notify = notify, require_dir = require_dir, }
+return {
+  keys = keys,
+  tbl = tbl,
+  os = os,
+  dev = dev,
+  notify = notify,
+  require_dir = require_dir,
+  vimscript_true = vimscript_true,
+  vimscript_false = vimscript_false,
+}
