@@ -40,14 +40,14 @@ vim.api.nvim_create_autocmd({ "CursorMoved", }, {
 
 require "ft-highlight".setup()
 
-vim.keymap.set({ "n", "v", "i", }, "<C-u>", function()
+vim.keymap.set({ "n", "v", }, "<C-u>", function()
   if vim.fn.line "." == vim.fn.line "$" then
     h.keys.send_keys("n", "M")
   else
     neoscroll.ctrl_u { duration = scroll_duration, }
   end
 end)
-vim.keymap.set({ "n", "v", "i", }, "<C-d>", function()
+vim.keymap.set({ "n", "v", }, "<C-d>", function()
   if vim.fn.line "." == 1 then
     h.keys.send_keys("n", "M")
   else
