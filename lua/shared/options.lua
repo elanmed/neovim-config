@@ -24,13 +24,6 @@ vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.swapfile = false
 vim.opt.backup = false
 vim.opt.writebackup = false
-
--- TODO: where to put this?
-vim.api.nvim_create_autocmd("TextYankPost", {
-  pattern = "*",
-  callback = function() vim.highlight.on_yank() end,
-})
-
 vim.opt.statusline = table.concat({
   " ", "%f", "%=",
   "%l:%c", " ",

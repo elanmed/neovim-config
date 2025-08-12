@@ -73,4 +73,9 @@ for diagnostic_hl, under_type in pairs(diagnostic_hls) do
   vim.api.nvim_set_hl(0, diagnostic_hl, curr_hl)
 end
 
+vim.api.nvim_create_autocmd("TextYankPost", {
+  pattern = "*",
+  callback = function() vim.highlight.on_yank() end,
+})
+
 return M

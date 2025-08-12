@@ -70,15 +70,9 @@ function _G.GetQuickfixTextFunc()
   return items
 end
 
-vim.api.nvim_create_autocmd({ "FileType", }, {
+vim.api.nvim_create_autocmd({ "BufWinEnter", }, {
   callback = function()
     if vim.bo.buftype ~= "quickfix" then return end
-
-    -- TODO: why does this require vim.schedule, and why can't it be in colorscheme.lua
-    vim.schedule(function()
-      vim.api.nvim_set_hl(0, "qfLineNr", {})
-      vim.api.nvim_set_hl(0, "qfText", {})
-    end)
 
     vim.keymap.set("n", "<Esc>", h.keys.vim_cmd_cb "cclose", { buffer = true, })
     vim.keymap.set("n", "<C-c>", h.keys.vim_cmd_cb "cclose", { buffer = true, })

@@ -16,7 +16,7 @@ require "quickfix-preview".setup {
   },
 }
 
-vim.api.nvim_create_autocmd({ "BufEnter", }, {
+vim.api.nvim_create_autocmd({ "BufWinEnter", }, {
   callback = function()
     if not vim.api.nvim_get_option_value("previewwindow", { win = 0, }) then
       vim.opt.relativenumber = true
@@ -25,7 +25,7 @@ vim.api.nvim_create_autocmd({ "BufEnter", }, {
   end,
 })
 
-vim.api.nvim_create_autocmd({ "FileType", }, {
+vim.api.nvim_create_autocmd({ "BufWinEnter", }, {
   callback = function()
     if vim.bo.buftype ~= "quickfix" then return end
 
