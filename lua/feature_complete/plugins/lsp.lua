@@ -12,9 +12,10 @@ require "conform".setup {
     typescript = { "prettier", },
     typescriptreact = { "prettier", },
     yaml = { "prettier", },
+    java = {},
+    lua = { lsp_format = "fallback", },
   },
   format_after_save = {
-    lsp_format = "fallback",
     async = true,
   },
 }

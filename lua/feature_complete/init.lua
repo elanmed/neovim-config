@@ -23,6 +23,7 @@ local function bootstrap_paq(packages)
 end
 
 bootstrap_paq {
+  "mfussenegger/nvim-jdtls",
   "savq/paq-nvim",
   "echasnovski/mini.nvim",
   "tpope/vim-speeddating",
@@ -33,6 +34,7 @@ bootstrap_paq {
   -- far
   "MagicDuck/grug-far.nvim",
   -- fzf
+  "junegunn/fzf",
   "junegunn/fzf.vim",
   "ibhagwan/fzf-lua",
   "elanmed/rg-glob-builder.nvim",

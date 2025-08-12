@@ -18,6 +18,16 @@ vim.keymap.set("n", "<bs>", function()
   end
   vim.cmd "write"
 end, { desc = "Save", })
+vim.keymap.set("n", "<leader>w", function()
+  if vim.bo.readonly then
+    h.notify.error "Buffer is readonly, aborting"
+    return
+  end
+  local view = vim.fn.winsaveview()
+  h.keys.send_keys("n", "gg=G")
+  vim.fn.winrestview(view)
+  vim.cmd "write"
+end, { desc = "Save", })
 vim.keymap.set("n", "<leader>q", h.keys.vim_cmd_cb "quit", { desc = "Quit", })
 vim.keymap.set("n", "J", "gJ", { desc = "J without whitespace", })
 vim.keymap.set("n", "<leader>co", h.keys.vim_cmd_cb "copen")
