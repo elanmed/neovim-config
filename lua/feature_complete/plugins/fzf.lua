@@ -191,7 +191,7 @@ vim.keymap.set("n", "<leader>f", function()
 
   local spec = {
     source = source,
-    options = extend(frecency_and_fd_opts, default_opts_tbl, single_opts_tbl, { "--no-sort", }),
+    options = extend(frecency_and_fd_opts, default_opts_tbl, single_opts_tbl),
     window = without_preview_window_opts,
     sink = function(entry)
       local filename = vim.split(entry, "|")[2]
