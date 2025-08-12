@@ -33,6 +33,12 @@ local function extend(...)
   return result
 end
 
+local function maybe_close_mini_files()
+  if vim.bo.filetype == "minifiles" then
+    mini_files.close()
+  end
+end
+
 local default_opts_tbl = {
   "--cycle",
   "--style", "full",
@@ -73,6 +79,7 @@ local function set_preview_window_opts(preview)
 end
 
 vim.keymap.set("n", "<leader>h", function()
+  maybe_close_mini_files()
   set_preview_window_opts(true)
   vim.fn["fzf#vim#helptags"](
     vim.fn["fzf#vim#with_preview"] {
@@ -92,6 +99,7 @@ vim.keymap.set("n", "<leader>b", function()
 end)
 
 vim.keymap.set("n", "<leader>zm", function()
+  maybe_close_mini_files()
   set_preview_window_opts(false)
   local global_marks = ("abcdefghijklmnopqrstuvwxyz"):upper()
   vim.fn["fzf#vim#marks"](global_marks, {
@@ -99,12 +107,14 @@ vim.keymap.set("n", "<leader>zm", function()
   })
 end)
 vim.keymap.set("n", "<leader>z;", function()
+  maybe_close_mini_files()
   set_preview_window_opts(false)
   vim.fn["fzf#vim#command_history"] {
     options = extend(default_opts_tbl, single_opts_tbl),
   }
 end)
 vim.keymap.set("n", "<leader>i", function()
+  maybe_close_mini_files()
   set_preview_window_opts(true)
   vim.fn["fzf#vim#gitfiles"]("?", {
     options = extend(default_opts_tbl, single_opts_tbl),
@@ -156,15 +166,14 @@ local function rg_with_globs(default_query)
 end
 
 vim.keymap.set("n", "<leader>ze", function()
+  maybe_close_mini_files()
   require "fzf-lua-frecency".frecency {
     hidden = true,
     cwd_only = true,
   }
 end)
 vim.keymap.set("n", "<leader>f", function()
-  if vim.bo.filetype == "minifiles" then
-    mini_files.close()
-  end
+  maybe_close_mini_files()
   local sorted_files_path = require "fzf-lua-frecency.helpers".get_sorted_files_path()
   local source = table.concat({
     "nvim",
@@ -333,8 +342,12 @@ vim.keymap.set("n", "<leader>zs", function()
   vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
 end)
 
-vim.keymap.set("n", "<leader>a", function() rg_with_globs "" end)
+vim.keymap.set("n", "<leader>a", function()
+  maybe_close_mini_files()
+  rg_with_globs ""
+end)
 vim.keymap.set("n", "<leader>zr", function()
+  maybe_close_mini_files()
   local file = io.open(prev_rg_query_file, "r")
   if not file then return end
   local prev_rg_query = file:read "*a"
