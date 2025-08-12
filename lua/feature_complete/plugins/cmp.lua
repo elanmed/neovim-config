@@ -98,6 +98,7 @@ vim.keymap.set("i", "<CR>", function()
 )
 
 mini_cmp.setup {
+  delay = { completion = 10 ^ 7, },
   lsp_completion = {
     process_items = function(items, base)
       return mini_cmp.default_process_items(items, base, { filtersort = "fuzzy", kind_priority = { Snippet = -1, }, })
