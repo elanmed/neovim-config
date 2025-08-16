@@ -89,21 +89,36 @@ end)
 vim.keymap.set("n", "<leader>zm", function()
   maybe_close_mini_files()
   set_preview_window_opts(false)
-  local global_marks = ("abcdefghijklmnopqrstuvwxyz"):upper()
+
+  local get_marks_lua_script = vim.fs.joinpath(
+    os.getenv "HOME",
+    "/.dotfiles/neovim/.config/nvim/fzf_scripts/get_marks.lua"
+  )
+  local source = table.concat({ "nvim", "--headless", "-l", get_marks_lua_script, vim.v.servername, }, " ")
 
   local delete_mark_lua_script = vim.fs.joinpath(
     os.getenv "HOME",
-    "/.dotfiles/neovim/.config/nvim/fzf_scripts/delete-mark.lua"
+    "/.dotfiles/neovim/.config/nvim/fzf_scripts/delete_mark.lua"
   )
-  local delete_mark_source = table.concat({ "nvim", "--headless", "-l", delete_mark_lua_script, }, " ")
+  local delete_mark_source = table.concat({ "nvim", "--headless", "-l", delete_mark_lua_script, vim.v.servername, }, " ")
+
   local marks_opts_tbl = {
-    "--bind", ("ctrl-x:execute(%s %s {})+close"):format(delete_mark_source, vim.v.servername),
+    "--delimiter", "|",
+    "--bind", ("ctrl-x:execute(%s {1})+reload(%s)"):format(delete_mark_source, source),
   }
 
-  vim.fn["fzf#vim#marks"](global_marks, {
+  local spec = {
+    source = source,
     options = extend(marks_opts_tbl, default_opts_tbl, single_opts_tbl),
-  })
+    window = without_preview_window_opts,
+    sink = function(entry)
+      local filename = vim.split(entry, "|")[2]
+      vim.cmd("e " .. filename)
+    end,
+  }
+  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
 end)
+
 vim.keymap.set("n", "<leader>z;", function()
   maybe_close_mini_files()
   set_preview_window_opts(false)
@@ -111,6 +126,7 @@ vim.keymap.set("n", "<leader>z;", function()
     options = extend(default_opts_tbl, single_opts_tbl),
   }
 end)
+
 vim.keymap.set("n", "<leader>i", function()
   maybe_close_mini_files()
   set_preview_window_opts(true)
@@ -177,23 +193,23 @@ end)
 vim.keymap.set("n", "<leader>f", function()
   maybe_close_mini_files()
 
-  local frecency_and_fd_files_script = vim.fs.joinpath(
+  local get_frecency_and_fd_files_script = vim.fs.joinpath(
     os.getenv "HOME",
-    "/.dotfiles/neovim/.config/nvim/fzf_scripts/frecency-and-fd-files.lua"
+    "/.dotfiles/neovim/.config/nvim/fzf_scripts/get_frecency_and_fd_files.lua"
   )
   local sorted_files_path = require "fzf-lua-frecency.helpers".get_sorted_files_path()
   local source = table.concat({
     "nvim",
     "--headless",
     "-l",
-    frecency_and_fd_files_script,
+    get_frecency_and_fd_files_script,
     sorted_files_path,
     vim.fn.getcwd(),
   }, " ")
 
   local remove_frecency_file_script = vim.fs.joinpath(
     os.getenv "HOME",
-    "/.dotfiles/neovim/.config/nvim/fzf_scripts/remove-frecency-file.lua"
+    "/.dotfiles/neovim/.config/nvim/fzf_scripts/remove_frecency_file.lua"
   )
   local remove_frecency_file_source = table.concat({
     "nvim",
