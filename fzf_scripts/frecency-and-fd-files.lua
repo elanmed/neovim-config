@@ -1,8 +1,8 @@
 local frecency_files_path = arg[1]
-assert(frecency_files_path)
+assert(frecency_files_path, "Missing arg1: `frecency_files_path`")
 
 local cwd = arg[2]
-assert(cwd)
+assert(cwd, "Missing arg2: `cwd`")
 
 local mini_icons = require "mini.icons"
 local frecency_helpers = require "fzf-lua-frecency.helpers"
@@ -11,6 +11,7 @@ local frecency_algo = require "fzf-lua-frecency.algo"
 
 local now = os.time()
 
+--- @param abs_file string
 local function format_filename(abs_file)
   local icon_ok, icon_res = pcall(mini_icons.get, "file", abs_file)
   local icon = icon_ok and icon_res or "?"
