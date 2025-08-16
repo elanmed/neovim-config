@@ -39,7 +39,7 @@ end, { expr = true, })
 
 -- https://yobibyte.github.io/vim.html
 vim.keymap.set("n", "<space>ze", function()
-  vim.ui.input({ prompt = "$ "}, function(cmd)
+  vim.ui.input({ prompt = "$ ", }, function(cmd)
     if cmd and cmd ~= "" then
       vim.cmd "vnew"
       vim.bo.buftype = "nofile"

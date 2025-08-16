@@ -16,7 +16,11 @@ end
 --- @param mode 'n' | 'v' | 'i'
 --- @param keys_to_send string
 keys.send_keys = function(mode, keys_to_send)
-  local modeToExpanded = { ["n"] = "normal", ["i"] = "insert", ["v"] = "visual", }
+  local modeToExpanded = {
+    ["n"] = "normal",
+    ["i"] = "insert",
+    ["v"] = "visual",
+  }
   vim.cmd(("%s! %s"):format(modeToExpanded[mode], keys_to_send))
 end
 
