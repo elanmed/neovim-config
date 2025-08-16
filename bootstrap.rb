@@ -8,6 +8,7 @@ require 'json'
 require 'fileutils'
 require 'open-uri'
 require 'English'
+require 'digest/sha2'
 
 def bootstrap_nvim(server:, package_manager:)
   install_package(package_manager, 'neovim')
@@ -56,8 +57,16 @@ def bootstrap_nvim(server:, package_manager:)
 
   download = URI.open(selected_asset['browser_download_url'])
   lua_ls_tar = File.expand_path("~/.dotfiles/neovim/.config/nvim/language_servers/#{selected_asset['name']}")
-  IO.copy_stream(download, lua_ls_tar)
-  `tar --extract --gzip --file #{lua_ls_tar} --directory #{lua_ls_dir}`
+    IO.copy_stream(download, lua_ls_tar)
+
+  actual_sha = Digest::SHA2.file(lua_ls_tar).hexdigest
+  expected_sha = selected_asset['digest']
+  if "sha256:#{actual_sha}" == expected_sha
+      puts 'downloaded lua_ls sha matches the expected sha'.doing
+    `tar --extract --gzip --file #{lua_ls_tar} --directory #{lua_ls_dir}`
+  else
+    puts 'downloaded lua_ls sha DOES NOT match the expected sha!'.error
+  end
 end
 
 if __FILE__ == $PROGRAM_NAME
