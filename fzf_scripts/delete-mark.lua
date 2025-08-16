@@ -5,8 +5,6 @@ local servername = arg[1]
 local selected = arg[2]
 local mark = vim.trim(selected):sub(1, 1)
 
-pcall(function()
-  local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
-  vim.rpcrequest(chan, "nvim_exec_lua", ([[vim.cmd 'delmarks %s']]):format(mark), {})
-  vim.fn.chanclose(chan)
-end)
+local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
+vim.rpcrequest(chan, "nvim_del_mark", mark)
+vim.fn.chanclose(chan)
