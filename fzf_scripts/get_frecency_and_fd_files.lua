@@ -4,6 +4,7 @@ assert(frecency_files_path, "Missing arg1: `frecency_files_path`")
 local cwd = arg[2]
 assert(cwd, "Missing arg2: `cwd`")
 
+local h = require "helpers"
 local mini_icons = require "mini.icons"
 local frecency_helpers = require "fzf-lua-frecency.helpers"
 local frecency_fs = require "fzf-lua-frecency.fs"
@@ -40,12 +41,6 @@ local function format_filename(abs_file)
   return ("%s %s |%s"):format(formatted_score, icon, rel_file)
 end
 
-local function print_with_flush(str)
-  io.write(str)
-  io.write "\n"
-  io.flush()
-end
-
 local seen = {}
 
 for frecency_file in io.lines(frecency_files_path) do
@@ -54,7 +49,7 @@ for frecency_file in io.lines(frecency_files_path) do
   seen[frecency_file] = true
 
   local formatted = format_filename(frecency_file)
-  print_with_flush(formatted)
+  h.print_with_flush(formatted)
 
   ::continue::
 end
@@ -67,7 +62,7 @@ if handle then
     seen[fd_file] = true
 
     local formatted = format_filename(fd_file)
-    print_with_flush(formatted)
+    h.print_with_flush(formatted)
 
     ::continue::
   end

@@ -113,6 +113,12 @@ local require_dir = function(dir)
   end
 end
 
+local function print_with_flush(str)
+  io.write(str)
+  io.write "\n"
+  io.flush()
+end
+
 return {
   keys = keys,
   tbl = tbl,
@@ -122,4 +128,5 @@ return {
   require_dir = require_dir,
   vimscript_true = vimscript_true,
   vimscript_false = vimscript_false,
+  print_with_flush = print_with_flush,
 }

@@ -78,12 +78,24 @@ vim.keymap.set("n", "<leader>h", function()
 end)
 vim.keymap.set("n", "<leader>b", function()
   set_preview_window_opts(true)
-  vim.fn["fzf#vim#buffers"](
-    vim.fn["fzf#vim#with_preview"] {
-      options = extend(default_opts_tbl, single_opts_tbl),
-      placeholder = "{1}",
-    }
+
+  local get_bufs_lua_script = vim.fs.joinpath(
+    os.getenv "HOME",
+    "/.dotfiles/neovim/.config/nvim/fzf_scripts/get_bufs.lua"
   )
+  local source = table.concat({ "nvim", "--headless", "-l", get_bufs_lua_script, vim.v.servername, }, " ")
+
+  local buf_opts_tbl = {
+    "--preview", "bat --style=numbers --color=always {}",
+  }
+
+  local spec = {
+    source = source,
+    options = extend(buf_opts_tbl, default_opts_tbl, single_opts_tbl),
+    window = with_preview_window_opts,
+    sink = "edit",
+  }
+  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
 end)
 
 vim.keymap.set("n", "<leader>zm", function()
