@@ -8,23 +8,6 @@ local guicursor = vim.opt.guicursor:get()
 table.insert(guicursor, "a:blinkon0")
 vim.opt.guicursor = guicursor
 
-local prev_rg_query_file = vim.fs.joinpath(
-  os.getenv "HOME",
-  ".dotfiles/neovim/.config/nvim/fzf_scripts/prev-rg-query.txt"
-)
-local remove_frecency_file_script = vim.fs.joinpath(
-  os.getenv "HOME",
-  "/.dotfiles/neovim/.config/nvim/fzf_scripts/remove-frecency-file.lua"
-)
-local rg_with_globs_script = vim.fs.joinpath(
-  os.getenv "HOME",
-  "/.dotfiles/neovim/.config/nvim/fzf_scripts/rg-with-globs.sh"
-)
-local frecency_and_fd_files_script = vim.fs.joinpath(
-  os.getenv "HOME",
-  "/.dotfiles/neovim/.config/nvim/fzf_scripts/frecency-and-fd-files.lua"
-)
-
 local function extend(...)
   local result = {}
   for _, list in ipairs { ..., } do
@@ -78,6 +61,11 @@ local function set_preview_window_opts(preview)
   vim.api.nvim_set_var("fzf_layout", { window = preview and with_preview_window_opts or without_preview_window_opts, })
 end
 
+vim.api.nvim_set_var("fzf_action", {
+  ["ctrl-s"] = "vsplit",
+  ["ctrl-t"] = "tab split",
+})
+
 vim.keymap.set("n", "<leader>h", function()
   maybe_close_mini_files()
   set_preview_window_opts(true)
@@ -102,8 +90,18 @@ vim.keymap.set("n", "<leader>zm", function()
   maybe_close_mini_files()
   set_preview_window_opts(false)
   local global_marks = ("abcdefghijklmnopqrstuvwxyz"):upper()
+
+  local delete_mark_lua_script = vim.fs.joinpath(
+    os.getenv "HOME",
+    "/.dotfiles/neovim/.config/nvim/fzf_scripts/delete-mark.lua"
+  )
+  local delete_mark_source = table.concat({ "nvim", "--headless", "-l", delete_mark_lua_script, }, " ")
+  local marks_opts_tbl = {
+    "--bind", ("ctrl-x:execute(%s %s {})+close"):format(delete_mark_source, vim.v.servername),
+  }
+
   vim.fn["fzf#vim#marks"](global_marks, {
-    options = extend(default_opts_tbl, single_opts_tbl),
+    options = extend(marks_opts_tbl, default_opts_tbl, single_opts_tbl),
   })
 end)
 vim.keymap.set("n", "<leader>z;", function()
@@ -147,6 +145,10 @@ local function rg_with_globs(default_query)
   local header =
   "-e by *.[ext] | -f by file | -d by **/[dir]/** | -c by case sensitive | -nc by case insensitive | -w by whole word | -nw by partial word"
 
+  local rg_with_globs_script = vim.fs.joinpath(
+    os.getenv "HOME",
+    "/.dotfiles/neovim/.config/nvim/fzf_scripts/rg-with-globs.sh"
+  )
   local rg_options = {
     "--query", default_query,
     "--disabled",
@@ -174,6 +176,11 @@ vim.keymap.set("n", "<leader>ze", function()
 end)
 vim.keymap.set("n", "<leader>f", function()
   maybe_close_mini_files()
+
+  local frecency_and_fd_files_script = vim.fs.joinpath(
+    os.getenv "HOME",
+    "/.dotfiles/neovim/.config/nvim/fzf_scripts/frecency-and-fd-files.lua"
+  )
   local sorted_files_path = require "fzf-lua-frecency.helpers".get_sorted_files_path()
   local source = table.concat({
     "nvim",
@@ -184,6 +191,10 @@ vim.keymap.set("n", "<leader>f", function()
     vim.fn.getcwd(),
   }, " ")
 
+  local remove_frecency_file_script = vim.fs.joinpath(
+    os.getenv "HOME",
+    "/.dotfiles/neovim/.config/nvim/fzf_scripts/remove-frecency-file.lua"
+  )
   local remove_frecency_file_source = table.concat({
     "nvim",
     "--headless",
@@ -348,6 +359,11 @@ vim.keymap.set("n", "<leader>a", function()
 end)
 vim.keymap.set("n", "<leader>zr", function()
   maybe_close_mini_files()
+
+  local prev_rg_query_file = vim.fs.joinpath(
+    os.getenv "HOME",
+    ".dotfiles/neovim/.config/nvim/fzf_scripts/prev-rg-query.txt"
+  )
   local file = io.open(prev_rg_query_file, "r")
   if not file then return end
   local prev_rg_query = file:read "*a"
