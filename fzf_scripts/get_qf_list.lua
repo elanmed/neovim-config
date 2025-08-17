@@ -2,9 +2,7 @@ assert(arg[1], "Missing arg1: `servername`")
 local servername = arg[1]
 
 local h = require "helpers"
-
 local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
-
 --- @type table
 local qf_list = vim.rpcrequest(chan, "nvim_call_function", "getqflist", { { items = 0, }, }).items
 

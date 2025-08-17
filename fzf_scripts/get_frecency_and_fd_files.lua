@@ -1,8 +1,8 @@
-local frecency_files_path = arg[1]
-assert(frecency_files_path, "Missing arg1: `frecency_files_path`")
+assert(arg[1], "Missing arg1: `frecency_files_path`")
+assert(arg[2], "Missing arg2: `cwd`")
 
+local frecency_files_path = arg[1]
 local cwd = arg[2]
-assert(cwd, "Missing arg2: `cwd`")
 
 local h = require "helpers"
 local mini_icons = require "mini.icons"

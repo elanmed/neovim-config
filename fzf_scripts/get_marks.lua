@@ -2,12 +2,11 @@ assert(arg[1], "Missing arg1: `servername`")
 local servername = arg[1]
 
 local h = require "helpers"
+local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
 
 --- @class MarkListEntry
 --- @field file string
 --- @field mark string -- prefixed with '
-
-local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
 --- @type MarkListEntry[]
 local mark_list = vim.rpcrequest(chan, "nvim_call_function", "getmarklist", {})
 vim.fn.chanclose(chan)

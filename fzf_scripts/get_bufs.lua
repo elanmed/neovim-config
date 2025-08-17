@@ -2,7 +2,6 @@ assert(arg[1], "Missing arg1: `servername`")
 local servername = arg[1]
 
 local h = require "helpers"
-
 local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
 --- @type number[]
 local buf_list = vim.rpcrequest(chan, "nvim_list_bufs")
