@@ -126,7 +126,7 @@ vim.keymap.set("n", "<leader>z;", function()
 
   local source = {}
 
-  for i = 1, math.min(vim.fn.histnr "cmd", 10) do
+  for i = 1, math.min(vim.fn.histnr "cmd", 15) do
     local item = vim.fn.histget("cmd", i * -1)
     if item == "" then goto continue end
     table.insert(source, item)
@@ -219,6 +219,7 @@ vim.keymap.set("n", "<leader>ze", function()
     cwd_only = true,
   }
 end)
+
 vim.keymap.set("n", "<leader>f", function()
   maybe_close_mini_files()
 
@@ -272,7 +273,6 @@ vim.keymap.set("n", "<leader>f", function()
 
   vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
 end)
-
 
 vim.keymap.set("n", "<leader>zf", function()
   vim.cmd "cclose"
@@ -341,6 +341,7 @@ vim.keymap.set("n", "<leader>a", function()
   maybe_close_mini_files()
   rg_with_globs ""
 end)
+
 vim.keymap.set("n", "<leader>zr", function()
   maybe_close_mini_files()
 
@@ -355,6 +356,7 @@ vim.keymap.set("n", "<leader>zr", function()
   file:close()
   rg_with_globs(prev_rg_query)
 end)
+
 vim.keymap.set("v", "<leader>o",
   function()
     local require_visual_mode_active = true
