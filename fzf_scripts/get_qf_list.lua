@@ -1,0 +1,31 @@
+assert(arg[1], "Missing arg1: `servername`")
+local servername = arg[1]
+
+local h = require "helpers"
+
+local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
+
+--- @type table
+local qf_list = vim.rpcrequest(chan, "nvim_call_function", "getqflist", { { items = 0, }, }).items
+
+if #qf_list == 0 then
+  h.print_with_flush "Quickfix list is empty!"
+  vim.fn.chanclose(chan)
+  return
+end
+
+local cwd = vim.rpcrequest(chan, "nvim_call_function", "getcwd", {})
+
+for _, entry in pairs(qf_list) do
+  local filename = vim.rpcrequest(chan, "nvim_buf_get_name", entry.bufnr)
+
+  local formatted_filename = filename
+  if vim.startswith(filename, cwd) then
+    formatted_filename = vim.fs.relpath(cwd, filename)
+  end
+
+  local source_entry = ("%s|%s|%s|%s"):format(formatted_filename, entry.lnum, entry.col, entry.text)
+  h.print_with_flush(source_entry)
+end
+
+vim.fn.chanclose(chan)

@@ -34,8 +34,6 @@ bootstrap_paq {
   -- far
   "MagicDuck/grug-far.nvim",
   -- fzf
-  "junegunn/fzf",
-  "junegunn/fzf.vim",
   "ibhagwan/fzf-lua",
   "elanmed/rg-glob-builder.nvim",
   "elanmed/fzf-lua-frecency.nvim",

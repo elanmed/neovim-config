@@ -1,6 +1,5 @@
 local h = require "helpers"
 local grug = require "grug-far"
-local FzfStream = require "feature_complete.plugins.fzf_stream"
 local mini_files = require "mini.files"
 
 local guicursor = vim.opt.guicursor:get()
@@ -66,47 +65,21 @@ vim.api.nvim_set_var("fzf_action", {
   ["ctrl-t"] = "tab split",
 })
 
-vim.keymap.set("n", "<leader>h", function()
-  maybe_close_mini_files()
-  set_preview_window_opts(true)
-  vim.fn["fzf#vim#helptags"](
-    vim.fn["fzf#vim#with_preview"] {
-      options = extend(default_opts_tbl, single_opts_tbl),
-      placeholder = "--tag {2}:{3}:{4}",
-    }
-  )
-end)
 
 vim.keymap.set("n", "<leader>b", function()
   set_preview_window_opts(true)
 
-  local fzf_stream = FzfStream.new()
+  local get_bufs_lua_script = vim.fs.joinpath(
+    os.getenv "HOME",
+    "/.dotfiles/neovim/.config/nvim/fzf_scripts/get_bufs.lua"
+  )
+  local source = table.concat({ "nvim", "--headless", "-l", get_bufs_lua_script, vim.v.servername, }, " ")
   local buf_opts_tbl = {
     "--preview", "bat --style=numbers --color=always {}",
   }
 
-  vim.schedule(function()
-    local buf_list = vim.api.nvim_list_bufs()
-    local cwd = vim.fn.getcwd()
-    for _, buf in pairs(buf_list) do
-      local loaded = vim.api.nvim_buf_is_loaded(buf)
-      if not loaded then goto continue end
-
-      --- @type string
-      local bname = vim.api.nvim_buf_get_name(buf)
-      local readable = vim.fn.filereadable(bname)
-      if readable == h.vimscript_false then goto continue end
-
-      if not vim.startswith(bname, cwd) then goto continue end
-
-      fzf_stream:update_results(vim.cs.relpath(cwd, bname))
-      ::continue::
-    end
-    fzf_stream:update_results(nil)
-  end)
-
   local spec = {
-    source = fzf_stream:create_monitor_cmd(),
+    source = source,
     options = extend(buf_opts_tbl, default_opts_tbl, single_opts_tbl),
     window = with_preview_window_opts,
     sink = "edit",
@@ -150,22 +123,20 @@ end)
 vim.keymap.set("n", "<leader>z;", function()
   maybe_close_mini_files()
   set_preview_window_opts(false)
-  local fzf_stream = FzfStream.new()
 
-  vim.schedule(function()
-    for i = 1, vim.fn.histnr "cmd" do
-      local item = vim.fn.histget("cmd", i * -1)
-      if item == "" then goto continue end
-      fzf_stream:update_results(item)
+  local source = {}
 
-      ::continue::
-    end
-    fzf_stream:update_results(nil)
-  end)
+  for i = 1, math.min(vim.fn.histnr "cmd", 10) do
+    local item = vim.fn.histget("cmd", i * -1)
+    if item == "" then goto continue end
+    table.insert(source, item)
+
+    ::continue::
+  end
 
 
   local spec = {
-    source = fzf_stream:create_monitor_cmd(),
+    source = source,
     options = extend(default_opts_tbl, single_opts_tbl),
     window = without_preview_window_opts,
     sink = function(selected)
@@ -175,7 +146,6 @@ vim.keymap.set("n", "<leader>z;", function()
 
   vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
 end)
-
 
 vim.keymap.set("n", "<leader>i", function()
   maybe_close_mini_files()
@@ -304,79 +274,28 @@ vim.keymap.set("n", "<leader>f", function()
 end)
 
 
-vim.keymap.set("n", "<leader>zl", function()
-  local fzf_stream = FzfStream.new()
-
-  local params = vim.tbl_extend("force", vim.lsp.util.make_position_params(0, "utf-8"), {
-    context = { includeDeclaration = false, },
-  })
-
-  vim.lsp.buf_request(0, "textDocument/references", params, function(err, result)
-    if err then
-      h.notify.error(("ERROR! %s"):format(err.message))
-      fzf_stream:update_results(nil)
-      return
-    end
-
-    if not result or #result == 0 then
-      h.notify.error "No references!"
-      fzf_stream:update_results(nil)
-      return
-    end
-
-    local items = vim.lsp.util.locations_to_items(result, "utf-8")
-    for _, entry in pairs(items) do
-      if not vim.startswith(entry.filename, vim.fn.getcwd()) then goto continue end
-
-      local rel_path = vim.fs.relpath(vim.fn.getcwd(), entry.filename)
-      local source_entry = ("%s|%s|%s|%s"):format(rel_path, entry.lnum, entry.col, entry.text)
-      fzf_stream:update_results(source_entry)
-
-      ::continue::
-    end
-    fzf_stream:update_results(nil)
-  end)
-
-  local references_opts = {
-    "--prompt", "References> ",
-  }
-
-  local spec = {
-    source = fzf_stream:create_monitor_cmd(),
-    options = extend(references_opts, default_opts_tbl, multi_opts_tbl, rich_preview_opts_tbl),
-    window = with_preview_window_opts,
-    sinklist = sinklist,
-  }
-
-  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
-end)
-
 vim.keymap.set("n", "<leader>zf", function()
   vim.cmd "cclose"
-  local fzf_stream = FzfStream.new()
 
-  vim.schedule(function()
-    local qf_list = (vim.fn.getqflist { items = 0, }).items
-    if #qf_list == 0 then
-      h.notify.error "Quickfix list is empty!"
-      fzf_stream:update_results(nil)
-      return
-    end
-
-    for _, entry in pairs(qf_list) do
-      local filename = vim.api.nvim_buf_get_name(entry.bufnr)
-      local source_entry = ("%s|%s|%s|%s"):format(filename, entry.lnum, entry.col, entry.text)
-      fzf_stream:update_results(source_entry)
-    end
-    fzf_stream:update_results(nil)
-  end)
+  local get_qf_list_lua_script = vim.fs.joinpath(
+    os.getenv "HOME",
+    "/.dotfiles/neovim/.config/nvim/fzf_scripts/get_qf_list.lua"
+  )
+  local source = table.concat({
+      "nvim",
+      "--headless",
+      "-l",
+      get_qf_list_lua_script,
+      vim.v.servername,
+    },
+    " ")
 
   local quickfix_list_opts = {
     "--prompt", "Quickfix list> ",
   }
 
   local spec = {
-    source = fzf_stream:create_monitor_cmd(),
+    source = source,
     options = extend(quickfix_list_opts, default_opts_tbl, multi_opts_tbl, rich_preview_opts_tbl),
     window = with_preview_window_opts,
     sinklist = sinklist,
@@ -387,35 +306,25 @@ end)
 
 vim.keymap.set("n", "<leader>zs", function()
   vim.cmd "cclose"
-  local fzf_stream = FzfStream.new()
-
-  vim.schedule(function()
-    local qf_count = (vim.fn.getqflist { nr = "$", }).nr
-    if qf_count == 0 then
-      h.notify.error "Quickfix stack is empty!"
-      fzf_stream:update_results(nil)
-      return
-    end
-
-    for i = 1, qf_count do
-      local qf_list_info = (vim.fn.getqflist { nr = i, all = true, })
-      local source_entry = ("%s| Title: %s | Size: %s | First item: %s"):format(
-        qf_list_info.nr,
-        qf_list_info.title,
-        qf_list_info.size,
-        qf_list_info.items[1].text
-      )
-      fzf_stream:update_results(source_entry)
-    end
-    fzf_stream:update_results(nil)
-  end)
+  local get_qf_stack_lua_script = vim.fs.joinpath(
+    os.getenv "HOME",
+    "/.dotfiles/neovim/.config/nvim/fzf_scripts/get_qf_stack.lua"
+  )
+  local source = table.concat({
+      "nvim",
+      "--headless",
+      "-l",
+      get_qf_stack_lua_script,
+      vim.v.servername,
+    },
+    " ")
 
   local quickfix_list_opts = {
     "--prompt", "Quickfix stack> ",
   }
 
   local spec = {
-    source = fzf_stream:create_monitor_cmd(),
+    source = source,
     options = extend(quickfix_list_opts, default_opts_tbl, single_opts_tbl),
     window = without_preview_window_opts,
     sink = function(entry)

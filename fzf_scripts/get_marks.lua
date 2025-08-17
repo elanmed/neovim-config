@@ -9,7 +9,7 @@ local h = require "helpers"
 
 local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
 --- @type MarkListEntry[]
-local mark_list = vim.rpcrequest(chan, "nvim_exec_lua", "return vim.fn.getmarklist()", {})
+local mark_list = vim.rpcrequest(chan, "nvim_call_function", "getmarklist", {})
 vim.fn.chanclose(chan)
 
 local global_marks = ("abcdefghijklmnopqrstuvwxyz"):upper()
