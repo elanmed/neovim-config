@@ -19,6 +19,11 @@ snacks.setup {
 }
 
 vim.keymap.set("n", "/", function()
+    if vim.bo.filetype == "minifiles" then
+      vim.api.nvim_feedkeys("/", "n", false)
+      return
+    end
+
     snacks.picker.lines {
       layout = {
         layout = {
