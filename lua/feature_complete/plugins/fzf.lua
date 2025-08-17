@@ -69,7 +69,7 @@ vim.keymap.set("n", "<leader>b", function()
   )
   local source = table.concat({ "nvim", "--headless", "-l", get_bufs_lua_script, vim.v.servername, }, " ")
   local buf_opts_tbl = {
-    "--prompt", "Buffers> ",
+    "--ghost", "Buffers",
   }
 
   local spec = {
@@ -99,7 +99,7 @@ vim.keymap.set("n", "<leader>zm", function()
   local marks_opts_tbl = {
     "--delimiter", "|",
     "--bind", ("ctrl-x:execute(%s {1})+reload(%s)"):format(delete_mark_source, source),
-    "--prompt", "Marks> ",
+    "--ghost", "Marks",
   }
 
   local spec = {
@@ -128,7 +128,7 @@ vim.keymap.set("n", "<leader>z;", function()
   end
 
   local cmd_history_opts_tbl = {
-    "--prompt", "Cmd> ",
+    "--ghost", "Command history",
   }
 
   local spec = {
@@ -192,7 +192,7 @@ local function rg_with_globs(default_query)
   local rg_options = {
     "--query", default_query,
     "--disabled",
-    "--prompt", "Rg> ",
+    "--ghost", "Rg",
     "--header", header,
     "--bind", ("start:reload:%s {q} || true"):format(rg_with_globs_script),
     "--bind", ("change:reload:%s {q} || true"):format(rg_with_globs_script),
@@ -245,7 +245,7 @@ vim.keymap.set("n", "<leader>f", function()
   }, " ")
 
   local frecency_and_fd_opts = {
-    "--prompt", "Frecency> ",
+    "--ghost", "Frecency",
     "--delimiter", "|",
     "--bind", ("ctrl-x:execute(%s {2})+reload(%s)"):format(remove_frecency_file_source, source),
   }
@@ -286,12 +286,12 @@ vim.keymap.set("n", "<leader>zf", function()
     " ")
 
   local quickfix_list_opts = {
-    "--prompt", "Qf list> ",
+    "--ghost", "Qf list",
   }
 
   local spec = {
     source = source,
-    options = extend(quickfix_list_opts, default_opts, multi_select_opts, rich_preview_opts_tbl),
+    options = extend(quickfix_list_opts, default_opts, multi_select_opts, qf_preview_opts),
     window = with_preview_window_opts,
     sinklist = sinklist,
   }
@@ -315,7 +315,7 @@ vim.keymap.set("n", "<leader>zs", function()
     " ")
 
   local quickfix_list_opts = {
-    "--prompt", "Qf stack> ",
+    "--ghost", "Qf stack",
   }
 
   local spec = {
