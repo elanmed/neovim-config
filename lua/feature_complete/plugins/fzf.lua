@@ -21,7 +21,7 @@ local function maybe_close_mini_files()
   end
 end
 
-local default_opts_tbl = {
+local default_opts = {
   "--cycle",
   "--style", "full",
   "--preview-window", "up:40%",
@@ -29,19 +29,19 @@ local default_opts_tbl = {
   "--bind", "ctrl-u:preview-page-up",
 }
 
-local multi_opts_tbl = {
+local multi_select_opts = {
   "--multi",
   "--bind", "ctrl-a:toggle-all",
   "--bind", "tab:select+up",
   "--bind", "shift-tab:down+deselect",
 }
 
-local single_opts_tbl = {
+local single_select_opts = {
   "--bind", "tab:down",
   "--bind", "shift-tab:up",
 }
 
-local rich_preview_opts_tbl = {
+local qf_preview_opts = {
   "--delimiter", "|",
   "--preview", "bat --style=numbers --color=always {1} --highlight-line {2}",
   "--preview-window", "+{2}/3",
@@ -56,10 +56,6 @@ local base_window_opts = {
 local without_preview_window_opts = vim.tbl_extend("force", base_window_opts, { height = 0.5, })
 local with_preview_window_opts = vim.tbl_extend("force", base_window_opts, { height = 1, })
 
-local function set_preview_window_opts(preview)
-  vim.api.nvim_set_var("fzf_layout", { window = preview and with_preview_window_opts or without_preview_window_opts, })
-end
-
 vim.api.nvim_set_var("fzf_action", {
   ["ctrl-s"] = "vsplit",
   ["ctrl-t"] = "tab split",
@@ -67,8 +63,6 @@ vim.api.nvim_set_var("fzf_action", {
 
 
 vim.keymap.set("n", "<leader>b", function()
-  set_preview_window_opts(false)
-
   local get_bufs_lua_script = vim.fs.joinpath(
     os.getenv "HOME",
     "/.dotfiles/neovim/.config/nvim/fzf_scripts/get_bufs.lua"
@@ -80,7 +74,7 @@ vim.keymap.set("n", "<leader>b", function()
 
   local spec = {
     source = source,
-    options = extend(buf_opts_tbl, default_opts_tbl, single_opts_tbl),
+    options = extend(buf_opts_tbl, default_opts, single_select_opts),
     window = without_preview_window_opts,
     sink = "edit",
   }
@@ -89,7 +83,6 @@ end)
 
 vim.keymap.set("n", "<leader>zm", function()
   maybe_close_mini_files()
-  set_preview_window_opts(false)
 
   local get_marks_lua_script = vim.fs.joinpath(
     os.getenv "HOME",
@@ -111,7 +104,7 @@ vim.keymap.set("n", "<leader>zm", function()
 
   local spec = {
     source = source,
-    options = extend(marks_opts_tbl, default_opts_tbl, single_opts_tbl),
+    options = extend(marks_opts_tbl, default_opts, single_select_opts),
     window = without_preview_window_opts,
     sink = function(entry)
       local filename = vim.split(entry, "|")[2]
@@ -123,7 +116,6 @@ end)
 
 vim.keymap.set("n", "<leader>z;", function()
   maybe_close_mini_files()
-  set_preview_window_opts(false)
 
   local source = {}
 
@@ -141,7 +133,7 @@ vim.keymap.set("n", "<leader>z;", function()
 
   local spec = {
     source = source,
-    options = extend(cmd_history_opts_tbl, default_opts_tbl, single_opts_tbl),
+    options = extend(cmd_history_opts_tbl, default_opts, single_select_opts),
     window = without_preview_window_opts,
     sink = function(selected)
       vim.api.nvim_feedkeys(":" .. selected, "n", false)
@@ -153,7 +145,6 @@ end)
 
 vim.keymap.set("n", "<leader>i", function()
   maybe_close_mini_files()
-  set_preview_window_opts(true)
 
   local diff_opts_tbl = {
     "--preview", "git diff --color=always {} | tail -n +5",
@@ -161,7 +152,7 @@ vim.keymap.set("n", "<leader>i", function()
 
   local spec = {
     source = "git diff --name-only HEAD",
-    options = extend(diff_opts_tbl, default_opts_tbl, single_opts_tbl),
+    options = extend(diff_opts_tbl, default_opts, single_select_opts),
     window = with_preview_window_opts,
     sink = "edit",
   }
@@ -208,7 +199,7 @@ local function rg_with_globs(default_query)
   }
 
   local spec = {
-    options = extend(rg_options, default_opts_tbl, multi_opts_tbl, rich_preview_opts_tbl),
+    options = extend(rg_options, default_opts, multi_select_opts, qf_preview_opts),
     window = with_preview_window_opts,
     sinklist = sinklist,
   }
@@ -261,7 +252,7 @@ vim.keymap.set("n", "<leader>f", function()
 
   local spec = {
     source = source,
-    options = extend(frecency_and_fd_opts, default_opts_tbl, single_opts_tbl),
+    options = extend(frecency_and_fd_opts, default_opts, single_select_opts),
     window = without_preview_window_opts,
     sink = function(entry)
       local filename = vim.split(entry, "|")[2]
@@ -300,7 +291,7 @@ vim.keymap.set("n", "<leader>zf", function()
 
   local spec = {
     source = source,
-    options = extend(quickfix_list_opts, default_opts_tbl, multi_opts_tbl, rich_preview_opts_tbl),
+    options = extend(quickfix_list_opts, default_opts, multi_select_opts, rich_preview_opts_tbl),
     window = with_preview_window_opts,
     sinklist = sinklist,
   }
@@ -329,7 +320,7 @@ vim.keymap.set("n", "<leader>zs", function()
 
   local spec = {
     source = source,
-    options = extend(quickfix_list_opts, default_opts_tbl, single_opts_tbl),
+    options = extend(quickfix_list_opts, default_opts, single_select_opts),
     window = without_preview_window_opts,
     sink = function(entry)
       local qf_id = vim.split(entry, "|")[1]
@@ -353,12 +344,9 @@ vim.keymap.set("n", "<leader>zr", function()
     os.getenv "HOME",
     ".dotfiles/neovim/.config/nvim/fzf_scripts/prev-rg-query.txt"
   )
-  local file = io.open(prev_rg_query_file, "r")
-  if not file then return end
-  local prev_rg_query = file:read "*a"
-  prev_rg_query = prev_rg_query:gsub("\n$", "")
-  file:close()
-  rg_with_globs(prev_rg_query)
+  --- @type table
+  local prev_rg_query = vim.fn.readfile(prev_rg_query_file)
+  rg_with_globs(prev_rg_query[1])
 end)
 
 vim.keymap.set("v", "<leader>o",
