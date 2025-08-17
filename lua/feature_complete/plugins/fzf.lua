@@ -76,6 +76,7 @@ vim.keymap.set("n", "<leader>h", function()
     }
   )
 end)
+
 vim.keymap.set("n", "<leader>b", function()
   set_preview_window_opts(true)
 
@@ -149,10 +150,32 @@ end)
 vim.keymap.set("n", "<leader>z;", function()
   maybe_close_mini_files()
   set_preview_window_opts(false)
-  vim.fn["fzf#vim#command_history"] {
+  local fzf_stream = FzfStream.new()
+
+  vim.schedule(function()
+    for i = 1, vim.fn.histnr "cmd" do
+      local item = vim.fn.histget("cmd", i * -1)
+      if item == "" then goto continue end
+      fzf_stream:update_results(item)
+
+      ::continue::
+    end
+    fzf_stream:update_results(nil)
+  end)
+
+
+  local spec = {
+    source = fzf_stream:create_monitor_cmd(),
     options = extend(default_opts_tbl, single_opts_tbl),
+    window = without_preview_window_opts,
+    sink = function(selected)
+      vim.api.nvim_feedkeys(":" .. selected, "n", false)
+    end,
   }
+
+  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
 end)
+
 
 vim.keymap.set("n", "<leader>i", function()
   maybe_close_mini_files()
