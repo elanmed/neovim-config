@@ -67,7 +67,7 @@ vim.api.nvim_set_var("fzf_action", {
 
 
 vim.keymap.set("n", "<leader>b", function()
-  set_preview_window_opts(true)
+  set_preview_window_opts(false)
 
   local get_bufs_lua_script = vim.fs.joinpath(
     os.getenv "HOME",
@@ -75,13 +75,13 @@ vim.keymap.set("n", "<leader>b", function()
   )
   local source = table.concat({ "nvim", "--headless", "-l", get_bufs_lua_script, vim.v.servername, }, " ")
   local buf_opts_tbl = {
-    "--preview", "bat --style=numbers --color=always {}",
+    "--prompt", "Buffers> ",
   }
 
   local spec = {
     source = source,
     options = extend(buf_opts_tbl, default_opts_tbl, single_opts_tbl),
-    window = with_preview_window_opts,
+    window = without_preview_window_opts,
     sink = "edit",
   }
   vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
@@ -106,6 +106,7 @@ vim.keymap.set("n", "<leader>zm", function()
   local marks_opts_tbl = {
     "--delimiter", "|",
     "--bind", ("ctrl-x:execute(%s {1})+reload(%s)"):format(delete_mark_source, source),
+    "--prompt", "Marks> ",
   }
 
   local spec = {
@@ -134,10 +135,13 @@ vim.keymap.set("n", "<leader>z;", function()
     ::continue::
   end
 
+  local cmd_history_opts_tbl = {
+    "--prompt", "Cmd> ",
+  }
 
   local spec = {
     source = source,
-    options = extend(default_opts_tbl, single_opts_tbl),
+    options = extend(cmd_history_opts_tbl, default_opts_tbl, single_opts_tbl),
     window = without_preview_window_opts,
     sink = function(selected)
       vim.api.nvim_feedkeys(":" .. selected, "n", false)
@@ -291,7 +295,7 @@ vim.keymap.set("n", "<leader>zf", function()
     " ")
 
   local quickfix_list_opts = {
-    "--prompt", "Quickfix list> ",
+    "--prompt", "Qf list> ",
   }
 
   local spec = {
@@ -320,7 +324,7 @@ vim.keymap.set("n", "<leader>zs", function()
     " ")
 
   local quickfix_list_opts = {
-    "--prompt", "Quickfix stack> ",
+    "--prompt", "Qf stack> ",
   }
 
   local spec = {
