@@ -80,7 +80,8 @@ local h = require "helpers"
 --   fuzzy = { implementation = "lua", },
 -- }
 
-require "mini.pairs".setup()
+local mini_pairs = require "mini.pairs"
+mini_pairs.setup()
 local mini_cmp = require "mini.completion"
 
 vim.keymap.set("i", "<C-n>", function()
@@ -92,7 +93,7 @@ vim.keymap.set("i", "<CR>", function()
     if vim.fn.complete_info()["selected"] ~= -1 then
       return "\25"
     end
-    return "\r"
+    return mini_pairs.cr()
   end,
   { expr = true, }
 )
