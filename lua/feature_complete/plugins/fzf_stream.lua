@@ -17,7 +17,7 @@ end
 
 function FzfStream:create_monitor_cmd()
   return string.format(
-    "while [[ ! -f %s ]]; do cat %s; sleep 0.2; done; cat %s",
+    "while [[ ! -f %s ]]; do cat %s; sleep 0.3; done; cat %s",
     self.done_file, self.content_file, self.content_file
   )
 end
@@ -25,7 +25,7 @@ end
 function FzfStream:update_results(source)
   if source then
     local curr_content = vim.fn.readfile(self.content_file)
-    local updated_content = vim.list_extend(curr_content, source)
+    local updated_content = vim.list_extend(curr_content, { source, })
 
     vim.fn.writefile(updated_content, self.partial_file)
     -- avoids partial reads by cat

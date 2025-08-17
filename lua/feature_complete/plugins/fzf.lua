@@ -79,18 +79,33 @@ end)
 vim.keymap.set("n", "<leader>b", function()
   set_preview_window_opts(true)
 
-  local get_bufs_lua_script = vim.fs.joinpath(
-    os.getenv "HOME",
-    "/.dotfiles/neovim/.config/nvim/fzf_scripts/get_bufs.lua"
-  )
-  local source = table.concat({ "nvim", "--headless", "-l", get_bufs_lua_script, vim.v.servername, }, " ")
-
+  local fzf_stream = FzfStream.new()
   local buf_opts_tbl = {
     "--preview", "bat --style=numbers --color=always {}",
   }
 
+  vim.schedule(function()
+    local buf_list = vim.api.nvim_list_bufs()
+    local cwd = vim.fn.getcwd()
+    for _, buf in pairs(buf_list) do
+      local loaded = vim.api.nvim_buf_is_loaded(buf)
+      if not loaded then goto continue end
+
+      --- @type string
+      local bname = vim.api.nvim_buf_get_name(buf)
+      local readable = vim.fn.filereadable(bname)
+      if readable == h.vimscript_false then goto continue end
+
+      if not vim.startswith(bname, cwd) then goto continue end
+
+      fzf_stream:update_results(vim.cs.relpath(cwd, bname))
+      ::continue::
+    end
+    fzf_stream:update_results(nil)
+  end)
+
   local spec = {
-    source = source,
+    source = fzf_stream:create_monitor_cmd(),
     options = extend(buf_opts_tbl, default_opts_tbl, single_opts_tbl),
     window = with_preview_window_opts,
     sink = "edit",
@@ -142,9 +157,18 @@ end)
 vim.keymap.set("n", "<leader>i", function()
   maybe_close_mini_files()
   set_preview_window_opts(true)
-  vim.fn["fzf#vim#gitfiles"]("?", {
-    options = extend(default_opts_tbl, single_opts_tbl),
-  })
+
+  local diff_opts_tbl = {
+    "--preview", "git diff --color=always {} | tail -n +5",
+  }
+
+  local spec = {
+    source = "git diff --name-only HEAD",
+    options = extend(diff_opts_tbl, default_opts_tbl, single_opts_tbl),
+    window = with_preview_window_opts,
+    sink = "edit",
+  }
+  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
 end)
 
 local function sinklist(list)
@@ -283,7 +307,7 @@ vim.keymap.set("n", "<leader>zl", function()
 
       local rel_path = vim.fs.relpath(vim.fn.getcwd(), entry.filename)
       local source_entry = ("%s|%s|%s|%s"):format(rel_path, entry.lnum, entry.col, entry.text)
-      fzf_stream:update_results { source_entry, }
+      fzf_stream:update_results(source_entry)
 
       ::continue::
     end
@@ -319,7 +343,7 @@ vim.keymap.set("n", "<leader>zf", function()
     for _, entry in pairs(qf_list) do
       local filename = vim.api.nvim_buf_get_name(entry.bufnr)
       local source_entry = ("%s|%s|%s|%s"):format(filename, entry.lnum, entry.col, entry.text)
-      fzf_stream:update_results { source_entry, }
+      fzf_stream:update_results(source_entry)
     end
     fzf_stream:update_results(nil)
   end)
@@ -358,7 +382,7 @@ vim.keymap.set("n", "<leader>zs", function()
         qf_list_info.size,
         qf_list_info.items[1].text
       )
-      fzf_stream:update_results { source_entry, }
+      fzf_stream:update_results(source_entry)
     end
     fzf_stream:update_results(nil)
   end)
