@@ -272,15 +272,15 @@ end)
 vim.keymap.set("n", "<leader>ff", function()
   maybe_close_mini_files()
 
-  local get_smart_fzy_files_script = vim.fs.joinpath(
+  local get_smart_files_script = vim.fs.joinpath(
     os.getenv "HOME",
-    "/.dotfiles/neovim/.config/nvim/fzf_scripts/get_smart_fzy_files.lua"
+    "/.dotfiles/neovim/.config/nvim/fzf_scripts/get_smart_files.lua"
   )
   local source = table.concat({
     "nvim",
     "--headless",
     "-l",
-    get_smart_fzy_files_script,
+    get_smart_files_script,
     vim.v.servername,
   }, " ")
 
@@ -299,12 +299,6 @@ vim.keymap.set("n", "<leader>ff", function()
     window = without_preview_window_opts,
     sink = function(entry)
       local filename = vim.split(entry, "|")[2]
-      local abs_file = vim.fs.joinpath(vim.fn.getcwd(), filename)
-      -- vim.schedule(function()
-      --   require "fzf-lua-frecency.algo".update_file_score(abs_file, {
-      --     update_type = "increase",
-      --   })
-      -- end)
       vim.cmd("e " .. filename)
     end,
   }

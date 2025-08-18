@@ -5,8 +5,8 @@ local servername = arg[1]
 local query = arg[2]
 query = query:gsub("%s+", "") -- fzy doesn't ignore spaces
 
-local CYAN = "\27[36m"
-local RESET = "\27[0m"
+local ANSI_CYAN = "\27[33m"
+local ANSI_RESET = "\27[0m"
 
 local OPEN_BUF_BOOST = 10
 local CHANGED_BUF_BOOST = 20
@@ -28,7 +28,6 @@ local open_buffers = vim.rpcrequest(chan, "nvim_call_function", "getbufinfo", { 
 
 --- @type string
 local alternate_file = vim.rpcrequest(chan, "nvim_call_function", "expand", { "#:p", })
-h.dev.log { alternate_file = alternate_file, }
 vim.fn.chanclose(chan)
 
 local mini_icons = require "mini.icons"
@@ -65,7 +64,7 @@ local function format_filename(opts)
   local pos_ptr = 1
   while str_ptr < #rel_file + 1 do
     if str_ptr == opts.pos[pos_ptr] then
-      with_ansi = with_ansi .. CYAN .. rel_file:sub(str_ptr, str_ptr) .. RESET
+      with_ansi = with_ansi .. ANSI_CYAN .. rel_file:sub(str_ptr, str_ptr) .. ANSI_RESET
       pos_ptr = pos_ptr + 1
     else
       with_ansi = with_ansi .. rel_file:sub(str_ptr, str_ptr)
@@ -90,9 +89,6 @@ if handle then
   handle:close()
 end
 
-if alternate_file and alternate_file ~= "" and vim.fn.filereadable(alternate_file) == h.vimscript_true then
-  scored_files[alternate_file] = (scored_files[alternate_file] or 0) + ALT_BUF_BOOST
-end
 
 for _, buf in ipairs(open_buffers) do
   if buf.loaded == h.vimscript_false then goto continue end
@@ -100,7 +96,9 @@ for _, buf in ipairs(open_buffers) do
   if not buf.name then goto continue end
   if buf.name == "" then goto continue end
 
-  if buf.changed == h.vimscript_true then
+  if buf.name == alternate_file then
+    scored_files[alternate_file] = (scored_files[buf.name] or 0) + ALT_BUF_BOOST
+  elseif buf.changed == h.vimscript_true then
     scored_files[buf.name] = scored_files[buf.name] + CHANGED_BUF_BOOST
   else
     scored_files[buf.name] = (scored_files[buf.name] or 0) + OPEN_BUF_BOOST
