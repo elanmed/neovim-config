@@ -1,8 +1,7 @@
 assert(arg[1], "Missing arg1: `servername`")
-assert(arg[2], "Missing arg2: `query`")
 
 local servername = arg[1]
-local query = arg[2]
+local query = arg[2] or ""
 query = query:gsub("%s+", "") -- fzy doesn't ignore spaces
 
 local ANSI_CYAN = "\27[33m"
