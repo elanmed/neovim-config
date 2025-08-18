@@ -215,7 +215,7 @@ vim.keymap.set("n", "<leader>ze", function()
   }
 end)
 
-vim.keymap.set("n", "<leader>f", function()
+vim.keymap.set("n", "<leader>fe", function()
   maybe_close_mini_files()
 
   local get_frecency_and_fd_files_script = vim.fs.joinpath(
@@ -262,6 +262,49 @@ vim.keymap.set("n", "<leader>f", function()
           update_type = "increase",
         })
       end)
+      vim.cmd("e " .. filename)
+    end,
+  }
+
+  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
+end)
+
+vim.keymap.set("n", "<leader>ff", function()
+  maybe_close_mini_files()
+
+  local get_smart_fzy_files_script = vim.fs.joinpath(
+    os.getenv "HOME",
+    "/.dotfiles/neovim/.config/nvim/fzf_scripts/get_smart_fzy_files.lua"
+  )
+  local source = table.concat({
+    "nvim",
+    "--headless",
+    "-l",
+    get_smart_fzy_files_script,
+    vim.v.servername,
+  }, " ")
+
+  local smart_fzy_opts = {
+    "--ghost", "Smart fzy",
+    "--ansi",
+    "--delimiter", "|",
+    "--disabled",
+    "--bind", ("start:reload:%s {q}"):format(source),
+    "--bind", ("change:reload:%s {q}"):format(source),
+  }
+
+  local spec = {
+    source = source,
+    options = extend(smart_fzy_opts, default_opts, single_select_opts),
+    window = without_preview_window_opts,
+    sink = function(entry)
+      local filename = vim.split(entry, "|")[2]
+      local abs_file = vim.fs.joinpath(vim.fn.getcwd(), filename)
+      -- vim.schedule(function()
+      --   require "fzf-lua-frecency.algo".update_file_score(abs_file, {
+      --     update_type = "increase",
+      --   })
+      -- end)
       vim.cmd("e " .. filename)
     end,
   }
