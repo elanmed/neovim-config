@@ -279,6 +279,7 @@ vim.keymap.set("n", "<leader>ff", function()
   local source = table.concat({
     "nvim",
     "--headless",
+    "--noplugin",
     "-l",
     get_smart_files_script,
     vim.v.servername,
