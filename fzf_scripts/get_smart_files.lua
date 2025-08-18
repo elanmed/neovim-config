@@ -9,7 +9,7 @@ local ANSI_RESET = "\27[0m"
 
 local OPEN_BUF_BOOST = 10
 local CHANGED_BUF_BOOST = 20
-local ALT_BUF_BOOST = 25
+local CURR_BUF_BOOST = -1000
 
 local h = require "helpers"
 local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
@@ -25,8 +25,10 @@ local cwd = vim.rpcrequest(chan, "nvim_call_function", "getcwd", {})
 --- @type BufInfo[]
 local open_buffers = vim.rpcrequest(chan, "nvim_call_function", "getbufinfo", { { buflisted = h.vimscript_true, }, })
 
+--- current buff is the fzf terminal buffer, so the alternate file is the real "alternate" buf
 --- @type string
-local alternate_file = vim.rpcrequest(chan, "nvim_call_function", "expand", { "#:p", })
+local curr_buf = vim.rpcrequest(chan, "nvim_call_function", "expand", { "#:p", })
+
 vim.fn.chanclose(chan)
 
 local mini_icons = require "mini.icons"
@@ -95,12 +97,12 @@ for _, buf in ipairs(open_buffers) do
   if not buf.name then goto continue end
   if buf.name == "" then goto continue end
 
-  if buf.name == alternate_file then
-    scored_files[alternate_file] = (scored_files[buf.name] or 0) + ALT_BUF_BOOST
+  if buf.name == curr_buf then
+    scored_files[curr_buf] = CURR_BUF_BOOST
   elseif buf.changed == h.vimscript_true then
     scored_files[buf.name] = scored_files[buf.name] + CHANGED_BUF_BOOST
   else
-    scored_files[buf.name] = (scored_files[buf.name] or 0) + OPEN_BUF_BOOST
+    scored_files[buf.name] = OPEN_BUF_BOOST
   end
 
   ::continue::
