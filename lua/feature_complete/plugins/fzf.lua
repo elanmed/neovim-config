@@ -215,7 +215,7 @@ vim.keymap.set("n", "<leader>ze", function()
   }
 end)
 
-vim.keymap.set("n", "<leader>fe", function()
+vim.keymap.set("n", "<leader>zi", function()
   maybe_close_mini_files()
 
   local get_frecency_and_fd_files_script = vim.fs.joinpath(
@@ -269,7 +269,7 @@ vim.keymap.set("n", "<leader>fe", function()
   vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
 end)
 
-vim.keymap.set("n", "<leader>ff", function()
+vim.keymap.set("n", "<leader>f", function()
   maybe_close_mini_files()
 
   local get_smart_files_script = vim.fs.joinpath(
