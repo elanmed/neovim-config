@@ -60,6 +60,7 @@ dev.log = function(content)
     return
   end
   file:write(vim.inspect(content))
+  file:write "\n"
   file:close()
 end
 
