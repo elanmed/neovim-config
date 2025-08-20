@@ -56,12 +56,6 @@ local base_window_opts = {
 local without_preview_window_opts = vim.tbl_extend("force", base_window_opts, { height = 0.5, })
 local with_preview_window_opts = vim.tbl_extend("force", base_window_opts, { height = 1, })
 
-vim.api.nvim_set_var("fzf_action", {
-  ["ctrl-s"] = "vsplit",
-  ["ctrl-t"] = "tab split",
-})
-
-
 vim.keymap.set("n", "<leader>b", function()
   local get_bufs_lua_script = vim.fs.joinpath(
     os.getenv "HOME",
@@ -78,7 +72,7 @@ vim.keymap.set("n", "<leader>b", function()
     window = without_preview_window_opts,
     sink = "edit",
   }
-  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
+  vim.fn["fzf#run"](spec)
 end)
 
 vim.keymap.set("n", "<leader>zm", function()
@@ -111,7 +105,7 @@ vim.keymap.set("n", "<leader>zm", function()
       vim.cmd("e " .. filename)
     end,
   }
-  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
+  vim.fn["fzf#run"](spec)
 end)
 
 vim.keymap.set("n", "<leader>z;", function()
@@ -140,7 +134,7 @@ vim.keymap.set("n", "<leader>z;", function()
     end,
   }
 
-  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
+  vim.fn["fzf#run"](spec)
 end)
 
 vim.keymap.set("n", "<leader>i", function()
@@ -156,7 +150,7 @@ vim.keymap.set("n", "<leader>i", function()
     window = with_preview_window_opts,
     sink = "edit",
   }
-  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
+  vim.fn["fzf#run"](spec)
 end)
 
 local function sinklist(list)
@@ -204,7 +198,7 @@ local function rg_with_globs(default_query)
     sinklist = sinklist,
   }
 
-  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
+  vim.fn["fzf#run"](spec)
 end
 
 vim.keymap.set("n", "<leader>ze", function()
@@ -256,17 +250,11 @@ vim.keymap.set("n", "<leader>zi", function()
     window = without_preview_window_opts,
     sink = function(entry)
       local filename = vim.split(entry, "|")[2]
-      local abs_file = vim.fs.joinpath(vim.fn.getcwd(), filename)
-      vim.schedule(function()
-        require "fzf-lua-frecency.algo".update_file_score(abs_file, {
-          update_type = "increase",
-        })
-      end)
       vim.cmd("e " .. filename)
     end,
   }
 
-  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
+  vim.fn["fzf#run"](spec)
 end)
 
 vim.keymap.set("n", "<leader>f", function()
@@ -304,7 +292,7 @@ vim.keymap.set("n", "<leader>f", function()
     end,
   }
 
-  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
+  vim.fn["fzf#run"](spec)
 end)
 
 vim.keymap.set("n", "<leader>zf", function()
@@ -334,7 +322,7 @@ vim.keymap.set("n", "<leader>zf", function()
     sinklist = sinklist,
   }
 
-  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
+  vim.fn["fzf#run"](spec)
 end)
 
 vim.keymap.set("n", "<leader>zs", function()
@@ -367,7 +355,7 @@ vim.keymap.set("n", "<leader>zs", function()
     end,
   }
 
-  vim.fn["fzf#run"](vim.fn["fzf#wrap"]("", spec))
+  vim.fn["fzf#run"](spec)
 end)
 
 vim.keymap.set("n", "<leader>a", function()
