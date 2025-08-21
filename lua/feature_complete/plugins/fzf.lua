@@ -257,7 +257,7 @@ vim.keymap.set("n", "<leader>zi", function()
   vim.fn["fzf#run"](spec)
 end)
 
-vim.keymap.set("n", "<leader>f", function()
+vim.keymap.set("n", "<leader>zy", function()
   maybe_close_mini_files()
 
   local get_smart_files_script = vim.fs.joinpath(
