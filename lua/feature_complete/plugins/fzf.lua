@@ -705,16 +705,18 @@ vim.keymap.set("n", "<leader>f", function()
     callback = function()
       tick = tick + 1
 
-      local query = vim.api.nvim_get_current_line()
-      local results = get_smart_files {
-        query = query,
-        results_buf = results_buf,
-        curr_bufname = curr_bufname,
-        alt_bufname = alt_bufname,
-      }
-      vim.api.nvim_buf_set_lines(results_buf, 0, -1, false, results)
-      vim.api.nvim_win_call(results_win, function()
-        h.keys.send_keys("n", "G")
+      vim.schedule(function()
+        local query = vim.api.nvim_get_current_line()
+        local results = get_smart_files {
+          query = query,
+          results_buf = results_buf,
+          curr_bufname = curr_bufname,
+          alt_bufname = alt_bufname,
+        }
+        vim.api.nvim_buf_set_lines(results_buf, 0, -1, false, results)
+        vim.api.nvim_win_call(results_win, function()
+          h.keys.send_keys("n", "G")
+        end)
       end)
     end,
   })
