@@ -700,22 +700,30 @@ vim.keymap.set("n", "<leader>f", function()
     vim.cmd "stopinsert"
   end, { buffer = input_buf, nowait = true, })
 
+  local debounce_timer
+
   vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI", }, {
     buffer = input_buf,
     callback = function()
       tick = tick + 1
 
-      vim.schedule(function()
-        local query = vim.api.nvim_get_current_line()
-        local results = get_smart_files {
-          query = query,
-          results_buf = results_buf,
-          curr_bufname = curr_bufname,
-          alt_bufname = alt_bufname,
-        }
-        vim.api.nvim_buf_set_lines(results_buf, 0, -1, false, results)
-        vim.api.nvim_win_call(results_win, function()
-          h.keys.send_keys("n", "G")
+      if debounce_timer then
+        vim.fn.timer_stop(debounce_timer)
+      end
+
+      debounce_timer = vim.fn.timer_start(100, function()
+        vim.schedule(function()
+          local query = vim.api.nvim_get_current_line()
+          local results = get_smart_files {
+            query = query,
+            results_buf = results_buf,
+            curr_bufname = curr_bufname,
+            alt_bufname = alt_bufname,
+          }
+          vim.api.nvim_buf_set_lines(results_buf, 0, -1, false, results)
+          vim.api.nvim_win_call(results_win, function()
+            h.keys.send_keys("n", "G")
+          end)
         end)
       end)
     end,
