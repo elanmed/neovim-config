@@ -509,7 +509,7 @@ local function get_smart_files(opts, callback)
   local CURR_BUF_BOOST = -1000
   local MAX_FUZZY_SCORE = 10100
   local MAX_FRECENCY_SCORE = 99
-  local BATCH_SIZE = 25
+  local BATCH_SIZE = 20
 
   local cwd = vim.fn.getcwd()
 
@@ -735,7 +735,7 @@ vim.keymap.set("n", "<leader>f", function()
         vim.fn.timer_stop(debounce_timer)
       end
 
-      debounce_timer = vim.fn.timer_start(150, function()
+      debounce_timer = vim.fn.timer_start(50, function()
         vim.schedule(function()
           if curr_tick ~= tick then return end
 
