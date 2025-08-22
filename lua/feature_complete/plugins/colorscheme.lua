@@ -58,6 +58,8 @@ vim.api.nvim_set_hl(0, "NotifyDoing", { fg = M.orange, })
 vim.api.nvim_set_hl(0, "NotifyToggleOn", { fg = M.green, })
 vim.api.nvim_set_hl(0, "NotifyToggleOff", { fg = M.purple, })
 
+vim.api.nvim_set_hl(0, "SmartHighlightPos", { fg = M.yellow, bold = true, })
+
 local diagnostic_hls = {
   DiagnosticUnderlineError = "undercurl",
   DiagnosticUnderlineWarn = "undercurl",
