@@ -11,6 +11,12 @@ local ANSI_RESET = "\27[0m"
 local OPEN_BUF_BOOST = 10
 local CHANGED_BUF_BOOST = 20
 local CURR_BUF_BOOST = -1000
+local MAX_FUZZY_SCORE = 10100
+local MAX_FRECENCY_SCORE = 100
+
+local function scale_fuzzy_value_to_frecency(value)
+  return (value) / (MAX_FUZZY_SCORE) * MAX_FRECENCY_SCORE
+end
 
 local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
 --- @type string
@@ -30,10 +36,8 @@ local curr_buf = vim.rpcrequest(chan, "nvim_call_function", "expand", { "#:p", }
 
 vim.fn.chanclose(chan)
 
-local now = os.time()
 local mini_icons = require "mini.icons"
 local frecency_helpers = require "fzf-lua-frecency.helpers"
-local sorted_files_path = frecency_helpers.get_sorted_files_path()
 
 --- @class FormatFilenameOpts
 --- @field abs_file string
@@ -73,9 +77,6 @@ end
 
 local scored_files = {}
 
-local dated_files_path = frecency_helpers.get_dated_files_path()
-local frecency_fs = require "fzf-lua-frecency.fs"
-local dated_files = frecency_fs.read(dated_files_path)
 
 local fd_cmd = "fd --absolute-path --hidden --type f --exclude node_modules --exclude .git --exclude dist"
 local fd_handle = io.popen(fd_cmd)
@@ -103,7 +104,14 @@ for _, buf in ipairs(open_buffers) do
   ::continue::
 end
 
+local now = os.time()
 local frecency_algo = require "fzf-lua-frecency.algo"
+local frecency_fs = require "fzf-lua-frecency.fs"
+
+local sorted_files_path = frecency_helpers.get_sorted_files_path()
+local dated_files_path = frecency_helpers.get_dated_files_path()
+local dated_files = frecency_fs.read(dated_files_path)
+
 for frecency_file in io.lines(sorted_files_path) do
   if vim.fn.filereadable(frecency_file) == 0 then goto continue end
   if not vim.startswith(frecency_file, cwd) then goto continue end
@@ -120,20 +128,24 @@ for frecency_file in io.lines(sorted_files_path) do
   ::continue::
 end
 
-local fzy = require "fzy-lua-native"
+local mini_fuzzy = require "mini.fuzzy"
 local weighted_files = {}
-for abs_file, frecency_score in pairs(scored_files) do
+for abs_file, score in pairs(scored_files) do
   local rel_file = vim.fs.relpath(cwd, abs_file)
-  local fzy_score = 0
-  local fzy_pos = {}
-  -- fzy gives a score of -inf to empty strings
-  if query ~= "" and fzy.has_match(query, rel_file) then
-    fzy_score = fzy.score(query, rel_file)
-    fzy_pos = fzy.positions(query, rel_file)
+
+  local scaled_fuzzy_score = 0
+  local fuzzy_pos = {}
+
+  local fuzzy_res = mini_fuzzy.match(query, rel_file)
+  if fuzzy_res.score ~= -1 then
+    local fuzzy_score = fuzzy_res.score
+    fuzzy_pos = fuzzy_res.positions
+    local inverted_fuzzy_score = MAX_FUZZY_SCORE - fuzzy_score
+    scaled_fuzzy_score = scale_fuzzy_value_to_frecency(inverted_fuzzy_score)
   end
 
-  local score = fzy_score * 3 + frecency_score
-  table.insert(weighted_files, { file = abs_file, score = score, pos = fzy_pos, })
+  local weighted_score = 0.7 * scaled_fuzzy_score + 0.3 * score
+  table.insert(weighted_files, { file = abs_file, score = weighted_score, pos = fuzzy_pos, })
 end
 
 table.sort(weighted_files, function(a, b)
