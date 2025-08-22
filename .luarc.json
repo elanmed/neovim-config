@@ -12,7 +12,8 @@
   ],
   "workspace.checkThirdParty": false,
   "workspace.library": [
-    "$VIMRUNTIME"
+    "$VIMRUNTIME",
+    "${3rd}/luv/library"
   ],
   "workspace.ignoreDir": ["language_servers"]
 }
