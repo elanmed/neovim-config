@@ -432,7 +432,7 @@ local frecency_fs = require "fzf-lua-frecency.fs"
 local mini_fuzzy = require "mini.fuzzy"
 local ns_id = vim.api.nvim_create_namespace "SmartHighlight"
 
-local LOG = true
+local LOG = false
 local ongoing_benchmarks = {}
 --- @param type "start"|"end"
 --- @param label string
@@ -569,19 +569,14 @@ local function get_smart_files(opts, callback)
     return (value) / (MAX_FUZZY_SCORE) * MAX_FRECENCY_SCORE
   end
 
-  benchmark("start", "batching")
   local weighted_files = {}
-  local current_index = 1
 
-
-  local function process_batch()
+  local process_files = coroutine.create(function()
     if tick ~= curr_tick then
       return
     end
 
-    local end_index = math.min(current_index + BATCH_SIZE - 1, #fd_files)
-    for i = current_index, end_index do
-      local file = fd_files[i]
+    for i, file in ipairs(fd_files) do
       local score = 0
 
       if open_buffers[file] ~= nil then
@@ -619,34 +614,42 @@ local function get_smart_files(opts, callback)
       end
 
       table.insert(weighted_files, { file = rel_file, score = score, highlight_idxs = highlight_idxs, })
+
+      if i % BATCH_SIZE == 0 then
+        coroutine.yield()
+      end
     end
 
-    current_index = end_index + 1
-    if current_index <= #fd_files then
-      vim.schedule(process_batch)
-    else
-      benchmark("end", "batching")
+    benchmark("start", "weighted_files sort")
+    table.sort(weighted_files, function(a, b)
+      return a.score < b.score -- reverse order
+    end)
+    benchmark("end", "weighted_files sort")
 
-      benchmark("start", "weighted_files sort")
-      table.sort(weighted_files, function(a, b)
-        return a.score < b.score -- reverse order
-      end)
-      benchmark("end", "weighted_files sort")
+    benchmark("start", "weighted_files format loop")
+    local formatted_files = {}
+    for idx, weighted_entry in pairs(weighted_files) do
+      local formatted = format_filename(weighted_entry.file, weighted_entry.score, weighted_entry.highlight_idxs, idx)
+      table.insert(formatted_files, formatted)
+    end
+    benchmark("end", "weighted_files format loop")
 
-      benchmark("start", "weighted_files format loop")
-      local formatted_files = {}
-      for idx, weighted_entry in pairs(weighted_files) do
-        local formatted = format_filename(weighted_entry.file, weighted_entry.score, weighted_entry.highlight_idxs, idx)
-        table.insert(formatted_files, formatted)
-      end
-      benchmark("end", "weighted_files format loop")
+    benchmark("end", "entire script")
+    callback(formatted_files)
+  end)
 
-      benchmark("end", "entire script")
+  local function continue_processing()
+    local status = coroutine.status(process_files)
+    if status == "dead" then return end
 
-      callback(formatted_files)
+    coroutine.resume(process_files)
+
+    if coroutine.status(process_files) == "suspended" then
+      vim.schedule(continue_processing)
     end
   end
-  process_batch()
+
+  vim.schedule(continue_processing)
 end
 
 vim.keymap.set("n", "<leader>f", function()
