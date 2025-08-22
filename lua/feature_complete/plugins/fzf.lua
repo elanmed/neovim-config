@@ -651,8 +651,8 @@ end
 
 vim.keymap.set("n", "<leader>f", function()
   maybe_close_mini_files()
-  local curr_bufname = vim.api.nvim_buf_get_name(vim.api.nvim_get_current_buf())
-  local alt_bufname = vim.api.nvim_buf_get_name(vim.fn.bufnr "#")
+  local _, curr_bufname = pcall(vim.api.nvim_buf_get_name, 0)
+  local _, alt_bufname = pcall(vim.api.nvim_buf_get_name, vim.fn.bufnr "#")
 
   vim.cmd "vnew"
   local results_buf = vim.api.nvim_get_current_buf()
@@ -674,8 +674,8 @@ vim.keymap.set("n", "<leader>f", function()
       get_smart_files({
         query = "",
         results_buf = results_buf,
-        curr_bufname = curr_bufname,
-        alt_bufname = alt_bufname,
+        curr_bufname = curr_bufname or "",
+        alt_bufname = alt_bufname or "",
       }, function(results)
         vim.api.nvim_buf_set_lines(results_buf, 0, -1, false, results)
         vim.api.nvim_win_call(results_win, function()
@@ -743,8 +743,8 @@ vim.keymap.set("n", "<leader>f", function()
           get_smart_files({
             query = query,
             results_buf = results_buf,
-            curr_bufname = curr_bufname,
-            alt_bufname = alt_bufname,
+            curr_bufname = curr_bufname or "",
+            alt_bufname = alt_bufname or "",
           }, function(results)
             vim.api.nvim_buf_set_lines(results_buf, 0, -1, false, results)
             vim.api.nvim_win_call(results_win, function()
