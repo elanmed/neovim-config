@@ -653,13 +653,17 @@ vim.keymap.set("n", "<leader>f", function()
   vim.bo.buflisted = false
   vim.api.nvim_buf_set_name(input_buf, "Input")
 
-  vim.api.nvim_buf_set_lines(results_buf, 0, -1, false,
-    get_smart_files {
-      query = "",
-      results_buf = results_buf,
-      curr_bufname = curr_bufname,
-      alt_bufname = alt_bufname,
-    }
+  vim.schedule(
+    function()
+      vim.api.nvim_buf_set_lines(results_buf, 0, -1, false,
+        get_smart_files {
+          query = "",
+          results_buf = results_buf,
+          curr_bufname = curr_bufname,
+          alt_bufname = alt_bufname,
+        }
+      )
+    end
   )
 
   local function close_picker()
