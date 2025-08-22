@@ -23,7 +23,7 @@ local benchmark = function(type, label)
   end
 end
 
-benchmark("start", "Entire script")
+benchmark("start", "entire script")
 
 local ANSI_CYAN = "\27[33m"
 local ANSI_RESET = "\27[0m"
@@ -190,7 +190,7 @@ table.sort(weighted_files, function(a, b)
 end)
 benchmark("end", "weighted_files sort")
 
-benchmark("start", "weighted_files loop")
+benchmark("start", "weighted_files loop and print")
 for _, weighted_entry in pairs(weighted_files) do
   local formatted = format_filename {
     abs_file = weighted_entry.file,
@@ -199,6 +199,7 @@ for _, weighted_entry in pairs(weighted_files) do
   }
   h.print_with_flush(formatted)
 end
-benchmark("end", "weighted_files loop")
+benchmark("end", "weighted_files loop and print")
 
-benchmark("end", "Entire script")
+benchmark("end", "entire script")
+h.dev.log { "=====================", }
