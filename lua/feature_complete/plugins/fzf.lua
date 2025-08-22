@@ -509,7 +509,7 @@ local function get_smart_files(opts, callback)
   local CURR_BUF_BOOST = -1000
   local MAX_FUZZY_SCORE = 10100
   local MAX_FRECENCY_SCORE = 99
-  local BATCH_SIZE = 100
+  local BATCH_SIZE = 25
 
   local cwd = vim.fn.getcwd()
 
@@ -729,13 +729,16 @@ vim.keymap.set("n", "<leader>f", function()
     buffer = input_buf,
     callback = function()
       tick = tick + 1
+      local curr_tick = tick
 
       if debounce_timer then
         vim.fn.timer_stop(debounce_timer)
       end
 
-      debounce_timer = vim.fn.timer_start(100, function()
+      debounce_timer = vim.fn.timer_start(150, function()
         vim.schedule(function()
+          if curr_tick ~= tick then return end
+
           local query = vim.api.nvim_get_current_line()
           get_smart_files({
             query = query,
