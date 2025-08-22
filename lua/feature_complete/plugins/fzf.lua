@@ -665,6 +665,7 @@ vim.keymap.set("n", "<leader>f", function()
   vim.cmd "resize 1"
   vim.cmd "startinsert"
   local input_buf = vim.api.nvim_get_current_buf()
+  local input_win = vim.api.nvim_get_current_win()
   vim.bo.buftype = "nofile"
   vim.bo.buflisted = false
   vim.api.nvim_buf_set_name(input_buf, "Input")
@@ -692,25 +693,24 @@ vim.keymap.set("n", "<leader>f", function()
   end
 
   vim.keymap.set("i", "<C-n>", function()
-    vim.api.nvim_win_call(results_win, function()
-      h.keys.send_keys("n", "j")
-    end)
+    vim.api.nvim_set_current_win(results_win)
+    h.keys.send_keys("n", "j")
+    vim.api.nvim_set_current_win(input_win)
   end, { buffer = input_buf, })
 
   vim.keymap.set("i", "<C-p>", function()
-    vim.api.nvim_win_call(results_win, function()
-      h.keys.send_keys("n", "k")
-    end)
+    vim.api.nvim_set_current_win(results_win)
+    h.keys.send_keys("n", "k")
+    vim.api.nvim_set_current_win(input_win)
   end, { buffer = input_buf, })
 
   vim.keymap.set("i", "<cr>", function()
-    vim.api.nvim_win_call(results_win, function()
-      local entry = vim.api.nvim_get_current_line()
-      local file = vim.split(entry, "|")[2]
-      close_picker()
-      vim.cmd("edit " .. file)
-      vim.cmd "stopinsert"
-    end)
+    vim.api.nvim_set_current_win(results_win)
+    local entry = vim.api.nvim_get_current_line()
+    local file = vim.split(entry, "|")[2]
+    close_picker()
+    vim.cmd("edit " .. file)
+    vim.cmd "stopinsert"
   end, { buffer = input_buf, })
 
   for _, keymap in pairs { "q", "<leader>q", "<esc>", "<C-c>", } do
