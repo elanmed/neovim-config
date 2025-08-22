@@ -5,6 +5,26 @@ local servername = arg[1]
 local query = arg[2] or ""
 query = query:gsub("%s+", "") -- fzy doesn't ignore spaces
 
+local log = true
+
+local ongoing = {}
+--- @param type "start"|"end"
+--- @param label string
+local benchmark = function(type, label)
+  if not log then return end
+
+  if type == "start" then
+    ongoing[label] = os.clock()
+  else
+    local end_time = os.clock()
+    local start_time = ongoing[label]
+    local elapsed_ms = (end_time - start_time) * 1000
+    h.dev.log { string.format("%.3f : %s", elapsed_ms, label), }
+  end
+end
+
+benchmark("start", "Entire script")
+
 local ANSI_CYAN = "\27[33m"
 local ANSI_RESET = "\27[0m"
 
@@ -19,20 +39,27 @@ local function scale_fuzzy_value_to_frecency(value)
 end
 
 local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
+
+benchmark("start", "getcwd() rpc")
 --- @type string
 local cwd = vim.rpcrequest(chan, "nvim_call_function", "getcwd", {})
+benchmark("end", "getcwd() rpc")
 
 --- @class BufInfo
 --- @field name string
 --- @field loaded number
 --- @field changed boolean
 
+benchmark("start", "getbufinfo() rpc")
 --- @type BufInfo[]
 local open_buffers = vim.rpcrequest(chan, "nvim_call_function", "getbufinfo", { { buflisted = h.vimscript_true, }, })
+benchmark("end", "getbufinfo() rpc")
 
+benchmark("start", "curr_buff rpc")
 --- current buff is the fzf terminal buffer, so the alternate file is the real "alternate" buf
 --- @type string
 local curr_buf = vim.rpcrequest(chan, "nvim_call_function", "expand", { "#:p", })
+benchmark("end", "curr_buff rpc")
 
 vim.fn.chanclose(chan)
 
@@ -78,6 +105,7 @@ end
 local scored_files = {}
 
 
+benchmark("start", "fd")
 local fd_cmd = "fd --absolute-path --hidden --type f --exclude node_modules --exclude .git --exclude dist"
 local fd_handle = io.popen(fd_cmd)
 if fd_handle then
@@ -86,7 +114,9 @@ if fd_handle then
   end
   fd_handle:close()
 end
+benchmark("end", "fd")
 
+benchmark("start", "open_buffers loop")
 for _, buf in ipairs(open_buffers) do
   if not vim.startswith(buf.name, cwd) then goto continue end
   if buf.loaded == h.vimscript_false then goto continue end
@@ -103,6 +133,7 @@ for _, buf in ipairs(open_buffers) do
 
   ::continue::
 end
+benchmark("end", "open_buffers loop")
 
 local now = os.time()
 local frecency_algo = require "fzf-lua-frecency.algo"
@@ -110,8 +141,11 @@ local frecency_fs = require "fzf-lua-frecency.fs"
 
 local sorted_files_path = frecency_helpers.get_sorted_files_path()
 local dated_files_path = frecency_helpers.get_dated_files_path()
+benchmark("start", "dated_files fs read")
 local dated_files = frecency_fs.read(dated_files_path)
+benchmark("end", "dated_files fs read")
 
+benchmark("start", "sorted_files_path fs read")
 for frecency_file in io.lines(sorted_files_path) do
   if vim.fn.filereadable(frecency_file) == 0 then goto continue end
   if not vim.startswith(frecency_file, cwd) then goto continue end
@@ -127,15 +161,16 @@ for frecency_file in io.lines(sorted_files_path) do
 
   ::continue::
 end
+benchmark("end", "sorted_files_path fs read")
 
 local mini_fuzzy = require "mini.fuzzy"
 local weighted_files = {}
+benchmark("start", "scored_files loop")
 for abs_file, score in pairs(scored_files) do
   local rel_file = vim.fs.relpath(cwd, abs_file)
 
   local scaled_fuzzy_score = 0
   local fuzzy_pos = {}
-
   local fuzzy_res = mini_fuzzy.match(query, rel_file)
   if fuzzy_res.score ~= -1 then
     local fuzzy_score = fuzzy_res.score
@@ -147,11 +182,15 @@ for abs_file, score in pairs(scored_files) do
   local weighted_score = 0.7 * scaled_fuzzy_score + 0.3 * score
   table.insert(weighted_files, { file = abs_file, score = weighted_score, pos = fuzzy_pos, })
 end
+benchmark("end", "scored_files loop")
 
+benchmark("start", "weighted_files sort")
 table.sort(weighted_files, function(a, b)
   return a.score > b.score
 end)
+benchmark("end", "weighted_files sort")
 
+benchmark("start", "weighted_files loop")
 for _, weighted_entry in pairs(weighted_files) do
   local formatted = format_filename {
     abs_file = weighted_entry.file,
@@ -160,3 +199,6 @@ for _, weighted_entry in pairs(weighted_files) do
   }
   h.print_with_flush(formatted)
 end
+benchmark("end", "weighted_files loop")
+
+benchmark("end", "Entire script")
