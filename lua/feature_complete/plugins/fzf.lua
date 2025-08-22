@@ -678,6 +678,9 @@ vim.keymap.set("n", "<leader>f", function()
         alt_bufname = alt_bufname,
       }, function(results)
         vim.api.nvim_buf_set_lines(results_buf, 0, -1, false, results)
+        vim.api.nvim_win_call(results_win, function()
+          h.keys.send_keys("n", "G")
+        end)
       end)
     end
   )
