@@ -495,12 +495,12 @@ populate_caches()
 --- @field results_buf number
 --- @field curr_bufname string
 --- @field alt_bufname string
+--- @field curr_tick number
 
 --- @param opts GetSmartFilesOpts
 --- @param callback function
 local function get_smart_files(opts, callback)
   benchmark("start", "entire script")
-  local curr_tick = tick
   local query = opts.query:gsub("%s+", "") -- mini fuzzy doesn't ignore spaces
 
   local OPEN_BUF_BOOST = 10
@@ -515,9 +515,7 @@ local function get_smart_files(opts, callback)
 
   --- @param abs_file string
   --- @param score number
-  --- @param highlight_idxs table
-  --- @param highlight_row number
-  local function format_filename(abs_file, score, highlight_idxs, highlight_row)
+  local function format_filename(abs_file, score)
     local icon_ok, icon_res = pcall(mini_icons.get, "file", abs_file)
     local icon = icon_ok and icon_res or "?"
     local rel_file = vim.fs.relpath(cwd, abs_file)
@@ -529,22 +527,6 @@ local function get_smart_files(opts, callback)
     )
 
     local formatted = ("%s %s |%s"):format(formatted_score, icon, rel_file)
-    local offset = #formatted_score + 1 + #icon + 1 + 1
-
-    vim.schedule(function()
-      for _, highlight_idx in ipairs(highlight_idxs) do
-        local row_0_indexed = highlight_row - 1
-        local highlight_col_0_indexed = highlight_idx + offset - 1
-
-        vim.hl.range(
-          opts.results_buf,
-          ns_id,
-          "SmartHighlightPos",
-          { row_0_indexed, highlight_col_0_indexed, },
-          { row_0_indexed, highlight_col_0_indexed + 1, }
-        )
-      end
-    end)
 
     return formatted
   end
@@ -572,10 +554,6 @@ local function get_smart_files(opts, callback)
   local weighted_files = {}
 
   local process_files = coroutine.create(function()
-    if tick ~= curr_tick then
-      return
-    end
-
     for idx, file in ipairs(fd_files) do
       local score = 0
 
@@ -629,7 +607,7 @@ local function get_smart_files(opts, callback)
     benchmark("start", "weighted_files format loop")
     local formatted_files = {}
     for idx, weighted_entry in ipairs(weighted_files) do
-      local formatted = format_filename(weighted_entry.file, weighted_entry.score, weighted_entry.highlight_idxs, idx)
+      local formatted = format_filename(weighted_entry.file, weighted_entry.score)
       table.insert(formatted_files, formatted)
       if idx % BATCH_SIZE == 0 then
         coroutine.yield()
@@ -639,9 +617,31 @@ local function get_smart_files(opts, callback)
 
     benchmark("end", "entire script")
     callback(formatted_files)
+
+    for idx, formatted_file in ipairs(formatted_files) do
+      if tick ~= opts.curr_tick then return end
+      local offset = string.find(formatted_file, "|")
+
+      for _, highlight_idx in ipairs(weighted_files[idx].highlight_idxs) do
+        local row_0_indexed = idx - 1
+        local highlight_col_0_indexed = highlight_idx + offset - 1
+
+        vim.hl.range(
+          opts.results_buf,
+          ns_id,
+          "SmartHighlightPos",
+          { row_0_indexed, highlight_col_0_indexed, },
+          { row_0_indexed, highlight_col_0_indexed + 1, }
+        )
+      end
+      if idx % BATCH_SIZE == 0 then
+        coroutine.yield()
+      end
+    end
   end)
 
   local function continue_processing()
+    if tick ~= opts.curr_tick then return end
     coroutine.resume(process_files)
 
     if coroutine.status(process_files) == "suspended" then
@@ -680,6 +680,7 @@ vim.keymap.set("n", "<leader>f", function()
         results_buf = results_buf,
         curr_bufname = curr_bufname or "",
         alt_bufname = alt_bufname or "",
+        curr_tick = tick,
       }, function(results)
         vim.api.nvim_buf_set_lines(results_buf, 0, -1, false, results)
         vim.api.nvim_win_call(results_win, function()
@@ -726,33 +727,23 @@ vim.keymap.set("n", "<leader>f", function()
     vim.cmd "stopinsert"
   end, { buffer = input_buf, nowait = true, })
 
-  local debounce_timer
 
   vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI", }, {
     buffer = input_buf,
     callback = function()
       tick = tick + 1
-      local curr_tick = tick
-
-      if debounce_timer then
-        vim.fn.timer_stop(debounce_timer)
-      end
-
-      debounce_timer = vim.fn.timer_start(50, function()
-        vim.schedule(function()
-          if curr_tick ~= tick then return end
-
-          local query = vim.api.nvim_get_current_line()
-          get_smart_files({
-            query = query,
-            results_buf = results_buf,
-            curr_bufname = curr_bufname or "",
-            alt_bufname = alt_bufname or "",
-          }, function(results)
-            vim.api.nvim_buf_set_lines(results_buf, 0, -1, false, results)
-            vim.api.nvim_win_call(results_win, function()
-              h.keys.send_keys("n", "G")
-            end)
+      vim.schedule(function()
+        local query = vim.api.nvim_get_current_line()
+        get_smart_files({
+          query = query,
+          results_buf = results_buf,
+          curr_bufname = curr_bufname or "",
+          alt_bufname = alt_bufname or "",
+          curr_tick = tick,
+        }, function(results)
+          vim.api.nvim_buf_set_lines(results_buf, 0, -1, false, results)
+          vim.api.nvim_win_call(results_win, function()
+            h.keys.send_keys("n", "G")
           end)
         end)
       end)
