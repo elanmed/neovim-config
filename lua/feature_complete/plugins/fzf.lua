@@ -497,7 +497,8 @@ populate_caches()
 --- @field alt_bufname string
 
 --- @param opts GetSmartFilesOpts
-local function get_smart_files(opts)
+--- @param callback function
+local function get_smart_files(opts, callback)
   benchmark("start", "entire script")
   local curr_tick = tick
   local query = opts.query:gsub("%s+", "") -- mini fuzzy doesn't ignore spaces
@@ -508,6 +509,7 @@ local function get_smart_files(opts)
   local CURR_BUF_BOOST = -1000
   local MAX_FUZZY_SCORE = 10100
   local MAX_FRECENCY_SCORE = 99
+  local BATCH_SIZE = 100
 
   local cwd = vim.fn.getcwd()
 
@@ -553,7 +555,7 @@ local function get_smart_files(opts)
   benchmark("start", "open_buffers loop")
   local open_buffers = {}
   for _, bufnr in pairs(vim.api.nvim_list_bufs()) do
-    if vim.api.nvim_buf_is_loaded(bufnr) then goto continue end
+    if not vim.api.nvim_buf_is_loaded(bufnr) then goto continue end
     if not vim.api.nvim_get_option_value("buflisted", { buf = bufnr, }) then goto continue end
     local buf_name = vim.api.nvim_buf_get_name(bufnr)
     if buf_name == nil then goto continue end
@@ -570,67 +572,84 @@ local function get_smart_files(opts)
     return (value) / (MAX_FUZZY_SCORE) * MAX_FRECENCY_SCORE
   end
 
-  benchmark("start", "weighted_files loop")
+  benchmark("start", "batching")
   local weighted_files = {}
-  for _, file in ipairs(fd_files) do
-    local score = 0
+  local current_index = 1
 
-    if open_buffers[file] ~= nil then
-      local bufnr = vim.fn.bufnr(file)
-      local changed = vim.api.nvim_get_option_value("modified", { buf = bufnr, })
 
-      if file == opts.curr_bufname then
-        score = CURR_BUF_BOOST
-      elseif file == opts.alt_bufname then
-        score = ALT_BUF_BOOST
-      elseif changed == h.vimscript_true then
-        score = CHANGED_BUF_BOOST
-      else
-        score = OPEN_BUF_BOOST
+  local function process_batch()
+    if tick ~= curr_tick then
+      return
+    end
+
+    local end_index = math.min(current_index + BATCH_SIZE - 1, #fd_files)
+    for i = current_index, end_index do
+      local file = fd_files[i]
+      local score = 0
+
+      if open_buffers[file] ~= nil then
+        local bufnr = vim.fn.bufnr(file)
+        local changed = vim.api.nvim_get_option_value("modified", { buf = bufnr, })
+
+        if file == opts.curr_bufname then
+          score = CURR_BUF_BOOST
+        elseif file == opts.alt_bufname then
+          score = ALT_BUF_BOOST
+        elseif changed == h.vimscript_true then
+          score = CHANGED_BUF_BOOST
+        else
+          score = OPEN_BUF_BOOST
+        end
       end
-    end
 
-    if frecency_files[file] ~= nil then
-      score = score + frecency_files[file]
-    end
-
-    local highlight_idxs = {}
-    local rel_file = vim.fs.relpath(cwd, file)
-
-    if query ~= "" then
-      local fuzzy_res = mini_fuzzy.match(query, rel_file)
-      highlight_idxs = fuzzy_res.positions or {}
-      local fuzzy_score = fuzzy_res.score
-      if fuzzy_score ~= -1 then
-        local inverted_fuzzy_score = MAX_FUZZY_SCORE - fuzzy_score
-        local scaled_fuzzy_score = scale_fuzzy_value_to_frecency(inverted_fuzzy_score)
-
-        score = 0.7 * scaled_fuzzy_score + 0.3 * score
+      if frecency_files[file] ~= nil then
+        score = score + frecency_files[file]
       end
+
+      local highlight_idxs = {}
+      local rel_file = vim.fs.relpath(cwd, file)
+
+      if query ~= "" then
+        local fuzzy_res = mini_fuzzy.match(query, rel_file)
+        highlight_idxs = fuzzy_res.positions or {}
+        local fuzzy_score = fuzzy_res.score
+        if fuzzy_score ~= -1 then
+          local inverted_fuzzy_score = MAX_FUZZY_SCORE - fuzzy_score
+          local scaled_fuzzy_score = scale_fuzzy_value_to_frecency(inverted_fuzzy_score)
+
+          score = 0.7 * scaled_fuzzy_score + 0.3 * score
+        end
+      end
+
+      table.insert(weighted_files, { file = rel_file, score = score, highlight_idxs = highlight_idxs, })
     end
 
-    table.insert(weighted_files, { file = rel_file, score = score, highlight_idxs = highlight_idxs, })
+    current_index = end_index + 1
+    if current_index <= #fd_files then
+      vim.schedule(process_batch)
+    else
+      benchmark("end", "batching")
+
+      benchmark("start", "weighted_files sort")
+      table.sort(weighted_files, function(a, b)
+        return a.score < b.score -- reverse order
+      end)
+      benchmark("end", "weighted_files sort")
+
+      benchmark("start", "weighted_files format loop")
+      local formatted_files = {}
+      for idx, weighted_entry in pairs(weighted_files) do
+        local formatted = format_filename(weighted_entry.file, weighted_entry.score, weighted_entry.highlight_idxs, idx)
+        table.insert(formatted_files, formatted)
+      end
+      benchmark("end", "weighted_files format loop")
+
+      benchmark("end", "entire script")
+
+      callback(formatted_files)
+    end
   end
-  benchmark("end", "weighted_files loop")
-
-  benchmark("start", "weighted_files sort")
-  table.sort(weighted_files, function(a, b)
-    -- reverse order
-    return a.score < b.score
-  end)
-  benchmark("end", "weighted_files sort")
-
-  benchmark("start", "weighted_files loop and print")
-  local formatted_files = {}
-  for idx, weighted_entry in pairs(weighted_files) do
-    local formatted = format_filename(weighted_entry.file, weighted_entry.score, weighted_entry.highlight_idxs, idx)
-    table.insert(formatted_files, formatted)
-  end
-  benchmark("end", "weighted_files loop and print")
-
-  benchmark("end", "entire script")
-
-  return formatted_files
+  process_batch()
 end
 
 vim.keymap.set("n", "<leader>f", function()
@@ -655,14 +674,14 @@ vim.keymap.set("n", "<leader>f", function()
 
   vim.schedule(
     function()
-      vim.api.nvim_buf_set_lines(results_buf, 0, -1, false,
-        get_smart_files {
-          query = "",
-          results_buf = results_buf,
-          curr_bufname = curr_bufname,
-          alt_bufname = alt_bufname,
-        }
-      )
+      get_smart_files({
+        query = "",
+        results_buf = results_buf,
+        curr_bufname = curr_bufname,
+        alt_bufname = alt_bufname,
+      }, function(results)
+        vim.api.nvim_buf_set_lines(results_buf, 0, -1, false, results)
+      end)
     end
   )
 
@@ -718,15 +737,16 @@ vim.keymap.set("n", "<leader>f", function()
       debounce_timer = vim.fn.timer_start(100, function()
         vim.schedule(function()
           local query = vim.api.nvim_get_current_line()
-          local results = get_smart_files {
+          get_smart_files({
             query = query,
             results_buf = results_buf,
             curr_bufname = curr_bufname,
             alt_bufname = alt_bufname,
-          }
-          vim.api.nvim_buf_set_lines(results_buf, 0, -1, false, results)
-          vim.api.nvim_win_call(results_win, function()
-            h.keys.send_keys("n", "G")
+          }, function(results)
+            vim.api.nvim_buf_set_lines(results_buf, 0, -1, false, results)
+            vim.api.nvim_win_call(results_win, function()
+              h.keys.send_keys("n", "G")
+            end)
           end)
         end)
       end)
