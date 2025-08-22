@@ -576,7 +576,7 @@ local function get_smart_files(opts, callback)
       return
     end
 
-    for i, file in ipairs(fd_files) do
+    for idx, file in ipairs(fd_files) do
       local score = 0
 
       if open_buffers[file] ~= nil then
@@ -615,7 +615,7 @@ local function get_smart_files(opts, callback)
 
       table.insert(weighted_files, { file = rel_file, score = score, highlight_idxs = highlight_idxs, })
 
-      if i % BATCH_SIZE == 0 then
+      if idx % BATCH_SIZE == 0 then
         coroutine.yield()
       end
     end
@@ -628,9 +628,12 @@ local function get_smart_files(opts, callback)
 
     benchmark("start", "weighted_files format loop")
     local formatted_files = {}
-    for idx, weighted_entry in pairs(weighted_files) do
+    for idx, weighted_entry in ipairs(weighted_files) do
       local formatted = format_filename(weighted_entry.file, weighted_entry.score, weighted_entry.highlight_idxs, idx)
       table.insert(formatted_files, formatted)
+      if idx % BATCH_SIZE == 0 then
+        coroutine.yield()
+      end
     end
     benchmark("end", "weighted_files format loop")
 
