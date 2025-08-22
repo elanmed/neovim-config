@@ -639,9 +639,6 @@ local function get_smart_files(opts, callback)
   end)
 
   local function continue_processing()
-    local status = coroutine.status(process_files)
-    if status == "dead" then return end
-
     coroutine.resume(process_files)
 
     if coroutine.status(process_files) == "suspended" then
@@ -649,7 +646,7 @@ local function get_smart_files(opts, callback)
     end
   end
 
-  vim.schedule(continue_processing)
+  continue_processing()
 end
 
 vim.keymap.set("n", "<leader>f", function()
