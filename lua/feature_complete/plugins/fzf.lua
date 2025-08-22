@@ -532,10 +532,7 @@ local function get_smart_files(opts, callback)
     local offset = #formatted_score + 1 + #icon + 1 + 1
 
     vim.schedule(function()
-      if tick ~= curr_tick then return end
-
       for _, highlight_idx in ipairs(highlight_idxs) do
-        if tick ~= curr_tick then return end
         local row_0_indexed = highlight_row - 1
         local highlight_col_0_indexed = highlight_idx + offset - 1
 
