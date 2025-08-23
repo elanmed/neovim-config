@@ -430,6 +430,7 @@ local frecency_helpers = require "fzf-lua-frecency.helpers"
 local frecency_algo = require "fzf-lua-frecency.algo"
 local frecency_fs = require "fzf-lua-frecency.fs"
 local mini_fuzzy = require "mini.fuzzy"
+local fzy = require "fzy-lua-native"
 local ns_id = vim.api.nvim_create_namespace "SmartHighlight"
 
 local LOG = true
@@ -512,14 +513,14 @@ local function get_smart_files(opts, callback)
   local MAX_FRECENCY_SCORE = 99
   local BATCH_SIZE = 20
 
-  local cwd = vim.fn.getcwd()
+  local cwd = vim.uv.cwd()
 
-  --- @param abs_file string
+  --- @param rel_file string
   --- @param score number
-  local function format_filename(abs_file, score)
-    local icon_ok, icon_res = pcall(mini_icons.get, "file", abs_file)
-    local icon = icon_ok and icon_res or "?"
-    local rel_file = vim.fs.relpath(cwd, abs_file)
+  local function format_filename(rel_file, score)
+    -- local icon_ok, icon_res = pcall(mini_icons.get, "file", rel_file)
+    -- local icon = icon_ok and icon_res or "?"
+    -- local rel_file = vim.fs.relpath(cwd, rel_file)
     local max_score_len = #frecency_helpers.exact_decimals(MAX_FRECENCY_SCORE, 2)
 
     local formatted_score = frecency_helpers.pad_str(
@@ -527,7 +528,7 @@ local function get_smart_files(opts, callback)
       max_score_len
     )
 
-    local formatted = ("%s %s |%s"):format(formatted_score, icon, rel_file)
+    local formatted = ("%s %s |%s"):format(formatted_score, "?", rel_file)
 
     return formatted
   end
@@ -568,14 +569,11 @@ local function get_smart_files(opts, callback)
       if query == "" then
         table.insert(fuzzy_files, { file = abs_file, score = 0, highlight_idxs = {}, })
       else
-        local rel_file = vim.fs.relpath(cwd, abs_file)
-        local fuzzy_res = mini_fuzzy.match(query, rel_file)
-        local highlight_idxs = fuzzy_res.positions or {}
-        local fuzzy_score = fuzzy_res.score
-        if fuzzy_score ~= -1 then
-          local inverted_fuzzy_score = MAX_FUZZY_SCORE - fuzzy_score
-          local scaled_fuzzy_score = scale_fuzzy_value_to_frecency(inverted_fuzzy_score)
-          table.insert(fuzzy_files, { file = abs_file, score = scaled_fuzzy_score, highlight_idxs = highlight_idxs, })
+        local rel_file = abs_file:sub(#cwd + 2)
+        if fzy.has_match(query, rel_file) then
+          local fzy_score = fzy.score(query, rel_file)
+          local highlight_idxs = fzy.positions(query, rel_file)
+          table.insert(fuzzy_files, { file = abs_file, score = fzy_score, highlight_idxs = highlight_idxs, })
         end
       end
 
@@ -611,7 +609,7 @@ local function get_smart_files(opts, callback)
       end
 
       local weighted_score = 0.7 * fuzzy_entry.score + 0.3 * frecency_and_buf_score
-      local rel_file = vim.fs.relpath(cwd, abs_file)
+      local rel_file = abs_file:sub(#cwd + 2)
       table.insert(
         weighted_files,
         { file = rel_file, score = weighted_score, highlight_idxs = fuzzy_entry.highlight_idxs, }
