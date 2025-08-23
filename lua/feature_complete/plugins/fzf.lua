@@ -201,7 +201,7 @@ local function rg_with_globs(default_query)
   vim.fn["fzf#run"](spec)
 end
 
-vim.keymap.set("n", "<leader>ze", function()
+vim.keymap.set("n", "<leader>zl", function()
   maybe_close_mini_files()
   require "fzf-lua-frecency".frecency {
     hidden = true,
@@ -209,7 +209,7 @@ vim.keymap.set("n", "<leader>ze", function()
   }
 end)
 
-vim.keymap.set("n", "<leader>zi", function()
+vim.keymap.set("n", "<leader>zy", function()
   maybe_close_mini_files()
 
   local get_frecency_and_fd_files_script = vim.fs.joinpath(
@@ -257,43 +257,43 @@ vim.keymap.set("n", "<leader>zi", function()
   vim.fn["fzf#run"](spec)
 end)
 
-vim.keymap.set("n", "<leader>zy", function()
-  maybe_close_mini_files()
-
-  local get_smart_files_script = vim.fs.joinpath(
-    os.getenv "HOME",
-    "/.dotfiles/neovim/.config/nvim/fzf_scripts/get_smart_files.lua"
-  )
-  local source = table.concat({
-    "nvim",
-    "--headless",
-    "--noplugin",
-    "-l",
-    get_smart_files_script,
-    vim.v.servername,
-  }, " ")
-
-  local smart_fzy_opts = {
-    "--ghost", "Smart fzy",
-    "--ansi",
-    "--delimiter", "|",
-    "--disabled",
-    "--bind", ("start:reload:%s {q}"):format(source),
-    "--bind", ("change:reload:%s {q}"):format(source),
-  }
-
-  local spec = {
-    source = source,
-    options = extend(smart_fzy_opts, default_opts, single_select_opts),
-    window = without_preview_window_opts,
-    sink = function(entry)
-      local filename = vim.split(entry, "|")[2]
-      vim.cmd("e " .. filename)
-    end,
-  }
-
-  vim.fn["fzf#run"](spec)
-end)
+-- vim.keymap.set("n", "<leader>zy", function()
+--   maybe_close_mini_files()
+--
+--   local get_smart_files_script = vim.fs.joinpath(
+--     os.getenv "HOME",
+--     "/.dotfiles/neovim/.config/nvim/fzf_scripts/get_smart_files.lua"
+--   )
+--   local source = table.concat({
+--     "nvim",
+--     "--headless",
+--     "--noplugin",
+--     "-l",
+--     get_smart_files_script,
+--     vim.v.servername,
+--   }, " ")
+--
+--   local smart_fzy_opts = {
+--     "--ghost", "Smart fzy",
+--     "--ansi",
+--     "--delimiter", "|",
+--     "--disabled",
+--     "--bind", ("start:reload:%s {q}"):format(source),
+--     "--bind", ("change:reload:%s {q}"):format(source),
+--   }
+--
+--   local spec = {
+--     source = source,
+--     options = extend(smart_fzy_opts, default_opts, single_select_opts),
+--     window = without_preview_window_opts,
+--     sink = function(entry)
+--       local filename = vim.split(entry, "|")[2]
+--       vim.cmd("e " .. filename)
+--     end,
+--   }
+--
+--   vim.fn["fzf#run"](spec)
+-- end)
 
 vim.keymap.set("n", "<leader>zf", function()
   vim.cmd "cclose"
