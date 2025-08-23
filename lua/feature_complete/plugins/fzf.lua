@@ -530,6 +530,13 @@ local function get_smart_files(opts, callback)
   local MAX_FZY_SCORE = 20
   local MAX_FRECENCY_SCORE = 99
 
+  local max_score_len = #frecency_helpers.exact_decimals(MAX_FRECENCY_SCORE, 2)
+  local icon_char_offset = #frecency_helpers.pad_str(
+    frecency_helpers.fit_decimals(MAX_FRECENCY_SCORE, max_score_len),
+    max_score_len
+  )
+
+
   local BATCH_SIZE = 500
   --- @param abs_file string
   local function get_rel_file(abs_file)
@@ -540,8 +547,6 @@ local function get_smart_files(opts, callback)
   --- @param score number
   --- @param icon string
   local function format_filename(rel_file, score, icon)
-    local max_score_len = #frecency_helpers.exact_decimals(MAX_FRECENCY_SCORE, 2)
-
     local formatted_score = frecency_helpers.pad_str(
       frecency_helpers.fit_decimals(score or 0, max_score_len),
       max_score_len
@@ -578,7 +583,7 @@ local function get_smart_files(opts, callback)
   --- @class AnnotatedFile
   --- @field file string
   --- @field score number
-  --- @field highlight_idxs table
+  --- @field hl_idxs table
   --- @field icon_char string
   --- @field icon_hl string
 
@@ -591,22 +596,22 @@ local function get_smart_files(opts, callback)
     benchmark("start", "calculate fuzzy_files")
     for idx, abs_file in ipairs(fd_files) do
       if query == "" then
-        table.insert(fuzzy_files, { file = abs_file, score = 0, highlight_idxs = {}, })
+        table.insert(fuzzy_files, { file = abs_file, score = 0, hl_idxs = {}, })
       else
         local rel_file = get_rel_file(abs_file)
         if fzy.has_match(query, rel_file) then
           local fzy_score = fzy.score(query, rel_file)
           local scaled_fzy_score = scale_fzy_to_frecency(fzy_score)
-          local highlight_idxs = {}
+          local hl_idxs = {}
           if not MAX_PERF then
-            highlight_idxs = fzy.positions(query, rel_file)
+            hl_idxs = fzy.positions(query, rel_file)
           end
 
           table.insert(fuzzy_files,
             {
               file = abs_file,
               score = scaled_fzy_score,
-              highlight_idxs = highlight_idxs,
+              hl_idxs = hl_idxs,
               icon_char = "",
               icon_hl = nil,
             })
@@ -651,7 +656,6 @@ local function get_smart_files(opts, callback)
       local icon_hl = nil
 
       if not MAX_PERF then
-        -- TODO: highlight icon
         local ok, icon_char_res, icon_hl_res = pcall(mini_icons.get, "file", rel_file)
         icon_char = ok and icon_char_res or "?"
         icon_char = icon_char .. " "
@@ -665,7 +669,7 @@ local function get_smart_files(opts, callback)
         {
           file = rel_file,
           score = weighted_score,
-          highlight_idxs = fuzzy_entry.highlight_idxs,
+          hl_idxs = fuzzy_entry.hl_idxs,
           icon_hl = icon_hl,
           icon_char = icon_char,
         }
@@ -706,26 +710,28 @@ local function get_smart_files(opts, callback)
     benchmark("start", "highlight loop")
     for idx, formatted_file in ipairs(formatted_files) do
       local row_0_indexed = idx - 1
-      local icon_highlight_col_0_indexed = 6
+
+      local space_offset = 1
+      local icon_hl_col_0_indexed = icon_char_offset + space_offset
 
       vim.hl.range(
         opts.results_buf,
         ns_id,
         weighted_files[idx].icon_hl,
-        { row_0_indexed, icon_highlight_col_0_indexed, },
-        { row_0_indexed, icon_highlight_col_0_indexed + 1, }
+        { row_0_indexed, icon_hl_col_0_indexed, },
+        { row_0_indexed, icon_hl_col_0_indexed + 1, }
       )
 
       local file_offset = string.find(formatted_file, "|")
-      for _, highlight_idx in ipairs(weighted_files[idx].highlight_idxs) do
-        local file_char_highlight_col_0_indexed = highlight_idx + file_offset - 1
+      for _, hl_idx in ipairs(weighted_files[idx].hl_idxs) do
+        local file_char_hl_col_0_indexed = hl_idx + file_offset - 1
 
         vim.hl.range(
           opts.results_buf,
           ns_id,
           "SmartFilesFuzzyHighlightIdx",
-          { row_0_indexed, file_char_highlight_col_0_indexed, },
-          { row_0_indexed, file_char_highlight_col_0_indexed + 1, }
+          { row_0_indexed, file_char_hl_col_0_indexed, },
+          { row_0_indexed, file_char_hl_col_0_indexed + 1, }
         )
       end
 
