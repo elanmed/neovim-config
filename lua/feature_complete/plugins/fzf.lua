@@ -432,7 +432,9 @@ local frecency_fs = require "fzf-lua-frecency.fs"
 local fzy = require "fzy-lua-native"
 local ns_id = vim.api.nvim_create_namespace "SmartHighlight"
 
-local LOG = true
+local LOG = false
+local MAX_PERF = true
+
 local ongoing_benchmarks = {}
 --- @param type "start"|"end"
 --- @param label string
@@ -450,9 +452,23 @@ local benchmark = function(type, label)
 end
 
 local fd_files = {}
-local frecency_file_to_score = {}
+local frecency_files = {}
+local dated_files = {}
 
-local function populate_caches()
+local now = os.time()
+local db_index = 1
+--- @type string
+local cwd = vim.uv.cwd()
+
+local function populate_dated_files_cache()
+  local dated_files_path = frecency_helpers.get_dated_files_path()
+  dated_files = frecency_fs.read(dated_files_path)
+  if not dated_files[db_index] then
+    dated_files[db_index] = {}
+  end
+end
+
+local function populate_fd_cache()
   benchmark("start", "fd")
   local fd_cmd = "fd --absolute-path --hidden --type f --exclude node_modules --exclude .git --exclude dist"
   local fd_handle = io.popen(fd_cmd)
@@ -463,33 +479,22 @@ local function populate_caches()
     fd_handle:close()
   end
   benchmark("end", "fd")
+end
 
-  --- @type string
-  local cwd = vim.uv.cwd()
-  local now = os.time()
+local function populate_frecency_files_cwd_cache()
   local sorted_files_path = frecency_helpers.get_sorted_files_path()
-  local dated_files_path = frecency_helpers.get_dated_files_path()
-  local dated_files = frecency_fs.read(dated_files_path)
 
   benchmark("start", "sorted_files_path fs read")
   for frecency_file in io.lines(sorted_files_path) do
-    if vim.fn.filereadable(frecency_file) == h.vimscript_false then goto continue end
     if not vim.startswith(frecency_file, cwd) then goto continue end
+    if vim.fn.filereadable(frecency_file) == h.vimscript_false then goto continue end
 
-    local db_index = 1
-    if not dated_files[db_index] then
-      dated_files[db_index] = {}
-    end
-    local date_at_score_one = dated_files[db_index][frecency_file]
-    local score = frecency_algo.compute_score { now = now, date_at_score_one = date_at_score_one, }
-
-    frecency_file_to_score[frecency_file] = score
+    frecency_files[frecency_file] = true
 
     ::continue::
   end
   benchmark("end", "sorted_files_path fs read")
 end
-populate_caches()
 
 --- @class GetSmartFilesOpts
 --- @field query string
@@ -497,7 +502,6 @@ populate_caches()
 --- @field curr_bufname string
 --- @field alt_bufname string
 --- @field curr_tick number
---- @field max_perf boolean
 
 --- @param opts GetSmartFilesOpts
 --- @param callback function
@@ -517,8 +521,6 @@ local function get_smart_files(opts, callback)
   local MAX_FRECENCY_SCORE = 99
 
   local BATCH_SIZE = 500
-
-  local cwd = vim.uv.cwd()
   --- @param abs_file string
   local function get_rel_file(abs_file)
     return abs_file:sub(#cwd + 2)
@@ -528,7 +530,7 @@ local function get_smart_files(opts, callback)
   --- @param score number
   local function format_filename(rel_file, score)
     local icon = ""
-    if not opts.max_perf then
+    if not MAX_PERF then
       local icon_ok, icon_res = pcall(mini_icons.get, "file", rel_file)
       icon = icon_ok and icon_res or "?"
       icon = icon .. " "
@@ -589,7 +591,7 @@ local function get_smart_files(opts, callback)
           local fzy_score = fzy.score(query, rel_file)
           local scaled_fzy_score = scale_fzy_to_frecency(fzy_score)
           local highlight_idxs = {}
-          if not opts.max_perf then
+          if not MAX_PERF then
             highlight_idxs = fzy.positions(query, rel_file)
           end
 
@@ -624,8 +626,11 @@ local function get_smart_files(opts, callback)
         end
       end
 
-      if frecency_file_to_score[abs_file] ~= nil then
-        frecency_and_buf_score = frecency_and_buf_score + frecency_file_to_score[abs_file]
+      if frecency_files[abs_file] ~= nil then
+        local date_at_score_one = dated_files[db_index][abs_file]
+        local frecency_score = frecency_algo.compute_score { now = now, date_at_score_one = date_at_score_one, }
+
+        frecency_and_buf_score = frecency_and_buf_score + frecency_score
       end
 
       local weighted_score = 0.7 * fuzzy_entry.score + 0.3 * frecency_and_buf_score
@@ -665,7 +670,7 @@ local function get_smart_files(opts, callback)
     callback(formatted_files)
     benchmark("end", "callback")
 
-    if opts.max_perf then return end
+    if MAX_PERF then return end
 
     benchmark("start", "highlight loop")
     for idx, formatted_file in ipairs(formatted_files) do
@@ -704,6 +709,9 @@ local function get_smart_files(opts, callback)
   continue_processing()
 end
 
+populate_fd_cache()
+populate_frecency_files_cwd_cache()
+
 vim.keymap.set("n", "<leader>f", function()
   maybe_close_mini_files()
   local _, curr_bufname = pcall(vim.api.nvim_buf_get_name, 0)
@@ -729,13 +737,13 @@ vim.keymap.set("n", "<leader>f", function()
 
   vim.schedule(
     function()
+      populate_dated_files_cache()
       get_smart_files({
         query = "",
         results_buf = results_buf,
         curr_bufname = curr_bufname or "",
         alt_bufname = alt_bufname or "",
         curr_tick = tick,
-        max_perf = false,
       }, function(results)
         vim.api.nvim_buf_set_lines(results_buf, 0, -1, false, results)
       end)
@@ -798,7 +806,6 @@ vim.keymap.set("n", "<leader>f", function()
           curr_bufname = curr_bufname or "",
           alt_bufname = alt_bufname or "",
           curr_tick = tick,
-          max_perf = false,
         }, function(results)
           vim.api.nvim_buf_set_lines(results_buf, 0, -1, false, results)
         end)
