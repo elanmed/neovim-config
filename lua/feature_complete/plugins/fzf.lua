@@ -515,12 +515,16 @@ local function get_smart_files(opts, callback)
 
   local cwd = vim.uv.cwd()
 
+  --- @param abs_file string
+  local function get_rel_file(abs_file)
+    return abs_file:sub(#cwd + 2)
+  end
+
   --- @param rel_file string
   --- @param score number
   local function format_filename(rel_file, score)
-    -- local icon_ok, icon_res = pcall(mini_icons.get, "file", rel_file)
-    -- local icon = icon_ok and icon_res or "?"
-    -- local rel_file = vim.fs.relpath(cwd, rel_file)
+    local icon_ok, icon_res = pcall(mini_icons.get, "file", rel_file)
+    local icon = icon_ok and icon_res or "?"
     local max_score_len = #frecency_helpers.exact_decimals(MAX_FRECENCY_SCORE, 2)
 
     local formatted_score = frecency_helpers.pad_str(
@@ -528,7 +532,7 @@ local function get_smart_files(opts, callback)
       max_score_len
     )
 
-    local formatted = ("%s %s |%s"):format(formatted_score, "?", rel_file)
+    local formatted = ("%s %s |%s"):format(formatted_score, icon, rel_file)
 
     return formatted
   end
@@ -569,7 +573,7 @@ local function get_smart_files(opts, callback)
       if query == "" then
         table.insert(fuzzy_files, { file = abs_file, score = 0, highlight_idxs = {}, })
       else
-        local rel_file = abs_file:sub(#cwd + 2)
+        local rel_file = get_rel_file(abs_file)
         if fzy.has_match(query, rel_file) then
           local fzy_score = fzy.score(query, rel_file)
           local highlight_idxs = fzy.positions(query, rel_file)
@@ -609,7 +613,7 @@ local function get_smart_files(opts, callback)
       end
 
       local weighted_score = 0.7 * fuzzy_entry.score + 0.3 * frecency_and_buf_score
-      local rel_file = abs_file:sub(#cwd + 2)
+      local rel_file = get_rel_file(abs_file)
       table.insert(
         weighted_files,
         { file = rel_file, score = weighted_score, highlight_idxs = fuzzy_entry.highlight_idxs, }
