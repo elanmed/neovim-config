@@ -432,8 +432,19 @@ local frecency_fs = require "fzf-lua-frecency.fs"
 local fzy = require "fzy-lua-native"
 local ns_id = vim.api.nvim_create_namespace "SmartHighlight"
 
-local LOG = false
-local MAX_PERF = false
+local LOG = true
+local ICONS_ENABLED = true
+local HL_ENABLED = true
+
+--- @param file string
+local function get_extension(file)
+  local dot_pos = file:find "%.[^.]+$"
+
+  if dot_pos then
+    return file:sub(dot_pos + 1)
+  end
+  return nil
+end
 
 local ongoing_benchmarks = {}
 --- @param type "start"|"end"
@@ -451,9 +462,17 @@ local benchmark = function(type, label)
   end
 end
 
+--- @type string[]
 local fd_files = {}
+
+--- @type string[]
 local frecency_files = {}
+
+-- {[file_name] = 0}
 local frecency_file_to_score = {}
+
+-- {[icon_name] = {icon_char = "", icon_hl = ""}}
+local icon_cache = {}
 
 local db_index = 1
 --- @type string
@@ -536,7 +555,6 @@ local function get_smart_files(opts, callback)
     max_score_len
   )
 
-
   local BATCH_SIZE = 500
   --- @param abs_file string
   local function get_rel_file(abs_file)
@@ -603,7 +621,7 @@ local function get_smart_files(opts, callback)
           local fzy_score = fzy.score(query, rel_file)
           local scaled_fzy_score = scale_fzy_to_frecency(fzy_score)
           local hl_idxs = {}
-          if not MAX_PERF then
+          if HL_ENABLED then
             hl_idxs = fzy.positions(query, rel_file)
           end
 
@@ -655,12 +673,18 @@ local function get_smart_files(opts, callback)
       local icon_char = ""
       local icon_hl = nil
 
-      if not MAX_PERF then
-        local ok, icon_char_res, icon_hl_res = pcall(mini_icons.get, "file", rel_file)
-        icon_char = ok and icon_char_res or "?"
-        icon_char = icon_char .. " "
-        if ok then
-          icon_hl = icon_hl_res
+      local ext = get_extension(rel_file)
+      if ICONS_ENABLED then
+        if icon_cache[ext] then
+          icon_char = icon_cache[ext].icon_char .. " "
+          icon_hl = icon_cache[ext].icon_hl
+        else
+          local ok, icon_char_res, icon_hl_res = pcall(mini_icons.get, "file", rel_file)
+          icon_char = (icon_char_res or "?") .. " "
+          if ok then
+            icon_hl = icon_hl_res
+          end
+          if ext then icon_cache[ext] = { icon_char = icon_char_res or "?", icon_hl = icon_hl, } end
         end
       end
 
@@ -705,22 +729,24 @@ local function get_smart_files(opts, callback)
     callback(formatted_files)
     benchmark("end", "callback")
 
-    if MAX_PERF then return end
+    if not HL_ENABLED then return end
 
     benchmark("start", "highlight loop")
     for idx, formatted_file in ipairs(formatted_files) do
       local row_0_indexed = idx - 1
 
-      local space_offset = 1
-      local icon_hl_col_0_indexed = icon_char_offset + space_offset
+      if weighted_files[idx].icon_hl then
+        local space_offset = 1
+        local icon_hl_col_0_indexed = icon_char_offset + space_offset
 
-      vim.hl.range(
-        opts.results_buf,
-        ns_id,
-        weighted_files[idx].icon_hl,
-        { row_0_indexed, icon_hl_col_0_indexed, },
-        { row_0_indexed, icon_hl_col_0_indexed + 1, }
-      )
+        vim.hl.range(
+          opts.results_buf,
+          ns_id,
+          weighted_files[idx].icon_hl,
+          { row_0_indexed, icon_hl_col_0_indexed, },
+          { row_0_indexed, icon_hl_col_0_indexed + 1, }
+        )
+      end
 
       local file_offset = string.find(formatted_file, "|")
       for _, hl_idx in ipairs(weighted_files[idx].hl_idxs) do
