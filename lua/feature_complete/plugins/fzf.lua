@@ -502,7 +502,7 @@ populate_caches()
 --- @param callback function
 local function get_smart_files(opts, callback)
   benchmark("start", "entire script")
-  local query = opts.query:gsub("%s+", "") -- mini fuzzy doesn't ignore spaces
+  local query = opts.query:gsub("%s+", "") -- fzy doesn't ignore spaces
 
   local OPEN_BUF_BOOST = 10
   local CHANGED_BUF_BOOST = 20
@@ -518,7 +518,6 @@ local function get_smart_files(opts, callback)
   local BATCH_SIZE = 500
 
   local cwd = vim.uv.cwd()
-
   --- @param abs_file string
   local function get_rel_file(abs_file)
     return abs_file:sub(#cwd + 2)
@@ -541,6 +540,13 @@ local function get_smart_files(opts, callback)
     return formatted
   end
 
+  --- @param fzy_score number
+  local function scale_fzy_to_frecency(fzy_score)
+    if fzy_score == math.huge then return MAX_FRECENCY_SCORE end
+    if fzy_score == -math.huge then return 0 end
+    return (fzy_score) / (MAX_FZY_SCORE) * MAX_FRECENCY_SCORE
+  end
+
   benchmark("start", "open_buffer_to_score loop")
   local open_buffer_to_score = {}
   for _, bufnr in pairs(vim.api.nvim_list_bufs()) do
@@ -556,13 +562,6 @@ local function get_smart_files(opts, callback)
     ::continue::
   end
   benchmark("end", "open_buffer_to_score loop")
-
-  --- @pram fzy_score number
-  local function scale_fzy_to_frecency(fzy_score)
-    if fzy_score == math.huge then return MAX_FRECENCY_SCORE end
-    if fzy_score == -math.huge then return 0 end
-    return (fzy_score) / (MAX_FZY_SCORE) * MAX_FRECENCY_SCORE
-  end
 
   --- @class AnnotatedFile
   --- @field file string
@@ -738,19 +737,24 @@ vim.keymap.set("n", "<leader>f", function()
     vim.api.nvim_buf_delete(results_buf, { force = force, })
   end
 
-  vim.keymap.set("i", "<C-n>", function()
+  vim.keymap.set({ "i", "n", }, "<C-n>", function()
     vim.api.nvim_set_current_win(results_win)
     h.keys.send_keys("n", "j")
     vim.api.nvim_set_current_win(input_win)
   end, { buffer = input_buf, })
 
-  vim.keymap.set("i", "<C-p>", function()
+  vim.keymap.set("n", "<C-j>", h.keys.vim_cmd_cb "wincmd j", { buffer = input_buf, })
+  vim.keymap.set("n", "<C-j>", h.keys.vim_cmd_cb "wincmd j", { buffer = results_buf, })
+  vim.keymap.set("n", "<C-k>", h.keys.vim_cmd_cb "wincmd k", { buffer = results_buf, })
+  vim.keymap.set("n", "<C-k>", h.keys.vim_cmd_cb "wincmd k", { buffer = input_buf, })
+
+  vim.keymap.set({ "i", "n", }, "<C-p>", function()
     vim.api.nvim_set_current_win(results_win)
     h.keys.send_keys("n", "k")
     vim.api.nvim_set_current_win(input_win)
   end, { buffer = input_buf, })
 
-  vim.keymap.set("i", "<cr>", function()
+  vim.keymap.set({ "i", "n", }, "<cr>", function()
     vim.api.nvim_set_current_win(results_win)
     local entry = vim.api.nvim_get_current_line()
     local file = vim.split(entry, "|")[2]
