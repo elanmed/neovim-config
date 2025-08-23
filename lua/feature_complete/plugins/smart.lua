@@ -18,9 +18,10 @@ local ns_id = vim.api.nvim_create_namespace "SmartHighlight"
 --- @type string
 local cwd = vim.uv.cwd()
 
-local LOG = false
+local LOG = true
 local ICONS_ENABLED = true
 local HL_ENABLED = true
+local BATCH_SIZE = 500
 
 local OPEN_BUF_BOOST = 10
 local CHANGED_BUF_BOOST = 20
@@ -40,7 +41,6 @@ local formatted_score_last_idx = #frecency_helpers.pad_str(
 )
 local icon_char_idx = formatted_score_last_idx + 2
 
-local BATCH_SIZE = 500
 --- @param abs_file string
 local function get_rel_file(abs_file)
   return abs_file:sub(#cwd + 2)
@@ -77,6 +77,40 @@ local function get_extension(file)
   return nil
 end
 
+--- @param content string
+local function log(content)
+  local file = io.open("log.txt", "a")
+  if not file then return end
+  file:write(content)
+  file:write "\n"
+  file:close()
+end
+
+local LOG_LEN = 50
+
+--- @param type "start"|"middle"|"end"
+local function benchmark_line(type)
+  if not LOG then return end
+
+  if type == "start" then
+    log("┌" .. ("─"):rep(LOG_LEN - 2) .. "┐")
+  elseif type == "middle" then
+    log("├" .. ("─"):rep(LOG_LEN - 2) .. "┤")
+  else
+    log("└" .. ("─"):rep(LOG_LEN - 2) .. "┘")
+  end
+end
+
+
+--- @param content string
+local function benchmark_start(content)
+  if not LOG then return end
+
+  benchmark_line "start"
+  log("│" .. content .. (" "):rep(LOG_LEN - #content - 2) .. "│")
+  benchmark_line "middle"
+end
+
 local ongoing_benchmarks = {}
 --- @param type "start"|"end"
 --- @param label string
@@ -89,7 +123,8 @@ local function benchmark(type, label)
     local end_time = os.clock()
     local start_time = ongoing_benchmarks[label]
     local elapsed_ms = (end_time - start_time) * 1000
-    h.dev.log { string.format("%.3f : %s", elapsed_ms, label), }
+    local content = ("%.3f : %s"):format(elapsed_ms, label)
+    log("│" .. content .. (" "):rep(LOG_LEN - #content - 2) .. "│")
   end
 end
 
@@ -107,7 +142,6 @@ local icon_cache = {}
 
 --- @type table<string, number>
 local open_buffer_to_score = {}
-
 
 local function populate_fd_cache()
   benchmark("start", "fd")
@@ -193,8 +227,9 @@ end
 --- @param opts GetSmartFilesOpts
 --- @param callback function
 local function get_smart_files(opts, callback)
-  benchmark("start", "entire script")
   local query = opts.query:gsub("%s+", "") -- fzy doesn't ignore spaces
+  benchmark_start(("query: '%s'"):format(query))
+  benchmark("start", "entire script")
 
   --- @class AnnotatedFile
   --- @field file string
@@ -337,6 +372,7 @@ local function get_smart_files(opts, callback)
 
     if not HL_ENABLED then
       benchmark("end", "entire script")
+      benchmark_line "end"
       return
     end
 
@@ -376,6 +412,7 @@ local function get_smart_files(opts, callback)
     end
     benchmark("end", "highlight loop")
     benchmark("end", "entire script")
+    benchmark_line "end"
   end)
 
   local function continue_processing()
@@ -390,8 +427,10 @@ local function get_smart_files(opts, callback)
   continue_processing()
 end
 
+benchmark_start "Populate file-level caches"
 populate_fd_cache()
 populate_frecency_files_cwd_cache()
+benchmark_line "end"
 
 vim.keymap.set("n", "<leader>f", function()
   maybe_close_mini_files()
@@ -418,8 +457,11 @@ vim.keymap.set("n", "<leader>f", function()
 
   vim.schedule(
     function()
+      benchmark_start "Populate function-level caches"
       populate_frecency_scores_cache()
       populate_open_buffers_cache()
+      benchmark_line "end"
+
       get_smart_files({
         query = "",
         results_buf = results_buf,
