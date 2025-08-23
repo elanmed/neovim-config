@@ -652,7 +652,7 @@ local function get_smart_files(opts, callback)
         vim.hl.range(
           opts.results_buf,
           ns_id,
-          "SmartHighlightPos",
+          "SmartFilesFuzzyHighlightIdx",
           { row_0_indexed, highlight_col_0_indexed, },
           { row_0_indexed, highlight_col_0_indexed + 1, }
         )
@@ -752,6 +752,7 @@ vim.keymap.set("n", "<leader>f", function()
     vim.cmd "stopinsert"
   end, { buffer = input_buf, nowait = true, })
 
+  vim.api.nvim_set_option_value("winhighlight", "CursorLine:SmartFilesResultsCursor", { win = results_win, })
 
   vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI", }, {
     buffer = input_buf,
