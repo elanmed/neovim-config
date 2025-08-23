@@ -450,7 +450,7 @@ local benchmark = function(type, label)
 end
 
 local fd_files = {}
-local frecency_files = {}
+local frecency_file_to_score = {}
 
 local function populate_caches()
   benchmark("start", "fd")
@@ -473,7 +473,7 @@ local function populate_caches()
 
   benchmark("start", "sorted_files_path fs read")
   for frecency_file in io.lines(sorted_files_path) do
-    if vim.fn.filereadable(frecency_file) == 0 then goto continue end
+    if vim.fn.filereadable(frecency_file) == h.vimscript_false then goto continue end
     if not vim.startswith(frecency_file, cwd) then goto continue end
 
     local db_index = 1
@@ -483,7 +483,7 @@ local function populate_caches()
     local date_at_score_one = dated_files[db_index][frecency_file]
     local score = frecency_algo.compute_score { now = now, date_at_score_one = date_at_score_one, }
 
-    frecency_files[frecency_file] = score
+    frecency_file_to_score[frecency_file] = score
 
     ::continue::
   end
@@ -532,8 +532,8 @@ local function get_smart_files(opts, callback)
     return formatted
   end
 
-  benchmark("start", "open_buffers loop")
-  local open_buffers = {}
+  benchmark("start", "open_buffer_to_score loop")
+  local open_buffer_to_score = {}
   for _, bufnr in pairs(vim.api.nvim_list_bufs()) do
     if not vim.api.nvim_buf_is_loaded(bufnr) then goto continue end
     if not vim.api.nvim_get_option_value("buflisted", { buf = bufnr, }) then goto continue end
@@ -542,18 +542,18 @@ local function get_smart_files(opts, callback)
     if buf_name == "" then goto continue end
     if not vim.startswith(buf_name, cwd) then goto continue end
 
-    open_buffers[buf_name] = 0
+    open_buffer_to_score[buf_name] = 0
 
     ::continue::
   end
-  benchmark("end", "open_buffers loop")
+  benchmark("end", "open_buffer_to_score loop")
 
   local function scale_fuzzy_value_to_frecency(value)
     return (value) / (MAX_FUZZY_SCORE) * MAX_FRECENCY_SCORE
   end
 
   --- @class AnnotatedFile
-  --- @field file string
+  --- @field abs_file string
   --- @field score number
   --- @field highlight_idxs table
 
@@ -563,18 +563,18 @@ local function get_smart_files(opts, callback)
   local process_files = coroutine.create(function()
     --- @type AnnotatedFile[]
     local fuzzy_files = {}
-    for idx, file in ipairs(fd_files) do
+    for idx, abs_file in ipairs(fd_files) do
       if query == "" then
-        table.insert(fuzzy_files, { file = file, score = 0, highlight_idxs = {}, })
+        table.insert(fuzzy_files, { abs_file = abs_file, score = 0, highlight_idxs = {}, })
       else
-        local rel_file = vim.fs.relpath(cwd, file)
+        local rel_file = vim.fs.relpath(cwd, abs_file)
         local fuzzy_res = mini_fuzzy.match(query, rel_file)
         local highlight_idxs = fuzzy_res.positions or {}
         local fuzzy_score = fuzzy_res.score
         if fuzzy_score ~= -1 then
           local inverted_fuzzy_score = MAX_FUZZY_SCORE - fuzzy_score
           local scaled_fuzzy_score = scale_fuzzy_value_to_frecency(inverted_fuzzy_score)
-          table.insert(fuzzy_files, { file = file, score = scaled_fuzzy_score, highlight_idxs = highlight_idxs, })
+          table.insert(fuzzy_files, { abs_file = abs_file, score = scaled_fuzzy_score, highlight_idxs = highlight_idxs, })
         end
       end
 
@@ -586,15 +586,15 @@ local function get_smart_files(opts, callback)
     for idx, fuzzy_entry in ipairs(fuzzy_files) do
       local frecency_and_buf_score = 0
 
-      local file = fuzzy_entry.file
+      local abs_file = fuzzy_entry.abs_file
 
-      if open_buffers[file] ~= nil then
-        local bufnr = vim.fn.bufnr(file)
+      if open_buffer_to_score[abs_file] ~= nil then
+        local bufnr = vim.fn.bufnr(abs_file)
         local changed = vim.api.nvim_get_option_value("modified", { buf = bufnr, })
 
-        if file == opts.curr_bufname then
+        if abs_file == opts.curr_bufname then
           frecency_and_buf_score = CURR_BUF_BOOST
-        elseif file == opts.alt_bufname then
+        elseif abs_file == opts.alt_bufname then
           frecency_and_buf_score = ALT_BUF_BOOST
         elseif changed == h.vimscript_true then
           frecency_and_buf_score = CHANGED_BUF_BOOST
@@ -603,15 +603,15 @@ local function get_smart_files(opts, callback)
         end
       end
 
-      if frecency_files[file] ~= nil then
-        frecency_and_buf_score = frecency_and_buf_score + frecency_files[file]
+      if frecency_file_to_score[abs_file] ~= nil then
+        frecency_and_buf_score = frecency_and_buf_score + frecency_file_to_score[abs_file]
       end
 
       local weighted_score = 0.7 * fuzzy_entry.score + 0.3 * frecency_and_buf_score
-      local rel_file = vim.fs.relpath(cwd, file)
+      local rel_file = vim.fs.relpath(cwd, abs_file)
       table.insert(
         weighted_files,
-        { file = rel_file, score = weighted_score, highlight_idxs = fuzzy_entry.highlight_idxs, }
+        { abs_file = rel_file, score = weighted_score, highlight_idxs = fuzzy_entry.highlight_idxs, }
       )
 
       if idx % BATCH_SIZE == 0 then
@@ -629,7 +629,7 @@ local function get_smart_files(opts, callback)
     --- @type string[]
     local formatted_files = {}
     for idx, weighted_entry in ipairs(weighted_files) do
-      local formatted = format_filename(weighted_entry.file, weighted_entry.score)
+      local formatted = format_filename(weighted_entry.abs_file, weighted_entry.score)
       table.insert(formatted_files, formatted)
       if idx % BATCH_SIZE == 0 then
         coroutine.yield()
