@@ -429,7 +429,6 @@ local mini_icons = require "mini.icons"
 local frecency_helpers = require "fzf-lua-frecency.helpers"
 local frecency_algo = require "fzf-lua-frecency.algo"
 local frecency_fs = require "fzf-lua-frecency.fs"
-local mini_fuzzy = require "mini.fuzzy"
 local fzy = require "fzy-lua-native"
 local ns_id = vim.api.nvim_create_namespace "SmartHighlight"
 
@@ -509,9 +508,14 @@ local function get_smart_files(opts, callback)
   local CHANGED_BUF_BOOST = 20
   local ALT_BUF_BOOST = 30
   local CURR_BUF_BOOST = -1000
-  local MAX_FUZZY_SCORE = 10100
+
+  -- [-math.huge, math.huge]
+  -- just below math.huge is aprox the length of the string
+  -- just above -math.huge is aprox 0
+  local MAX_FZY_SCORE = 20
   local MAX_FRECENCY_SCORE = 99
-  local BATCH_SIZE = 20
+
+  local BATCH_SIZE = 50
 
   local cwd = vim.uv.cwd()
 
@@ -553,8 +557,11 @@ local function get_smart_files(opts, callback)
   end
   benchmark("end", "open_buffer_to_score loop")
 
-  local function scale_fuzzy_value_to_frecency(value)
-    return (value) / (MAX_FUZZY_SCORE) * MAX_FRECENCY_SCORE
+  --- @pram fzy_score number
+  local function scale_fzy_to_frecency(fzy_score)
+    if fzy_score == math.huge then return MAX_FRECENCY_SCORE end
+    if fzy_score == -math.huge then return 0 end
+    return (fzy_score) / (MAX_FZY_SCORE) * MAX_FRECENCY_SCORE
   end
 
   --- @class AnnotatedFile
@@ -576,8 +583,10 @@ local function get_smart_files(opts, callback)
         local rel_file = get_rel_file(abs_file)
         if fzy.has_match(query, rel_file) then
           local fzy_score = fzy.score(query, rel_file)
+          local scaled_fzy_score = scale_fzy_to_frecency(fzy_score)
           local highlight_idxs = fzy.positions(query, rel_file)
-          table.insert(fuzzy_files, { file = abs_file, score = fzy_score, highlight_idxs = highlight_idxs, })
+
+          table.insert(fuzzy_files, { file = abs_file, score = scaled_fzy_score, highlight_idxs = highlight_idxs, })
         end
       end
 
