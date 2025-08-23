@@ -32,7 +32,7 @@ end
 local ongoing_benchmarks = {}
 --- @param type "start"|"end"
 --- @param label string
-local benchmark = function(type, label)
+local function benchmark(type, label)
   if not LOG then return end
 
   if type == "start" then
@@ -312,7 +312,10 @@ local function get_smart_files(opts, callback)
     callback(formatted_files)
     benchmark("end", "callback")
 
-    if not HL_ENABLED then return end
+    if not HL_ENABLED then
+      benchmark("end", "entire script")
+      return
+    end
 
     benchmark("start", "highlight loop")
     for idx, formatted_file in ipairs(formatted_files) do
