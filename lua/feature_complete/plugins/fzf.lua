@@ -515,7 +515,7 @@ local function get_smart_files(opts, callback)
   local MAX_FZY_SCORE = 20
   local MAX_FRECENCY_SCORE = 99
 
-  local BATCH_SIZE = 50
+  local BATCH_SIZE = 500
 
   local cwd = vim.uv.cwd()
 
