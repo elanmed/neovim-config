@@ -437,22 +437,21 @@ vim.keymap.set("n", "<leader>f", function()
   local _, curr_bufname = pcall(vim.api.nvim_buf_get_name, 0)
   local _, alt_bufname = pcall(vim.api.nvim_buf_get_name, vim.fn.bufnr "#")
 
-  vim.cmd "vnew"
-  local input_buf = vim.api.nvim_get_current_buf()
-  local input_win = vim.api.nvim_get_current_win()
-  vim.bo.buftype = "nofile"
-  vim.bo.buflisted = false
-  vim.api.nvim_buf_set_name(input_buf, "Input")
-
   vim.cmd "new"
-  vim.cmd "resize"
   local results_buf = vim.api.nvim_get_current_buf()
   local results_win = vim.api.nvim_get_current_win()
   vim.bo.buftype = "nofile"
   vim.bo.buflisted = false
   vim.api.nvim_buf_set_name(results_buf, "Results")
 
-  vim.cmd "wincmd p"
+  vim.cmd "new"
+  vim.cmd "resize 1"
+  local input_buf = vim.api.nvim_get_current_buf()
+  local input_win = vim.api.nvim_get_current_win()
+  vim.bo.buftype = "nofile"
+  vim.bo.buflisted = false
+  vim.api.nvim_buf_set_name(input_buf, "Input")
+
   vim.cmd "startinsert"
 
   vim.schedule(
