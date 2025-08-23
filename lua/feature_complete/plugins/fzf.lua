@@ -453,28 +453,19 @@ end
 
 local fd_files = {}
 local frecency_files = {}
-local dated_files = {}
+local frecency_file_to_score = {}
 
-local now = os.time()
 local db_index = 1
 --- @type string
 local cwd = vim.uv.cwd()
-
-local function populate_dated_files_cache()
-  local dated_files_path = frecency_helpers.get_dated_files_path()
-  dated_files = frecency_fs.read(dated_files_path)
-  if not dated_files[db_index] then
-    dated_files[db_index] = {}
-  end
-end
 
 local function populate_fd_cache()
   benchmark("start", "fd")
   local fd_cmd = "fd --absolute-path --hidden --type f --exclude node_modules --exclude .git --exclude dist"
   local fd_handle = io.popen(fd_cmd)
   if fd_handle then
-    for file in fd_handle:lines() do
-      table.insert(fd_files, file)
+    for abs_file in fd_handle:lines() do
+      table.insert(fd_files, abs_file)
     end
     fd_handle:close()
   end
@@ -485,15 +476,34 @@ local function populate_frecency_files_cwd_cache()
   local sorted_files_path = frecency_helpers.get_sorted_files_path()
 
   benchmark("start", "sorted_files_path fs read")
-  for frecency_file in io.lines(sorted_files_path) do
-    if not vim.startswith(frecency_file, cwd) then goto continue end
-    if vim.fn.filereadable(frecency_file) == h.vimscript_false then goto continue end
+  for abs_file in io.lines(sorted_files_path) do
+    if not vim.startswith(abs_file, cwd) then goto continue end
+    if vim.fn.filereadable(abs_file) == h.vimscript_false then goto continue end
 
-    frecency_files[frecency_file] = true
+    table.insert(frecency_files, abs_file)
 
     ::continue::
   end
   benchmark("end", "sorted_files_path fs read")
+end
+
+local function populate_frecency_scores_cache()
+  benchmark("start", "dated_files fs read")
+  local dated_files_path = frecency_helpers.get_dated_files_path()
+  local dated_files = frecency_fs.read(dated_files_path)
+  if not dated_files[db_index] then
+    dated_files[db_index] = {}
+  end
+  benchmark("end", "dated_files fs read")
+
+  local now = os.time()
+  benchmark("start", "calculate frecency_file_to_score")
+  for _, abs_file in ipairs(frecency_files) do
+    local date_at_score_one = dated_files[db_index][abs_file]
+    local score = frecency_algo.compute_score { now = now, date_at_score_one = date_at_score_one, }
+    frecency_file_to_score[abs_file] = score
+  end
+  benchmark("end", "calculate frecency_file_to_score")
 end
 
 --- @class GetSmartFilesOpts
@@ -626,11 +636,8 @@ local function get_smart_files(opts, callback)
         end
       end
 
-      if frecency_files[abs_file] ~= nil then
-        local date_at_score_one = dated_files[db_index][abs_file]
-        local frecency_score = frecency_algo.compute_score { now = now, date_at_score_one = date_at_score_one, }
-
-        frecency_and_buf_score = frecency_and_buf_score + frecency_score
+      if frecency_file_to_score[abs_file] ~= nil then
+        frecency_and_buf_score = frecency_and_buf_score + frecency_file_to_score[abs_file]
       end
 
       local weighted_score = 0.7 * fuzzy_entry.score + 0.3 * frecency_and_buf_score
@@ -737,7 +744,7 @@ vim.keymap.set("n", "<leader>f", function()
 
   vim.schedule(
     function()
-      populate_dated_files_cache()
+      populate_frecency_scores_cache()
       get_smart_files({
         query = "",
         results_buf = results_buf,
@@ -780,6 +787,11 @@ vim.keymap.set("n", "<leader>f", function()
     close_picker()
     vim.cmd("edit " .. file)
     vim.cmd "stopinsert"
+
+    vim.schedule(function()
+      local abs_file = vim.fs.joinpath(cwd, file)
+      frecency_algo.update_file_score(abs_file, { update_type = "increase", })
+    end)
   end, { buffer = input_buf, })
 
   for _, keymap in pairs { "q", "<leader>q", "<esc>", "<C-c>", } do
