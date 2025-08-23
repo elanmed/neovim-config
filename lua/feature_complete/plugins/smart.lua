@@ -51,10 +51,10 @@ local fd_files = {}
 --- @type string[]
 local frecency_files = {}
 
--- {[file_name] = 0}
+--- @type table<string, number>
 local frecency_file_to_score = {}
 
--- {[icon_name] = {icon_char = "", icon_hl = ""}}
+--- @type table<string, {icon_char: string, icon_hl: string}>
 local icon_cache = {}
 
 local db_index = 1
@@ -65,12 +65,15 @@ local function populate_fd_cache()
   benchmark("start", "fd")
   local fd_cmd = "fd --absolute-path --hidden --type f --exclude node_modules --exclude .git --exclude dist"
   local fd_handle = io.popen(fd_cmd)
-  if fd_handle then
-    for abs_file in fd_handle:lines() do
-      table.insert(fd_files, abs_file)
-    end
-    fd_handle:close()
+  if not fd_handle then
+    h.notify.error "[smart.lua] fd failed!"
+    return
   end
+
+  for abs_file in fd_handle:lines() do
+    table.insert(fd_files, abs_file)
+  end
+  fd_handle:close()
   benchmark("end", "fd")
 end
 
@@ -78,6 +81,10 @@ local function populate_frecency_files_cwd_cache()
   local sorted_files_path = frecency_helpers.get_sorted_files_path()
 
   benchmark("start", "sorted_files_path fs read")
+  if not vim.fn.filereadable(sorted_files_path) then
+    h.notify.error "[smart.lua] sorted_files_path isn't readable!"
+    return
+  end
   for abs_file in io.lines(sorted_files_path) do
     if not vim.startswith(abs_file, cwd) then goto continue end
     if vim.fn.filereadable(abs_file) == h.vimscript_false then goto continue end
