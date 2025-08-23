@@ -433,7 +433,7 @@ local fzy = require "fzy-lua-native"
 local ns_id = vim.api.nvim_create_namespace "SmartHighlight"
 
 local LOG = false
-local MAX_PERF = true
+local MAX_PERF = false
 
 local ongoing_benchmarks = {}
 --- @param type "start"|"end"
@@ -538,13 +538,8 @@ local function get_smart_files(opts, callback)
 
   --- @param rel_file string
   --- @param score number
-  local function format_filename(rel_file, score)
-    local icon = ""
-    if not MAX_PERF then
-      local icon_ok, icon_res = pcall(mini_icons.get, "file", rel_file)
-      icon = icon_ok and icon_res or "?"
-      icon = icon .. " "
-    end
+  --- @param icon string
+  local function format_filename(rel_file, score, icon)
     local max_score_len = #frecency_helpers.exact_decimals(MAX_FRECENCY_SCORE, 2)
 
     local formatted_score = frecency_helpers.pad_str(
@@ -584,6 +579,8 @@ local function get_smart_files(opts, callback)
   --- @field file string
   --- @field score number
   --- @field highlight_idxs table
+  --- @field icon_char string
+  --- @field icon_hl string
 
   --- @type AnnotatedFile[]
   local weighted_files = {}
@@ -605,7 +602,14 @@ local function get_smart_files(opts, callback)
             highlight_idxs = fzy.positions(query, rel_file)
           end
 
-          table.insert(fuzzy_files, { file = abs_file, score = scaled_fzy_score, highlight_idxs = highlight_idxs, })
+          table.insert(fuzzy_files,
+            {
+              file = abs_file,
+              score = scaled_fzy_score,
+              highlight_idxs = highlight_idxs,
+              icon_char = "",
+              icon_hl = nil,
+            })
         end
       end
 
@@ -641,10 +645,30 @@ local function get_smart_files(opts, callback)
       end
 
       local weighted_score = 0.7 * fuzzy_entry.score + 0.3 * frecency_and_buf_score
+
       local rel_file = get_rel_file(abs_file)
+      local icon_char = ""
+      local icon_hl = nil
+
+      if not MAX_PERF then
+        -- TODO: highlight icon
+        local ok, icon_char_res, icon_hl_res = pcall(mini_icons.get, "file", rel_file)
+        icon_char = ok and icon_char_res or "?"
+        icon_char = icon_char .. " "
+        if ok then
+          icon_hl = icon_hl_res
+        end
+      end
+
       table.insert(
         weighted_files,
-        { file = rel_file, score = weighted_score, highlight_idxs = fuzzy_entry.highlight_idxs, }
+        {
+          file = rel_file,
+          score = weighted_score,
+          highlight_idxs = fuzzy_entry.highlight_idxs,
+          icon_hl = icon_hl,
+          icon_char = icon_char,
+        }
       )
 
       if idx % BATCH_SIZE == 0 then
@@ -665,7 +689,7 @@ local function get_smart_files(opts, callback)
     for idx, weighted_entry in ipairs(weighted_files) do
       if idx > 200 then break end
 
-      local formatted = format_filename(weighted_entry.file, weighted_entry.score)
+      local formatted = format_filename(weighted_entry.file, weighted_entry.score, weighted_entry.icon_char)
       table.insert(formatted_files, formatted)
       if idx % BATCH_SIZE == 0 then
         coroutine.yield()
@@ -681,18 +705,27 @@ local function get_smart_files(opts, callback)
 
     benchmark("start", "highlight loop")
     for idx, formatted_file in ipairs(formatted_files) do
-      local offset = string.find(formatted_file, "|")
+      local row_0_indexed = idx - 1
+      local icon_highlight_col_0_indexed = 6
 
+      vim.hl.range(
+        opts.results_buf,
+        ns_id,
+        weighted_files[idx].icon_hl,
+        { row_0_indexed, icon_highlight_col_0_indexed, },
+        { row_0_indexed, icon_highlight_col_0_indexed + 1, }
+      )
+
+      local file_offset = string.find(formatted_file, "|")
       for _, highlight_idx in ipairs(weighted_files[idx].highlight_idxs) do
-        local row_0_indexed = idx - 1
-        local highlight_col_0_indexed = highlight_idx + offset - 1
+        local file_char_highlight_col_0_indexed = highlight_idx + file_offset - 1
 
         vim.hl.range(
           opts.results_buf,
           ns_id,
           "SmartFilesFuzzyHighlightIdx",
-          { row_0_indexed, highlight_col_0_indexed, },
-          { row_0_indexed, highlight_col_0_indexed + 1, }
+          { row_0_indexed, file_char_highlight_col_0_indexed, },
+          { row_0_indexed, file_char_highlight_col_0_indexed + 1, }
         )
       end
 
