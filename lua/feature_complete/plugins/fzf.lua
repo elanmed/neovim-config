@@ -464,6 +464,7 @@ local function populate_caches()
   end
   benchmark("end", "fd")
 
+  --- @type string
   local cwd = vim.uv.cwd()
   local now = os.time()
   local sorted_files_path = frecency_helpers.get_sorted_files_path()
@@ -551,47 +552,67 @@ local function get_smart_files(opts, callback)
     return (value) / (MAX_FUZZY_SCORE) * MAX_FRECENCY_SCORE
   end
 
+  --- @class AnnotatedFile
+  --- @field file string
+  --- @field score number
+  --- @field highlight_idxs table
+
+  --- @type AnnotatedFile[]
   local weighted_files = {}
 
   local process_files = coroutine.create(function()
+    --- @type AnnotatedFile[]
+    local fuzzy_files = {}
     for idx, file in ipairs(fd_files) do
-      local score = 0
+      if query == "" then
+        table.insert(fuzzy_files, { file = file, score = 0, highlight_idxs = {}, })
+      else
+        local rel_file = vim.fs.relpath(cwd, file)
+        local fuzzy_res = mini_fuzzy.match(query, rel_file)
+        local highlight_idxs = fuzzy_res.positions or {}
+        local fuzzy_score = fuzzy_res.score
+        if fuzzy_score ~= -1 then
+          local inverted_fuzzy_score = MAX_FUZZY_SCORE - fuzzy_score
+          local scaled_fuzzy_score = scale_fuzzy_value_to_frecency(inverted_fuzzy_score)
+          table.insert(fuzzy_files, { file = file, score = scaled_fuzzy_score, highlight_idxs = highlight_idxs, })
+        end
+      end
+
+      if idx % BATCH_SIZE == 0 then
+        coroutine.yield()
+      end
+    end
+
+    for idx, fuzzy_entry in ipairs(fuzzy_files) do
+      local frecency_and_buf_score = 0
+
+      local file = fuzzy_entry.file
 
       if open_buffers[file] ~= nil then
         local bufnr = vim.fn.bufnr(file)
         local changed = vim.api.nvim_get_option_value("modified", { buf = bufnr, })
 
         if file == opts.curr_bufname then
-          score = CURR_BUF_BOOST
+          frecency_and_buf_score = CURR_BUF_BOOST
         elseif file == opts.alt_bufname then
-          score = ALT_BUF_BOOST
+          frecency_and_buf_score = ALT_BUF_BOOST
         elseif changed == h.vimscript_true then
-          score = CHANGED_BUF_BOOST
+          frecency_and_buf_score = CHANGED_BUF_BOOST
         else
-          score = OPEN_BUF_BOOST
+          frecency_and_buf_score = OPEN_BUF_BOOST
         end
       end
 
       if frecency_files[file] ~= nil then
-        score = score + frecency_files[file]
+        frecency_and_buf_score = frecency_and_buf_score + frecency_files[file]
       end
 
-      local highlight_idxs = {}
+      local weighted_score = 0.7 * fuzzy_entry.score + 0.3 * frecency_and_buf_score
       local rel_file = vim.fs.relpath(cwd, file)
-
-      if query ~= "" then
-        local fuzzy_res = mini_fuzzy.match(query, rel_file)
-        highlight_idxs = fuzzy_res.positions or {}
-        local fuzzy_score = fuzzy_res.score
-        if fuzzy_score ~= -1 then
-          local inverted_fuzzy_score = MAX_FUZZY_SCORE - fuzzy_score
-          local scaled_fuzzy_score = scale_fuzzy_value_to_frecency(inverted_fuzzy_score)
-
-          score = 0.7 * scaled_fuzzy_score + 0.3 * score
-        end
-      end
-
-      table.insert(weighted_files, { file = rel_file, score = score, highlight_idxs = highlight_idxs, })
+      table.insert(
+        weighted_files,
+        { file = rel_file, score = weighted_score, highlight_idxs = fuzzy_entry.highlight_idxs, }
+      )
 
       if idx % BATCH_SIZE == 0 then
         coroutine.yield()
@@ -605,6 +626,7 @@ local function get_smart_files(opts, callback)
     benchmark("end", "weighted_files sort")
 
     benchmark("start", "weighted_files format loop")
+    --- @type string[]
     local formatted_files = {}
     for idx, weighted_entry in ipairs(weighted_files) do
       local formatted = format_filename(weighted_entry.file, weighted_entry.score)
@@ -615,11 +637,12 @@ local function get_smart_files(opts, callback)
     end
     benchmark("end", "weighted_files format loop")
 
-    benchmark("end", "entire script")
+    benchmark("start", "callback")
     callback(formatted_files)
+    benchmark("end", "callback")
 
+    benchmark("start", "highlight loop")
     for idx, formatted_file in ipairs(formatted_files) do
-      if tick ~= opts.curr_tick then return end
       local offset = string.find(formatted_file, "|")
 
       for _, highlight_idx in ipairs(weighted_files[idx].highlight_idxs) do
@@ -634,10 +657,13 @@ local function get_smart_files(opts, callback)
           { row_0_indexed, highlight_col_0_indexed + 1, }
         )
       end
+
       if idx % BATCH_SIZE == 0 then
         coroutine.yield()
       end
     end
+    benchmark("end", "highlight loop")
+    benchmark("end", "entire script")
   end)
 
   local function continue_processing()
