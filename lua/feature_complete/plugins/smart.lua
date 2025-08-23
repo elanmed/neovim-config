@@ -15,7 +15,7 @@ local frecency_fs = require "fzf-lua-frecency.fs"
 local fzy = require "fzy-lua-native"
 local ns_id = vim.api.nvim_create_namespace "SmartHighlight"
 
-local LOG = true
+local LOG = false
 local ICONS_ENABLED = true
 local HL_ENABLED = true
 
