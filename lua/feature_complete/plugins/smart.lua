@@ -15,9 +15,57 @@ local frecency_fs = require "fzf-lua-frecency.fs"
 local fzy = require "fzy-lua-native"
 local ns_id = vim.api.nvim_create_namespace "SmartHighlight"
 
+--- @type string
+local cwd = vim.uv.cwd()
+
 local LOG = false
 local ICONS_ENABLED = true
 local HL_ENABLED = true
+
+local OPEN_BUF_BOOST = 10
+local CHANGED_BUF_BOOST = 20
+local ALT_BUF_BOOST = 30
+local CURR_BUF_BOOST = -1000
+
+-- [-math.huge, math.huge]
+-- just below math.huge is aprox the length of the string
+-- just above -math.huge is aprox 0
+local MAX_FZY_SCORE = 20
+local MAX_FRECENCY_SCORE = 99
+
+local max_score_len = #frecency_helpers.exact_decimals(MAX_FRECENCY_SCORE, 2)
+local formatted_score_last_idx = #frecency_helpers.pad_str(
+  frecency_helpers.fit_decimals(MAX_FRECENCY_SCORE, max_score_len),
+  max_score_len
+)
+local icon_char_idx = formatted_score_last_idx + 2
+
+local BATCH_SIZE = 500
+--- @param abs_file string
+local function get_rel_file(abs_file)
+  return abs_file:sub(#cwd + 2)
+end
+
+--- @param rel_file string
+--- @param score number
+--- @param icon string
+local function format_filename(rel_file, score, icon)
+  local formatted_score = frecency_helpers.pad_str(
+    frecency_helpers.fit_decimals(score or 0, max_score_len),
+    max_score_len
+  )
+
+  local formatted = ("%s %s|%s"):format(formatted_score, icon, rel_file)
+
+  return formatted
+end
+
+--- @param fzy_score number
+local function scale_fzy_to_frecency(fzy_score)
+  if fzy_score == math.huge then return MAX_FRECENCY_SCORE end
+  if fzy_score == -math.huge then return 0 end
+  return (fzy_score) / (MAX_FZY_SCORE) * MAX_FRECENCY_SCORE
+end
 
 --- @param file string
 local function get_extension(file)
@@ -54,12 +102,12 @@ local frecency_files = {}
 --- @type table<string, number>
 local frecency_file_to_score = {}
 
---- @type table<string, {icon_char: string, icon_hl: string}>
+--- @type table<string, {icon_char: string, icon_hl: string|nil}>
 local icon_cache = {}
 
-local db_index = 1
---- @type string
-local cwd = vim.uv.cwd()
+--- @type table<string, number>
+local open_buffer_to_score = {}
+
 
 local function populate_fd_cache()
   benchmark("start", "fd")
@@ -85,6 +133,7 @@ local function populate_frecency_files_cwd_cache()
     h.notify.error "[smart.lua] sorted_files_path isn't readable!"
     return
   end
+
   for abs_file in io.lines(sorted_files_path) do
     if not vim.startswith(abs_file, cwd) then goto continue end
     if vim.fn.filereadable(abs_file) == h.vimscript_false then goto continue end
@@ -100,6 +149,7 @@ local function populate_frecency_scores_cache()
   benchmark("start", "dated_files fs read")
   local dated_files_path = frecency_helpers.get_dated_files_path()
   local dated_files = frecency_fs.read(dated_files_path)
+  local db_index = 1 -- backwards compat reasons
   if not dated_files[db_index] then
     dated_files[db_index] = {}
   end
@@ -115,66 +165,8 @@ local function populate_frecency_scores_cache()
   benchmark("end", "calculate frecency_file_to_score")
 end
 
---- @class GetSmartFilesOpts
---- @field query string
---- @field results_buf number
---- @field curr_bufname string
---- @field alt_bufname string
---- @field curr_tick number
-
---- @param opts GetSmartFilesOpts
---- @param callback function
-local function get_smart_files(opts, callback)
-  benchmark("start", "entire script")
-  local query = opts.query:gsub("%s+", "") -- fzy doesn't ignore spaces
-
-  local OPEN_BUF_BOOST = 10
-  local CHANGED_BUF_BOOST = 20
-  local ALT_BUF_BOOST = 30
-  local CURR_BUF_BOOST = -1000
-
-  -- [-math.huge, math.huge]
-  -- just below math.huge is aprox the length of the string
-  -- just above -math.huge is aprox 0
-  local MAX_FZY_SCORE = 20
-  local MAX_FRECENCY_SCORE = 99
-
-  local max_score_len = #frecency_helpers.exact_decimals(MAX_FRECENCY_SCORE, 2)
-  local formatted_score_last_idx = #frecency_helpers.pad_str(
-    frecency_helpers.fit_decimals(MAX_FRECENCY_SCORE, max_score_len),
-    max_score_len
-  )
-  local icon_char_idx = formatted_score_last_idx + 2
-
-  local BATCH_SIZE = 500
-  --- @param abs_file string
-  local function get_rel_file(abs_file)
-    return abs_file:sub(#cwd + 2)
-  end
-
-  --- @param rel_file string
-  --- @param score number
-  --- @param icon string
-  local function format_filename(rel_file, score, icon)
-    local formatted_score = frecency_helpers.pad_str(
-      frecency_helpers.fit_decimals(score or 0, max_score_len),
-      max_score_len
-    )
-
-    local formatted = ("%s %s|%s"):format(formatted_score, icon, rel_file)
-
-    return formatted
-  end
-
-  --- @param fzy_score number
-  local function scale_fzy_to_frecency(fzy_score)
-    if fzy_score == math.huge then return MAX_FRECENCY_SCORE end
-    if fzy_score == -math.huge then return 0 end
-    return (fzy_score) / (MAX_FZY_SCORE) * MAX_FRECENCY_SCORE
-  end
-
+local function populate_open_buffers_cache()
   benchmark("start", "open_buffer_to_score loop")
-  local open_buffer_to_score = {}
   for _, bufnr in pairs(vim.api.nvim_list_bufs()) do
     if not vim.api.nvim_buf_is_loaded(bufnr) then goto continue end
     if not vim.api.nvim_get_option_value("buflisted", { buf = bufnr, }) then goto continue end
@@ -188,6 +180,21 @@ local function get_smart_files(opts, callback)
     ::continue::
   end
   benchmark("end", "open_buffer_to_score loop")
+end
+
+
+--- @class GetSmartFilesOpts
+--- @field query string
+--- @field results_buf number
+--- @field curr_bufname string
+--- @field alt_bufname string
+--- @field curr_tick number
+
+--- @param opts GetSmartFilesOpts
+--- @param callback function
+local function get_smart_files(opts, callback)
+  benchmark("start", "entire script")
+  local query = opts.query:gsub("%s+", "") -- fzy doesn't ignore spaces
 
   --- @class AnnotatedFile
   --- @field file string
@@ -200,12 +207,19 @@ local function get_smart_files(opts, callback)
   local weighted_files = {}
 
   local process_files = coroutine.create(function()
+    -- TODO: change type, only need file and score
     --- @type AnnotatedFile[]
     local fuzzy_files = {}
     benchmark("start", "calculate fuzzy_files")
     for idx, abs_file in ipairs(fd_files) do
       if query == "" then
-        table.insert(fuzzy_files, { file = abs_file, score = 0, hl_idxs = {}, })
+        table.insert(fuzzy_files, {
+          file = abs_file,
+          score = 0,
+          hl_idxs = {},
+          icon_char = "",
+          icon_hl = nil,
+        })
       else
         local rel_file = get_rel_file(abs_file)
         if fzy.has_match(query, rel_file) then
@@ -235,7 +249,7 @@ local function get_smart_files(opts, callback)
 
     benchmark("start", "calculate weighted_files")
     for idx, fuzzy_entry in ipairs(fuzzy_files) do
-      local frecency_and_buf_score = 0
+      local buf_score = 0
 
       local abs_file = fuzzy_entry.file
 
@@ -244,16 +258,17 @@ local function get_smart_files(opts, callback)
         local changed = vim.api.nvim_get_option_value("modified", { buf = bufnr, })
 
         if abs_file == opts.curr_bufname then
-          frecency_and_buf_score = CURR_BUF_BOOST
+          buf_score = CURR_BUF_BOOST
         elseif abs_file == opts.alt_bufname then
-          frecency_and_buf_score = ALT_BUF_BOOST
+          buf_score = ALT_BUF_BOOST
         elseif changed == h.vimscript_true then
-          frecency_and_buf_score = CHANGED_BUF_BOOST
+          buf_score = CHANGED_BUF_BOOST
         else
-          frecency_and_buf_score = OPEN_BUF_BOOST
+          buf_score = OPEN_BUF_BOOST
         end
       end
 
+      local frecency_and_buf_score = buf_score
       if frecency_file_to_score[abs_file] ~= nil then
         frecency_and_buf_score = frecency_and_buf_score + frecency_file_to_score[abs_file]
       end
@@ -270,12 +285,12 @@ local function get_smart_files(opts, callback)
           icon_char = icon_cache[ext].icon_char .. " "
           icon_hl = icon_cache[ext].icon_hl
         else
-          local ok, icon_char_res, icon_hl_res = pcall(mini_icons.get, "file", rel_file)
+          local _, icon_char_res, icon_hl_res = pcall(mini_icons.get, "file", rel_file)
           icon_char = (icon_char_res or "?") .. " "
-          if ok then
-            icon_hl = icon_hl_res
+          icon_hl = icon_hl_res or nil
+          if ext then
+            icon_cache[ext] = { icon_char = icon_char_res or "?", icon_hl = icon_hl, }
           end
-          if ext then icon_cache[ext] = { icon_char = icon_char_res or "?", icon_hl = icon_hl, } end
         end
       end
 
@@ -404,6 +419,7 @@ vim.keymap.set("n", "<leader>f", function()
   vim.schedule(
     function()
       populate_frecency_scores_cache()
+      populate_open_buffers_cache()
       get_smart_files({
         query = "",
         results_buf = results_buf,
