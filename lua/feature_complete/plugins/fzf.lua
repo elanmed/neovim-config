@@ -432,7 +432,7 @@ local frecency_fs = require "fzf-lua-frecency.fs"
 local mini_fuzzy = require "mini.fuzzy"
 local ns_id = vim.api.nvim_create_namespace "SmartHighlight"
 
-local LOG = false
+local LOG = true
 local ongoing_benchmarks = {}
 --- @param type "start"|"end"
 --- @param label string
@@ -563,6 +563,7 @@ local function get_smart_files(opts, callback)
   local process_files = coroutine.create(function()
     --- @type AnnotatedFile[]
     local fuzzy_files = {}
+    benchmark("start", "calculate fuzzy_files")
     for idx, abs_file in ipairs(fd_files) do
       if query == "" then
         table.insert(fuzzy_files, { file = abs_file, score = 0, highlight_idxs = {}, })
@@ -582,7 +583,9 @@ local function get_smart_files(opts, callback)
         coroutine.yield()
       end
     end
+    benchmark("end", "calculate fuzzy_files")
 
+    benchmark("start", "calculate weighted_files")
     for idx, fuzzy_entry in ipairs(fuzzy_files) do
       local frecency_and_buf_score = 0
 
@@ -618,24 +621,27 @@ local function get_smart_files(opts, callback)
         coroutine.yield()
       end
     end
+    benchmark("end", "calculate weighted_files")
 
-    benchmark("start", "weighted_files sort")
+    benchmark("start", "sort weighted_files")
     table.sort(weighted_files, function(a, b)
       return a.score > b.score
     end)
-    benchmark("end", "weighted_files sort")
+    benchmark("end", "sort weighted_files")
 
-    benchmark("start", "weighted_files format loop")
+    benchmark("start", "format weighted_files")
     --- @type string[]
     local formatted_files = {}
     for idx, weighted_entry in ipairs(weighted_files) do
+      if idx > 200 then break end
+
       local formatted = format_filename(weighted_entry.file, weighted_entry.score)
       table.insert(formatted_files, formatted)
       if idx % BATCH_SIZE == 0 then
         coroutine.yield()
       end
     end
-    benchmark("end", "weighted_files format loop")
+    benchmark("end", "format weighted_files")
 
     benchmark("start", "callback")
     callback(formatted_files)
