@@ -140,10 +140,11 @@ local function get_smart_files(opts, callback)
   local MAX_FRECENCY_SCORE = 99
 
   local max_score_len = #frecency_helpers.exact_decimals(MAX_FRECENCY_SCORE, 2)
-  local icon_char_offset = #frecency_helpers.pad_str(
+  local formatted_score_last_idx = #frecency_helpers.pad_str(
     frecency_helpers.fit_decimals(MAX_FRECENCY_SCORE, max_score_len),
     max_score_len
   )
+  local icon_char_idx = formatted_score_last_idx + 2
 
   local BATCH_SIZE = 500
   --- @param abs_file string
@@ -329,8 +330,8 @@ local function get_smart_files(opts, callback)
       local row_0_indexed = idx - 1
 
       if weighted_files[idx].icon_hl then
-        local space_offset = 1
-        local icon_hl_col_0_indexed = icon_char_offset + space_offset
+        local icon_hl_col_1_indexed = icon_char_idx
+        local icon_hl_col_0_indexed = icon_hl_col_1_indexed - 1
 
         vim.hl.range(
           opts.results_buf,
