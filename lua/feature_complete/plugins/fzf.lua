@@ -497,6 +497,7 @@ populate_caches()
 --- @field curr_bufname string
 --- @field alt_bufname string
 --- @field curr_tick number
+--- @field max_perf boolean
 
 --- @param opts GetSmartFilesOpts
 --- @param callback function
@@ -526,8 +527,11 @@ local function get_smart_files(opts, callback)
   --- @param rel_file string
   --- @param score number
   local function format_filename(rel_file, score)
-    local icon_ok, icon_res = pcall(mini_icons.get, "file", rel_file)
-    local icon = icon_ok and icon_res or "?"
+    local icon = ""
+    if not opts.max_perf then
+      local icon_ok, icon_res = pcall(mini_icons.get, "file", rel_file)
+      icon = icon_ok and icon_res or "?"
+    end
     local max_score_len = #frecency_helpers.exact_decimals(MAX_FRECENCY_SCORE, 2)
 
     local formatted_score = frecency_helpers.pad_str(
@@ -583,7 +587,10 @@ local function get_smart_files(opts, callback)
         if fzy.has_match(query, rel_file) then
           local fzy_score = fzy.score(query, rel_file)
           local scaled_fzy_score = scale_fzy_to_frecency(fzy_score)
-          local highlight_idxs = fzy.positions(query, rel_file)
+          local highlight_idxs = {}
+          if not opts.max_perf then
+            highlight_idxs = fzy.positions(query, rel_file)
+          end
 
           table.insert(fuzzy_files, { file = abs_file, score = scaled_fzy_score, highlight_idxs = highlight_idxs, })
         end
@@ -657,6 +664,8 @@ local function get_smart_files(opts, callback)
     callback(formatted_files)
     benchmark("end", "callback")
 
+    if opts.max_perf then return end
+
     benchmark("start", "highlight loop")
     for idx, formatted_file in ipairs(formatted_files) do
       local offset = string.find(formatted_file, "|")
@@ -725,6 +734,7 @@ vim.keymap.set("n", "<leader>f", function()
         curr_bufname = curr_bufname or "",
         alt_bufname = alt_bufname or "",
         curr_tick = tick,
+        max_perf = false,
       }, function(results)
         vim.api.nvim_buf_set_lines(results_buf, 0, -1, false, results)
       end)
@@ -787,6 +797,7 @@ vim.keymap.set("n", "<leader>f", function()
           curr_bufname = curr_bufname or "",
           alt_bufname = alt_bufname or "",
           curr_tick = tick,
+          max_perf = false,
         }, function(results)
           vim.api.nvim_buf_set_lines(results_buf, 0, -1, false, results)
         end)
