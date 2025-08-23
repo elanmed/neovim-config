@@ -531,6 +531,7 @@ local function get_smart_files(opts, callback)
     if not opts.max_perf then
       local icon_ok, icon_res = pcall(mini_icons.get, "file", rel_file)
       icon = icon_ok and icon_res or "?"
+      icon = icon .. " "
     end
     local max_score_len = #frecency_helpers.exact_decimals(MAX_FRECENCY_SCORE, 2)
 
@@ -539,7 +540,7 @@ local function get_smart_files(opts, callback)
       max_score_len
     )
 
-    local formatted = ("%s %s |%s"):format(formatted_score, icon, rel_file)
+    local formatted = ("%s %s|%s"):format(formatted_score, icon, rel_file)
 
     return formatted
   end
