@@ -553,7 +553,7 @@ local function get_smart_files(opts, callback)
   end
 
   --- @class AnnotatedFile
-  --- @field abs_file string
+  --- @field file string
   --- @field score number
   --- @field highlight_idxs table
 
@@ -565,7 +565,7 @@ local function get_smart_files(opts, callback)
     local fuzzy_files = {}
     for idx, abs_file in ipairs(fd_files) do
       if query == "" then
-        table.insert(fuzzy_files, { abs_file = abs_file, score = 0, highlight_idxs = {}, })
+        table.insert(fuzzy_files, { file = abs_file, score = 0, highlight_idxs = {}, })
       else
         local rel_file = vim.fs.relpath(cwd, abs_file)
         local fuzzy_res = mini_fuzzy.match(query, rel_file)
@@ -574,7 +574,7 @@ local function get_smart_files(opts, callback)
         if fuzzy_score ~= -1 then
           local inverted_fuzzy_score = MAX_FUZZY_SCORE - fuzzy_score
           local scaled_fuzzy_score = scale_fuzzy_value_to_frecency(inverted_fuzzy_score)
-          table.insert(fuzzy_files, { abs_file = abs_file, score = scaled_fuzzy_score, highlight_idxs = highlight_idxs, })
+          table.insert(fuzzy_files, { file = abs_file, score = scaled_fuzzy_score, highlight_idxs = highlight_idxs, })
         end
       end
 
@@ -586,7 +586,7 @@ local function get_smart_files(opts, callback)
     for idx, fuzzy_entry in ipairs(fuzzy_files) do
       local frecency_and_buf_score = 0
 
-      local abs_file = fuzzy_entry.abs_file
+      local abs_file = fuzzy_entry.file
 
       if open_buffer_to_score[abs_file] ~= nil then
         local bufnr = vim.fn.bufnr(abs_file)
@@ -611,7 +611,7 @@ local function get_smart_files(opts, callback)
       local rel_file = vim.fs.relpath(cwd, abs_file)
       table.insert(
         weighted_files,
-        { abs_file = rel_file, score = weighted_score, highlight_idxs = fuzzy_entry.highlight_idxs, }
+        { file = rel_file, score = weighted_score, highlight_idxs = fuzzy_entry.highlight_idxs, }
       )
 
       if idx % BATCH_SIZE == 0 then
@@ -621,7 +621,7 @@ local function get_smart_files(opts, callback)
 
     benchmark("start", "weighted_files sort")
     table.sort(weighted_files, function(a, b)
-      return a.score < b.score -- reverse order
+      return a.score > b.score
     end)
     benchmark("end", "weighted_files sort")
 
@@ -629,7 +629,7 @@ local function get_smart_files(opts, callback)
     --- @type string[]
     local formatted_files = {}
     for idx, weighted_entry in ipairs(weighted_files) do
-      local formatted = format_filename(weighted_entry.abs_file, weighted_entry.score)
+      local formatted = format_filename(weighted_entry.file, weighted_entry.score)
       table.insert(formatted_files, formatted)
       if idx % BATCH_SIZE == 0 then
         coroutine.yield()
@@ -684,20 +684,22 @@ vim.keymap.set("n", "<leader>f", function()
   local _, alt_bufname = pcall(vim.api.nvim_buf_get_name, vim.fn.bufnr "#")
 
   vim.cmd "vnew"
+  local input_buf = vim.api.nvim_get_current_buf()
+  local input_win = vim.api.nvim_get_current_win()
+  vim.bo.buftype = "nofile"
+  vim.bo.buflisted = false
+  vim.api.nvim_buf_set_name(input_buf, "Input")
+
+  vim.cmd "new"
+  vim.cmd "resize"
   local results_buf = vim.api.nvim_get_current_buf()
   local results_win = vim.api.nvim_get_current_win()
   vim.bo.buftype = "nofile"
   vim.bo.buflisted = false
   vim.api.nvim_buf_set_name(results_buf, "Results")
 
-  vim.cmd "new"
-  vim.cmd "resize 1"
+  vim.cmd "wincmd p"
   vim.cmd "startinsert"
-  local input_buf = vim.api.nvim_get_current_buf()
-  local input_win = vim.api.nvim_get_current_win()
-  vim.bo.buftype = "nofile"
-  vim.bo.buflisted = false
-  vim.api.nvim_buf_set_name(input_buf, "Input")
 
   vim.schedule(
     function()
@@ -709,9 +711,6 @@ vim.keymap.set("n", "<leader>f", function()
         curr_tick = tick,
       }, function(results)
         vim.api.nvim_buf_set_lines(results_buf, 0, -1, false, results)
-        vim.api.nvim_win_call(results_win, function()
-          h.keys.send_keys("n", "G")
-        end)
       end)
     end
   )
@@ -768,9 +767,6 @@ vim.keymap.set("n", "<leader>f", function()
           curr_tick = tick,
         }, function(results)
           vim.api.nvim_buf_set_lines(results_buf, 0, -1, false, results)
-          vim.api.nvim_win_call(results_win, function()
-            h.keys.send_keys("n", "G")
-          end)
         end)
       end)
     end,
