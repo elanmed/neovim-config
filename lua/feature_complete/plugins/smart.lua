@@ -1,5 +1,3 @@
-local h = require "helpers"
-
 local function maybe_close_mini_files()
   if vim.bo.filetype == "minifiles" then
     require "mini.files".close()
@@ -7,6 +5,8 @@ local function maybe_close_mini_files()
 end
 
 local tick = 0
+local vimscript_false = 0
+local vimscript_true = 0
 
 local mini_icons = require "mini.icons"
 local frecency_helpers = require "fzf-lua-frecency.helpers"
@@ -148,7 +148,7 @@ local function populate_fd_cache()
   local fd_cmd = "fd --absolute-path --hidden --type f --exclude node_modules --exclude .git --exclude dist"
   local fd_handle = io.popen(fd_cmd)
   if not fd_handle then
-    h.notify.error "[smart.lua] fd failed!"
+    error "[smart.lua] fd failed!"
     return
   end
 
@@ -164,13 +164,13 @@ local function populate_frecency_files_cwd_cache()
 
   benchmark("start", "sorted_files_path fs read")
   if not vim.fn.filereadable(sorted_files_path) then
-    h.notify.error "[smart.lua] sorted_files_path isn't readable!"
+    error "[smart.lua] sorted_files_path isn't readable!"
     return
   end
 
   for abs_file in io.lines(sorted_files_path) do
     if not vim.startswith(abs_file, cwd) then goto continue end
-    if vim.fn.filereadable(abs_file) == h.vimscript_false then goto continue end
+    if vim.fn.filereadable(abs_file) == vimscript_false then goto continue end
 
     table.insert(frecency_files, abs_file)
 
@@ -296,7 +296,7 @@ local function get_smart_files(opts, callback)
           buf_score = CURR_BUF_BOOST
         elseif abs_file == opts.alt_bufname then
           buf_score = ALT_BUF_BOOST
-        elseif changed == h.vimscript_true then
+        elseif changed == vimscript_true then
           buf_score = CHANGED_BUF_BOOST
         else
           buf_score = OPEN_BUF_BOOST
@@ -481,18 +481,18 @@ vim.keymap.set("n", "<leader>f", function()
 
   vim.keymap.set({ "i", "n", }, "<C-n>", function()
     vim.api.nvim_set_current_win(results_win)
-    h.keys.send_keys("n", "j")
+    vim.cmd "normal! j"
     vim.api.nvim_set_current_win(input_win)
   end, { buffer = input_buf, })
 
-  vim.keymap.set("n", "<C-j>", h.keys.vim_cmd_cb "wincmd j", { buffer = input_buf, })
-  vim.keymap.set("n", "<C-j>", h.keys.vim_cmd_cb "wincmd j", { buffer = results_buf, })
-  vim.keymap.set("n", "<C-k>", h.keys.vim_cmd_cb "wincmd k", { buffer = results_buf, })
-  vim.keymap.set("n", "<C-k>", h.keys.vim_cmd_cb "wincmd k", { buffer = input_buf, })
+  vim.keymap.set("n", "<C-j>", function() vim.cmd "wincmd j" end, { buffer = input_buf, })
+  vim.keymap.set("n", "<C-j>", function() vim.cmd "wincmd j" end, { buffer = results_buf, })
+  vim.keymap.set("n", "<C-k>", function() vim.cmd "wincmd k" end, { buffer = results_buf, })
+  vim.keymap.set("n", "<C-k>", function() vim.cmd "wincmd k" end, { buffer = input_buf, })
 
   vim.keymap.set({ "i", "n", }, "<C-p>", function()
     vim.api.nvim_set_current_win(results_win)
-    h.keys.send_keys("n", "k")
+    vim.cmd "normal! k"
     vim.api.nvim_set_current_win(input_win)
   end, { buffer = input_buf, })
 
