@@ -418,3 +418,33 @@ vim.keymap.set("n", "<leader>yw",
 
     vim.fn.setreg("+", stripped_filename)
   end, { desc = "Yank a file name starting with `wf_modules`", })
+
+local ff = require "ff"
+ff.setup {
+  fd_cmd = "fd --absolute-path --hidden --type f --exclude .git --exclude node_modules --exclude dist",
+}
+
+vim.keymap.set("n", "<leader>f", function()
+  if vim.bo.filetype == "minifiles" then
+    require "mini.files".close()
+  end
+
+  ff.find {
+    keymaps = {
+      n = {
+        ["<cr>"] = "select",
+        ["<c-n>"] = "next",
+        ["<c-p>"] = "prev",
+        ["<c-c>"] = "close",
+        ["<leader>q"] = "close",
+        ["<esc>"] = "close",
+      },
+      i = {
+        ["<cr>"] = "select",
+        ["<c-n>"] = "next",
+        ["<c-p>"] = "prev",
+        ["<c-c>"] = "close",
+      },
+    },
+  }
+end)
