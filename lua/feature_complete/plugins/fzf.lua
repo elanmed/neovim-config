@@ -424,6 +424,12 @@ ff.setup {
   fd_cmd = "fd --absolute-path --hidden --type f --exclude .git --exclude node_modules --exclude dist",
 }
 
+vim.api.nvim_set_hl(0, "FFPickerFuzzyHighlightChar", {
+  fg = require "feature_complete.plugins.colorscheme".yellow,
+  bold = true,
+})
+vim.api.nvim_set_hl(0, "FFPickerCursorLine", { link = "Visual", })
+
 vim.keymap.set("n", "<leader>f", function()
   if vim.bo.filetype == "minifiles" then
     require "mini.files".close()
