@@ -36,6 +36,9 @@ vim.keymap.set("n", "/", function()
           { win = "input", height = 1, border = "rounded", },
         },
       },
+      on_show = function()
+        vim.api.nvim_buf_set_var(vim.api.nvim_get_current_buf(), "minicompletion_disable", true)
+      end,
       on_close = function()
         -- vim.schedule(function()
         --   star_curr_word()

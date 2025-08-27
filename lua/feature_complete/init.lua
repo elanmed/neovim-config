@@ -28,9 +28,6 @@ bootstrap_paq {
   "echasnovski/mini.nvim",
   "tpope/vim-speeddating",
   "jxnblk/vim-mdx-js",
-  -- cmp
-  "saghen/blink.cmp",
-  "xzbdmw/colorful-menu.nvim",
   -- far
   "MagicDuck/grug-far.nvim",
   -- fzf
