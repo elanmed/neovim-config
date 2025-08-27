@@ -1,18 +1,18 @@
-# neovim config
+# `nvim` config
 
 - A minimalish config written in lua, uses:
   - [paq](https://github.com/savq/paq-nvim) as a package manager
-  - [lspconfig](https://github.com/neovim/nvim-lspconfig) for pre-built language server configs, homegrown bash script to install language servers
-  - [cmp](https://github.com/hrsh7th/nvim-cmp) for completions
-  - [treesitter](https://github.com/nvim-treesitter/nvim-treesitter) for syntax highlighting, fancy pair renaming
+  - [lspconfig](https://github.com/neovim/nvim-lspconfig) for pre-built language server configs
+    - Uses a small ruby script to install language servers
   - [flash](https://github.com/folke/flash.nvim) for a combo of [easymotion](https://github.com/easymotion/vim-easymotion) and [leap](https://github.com/ggandor/leap.nvim)
-  - [vim tmux navigator](https://github.com/christoomey/vim-tmux-navigator) for moving between vim and tmux panes
-  - [fzf-lua](https://github.com/ibhagwan/fzf-lua) as a primary picker, [snacks](https://github.com/folke/snacks.nvim) to cover some missing sources
+  - [fzf](https://github.com/junegunn/fzf/blob/master/README-VIM.md) as a primary picker
+    - Populated by custom lua scripts that are executed by `fzf` in headless `nvim` instances
+    - [rg-glob-builder](https://github.com/elanmed/rg-glob-builder.nvim) for searching with `rg`
+  - [ff](https://github.com/elanmed/ff.nvim) as a fuzzy file finder
   - [grug-far](https://github.com/MagicDuck/grug-far.nvim) for an interative global find and replace
-  - [bufferline](https://github.com/akinsho/bufferline.nvim) for buffer management
-  - [fugitive](https://github.com/tpope/vim-fugitive), [diffview](https://github.com/sindrets/diffview.nvim) and [gitsigns](https://github.com/lewis6991/gitsigns.nvim) for git integration
-  - [oil](https://github.com/stevearc/oil.nvim) for a better netrw
   - [wilder](https://github.com/gelguy/wilder.nvim) for a better wild menu
+  - [quickfix-preview](https://github.com/elanmed/quickfix-preview.nvim)
+  - Most of the [mini](https://github.com/echasnovski/mini.nvim) plugins
 
 ---
 
@@ -31,13 +31,9 @@
 │   ├── feature_complete
 │   │   ├── init.lua
 │   │   └── plugins
-│   │       ├── [plugin_name].lua
+│   │       └── [plugin_name].lua
 │   ├── shared
-│   │   ├── helpers.lua
-│   │   ├── options.lua
-│   │   ├── homegrown_plugins.lua
-│   │   ├── remaps.lua
-│   │   └── user_commands.lua
+│   │   └── ...
 ```
 
 To run the feature-complete config, use `nvim`
