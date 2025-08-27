@@ -442,7 +442,7 @@ vim.keymap.set("n", "<leader>f", function()
         ["<c-n>"] = "next",
         ["<c-p>"] = "prev",
         ["<c-c>"] = "close",
-        ["<leader>q"] = "close",
+        ["q"] = "close",
         ["<esc>"] = "close",
       },
       i = {
@@ -452,5 +452,9 @@ vim.keymap.set("n", "<leader>f", function()
         ["<c-c>"] = "close",
       },
     },
+    on_picker_open = function(opts)
+      vim.api.nvim_set_option_value("number", true, { win = opts.results_win, })
+      vim.api.nvim_set_option_value("scrolloff", 0, { win = opts.results_win, })
+    end,
   }
 end)
