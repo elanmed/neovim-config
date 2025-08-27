@@ -257,44 +257,6 @@ vim.keymap.set("n", "<leader>zy", function()
   vim.fn["fzf#run"](spec)
 end)
 
--- vim.keymap.set("n", "<leader>zy", function()
---   maybe_close_mini_files()
---
---   local get_smart_files_script = vim.fs.joinpath(
---     os.getenv "HOME",
---     "/.dotfiles/neovim/.config/nvim/fzf_scripts/get_smart_files.lua"
---   )
---   local source = table.concat({
---     "nvim",
---     "--headless",
---     "--noplugin",
---     "-l",
---     get_smart_files_script,
---     vim.v.servername,
---   }, " ")
---
---   local smart_fzy_opts = {
---     "--ghost", "Smart fzy",
---     "--ansi",
---     "--delimiter", "|",
---     "--disabled",
---     "--bind", ("start:reload:%s {q}"):format(source),
---     "--bind", ("change:reload:%s {q}"):format(source),
---   }
---
---   local spec = {
---     source = source,
---     options = extend(smart_fzy_opts, default_opts, single_select_opts),
---     window = without_preview_window_opts,
---     sink = function(entry)
---       local filename = vim.split(entry, "|")[2]
---       vim.cmd("e " .. filename)
---     end,
---   }
---
---   vim.fn["fzf#run"](spec)
--- end)
-
 vim.keymap.set("n", "<leader>zf", function()
   vim.cmd "cclose"
 
@@ -418,43 +380,3 @@ vim.keymap.set("n", "<leader>yw",
 
     vim.fn.setreg("+", stripped_filename)
   end, { desc = "Yank a file name starting with `wf_modules`", })
-
-local ff = require "ff"
-ff.setup {
-  fd_cmd = "fd --absolute-path --hidden --type f --exclude .git --exclude node_modules --exclude dist",
-}
-
-vim.api.nvim_set_hl(0, "FFPickerFuzzyHighlightChar", {
-  fg = require "feature_complete.plugins.colorscheme".yellow,
-  bold = true,
-})
-vim.api.nvim_set_hl(0, "FFPickerCursorLine", { link = "Visual", })
-
-vim.keymap.set("n", "<leader>f", function()
-  if vim.bo.filetype == "minifiles" then
-    require "mini.files".close()
-  end
-
-  ff.find {
-    keymaps = {
-      n = {
-        ["<cr>"] = "select",
-        ["<c-n>"] = "next",
-        ["<c-p>"] = "prev",
-        ["<c-c>"] = "close",
-        ["q"] = "close",
-        ["<esc>"] = "close",
-      },
-      i = {
-        ["<cr>"] = "select",
-        ["<c-n>"] = "next",
-        ["<c-p>"] = "prev",
-        ["<c-c>"] = "close",
-      },
-    },
-    on_picker_open = function(opts)
-      vim.api.nvim_set_option_value("number", true, { win = opts.results_win, })
-      vim.api.nvim_set_option_value("scrolloff", 0, { win = opts.results_win, })
-    end,
-  }
-end)
