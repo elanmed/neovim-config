@@ -1,5 +1,3 @@
-local h = require "helpers"
-
 vim.api.nvim_create_user_command("PrintHighlights", function()
   vim.cmd "redir! > highlights.txt | silent hi | redir END"
 end, {})
