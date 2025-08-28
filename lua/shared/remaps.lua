@@ -10,6 +10,7 @@ vim.keymap.set("n", "q:", function()
   h.notify.error "Use :q to quit or q? to open the command-line window instead!"
 end, { desc = "Prevent accidentally opening the command-line window", })
 vim.keymap.set("n", "<leader>h", ":help<space>", { desc = "Fuzzy helptags with wilder", })
+vim.keymap.set("n", "<leader>b", ":buffer<space>", { desc = "Fuzzy buffers with wilder", })
 
 vim.keymap.set("n", "G", "G" .. "zz")
 vim.keymap.set("n", "<bs>", function()

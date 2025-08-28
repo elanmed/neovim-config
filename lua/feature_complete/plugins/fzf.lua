@@ -56,25 +56,6 @@ local base_window_opts = {
 local without_preview_window_opts = vim.tbl_extend("force", base_window_opts, { height = 0.5, })
 local with_preview_window_opts = vim.tbl_extend("force", base_window_opts, { height = 1, })
 
-vim.keymap.set("n", "<leader>b", function()
-  local get_bufs_lua_script = vim.fs.joinpath(
-    os.getenv "HOME",
-    "/.dotfiles/neovim/.config/nvim/fzf_scripts/get_bufs.lua"
-  )
-  local source = table.concat({ "nvim", "--headless", "-l", get_bufs_lua_script, vim.v.servername, }, " ")
-  local buf_opts_tbl = {
-    "--ghost", "Buffers",
-  }
-
-  local spec = {
-    source = source,
-    options = extend(buf_opts_tbl, default_opts, single_select_opts),
-    window = without_preview_window_opts,
-    sink = "edit",
-  }
-  vim.fn["fzf#run"](spec)
-end)
-
 vim.keymap.set("n", "<leader>zm", function()
   maybe_close_mini_files()
 
