@@ -1,7 +1,6 @@
 local h = require "helpers"
-local mini_pairs = require "mini.pairs"
-mini_pairs.setup()
 local mini_cmp = require "mini.completion"
+require "nvim-autopairs".setup {}
 
 vim.keymap.set("i", "<C-n>", function()
   return vim.fn.pumvisible() == h.vimscript_true and "<C-n>" or nil
@@ -12,7 +11,7 @@ vim.keymap.set("i", "<CR>", function()
     if vim.fn.complete_info()["selected"] ~= -1 then
       return "\25"
     end
-    return mini_pairs.cr()
+    return "\r"
   end,
   { expr = true, }
 )

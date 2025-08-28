@@ -51,6 +51,7 @@ bootstrap_paq {
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate", },
   "RRethy/nvim-treesitter-endwise",
   "windwp/nvim-ts-autotag",
+  "windwp/nvim-autopairs",
   "JoosepAlviste/nvim-ts-context-commentstring",
   -- wild_menu
   "gelguy/wilder.nvim",
