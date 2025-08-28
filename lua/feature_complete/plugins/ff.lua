@@ -21,8 +21,11 @@ vim.keymap.set("n", "<leader>f", function()
         ["<c-n>"] = "next",
         ["<c-p>"] = "prev",
         ["<c-c>"] = "close",
-        ["q"] = "close",
         ["<esc>"] = "close",
+        ["<c-d>"] = "scroll_preview_down",
+        ["<c-u>"] = "scroll_preview_up",
+
+        ["q"] = "close",
       },
       i = {
         ["<cr>"] = "select",
@@ -30,6 +33,8 @@ vim.keymap.set("n", "<leader>f", function()
         ["<c-p>"] = "prev",
         ["<c-c>"] = "close",
         ["<esc>"] = "close",
+        ["<c-d>"] = "scroll_preview_down",
+        ["<c-u>"] = "scroll_preview_up",
       },
     },
     on_picker_open = function(opts)
