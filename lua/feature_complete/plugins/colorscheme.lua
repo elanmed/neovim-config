@@ -41,8 +41,8 @@ local M = {
   brown = colors.base0F,
 }
 
-vim.api.nvim_set_hl(0, "WilderAccent", { fg = M.orange, })
-vim.api.nvim_set_hl(0, "WildMenu", { fg = M.yellow, underline = true, bold = true, })
+vim.api.nvim_set_hl(0, "WilderAccent", { fg = M.yellow, bold = true, })
+vim.api.nvim_set_hl(0, "WildMenu", { fg = M.yellow, bold = true, })
 
 vim.api.nvim_set_hl(0, "FlashLabel", { link = "IncSearch", })
 vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal", })
