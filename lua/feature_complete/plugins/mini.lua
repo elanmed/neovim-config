@@ -3,7 +3,7 @@ require "mini.indentscope".setup()
 require "mini.icons".setup()
 require "mini.move".setup()
 require "mini.cursorword".setup()
-require "mini.tabline".setup()
+-- require "mini.tabline".setup()
 require "mini.splitjoin".setup()
 require "mini.operators".setup {
   evaluate = { prefix = "", },
