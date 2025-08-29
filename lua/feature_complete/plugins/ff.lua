@@ -40,7 +40,7 @@ vim.keymap.set("n", "<leader>f", function()
     on_picker_open = function(opts)
       vim.api.nvim_set_option_value("number", true, { win = opts.results_win, })
       vim.api.nvim_set_option_value("scrolloff", 0, { win = opts.results_win, })
-      vim.api.nvim_buf_set_var(opts.input_buf, "minicompletion_disable", true)
+      vim.b.completion = false
     end,
   }
 end)

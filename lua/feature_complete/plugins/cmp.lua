@@ -1,32 +1,82 @@
-local h = require "helpers"
-local mini_cmp = require "mini.completion"
 require "nvim-autopairs".setup {}
 
-vim.keymap.set("i", "<C-n>", function()
-  return vim.fn.pumvisible() == h.vimscript_true and "<C-n>" or nil
-end, { expr = true, })
+local colorful_menu = require "colorful-menu"
+colorful_menu.setup {}
 
-vim.keymap.set("i", "<CR>", function()
-    -- :h MiniCompletion
-    if vim.fn.complete_info()["selected"] ~= -1 then
-      return "\25"
-    end
-    return "\r"
-  end,
-  { expr = true, }
-)
+local blink = require "blink.cmp"
+local blink_types = require "blink.cmp.types"
 
-mini_cmp.setup {
-  -- delay = { completion = 10 ^ 7, },
-  lsp_completion = {
-    process_items = function(items, base)
-      return mini_cmp.default_process_items(items, base, { filtersort = "fuzzy", kind_priority = { Snippet = -1, }, })
+vim.keymap.set("i", "<C-n>", "<nop>")
+blink.setup {
+  keymap = {
+    preset = "none",
+    ["<C-n>"] = { "show", "select_next", },
+    ["<Cr>"] = { "accept", "fallback", },
+    ["<C-y>"] = { "accept", "fallback", },
+    ["<C-c>"] = { "cancel", "fallback", },
+    ["<C-p>"] = { "select_prev", "fallback", },
+    ["<Down>"] = { "select_next", "fallback", },
+    ["<Up>"] = { "select_prev", "fallback", },
+    ["<C-d>"] = { "scroll_documentation_down", "fallback", },
+    ["<C-u>"] = { "scroll_documentation_up", "fallback", },
+  },
+  completion = {
+    documentation = { window = { border = "rounded", }, auto_show = true, auto_show_delay_ms = 0, },
+    list = { selection = { preselect = false, auto_insert = true, }, },
+    menu = {
+      draw = {
+        -- https://github.com/xzbdmw/colorful-menu.nvim#use-it-in-blinkcmp
+        columns = { { "kind_icon", }, { "label", gap = 1, }, },
+        components = {
+          label = {
+            text = function(ctx)
+              return colorful_menu.blink_components_text(ctx)
+            end,
+            highlight = function(ctx)
+              return colorful_menu.blink_components_highlight(ctx)
+            end,
+          },
+        },
+      },
+    },
+  },
+  cmdline = { sources = { enabled = false, }, },
+  sources = {
+    default = { "buffer", "lsp", "path", },
+    -- https://cmp.saghen.dev/configuration/snippets.html#disable-all-snippets
+    transform_items = function(_, items)
+      return vim.tbl_filter(function(item)
+        return item.kind ~= blink_types.CompletionItemKind.Snippet
+      end, items)
     end,
+    providers = {
+      -- https://cmp.saghen.dev/recipes.html#exclude-keywords-constants-from-autocomplete
+      lsp = {
+        name = "LSP",
+        module = "blink.cmp.sources.lsp",
+        transform_items = function(_, items)
+          return vim.tbl_filter(function(item)
+            return item.kind ~= blink_types.CompletionItemKind.Keyword
+          end, items)
+        end,
+      },
+      -- https://cmp.saghen.dev/recipes.html#buffer-completion-from-all-open-buffers
+      buffer = {
+        opts = {
+          get_bufnrs = function()
+            return vim.tbl_filter(function(bufnr)
+              -- :h buftype
+              return vim.bo[bufnr].buftype == ""
+            end, vim.api.nvim_list_bufs())
+          end,
+        },
+      },
+    },
   },
-  mappings = {
-    force_twostep = "<C-x>",
-    force_fallback = "",
+  signature = {
+    enabled = true,
+    window = { show_documentation = false, border = "rounded", },
   },
+  -- fuzzy = { prebuilt_binaries = { force_version = "v1.3.1", }, },
+  fuzzy = { implementation = "lua", },
 }
-
-vim.opt.completeopt = "menuone,noselect,fuzzy"

@@ -25,9 +25,12 @@ end
 bootstrap_paq {
   "mfussenegger/nvim-jdtls",
   "savq/paq-nvim",
-  "echasnovski/mini.nvim",
+  "nvim-mini/mini.nvim",
   "tpope/vim-speeddating",
   "jxnblk/vim-mdx-js",
+  -- cmp
+  "Saghen/blink.cmp",
+  "xzbdmw/colorful-menu.nvim",
   -- far
   "MagicDuck/grug-far.nvim",
   -- fzf
