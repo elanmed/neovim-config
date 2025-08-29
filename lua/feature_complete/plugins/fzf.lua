@@ -27,7 +27,6 @@ local default_opts = {
   "--preview-window", "up:40%",
   "--bind", "ctrl-d:preview-page-down",
   "--bind", "ctrl-u:preview-page-up",
-  "--layout", "reverse",
 }
 
 local multi_select_opts = {
