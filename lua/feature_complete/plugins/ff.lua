@@ -44,3 +44,16 @@ vim.keymap.set("n", "<leader>f", function()
     end,
   }
 end)
+
+vim.api.nvim_create_autocmd("User", {
+  pattern = {
+    "MiniFilesActionCreate",
+    "MiniFilesActionDelete",
+    "MiniFilesActionRename",
+    "MiniFilesActionCopy",
+    "MiniFilesActionMove",
+  },
+  callback = function()
+    ff.refresh_fd_cache()
+  end,
+})
