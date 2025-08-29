@@ -59,6 +59,7 @@ bootstrap_paq {
   -- wild_menu
   "gelguy/wilder.nvim",
   "romgrk/fzy-lua-native",
+  "folke/lazydev.nvim",
 }
 
 h.require_dir "feature_complete/plugins"

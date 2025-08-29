@@ -1,5 +1,6 @@
-local snacks = require "snacks"
+require "lazydev".setup()
 
+local snacks = require "snacks"
 snacks.setup {
   explorer = { enabled = true, replace_netrw = false, },
   bigfile = {},
@@ -36,14 +37,6 @@ vim.keymap.set("n", "/", function()
           { win = "input", height = 1, border = "rounded", },
         },
       },
-      on_show = function()
-        vim.api.nvim_buf_set_var(vim.api.nvim_get_current_buf(), "minicompletion_disable", true)
-      end,
-      on_close = function()
-        -- vim.schedule(function()
-        --   star_curr_word()
-        -- end)
-      end,
     }
   end,
   { desc = "Search in the current buffer with snacks", })
