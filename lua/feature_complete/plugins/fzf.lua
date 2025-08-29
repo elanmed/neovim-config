@@ -50,10 +50,10 @@ local h = require "helpers"
 local grug = require "grug-far"
 local mini_files = require "mini.files"
 
--- local guicursor = vim.opt.guicursor:get()
--- -- :h cursor-blinking
--- table.insert(guicursor, "a:blinkon0")
--- vim.opt.guicursor = guicursor
+local guicursor = vim.opt.guicursor:get()
+-- :h cursor-blinking
+table.insert(guicursor, "a:blinkon0")
+vim.opt.guicursor = guicursor
 
 local function extend(...)
   local result = {}
