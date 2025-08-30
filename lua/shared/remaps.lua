@@ -6,13 +6,12 @@ vim.keymap.set("i", "<C-t>", "<C-o>:Snippet<space>")
 vim.keymap.set({ "n", "v", }, "<C-t>", function()
   h.notify.error "snippets only supported in insert mode!"
 end)
-vim.keymap.set("n", "q:", function()
-  h.notify.error "Use :q to quit or q? to open the command-line window instead!"
-end, { desc = "Prevent accidentally opening the command-line window", })
 vim.keymap.set("n", "<leader>h", ":help<space>", { desc = "Fuzzy helptags with wilder", })
 vim.keymap.set("n", "<leader>b", ":buffer<space>", { desc = "Fuzzy buffers with wilder", })
 
 vim.keymap.set("n", "G", "G" .. "zz")
+vim.keymap.set("n", "<C-o>", "<C-o>" .. "zz")
+vim.keymap.set("n", "<C-i>", "<C-i>" .. "zz")
 vim.keymap.set("n", "<bs>", function()
   if vim.bo.readonly then
     h.notify.error "Buffer is readonly, aborting"
@@ -166,15 +165,13 @@ vim.keymap.set("n", "z?", function()
   h.notify.doing "common fold commands: z{t,T,c,C,o,O,R(open all folds),M(close all folds)}"
 end, { desc = "Toggle fold", })
 
-vim.keymap.set("n", "q", "<nop>", { desc = "Avoid accidentally recording a macro", })
-vim.keymap.set("n", "<leader>.r", function()
+vim.keymap.set("n", "q", function()
   if vim.fn.reg_recording() == "" then
     return "qq"
   elseif vim.fn.reg_recording() == "q" then
     return "q"
   end
-end, { expr = true, desc = "Record a macro", })
-vim.keymap.set("n", "<leader>.e", "@Q", { desc = "Execute a macro", })
+end, { expr = true, nowait = true, desc = "Record a macro", })
 vim.keymap.set("n", "<leader>V", "G" .. "V" .. "gg", { desc = "Execute a macro", })
 vim.keymap.set("n", "*", function()
   local word = vim.fn.expand "<cword>"
@@ -182,9 +179,9 @@ vim.keymap.set("n", "*", function()
   vim.cmd([[let @/ = '\<]] .. word .. [[\>']])
   vim.api.nvim_set_option_value("hlsearch", true, {})
 end, { silent = true, desc = "*, but stay on the current search result", })
-vim.keymap.set("n", "<C-h>", "<C-w>h")
-vim.keymap.set("n", "<C-l>", "<C-w>l")
 
+vim.keymap.set("n", "<C-h>", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<C-l>", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>/", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>'", "<nop>", { desc = "TODO find a remap", })
