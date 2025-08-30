@@ -37,7 +37,7 @@ vim.keymap.set("n", "<leader>cc", function()
   vim.cmd "pclose"
   vim.cmd "cclose"
 end)
-vim.keymap.set("n", "/c", "/\\C<left><left>", { desc = "/ case sensitive", })
+vim.keymap.set("n", "g/c", "/\\C<left><left>", { desc = "/ case sensitive", })
 vim.keymap.set("n", "g/w", "/\\<\\><left><left>", { desc = "/ word sensitive", })
 vim.keymap.set("n", "g//", "/\\<\\>\\C<left><left><left><left>", { desc = "/ case and word sensitive", })
 vim.keymap.set("n", "g/v", "/\\V", { desc = "/ without regex", })
