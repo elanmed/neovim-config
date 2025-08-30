@@ -1,5 +1,5 @@
 --- @class FzfOpts
---- @field source string
+--- @field source string|table
 --- @field options? table
 --- @field sink? fun(entry: string)
 --- @field sinklist? fun(entry:string[])
@@ -8,6 +8,7 @@
 --- @param opts FzfOpts
 local function fzf(opts)
   opts.options = opts.options or {}
+
 
   local tempname = vim.fn.tempname()
   vim.fn.writefile({}, tempname)
@@ -27,7 +28,16 @@ local function fzf(opts)
     border = "rounded",
     title = "FZF term",
   })
-  local cmd = ("%s | fzf %s > %s"):format(opts.source, table.concat(opts.options, " "), tempname)
+
+  local source = (function()
+    if type(opts.source) == "string" then
+      return opts.source
+    else
+      return ([[echo '%s']]):format(table.concat(opts.source, "\n"))
+    end
+  end)()
+
+  local cmd = ("%s | fzf %s > %s"):format(source, table.concat(opts.options, " "), tempname)
   vim.fn.jobstart(cmd, {
     term = true,
     on_exit = function()
@@ -45,6 +55,13 @@ local function fzf(opts)
   })
   vim.cmd "startinsert"
 end
+
+vim.keymap.set("n", "<leader>/", function()
+  fzf {
+    source = { "one", "two", "three", },
+    height = "full",
+  }
+end)
 
 local h = require "helpers"
 local grug = require "grug-far"
@@ -127,10 +144,20 @@ end)
 vim.keymap.set("n", "<leader>z;", function()
   maybe_close_mini_files()
 
-  local source = get_fzf_script "get_cmd_history"
   local cmd_history_opts_tbl = {
     [[--ghost='Command history']],
   }
+
+  local source = {}
+  local num_cmd_history = vim.fn.histnr "cmd"
+  for i = 1, math.min(num_cmd_history, 15) do
+    local item = vim.fn.histget("cmd", i * -1)
+    if item == "" then goto continue end
+    table.insert(source, item)
+
+    ::continue::
+  end
+
   fzf {
     source = source,
     options = extend(cmd_history_opts_tbl, default_opts, single_select_opts),
