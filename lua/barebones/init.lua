@@ -24,12 +24,11 @@ vim.opt.path:append "**" -- search in subdirectories
 vim.keymap.set("n", "<leader>a", ":grep<space>")
 vim.keymap.set("n", "<leader>zm", h.keys.vim_cmd_cb "marks ABCDEFGHIJKLMNOPQRSTUVWXYZ")
 vim.keymap.set("n", "<leader>z;", h.keys.vim_cmd_cb "history")
-vim.keymap.set("n", "<leader>b", ":buffer<space>")
 vim.keymap.set("n", "<C-n>", h.keys.vim_cmd_cb "cnext")
 vim.keymap.set("n", "<C-p>", h.keys.vim_cmd_cb "cprev")
 
 vim.keymap.set("c", "/", function()
-  if vim.fn.wildmenumode() == 1 then
+  if vim.fn.wildmenumode() == h.vimscript_true then
     return "<C-y>"
   else
     return "/"

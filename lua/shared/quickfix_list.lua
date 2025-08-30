@@ -1,8 +1,8 @@
 local h = require "helpers"
 
---- @param bufname string
-local function shorten_bufname(bufname)
-  return vim.fs.basename(vim.fs.joinpath(vim.fs.dirname(bufname), vim.fs.basename(bufname)))
+--- @param bufnr number
+local function shorten_bufname(bufnr)
+  return vim.fs.basename(vim.fn.bufname(bufnr))
 end
 
 vim.opt.quickfixtextfunc = "v:lua.GetQuickfixTextFunc"
@@ -39,14 +39,14 @@ function _G.GetQuickfixTextFunc()
 
   local items = {}
   for _, item in pairs(qf_list) do
-    local bufname = shorten_bufname(vim.fn.bufname(item.bufnr))
+    local bufname = shorten_bufname(item.bufnr)
     longest_bufname_len = math.max(#bufname, longest_bufname_len)
     longest_row_len = math.max(#tostring(item.lnum), longest_row_len)
     longest_col_len = math.max(#tostring(item.col), longest_col_len)
   end
 
   for index, item in pairs(qf_list) do
-    local bufname = shorten_bufname(vim.fn.bufname(item.bufnr))
+    local bufname = shorten_bufname(item.bufnr)
     local buffer_padding_right = longest_bufname_len - #bufname
     local formatted_item =
         bufname ..

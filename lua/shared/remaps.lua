@@ -37,7 +37,7 @@ vim.keymap.set("n", "<leader>cc", function()
   vim.cmd "pclose"
   vim.cmd "cclose"
 end)
-vim.keymap.set("n", "g/c", "/\\C<left><left>", { desc = "/ case sensitive", })
+vim.keymap.set("n", "/c", "/\\C<left><left>", { desc = "/ case sensitive", })
 vim.keymap.set("n", "g/w", "/\\<\\><left><left>", { desc = "/ word sensitive", })
 vim.keymap.set("n", "g//", "/\\<\\>\\C<left><left><left><left>", { desc = "/ case and word sensitive", })
 vim.keymap.set("n", "g/v", "/\\V", { desc = "/ without regex", })
@@ -107,16 +107,14 @@ vim.keymap.set("n", "<leader>ya", function()
   vim.fn.setreg("+", vim.fn.expand "%:p")
 end, { desc = "Yank the Absolute path of the current buffer", })
 
-vim.keymap.set("n", "<leader>yr",
-  function()
-    vim.fn.setreg("+", vim.fn.expand "%:~:.")
-  end, { desc = "Yank the Relative path of the current buffer", })
+vim.keymap.set("n", "<leader>yr", function()
+  vim.fn.setreg("+", vim.fn.expand "%:~:.")
+end, { desc = "Yank the Relative path of the current buffer", })
 
-vim.keymap.set("n", "<leader>yq",
-  function()
-    vim.fn.setqflist(vim.fn.getqflist())
-    h.notify.doing "Created a new list!"
-  end, { desc = "Duplicate the current quickfix list", })
+vim.keymap.set("n", "<leader>yq", function()
+  vim.fn.setqflist(vim.fn.getqflist())
+  h.notify.doing "Created a new list!"
+end, { desc = "Duplicate the current quickfix list", })
 
 vim.keymap.set("n", "<leader>ua", h.keys.vim_cmd_cb "silent! bufdo bdelete", { desc = "Close all buffers", })
 vim.keymap.set("n", "<leader>uo", function()

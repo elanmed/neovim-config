@@ -46,8 +46,7 @@ vim.keymap.set("n", "<leader>k", function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     -- :h floating-windows
     if vim.api.nvim_win_get_config(win).relative == "win" then
-      local force = false
-      vim.api.nvim_win_close(win, force)
+      vim.api.nvim_win_close(win, false)
     end
   end
 end)
