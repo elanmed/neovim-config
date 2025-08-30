@@ -5,12 +5,12 @@
 --- @field sinklist? fun(entry:string[])
 --- @field height "full"|"half"
 
-local tempname = vim.fn.tempname()
 
 --- @param opts FzfOpts
 local function fzf(opts)
   opts.options = opts.options or {}
 
+  local tempname = vim.fn.tempname()
   vim.fn.writefile({}, tempname)
 
   local editor_height = vim.o.lines - 1
@@ -24,11 +24,11 @@ local function fzf(opts)
     width = vim.o.columns,
     height = opts.height == "full"
         and editor_height - border_height
-        or math.floor(editor_height / 2) - border_height,
+        or math.floor(editor_height / 2 - border_height),
     border = "rounded",
     title = "FZF term",
   })
-  local cmd = ("%s | fzf %s > %s"):format(opts.source, table.concat(opts.options, " "), vim.fn.shellescape(tempname))
+  local cmd = ("%s | fzf %s > %s"):format(opts.source, table.concat(opts.options, " "), tempname)
   vim.fn.jobstart(cmd, {
     term = true,
     on_exit = function()
@@ -41,6 +41,7 @@ local function fzf(opts)
       elseif opts.sinklist then
         opts.sink(temp_content)
       end
+      vim.fn.delete(tempname)
     end,
   })
   vim.cmd "startinsert"
