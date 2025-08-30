@@ -96,10 +96,7 @@ local qf_preview_opts = {
 
 --- @param script_name "get_marks"|"delete_mark"|"get_cmd_history"|"remove_frecency_file"|"get_qf_list"|"get_qf_stack"
 local function get_fzf_script(script_name)
-  local lua_script = vim.fs.joinpath(
-    os.getenv "HOME",
-    ("/.dotfiles/neovim/.config/nvim/fzf_scripts/%s.lua"):format(script_name)
-  )
+  local lua_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "%s.lua"):format(script_name)
   return table.concat({ "nvim", "--headless", "-l", lua_script, vim.v.servername, }, " ")
 end
 
@@ -187,10 +184,7 @@ local function rg_with_globs(default_query)
   local header =
   [['-e by *.[ext] | -f by file | -d by **/[dir]/** | -c by case sensitive | -nc by case insensitive | -w by whole word | -nw by partial word']]
 
-  local rg_with_globs_script = vim.fs.joinpath(
-    os.getenv "HOME",
-    "/.dotfiles/neovim/.config/nvim/fzf_scripts/rg-with-globs.sh"
-  )
+  local rg_with_globs_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "rg-with-globs.sh")
   local rg_options = {
     "--query", default_query,
     "--disabled",
@@ -224,8 +218,9 @@ vim.keymap.set("n", "<leader>zy", function()
   maybe_close_mini_files()
 
   local get_frecency_and_fd_files_script = vim.fs.joinpath(
-    os.getenv "HOME",
-    "/.dotfiles/neovim/.config/nvim/fzf_scripts/get_frecency_and_fd_files.lua"
+    vim.fn.stdpath "config",
+    "fzf_scripts",
+    "get_frecency_and_fd_files.lua"
   )
   local sorted_files_path = require "fzf-lua-frecency.helpers".get_sorted_files_path()
   local source = table.concat({
@@ -288,10 +283,7 @@ end)
 vim.keymap.set("n", "<leader>zr", function()
   maybe_close_mini_files()
 
-  local prev_rg_query_file = vim.fs.joinpath(
-    os.getenv "HOME",
-    ".dotfiles/neovim/.config/nvim/fzf_scripts/prev-rg-query.txt"
-  )
+  local prev_rg_query_file = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "prev-rg-query.txt")
   --- @type table
   local prev_rg_query = vim.fn.readfile(prev_rg_query_file)
   rg_with_globs(prev_rg_query[1])
