@@ -13,17 +13,6 @@ keys.vim_cmd_cb = function(vim_cmd)
   return function() vim.cmd(vim_cmd) end
 end
 
---- @param mode 'n' | 'v' | 'i'
---- @param keys_to_send string
-keys.send_keys = function(mode, keys_to_send)
-  local modeToExpanded = {
-    ["n"] = "normal",
-    ["i"] = "insert",
-    ["v"] = "visual",
-  }
-  vim.cmd(("%s! %s"):format(modeToExpanded[mode], keys_to_send))
-end
-
 --- @param table table
 --- @param target_key any
 --- @return boolean

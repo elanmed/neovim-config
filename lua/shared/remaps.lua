@@ -26,7 +26,7 @@ vim.keymap.set("n", "<leader>w", function()
     return
   end
   local view = vim.fn.winsaveview()
-  h.keys.send_keys("n", "gg=G")
+  vim.cmd "normal! gg=G"
   vim.fn.winrestview(view)
   vim.cmd "write"
 end, { desc = "Save", })
@@ -147,7 +147,7 @@ local function next_closed_fold(direction)
   local is_open = true
 
   while curr_line_num ~= prev_line_num and is_open do
-    h.keys.send_keys("n", "z" .. direction)
+    vim.cmd("normal! z" .. direction)
     prev_line_num = curr_line_num
     curr_line_num = vim.fn.line "."
     is_open = vim.fn.foldclosed(curr_line_num) < 0

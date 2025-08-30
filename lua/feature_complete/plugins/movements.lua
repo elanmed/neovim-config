@@ -1,4 +1,3 @@
-local h = require "helpers"
 local flash = require "flash"
 local marks = require "marks"
 
@@ -42,14 +41,14 @@ require "ft-highlight".setup()
 
 vim.keymap.set({ "n", "v", }, "<C-u>", function()
   if vim.fn.line "." == vim.fn.line "$" then
-    h.keys.send_keys("n", "M")
+    vim.cmd "normal! M"
   else
     neoscroll.ctrl_u { duration = scroll_duration, }
   end
 end)
 vim.keymap.set({ "n", "v", }, "<C-d>", function()
   if vim.fn.line "." == 1 then
-    h.keys.send_keys("n", "M")
+    vim.cmd "normal! M"
   else
     neoscroll.ctrl_d { duration = scroll_duration, }
   end

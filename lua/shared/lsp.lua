@@ -29,7 +29,7 @@ local function toggle_virtual_lines()
   end
 end
 
-vim.keymap.set({ "i", "n", "v", }, "<C-g>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
+vim.keymap.set({ "i", "n", }, "<C-g>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
 vim.keymap.set("i", "<C-s>",
   function()
     vim.lsp.buf.signature_help { border = "rounded", }
