@@ -5,7 +5,6 @@
 --- @field sinklist? fun(entry:string[])
 --- @field height "full"|"half"
 
-
 --- @param opts FzfOpts
 local function fzf(opts)
   opts.options = opts.options or {}
@@ -39,7 +38,7 @@ local function fzf(opts)
       if opts.sink then
         opts.sink(temp_content[1])
       elseif opts.sinklist then
-        opts.sink(temp_content)
+        opts.sinklist(temp_content)
       end
       vim.fn.delete(tempname)
     end,
@@ -98,7 +97,7 @@ local qf_preview_opts = {
 --- @param script_name "get_marks"|"delete_mark"|"get_cmd_history"|"remove_frecency_file"|"get_qf_list"|"get_qf_stack"
 local function get_fzf_script(script_name)
   local lua_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "%s.lua"):format(script_name)
-  return table.concat({ "nvim", "--headless", "-l", lua_script, vim.v.servername, }, " ")
+  return table.concat({ "nvim", "-u", "NONE", "--headless", "-l", lua_script, vim.v.servername, }, " ")
 end
 
 vim.keymap.set("n", "<leader>zm", function()
@@ -224,10 +223,7 @@ vim.keymap.set("n", "<leader>zy", function()
     "get_frecency_and_fd_files.lua"
   )
   local sorted_files_path = require "fzf-lua-frecency.helpers".get_sorted_files_path()
-  local source = table.concat({
-    "nvim",
-    "--headless",
-    "-l",
+  local source = table.concat({ "nvim", "-u", "NONE", "--headless", "-l",
     get_frecency_and_fd_files_script,
     sorted_files_path,
     vim.fn.getcwd(),
