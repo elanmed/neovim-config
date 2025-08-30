@@ -250,6 +250,8 @@ vim.keymap.set("n", "<leader>zy", function()
     height = "half",
     sink = function(entry)
       local filename = vim.split(entry, "|")[2]
+      local abs_filename = vim.fs.joinpath(vim.fn.getcwd(), filename)
+      require "fzf-lua-frecency.algo".update_file_score(abs_filename, { update_type = "increase", })
       vim.cmd("e " .. filename)
     end,
   }
