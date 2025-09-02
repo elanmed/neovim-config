@@ -9,7 +9,6 @@
 local function fzf(opts)
   opts.options = opts.options or {}
 
-
   local tempname = vim.fn.tempname()
   vim.fn.writefile({}, tempname)
 
@@ -55,13 +54,6 @@ local function fzf(opts)
   })
   vim.cmd "startinsert"
 end
-
-vim.keymap.set("n", "<leader>/", function()
-  fzf {
-    source = { "one", "two", "three", },
-    height = "full",
-  }
-end)
 
 local h = require "helpers"
 local grug = require "grug-far"
