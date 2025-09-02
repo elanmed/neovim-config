@@ -49,7 +49,7 @@ for frecency_file in io.lines(frecency_files_path) do
   seen[frecency_file] = true
 
   local formatted = format_filename(frecency_file)
-  h.print_with_flush(formatted)
+  io.write(formatted .. "\n")
 
   ::continue::
 end
@@ -62,7 +62,7 @@ if handle then
     seen[fd_file] = true
 
     local formatted = format_filename(fd_file)
-    h.print_with_flush(formatted)
+    io.write(formatted .. "\n")
 
     ::continue::
   end

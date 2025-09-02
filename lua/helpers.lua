@@ -103,12 +103,6 @@ local require_dir = function(dir)
   end
 end
 
-local function print_with_flush(str)
-  io.write(str)
-  io.write "\n"
-  io.flush()
-end
-
 return {
   keys = keys,
   tbl = tbl,

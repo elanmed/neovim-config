@@ -1,7 +1,6 @@
 assert(arg[1], "Missing arg1: `servername`")
 local servername = arg[1]
 
-local h = require "helpers"
 local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
 
 --- @class MarkListEntry
@@ -19,11 +18,11 @@ local num_marks = 0
 for _, mark_entry in pairs(mark_list) do
   local name = mark_entry.mark:sub(2, 2)
   if not global_marks:find(name) then goto continue end
-  h.print_with_flush(("%s|%s"):format(name, mark_entry.file))
+  io.write(("%s|%s"):format(name, mark_entry.file) .. "\n")
   num_marks = num_marks + 1
   ::continue::
 end
 
 if num_marks == 0 then
-  h.print_with_flush "No marks!"
+  io.write("No marks!" .. "\n")
 end

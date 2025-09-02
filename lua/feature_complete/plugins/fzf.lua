@@ -24,7 +24,7 @@ local function fzf(opts)
     width = vim.o.columns,
     height = opts.height == "full"
         and editor_height - border_height
-        or math.floor(editor_height / 2 - border_height),
+        or math.floor(editor_height * 0.66 - border_height),
     border = "rounded",
     title = "FZF term",
   })
@@ -114,7 +114,9 @@ local qf_preview_opts = {
 --- @param script_name "get_marks"|"delete_mark"|"get_cmd_history"|"remove_frecency_file"|"get_qf_list"|"get_qf_stack"
 local function get_fzf_script(script_name)
   local lua_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "%s.lua"):format(script_name)
-  return table.concat({ "nvim", "-u", "NONE", "--headless", "-l", lua_script, vim.v.servername, }, " ")
+  return table.concat(
+    { "nvim", "--clean", "-u", "NONE", "--headless", "-l", lua_script, vim.v.servername, },
+    " ")
 end
 
 vim.keymap.set("n", "<leader>zm", function()
@@ -256,7 +258,7 @@ vim.keymap.set("n", "<leader>zy", function()
     vim.fn.getcwd(),
   }, " ")
 
-  local remove_frecency_file_source = get_fzf_script "remove_frecency_file"
+  local remove_frecency_file_source = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "remove_frecency_file.lua")
   local frecency_and_fd_opts = {
     [[--ghost='Frecency']],
     [[--delimiter='|']],

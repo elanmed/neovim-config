@@ -1,14 +1,13 @@
 assert(arg[1], "Missing arg1: `servername`")
 local servername = arg[1]
 
-local h = require "helpers"
 local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
 --- @type table | nil
 local qf_list = vim.rpcrequest(chan, "nvim_call_function", "getqflist", { { items = 0, }, })
 if qf_list == nil then return vim.fn.chanclose(chan) end
 
 if #qf_list.items == 0 then
-  h.print_with_flush "Quickfix list is empty!"
+  io.write("Quickfix list is empty!" .. "\n")
   vim.fn.chanclose(chan)
   return
 end
@@ -29,7 +28,7 @@ for _, entry in pairs(qf_list.items) do
   end
 
   local source_entry = ("%s|%s|%s|%s"):format(formatted_filename, entry.lnum, entry.col, entry.text)
-  h.print_with_flush(source_entry)
+  io.write(source_entry .. "\n")
 
   ::continue::
 end
