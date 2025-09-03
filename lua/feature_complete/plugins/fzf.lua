@@ -211,6 +211,7 @@ local function rg_with_globs(default_query)
     "--disabled",
     [[--ghost='Rg']],
     "--header", header,
+    "--bind", ("'start:reload:%s {q} || true'"):format(rg_with_globs_script),
     "--bind", ("'change:reload:%s {q} || true'"):format(rg_with_globs_script),
   }
 
