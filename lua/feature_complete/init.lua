@@ -37,7 +37,7 @@ bootstrap_paq {
   "ibhagwan/fzf-lua",
   "elanmed/rg-glob-builder.nvim",
   "elanmed/fzf-lua-frecency.nvim",
-  -- "elanmed/ff.nvim",
+  "elanmed/ff.nvim",
   -- lsp
   "neovim/nvim-lspconfig",
   "stevearc/conform.nvim",
