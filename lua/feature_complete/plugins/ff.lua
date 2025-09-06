@@ -50,6 +50,6 @@ vim.api.nvim_create_autocmd("User", {
     "MiniFilesActionMove",
   },
   callback = function()
-    ff.refresh_fd_cache()
+    ff.refresh_files_cache()
   end,
 })
