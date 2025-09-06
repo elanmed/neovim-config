@@ -1,5 +1,4 @@
 local flash = require "flash"
-local marks = require "marks"
 
 local function get_bottom_half_start_line()
   local height = vim.api.nvim_win_get_height(0)
@@ -85,7 +84,7 @@ vim.keymap.set("n", "<leader>s", function()
   }
 end)
 
-marks.setup {
+require "marks".setup {
   excluded_filetypes = { "oil", },
   default_mappings = false,
   mappings = {

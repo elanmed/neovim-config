@@ -23,7 +23,7 @@ local function fzf(opts)
     width = vim.o.columns,
     height = opts.height == "full"
         and editor_height - border_height
-        or math.floor(editor_height * 0.66 - border_height),
+        or math.floor(editor_height * 0.5 - border_height),
     border = "rounded",
     title = "FZF term",
   })
@@ -119,7 +119,7 @@ vim.keymap.set("n", "<leader>zm", function()
 
   local marks_opts_tbl = {
     [[--delimiter='|']],
-    [[--bind]], ([['ctrl-x:execute(%s {1})+reload(%s)']]):format(delete_mark_source, source),
+    ([[--bind='ctrl-x:execute(%s {1})+reload(%s)']]):format(delete_mark_source, source),
     [[--ghost='Marks']],
   }
 
@@ -128,7 +128,6 @@ vim.keymap.set("n", "<leader>zm", function()
     source = source,
     options = extend(marks_opts_tbl, default_opts, single_select_opts),
     sink = function(entry)
-      print(entry)
       local filename = vim.split(entry, "|")[2]
       vim.cmd("e " .. filename)
     end,
@@ -255,7 +254,7 @@ vim.keymap.set("n", "<leader>zy", function()
   local frecency_and_fd_opts = {
     [[--ghost='Frecency']],
     [[--delimiter='|']],
-    "--bind", ([['ctrl-x:execute(%s {2})+reload(%s)']]):format(remove_frecency_file_source, source),
+    ([[--bind='ctrl-x:execute(%s {2})+reload(%s)']]):format(remove_frecency_file_source, source),
   }
 
   fzf {
