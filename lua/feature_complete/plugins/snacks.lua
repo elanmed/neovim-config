@@ -1,5 +1,3 @@
-require "lazydev".setup()
-
 local snacks = require "snacks"
 snacks.setup {
   explorer = { enabled = true, replace_netrw = false, },
