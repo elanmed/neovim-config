@@ -16,28 +16,28 @@ vim.keymap.set("n", "<leader>f", function()
 
   ff.find {
     keymaps = {
-      n = {
-        ["<cr>"] = "select",
-        ["<c-n>"] = "next",
-        ["<c-p>"] = "prev",
-        ["<c-c>"] = "close",
-        ["<esc>"] = "close",
-
-        ["q"] = "close",
-      },
       i = {
         ["<cr>"] = "select",
         ["<c-n>"] = "next",
         ["<c-p>"] = "prev",
         ["<c-c>"] = "close",
         ["<esc>"] = "close",
+        ["<tab>"] = "preview-toggle",
+        ["<C-d>"] = "preview-scroll-down",
+        ["<C-u>"] = "preview-scroll-up",
       },
     },
-    on_picker_open = function(opts)
-      vim.api.nvim_set_option_value("number", true, { win = opts.results_win, })
-      vim.api.nvim_set_option_value("scrolloff", 0, { win = opts.results_win, })
+    on_picker_open = function()
       vim.b.completion = false
     end,
+    results_win_opts = {
+      number = true,
+      scrolloff = 0,
+    },
+    preview_win_opts = {
+      number = true,
+      scrolloff = 0,
+    },
   }
 end)
 
