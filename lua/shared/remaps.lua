@@ -180,9 +180,22 @@ vim.keymap.set("n", "*", function()
   vim.api.nvim_set_option_value("hlsearch", true, {})
 end, { silent = true, desc = "*, but stay on the current search result", })
 
+-- https://yobibyte.github.io/vim.html
+-- TODO find a better remap
+vim.keymap.set("n", "<leader>j", function()
+  vim.ui.input({ prompt = "$ ", }, function(cmd)
+    if cmd and cmd ~= "" then
+      vim.cmd "vnew"
+      vim.bo.buftype = "nofile"
+      vim.bo.bufhidden = "wipe"
+      vim.bo.buflisted = false
+      vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.fn.systemlist(cmd))
+    end
+  end)
+end)
+
 vim.keymap.set("n", "<C-h>", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<C-l>", "<nop>", { desc = "TODO find a remap", })
-vim.keymap.set("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>/", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>'", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>,", "<nop>", { desc = "TODO find a remap", })
