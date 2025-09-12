@@ -13,8 +13,9 @@ local M = {}
 M.fzf = function(opts)
   opts.options = opts.options or {}
 
-  local tempname = vim.fn.tempname()
-  vim.fn.writefile({}, tempname)
+  local sink_temp = vim.fn.tempname()
+  local source_temp = vim.fn.tempname()
+  vim.fn.writefile({}, sink_temp)
 
   local editor_height = vim.o.lines - 1
   local border_height = 2
@@ -36,24 +37,27 @@ M.fzf = function(opts)
     if type(opts.source) == "string" then
       return opts.source
     else
-      return ([[echo '%s']]):format(table.concat(opts.source, "\n"))
+      vim.fn.writefile(opts.source, source_temp)
+      return ([[cat %s]]):format(source_temp)
     end
   end)()
 
-  local cmd = ("%s | fzf %s > %s"):format(source, table.concat(opts.options, " "), tempname)
+  local cmd = ("%s | fzf %s > %s"):format(source, table.concat(opts.options, " "), sink_temp)
   vim.fn.jobstart(cmd, {
     term = true,
     on_exit = function()
       vim.api.nvim_win_close(term_winnr, true)
-      local temp_content = vim.fn.readfile(tempname)
-      if #temp_content == 0 then return end
+      local sink_content = vim.fn.readfile(sink_temp)
+      if #sink_content == 0 then return end
 
       if opts.sink then
-        opts.sink(temp_content[1])
+        opts.sink(sink_content[1])
       elseif opts.sinklist then
-        opts.sinklist(temp_content)
+        opts.sinklist(sink_content)
       end
-      vim.fn.delete(tempname)
+
+      vim.fn.delete(sink_temp)
+      vim.fn.delete(source_temp)
     end,
   })
   vim.cmd "startinsert"
