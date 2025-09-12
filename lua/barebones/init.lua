@@ -34,64 +34,12 @@ end)
 vim.keymap.set("n", "<C-n>", h.keys.vim_cmd_cb "cnext")
 vim.keymap.set("n", "<C-p>", h.keys.vim_cmd_cb "cprev")
 
-local function skip_or_insert_pair(char)
-  return function()
-    local col = vim.api.nvim_win_get_cursor(0)[2]
-    local line = vim.api.nvim_get_current_line()
-    local char_right = line:sub(col + 1, col + 1)
-    if char_right == char then
-      return "<right>"
-    else
-      return char
-    end
-  end
-end
-
-local function skip_or_insert_same(char)
-  return function()
-    local col = vim.api.nvim_win_get_cursor(0)[2]
-    local line = vim.api.nvim_get_current_line()
-    local char_right = line:sub(col + 1, col + 1)
-    if char_right == char then
-      return "<right>"
-    else
-      return char .. char .. "<left>"
-    end
-  end
-end
-
 vim.keymap.set("i", "(", "()<left>")
 vim.keymap.set("i", "{", "{}<left>")
 vim.keymap.set("i", "[", "[]<left>")
-
-vim.keymap.set("i", ")", skip_or_insert_pair ")", { expr = true, })
-vim.keymap.set("i", "}", skip_or_insert_pair "}", { expr = true, })
-vim.keymap.set("i", "]", skip_or_insert_pair "]", { expr = true, })
-
-vim.keymap.set("i", "`", skip_or_insert_same "`", { expr = true, })
-vim.keymap.set("i", [[']], skip_or_insert_same [[']], { expr = true, })
-vim.keymap.set("i", [["]], skip_or_insert_same [["]], { expr = true, })
-
-vim.keymap.set("i", "<bs>", function()
-  local col = vim.api.nvim_win_get_cursor(0)[2]
-  local line = vim.api.nvim_get_current_line()
-  local char_right = line:sub(col + 1, col + 1)
-  if char_right == "" then return "<bs>" end
-
-  local char = line:sub(col, col)
-  local left_to_right_pair = {
-    ["("] = ")",
-    ["{"] = "}",
-    ["["] = "]",
-    ["`"] = "`",
-    ["'"] = "'",
-    ['"'] = '"',
-  }
-
-  if left_to_right_pair[char] == nil then return "<bs>" end
-  if left_to_right_pair[char] ~= char_right then return "<bs>" end
-  return "<right><bs><bs>"
-end, { expr = true, })
+vim.keymap.set("i", "`", "``<left>")
+vim.keymap.set("i", [[']], [[''<left>]])
+vim.keymap.set("i", [["]], [[""<left>]])
 
 vim.keymap.set("c", "/", function()
   if vim.fn.wildmenumode() == h.vimscript_true then
