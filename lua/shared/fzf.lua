@@ -107,7 +107,7 @@ local function maybe_close_mini_files()
   end
 end
 
---- @param script_name "get_marks"|"delete_mark"|"get_cmd_history"|"remove_frecency_file"|"get_qf_list"|"get_qf_stack"
+--- @param script_name "get_marks"|"delete_mark"|"get_cmd_history"|"remove_frecency_file"|"get_qf_list"|"get_qf_stack"|"get_buffers"
 local function get_fzf_script(script_name)
   local lua_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "%s.lua"):format(script_name)
   return table.concat(
@@ -134,6 +134,25 @@ vim.keymap.set("n", "<leader>zm", function()
     sink = function(entry)
       local filename = vim.split(entry, "|")[2]
       vim.cmd("e " .. filename)
+    end,
+  }
+end)
+
+vim.keymap.set("n", "<leader>b", function()
+  maybe_close_mini_files()
+
+  local bufs_opts_tbl = {
+    [[--ghost='Buffers']],
+  }
+
+  local source = get_fzf_script "get_buffers"
+
+  M.fzf {
+    height = "half",
+    source = source,
+    options = M.extend(bufs_opts_tbl, M.default_opts, M.multi_select_opts),
+    sink = function(entry)
+      vim.cmd("edit " .. entry)
     end,
   }
 end)

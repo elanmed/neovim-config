@@ -7,7 +7,6 @@ vim.keymap.set({ "n", "v", }, "<C-t>", function()
   h.notify.error "snippets only supported in insert mode!"
 end)
 vim.keymap.set("n", "<leader>h", ":help<space>", { desc = "Fuzzy helptags with wilder", })
-vim.keymap.set("n", "<leader>b", ":buffer<space>", { desc = "Fuzzy buffers with wilder", })
 
 vim.keymap.set("n", "G", "G" .. "zz")
 vim.keymap.set("n", "<C-o>", "<C-o>" .. "zz")

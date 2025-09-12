@@ -49,9 +49,7 @@ vim.keymap.set("n", "K", function() vim.lsp.buf.hover { border = "rounded", } en
 vim.keymap.set("n", "<leader>k", function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     local is_floating = vim.api.nvim_win_get_config(win).relative == "win"
-    if is_floating then
-      vim.api.nvim_win_close(win, false)
-    end
+    if is_floating then vim.api.nvim_win_close(win, false) end
   end
 end)
 
