@@ -48,8 +48,8 @@ end, { desc = "LSP go to definition", })
 vim.keymap.set("n", "K", function() vim.lsp.buf.hover { border = "rounded", } end, { desc = "LSP hover", })
 vim.keymap.set("n", "<leader>k", function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
-    -- :h floating-windows
-    if vim.api.nvim_win_get_config(win).relative == "win" then
+    local is_floating = vim.api.nvim_win_get_config(win).relative == "win"
+    if is_floating then
       vim.api.nvim_win_close(win, false)
     end
   end
