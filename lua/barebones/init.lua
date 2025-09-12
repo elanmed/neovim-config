@@ -4,6 +4,8 @@ local fzf = require "shared.fzf"
 vim.cmd "set wildchar=<C-n>"
 
 vim.opt.scrolloff = 999
+vim.opt.completeopt = "menuone,noselect,fuzzy"
+vim.keymap.set("i", "<C-x>", "<C-x><C-o>")
 
 -- removing banner causes a bug where the terminal flickers
 -- vim.g.netrw_banner = 0 -- removes banner at the top
@@ -33,13 +35,6 @@ end)
 
 vim.keymap.set("n", "<C-n>", h.keys.vim_cmd_cb "cnext")
 vim.keymap.set("n", "<C-p>", h.keys.vim_cmd_cb "cprev")
-
-vim.keymap.set("i", "(", "()<left>")
-vim.keymap.set("i", "{", "{}<left>")
-vim.keymap.set("i", "[", "[]<left>")
-vim.keymap.set("i", "`", "``<left>")
-vim.keymap.set("i", [[']], [[''<left>]])
-vim.keymap.set("i", [["]], [[""<left>]])
 
 vim.keymap.set("c", "/", function()
   if vim.fn.wildmenumode() == h.vimscript_true then
