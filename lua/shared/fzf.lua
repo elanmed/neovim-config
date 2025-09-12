@@ -91,8 +91,8 @@ M.multi_select_opts = {
 }
 
 M.single_select_opts = {
-  [[--bind='tab:down']],
-  [[--bind='shift-tab:up']],
+  [[--bind='tab:up']],
+  [[--bind='shift-tab:down']],
 }
 
 M.qf_preview_opts = {
@@ -150,7 +150,7 @@ vim.keymap.set("n", "<leader>b", function()
   M.fzf {
     height = "half",
     source = source,
-    options = M.extend(bufs_opts_tbl, M.default_opts, M.multi_select_opts),
+    options = M.extend(bufs_opts_tbl, M.default_opts, M.single_select_opts),
     sink = function(entry)
       vim.cmd("edit " .. entry)
     end,
