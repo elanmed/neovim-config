@@ -1,6 +1,6 @@
 local ff = require "ff"
 ff.setup {
-  fd_cmd = "fd --absolute-path --hidden --type f --exclude .git --exclude node_modules --exclude dist",
+  find_cmd = "fd --absolute-path --hidden --type f --exclude .git --exclude node_modules --exclude dist",
 }
 
 vim.api.nvim_set_hl(0, "FFPickerFuzzyHighlightChar", {
