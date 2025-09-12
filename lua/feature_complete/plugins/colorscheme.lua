@@ -59,18 +59,15 @@ vim.api.nvim_set_hl(0, "NotifyToggleOn", { fg = M.green, })
 vim.api.nvim_set_hl(0, "NotifyToggleOff", { fg = M.purple, })
 
 local diagnostic_hls = {
-  DiagnosticUnderlineError = "undercurl",
-  DiagnosticUnderlineWarn = "undercurl",
-  DiagnosticUnderlineInfo = "undercurl",
-  DiagnosticUnderlineHint = "underdotted",
-  DiagnosticUnderlineOk = "underdotted",
+  "DiagnosticUnderlineError",
+  "DiagnosticUnderlineWarn",
+  "DiagnosticUnderlineInfo",
+  "DiagnosticUnderlineHint",
+  "DiagnosticUnderlineOk",
 }
 
-for diagnostic_hl, under_type in pairs(diagnostic_hls) do
-  local curr_hl = vim.api.nvim_get_hl(0, { name = diagnostic_hl, })
-  curr_hl[under_type] = true
-  curr_hl.underline = false
-  vim.api.nvim_set_hl(0, diagnostic_hl, curr_hl)
+for _, diagnostic_hl in ipairs(diagnostic_hls) do
+  vim.api.nvim_set_hl(0, diagnostic_hl, {})
 end
 
 vim.api.nvim_create_autocmd("TextYankPost", {
