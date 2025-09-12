@@ -1,3 +1,7 @@
+local h = require "helpers"
+
+local M = {}
+
 --- @class FzfOpts
 --- @field source string|table
 --- @field options? table
@@ -6,7 +10,7 @@
 --- @field height "full"|"half"
 
 --- @param opts FzfOpts
-local function fzf(opts)
+M.fzf = function(opts)
   opts.options = opts.options or {}
 
   local tempname = vim.fn.tempname()
@@ -55,16 +59,12 @@ local function fzf(opts)
   vim.cmd "startinsert"
 end
 
-local h = require "helpers"
-local grug = require "grug-far"
-local mini_files = require "mini.files"
-
 local guicursor = vim.opt.guicursor:get()
 -- :h cursor-blinking
 table.insert(guicursor, "a:blinkon0")
 vim.opt.guicursor = guicursor
 
-local function extend(...)
+M.extend = function(...)
   local result = {}
   for _, list in ipairs { ..., } do
     vim.list_extend(result, list)
@@ -72,36 +72,36 @@ local function extend(...)
   return result
 end
 
-local function maybe_close_mini_files()
-  if vim.bo.filetype == "minifiles" then
-    mini_files.close()
-  end
-end
-
-local default_opts = {
+M.default_opts = {
   "--cycle",
   [[--preview-window='up:40%']],
   [[--bind='ctrl-d:preview-page-down']],
   [[--bind='ctrl-u:preview-page-up']],
 }
 
-local multi_select_opts = {
+M.multi_select_opts = {
   "--multi",
   [[--bind='ctrl-a:toggle-all']],
   [[--bind='tab:select+up']],
   [[--bind='shift-tab:down+deselect']],
 }
 
-local single_select_opts = {
+M.single_select_opts = {
   [[--bind='tab:down']],
   [[--bind='shift-tab:up']],
 }
 
-local qf_preview_opts = {
+M.qf_preview_opts = {
   [[--delimiter='|']],
   [[--preview='bat --style=numbers --color=always {1} --highlight-line {2}']],
   [[--preview-window='+{2}/3']],
 }
+
+local function maybe_close_mini_files()
+  if vim.bo.filetype == "minifiles" then
+    vim.cmd "close"
+  end
+end
 
 --- @param script_name "get_marks"|"delete_mark"|"get_cmd_history"|"remove_frecency_file"|"get_qf_list"|"get_qf_stack"
 local function get_fzf_script(script_name)
@@ -123,10 +123,10 @@ vim.keymap.set("n", "<leader>zm", function()
     [[--ghost='Marks']],
   }
 
-  fzf {
+  M.fzf {
     height = "half",
     source = source,
-    options = extend(marks_opts_tbl, default_opts, single_select_opts),
+    options = M.extend(marks_opts_tbl, M.default_opts, M.single_select_opts),
     sink = function(entry)
       local filename = vim.split(entry, "|")[2]
       vim.cmd("e " .. filename)
@@ -151,9 +151,9 @@ vim.keymap.set("n", "<leader>z;", function()
     ::continue::
   end
 
-  fzf {
+  M.fzf {
     source = source,
-    options = extend(cmd_history_opts_tbl, default_opts, single_select_opts),
+    options = M.extend(cmd_history_opts_tbl, M.default_opts, M.single_select_opts),
     height = "half",
     sink = function(selected)
       vim.api.nvim_feedkeys(":" .. selected, "n", false)
@@ -168,9 +168,9 @@ vim.keymap.set("n", "<leader>i", function()
     [[--preview='git diff --color=always {} | tail -n +5']],
   }
 
-  fzf {
+  M.fzf {
     source = "git diff --name-only HEAD",
-    options = extend(diff_opts_tbl, default_opts, single_select_opts),
+    options = M.extend(diff_opts_tbl, M.default_opts, M.single_select_opts),
     height = "full",
     sink = function(entry) vim.cmd("edit " .. entry) end,
   }
@@ -214,9 +214,9 @@ local function rg_with_globs(default_query)
     "--bind", ("'change:reload:%s {q} || true'"):format(rg_with_globs_script),
   }
 
-  fzf {
+  M.fzf {
     source = rg_with_globs_script,
-    options = extend(rg_options, default_opts, multi_select_opts, qf_preview_opts),
+    options = M.extend(rg_options, M.default_opts, M.multi_select_opts, M.qf_preview_opts),
     height = "full",
     sinklist = sinklist,
   }
@@ -257,9 +257,9 @@ vim.keymap.set("n", "<leader>zy", function()
     ([[--bind='ctrl-x:execute(%s {2})+reload(%s)']]):format(remove_frecency_file_source, source),
   }
 
-  fzf {
+  M.fzf {
     source = source,
-    options = extend(frecency_and_fd_opts, default_opts, single_select_opts),
+    options = M.extend(frecency_and_fd_opts, M.default_opts, M.single_select_opts),
     height = "half",
     sink = function(entry)
       local filename = vim.split(entry, "|")[2]
@@ -274,9 +274,9 @@ vim.keymap.set("n", "<leader>zf", function()
   vim.cmd "cclose"
   local source = get_fzf_script "get_qf_list"
   local quickfix_list_opts = { [[--ghost='Qf list']], }
-  fzf {
+  M.fzf {
     source = source,
-    options = extend(quickfix_list_opts, default_opts, multi_select_opts, qf_preview_opts),
+    options = M.extend(quickfix_list_opts, M.default_opts, M.multi_select_opts, M.qf_preview_opts),
     height = "full",
     sinklist = sinklist,
   }
@@ -286,9 +286,9 @@ vim.keymap.set("n", "<leader>zs", function()
   vim.cmd "cclose"
   local source = get_fzf_script "get_qf_stack"
   local quickfix_list_opts = { [[--ghost='Qf stack']], }
-  fzf {
+  M.fzf {
     source = source,
-    options = extend(quickfix_list_opts, default_opts, single_select_opts),
+    options = M.extend(quickfix_list_opts, M.default_opts, M.single_select_opts),
     height = "half",
     sink = function(entry)
       local qf_id = vim.split(entry, "|")[1]
@@ -308,10 +308,10 @@ vim.keymap.set("n", "<leader>zr", function()
 end)
 
 vim.keymap.set("v", "<leader>o", function()
-  local require_visual_mode_active = true
-  local visual_selection = grug.get_current_visual_selection(require_visual_mode_active)
-  if visual_selection == "" then return end
-  rg_with_globs(visual_selection .. " -- ")
+  local region = vim.fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".")
+  if #region > 0 then
+    rg_with_globs(region[1] .. " -- ")
+  end
 end, { desc = "Grep the current word", })
 
 vim.keymap.set("n", "<leader>o", function()
@@ -348,3 +348,5 @@ vim.keymap.set("n", "<leader>yw", function()
 
   vim.fn.setreg("+", stripped_filename)
 end, { desc = "Yank a file name starting with `wf_modules`", })
+
+return M
