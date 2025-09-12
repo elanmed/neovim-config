@@ -17,6 +17,10 @@ vim.keymap.set("n", "<bs>", function()
     h.notify.error "Buffer is readonly, aborting"
     return
   end
+  if vim.bo.buftype ~= "" then
+    h.notify.error "`buftype` is set, aborting"
+    return
+  end
   vim.cmd "write"
 end, { desc = "Save", })
 vim.keymap.set("n", "<leader>w", function()
