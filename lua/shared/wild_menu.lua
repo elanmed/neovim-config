@@ -13,6 +13,13 @@ vim.api.nvim_create_autocmd("CmdlineChanged", {
   pattern = ":",
   callback = function()
     local curr_cmdline = vim.fn.getcmdline()
+
+    -- feedkeys inserts ^z which triggers an infinite loop
+    if vim.startswith(curr_cmdline, "%") then
+      prev_cmdline = curr_cmdline
+      return
+    end
+
     -- CmdlineChanged fires twice with the same value of getcmdline()
     if curr_cmdline ~= prev_cmdline then
       vim.fn.feedkeys("\26", "n") -- <C-Z>, the default wildcharm
