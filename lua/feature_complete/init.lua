@@ -29,8 +29,8 @@ bootstrap_paq {
   "tpope/vim-speeddating",
   "jxnblk/vim-mdx-js",
   -- cmp
-  "Saghen/blink.cmp",
-  "xzbdmw/colorful-menu.nvim",
+  -- "Saghen/blink.cmp",
+  -- "xzbdmw/colorful-menu.nvim",
   -- far
   "MagicDuck/grug-far.nvim",
   -- fzf
@@ -53,6 +53,7 @@ bootstrap_paq {
   "folke/snacks.nvim",
   -- treesitter
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate", },
+  { "nvim-telescope/telescope-fzf-native.nvim", build = "make", },
   "RRethy/nvim-treesitter-endwise",
   "windwp/nvim-ts-autotag",
   "windwp/nvim-autopairs",
