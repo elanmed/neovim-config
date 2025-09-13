@@ -80,23 +80,8 @@
 -- }
 
 
-local h = require "helpers"
 local mini_cmp = require "mini.completion"
 require "nvim-autopairs".setup {}
-
-vim.keymap.set("i", "<C-n>", function()
-  return vim.fn.pumvisible() == h.vimscript_true and "<C-n>" or nil
-end, { expr = true, })
-
-vim.keymap.set("i", "<CR>", function()
-    -- :h MiniCompletion
-    if vim.fn.complete_info()["selected"] ~= -1 then
-      return "\25"
-    end
-    return "\r"
-  end,
-  { expr = true, }
-)
 
 mini_cmp.setup {
   delay = { completion = 10 ^ 7, },
