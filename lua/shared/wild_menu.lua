@@ -20,3 +20,5 @@ vim.api.nvim_create_autocmd("CmdlineChanged", {
     prev_cmdline = curr_cmdline
   end,
 })
+
+vim.keymap.set("c", "<C-e>", "<C-e><C-z>")
