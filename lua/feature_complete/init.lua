@@ -38,6 +38,7 @@ bootstrap_paq {
   "elanmed/rg-glob-builder.nvim",
   "elanmed/fzf-lua-frecency.nvim",
   "elanmed/ff.nvim",
+  "romgrk/fzy-lua-native",
   -- lsp
   "neovim/nvim-lspconfig",
   "stevearc/conform.nvim",
@@ -56,9 +57,6 @@ bootstrap_paq {
   "windwp/nvim-ts-autotag",
   "windwp/nvim-autopairs",
   "JoosepAlviste/nvim-ts-context-commentstring",
-  -- wild_menu
-  "gelguy/wilder.nvim",
-  "romgrk/fzy-lua-native",
 }
 
 h.require_dir "feature_complete/plugins"

@@ -35,11 +35,3 @@ end)
 
 vim.keymap.set("n", "<C-n>", h.keys.vim_cmd_cb "cnext")
 vim.keymap.set("n", "<C-p>", h.keys.vim_cmd_cb "cprev")
-
-vim.keymap.set("c", "/", function()
-  if vim.fn.wildmenumode() == h.vimscript_true then
-    return "<C-y>"
-  else
-    return "/"
-  end
-end, { expr = true, })
