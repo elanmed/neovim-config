@@ -26,8 +26,6 @@ bootstrap_paq {
   "mfussenegger/nvim-jdtls",
   "savq/paq-nvim",
   "nvim-mini/mini.nvim",
-  "tpope/vim-speeddating",
-  "jxnblk/vim-mdx-js",
   -- cmp
   -- "Saghen/blink.cmp",
   -- "xzbdmw/colorful-menu.nvim",
@@ -37,8 +35,9 @@ bootstrap_paq {
   "ibhagwan/fzf-lua",
   "elanmed/rg-glob-builder.nvim",
   "elanmed/fzf-lua-frecency.nvim",
+  -- ff
   "elanmed/ff.nvim",
-  "romgrk/fzy-lua-native",
+  { "nvim-telescope/telescope-fzf-native.nvim", build = "make", },
   -- lsp
   "neovim/nvim-lspconfig",
   "stevearc/conform.nvim",
@@ -53,7 +52,6 @@ bootstrap_paq {
   "folke/snacks.nvim",
   -- treesitter
   { "nvim-treesitter/nvim-treesitter", build = ":TSUpdate", },
-  { "nvim-telescope/telescope-fzf-native.nvim", build = "make", },
   "RRethy/nvim-treesitter-endwise",
   "windwp/nvim-ts-autotag",
   "windwp/nvim-autopairs",

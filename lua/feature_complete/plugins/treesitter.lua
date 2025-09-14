@@ -32,6 +32,9 @@ require "nvim-treesitter.configs".setup {
   endwise = { enable = true, },
 }
 
+vim.filetype.add { extension = { mdx = "mdx", }, }
+vim.treesitter.language.register("markdown", "mdx")
+
 require "ts_context_commentstring".setup {}
 require "nvim-ts-autotag".setup {}
 require "mini.ai".setup()
