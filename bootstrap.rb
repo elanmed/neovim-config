@@ -11,8 +11,7 @@ require 'English'
 require 'digest/sha2'
 
 def bootstrap_nvim(server:, package_manager:)
-  install_package(package_manager, 'neovim')
-  install_package(package_manager, 'python3-neovim') # linux
+  # TODO install bob with cargo
   install_package(package_manager, 'bat')
   install_package(package_manager, 'fzf')
   install_package(package_manager, 'ripgrep')
@@ -20,19 +19,6 @@ def bootstrap_nvim(server:, package_manager:)
   install_package(package_manager, 'fd-find')
   install_package(package_manager, 'git-delta')
   install_package(package_manager, 'ImageMagick')
-
-  if server
-    puts 'SKIPPING: running :PaqInstall'.noop
-    return
-  end
-
-  puts 'running :PaqInstall'.doing
-  `nvim --headless "+PaqInstall" +q`
-  puts '\n'
-
-  puts 'running :UpdateRemotePlugins'.doing
-  `nvim --headless "+UpdateRemotePlugins" +q`
-  puts '\n'
 
   puts 'installing language servers from package.json'.doing
   `npm install --prefix ~/.dotfiles/neovim/.config/nvim/language_servers/`
