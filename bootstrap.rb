@@ -11,14 +11,19 @@ require 'English'
 require 'digest/sha2'
 
 def bootstrap_nvim(server:, package_manager:)
-  # TODO install bob with cargo
   install_package(package_manager, 'bat')
   install_package(package_manager, 'fzf')
   install_package(package_manager, 'ripgrep')
   install_package(package_manager, 'fd')
-  install_package(package_manager, 'fd-find')
-  install_package(package_manager, 'git-delta')
+  install_package(package_manager, 'cargo')
   install_package(package_manager, 'ImageMagick')
+
+  puts 'installing bob'.doing
+  `cargo install bob-nvim`
+
+  puts 'installing nightly'.doing
+  `bob install nightly`
+  `bob use nightly`
 
   puts 'installing language servers from package.json'.doing
   `npm install --prefix ~/.dotfiles/neovim/.config/nvim/language_servers/`
