@@ -79,22 +79,29 @@ vim.api.nvim_create_user_command("Tree", function(opts)
 
   local dir_up = (function()
     if #opts.fargs == 0 then
-      return 0
+      return "."
     end
-    return tonumber(opts.fargs[1])
+    return opts.fargs[1]
   end)()
 
   local curr_bufnr = vim.api.nvim_get_current_buf()
-  local abs_bufname = vim.api.nvim_buf_get_name(curr_bufnr)
-  if abs_bufname == "" then
+  local bufname_abs_path = vim.api.nvim_buf_get_name(curr_bufnr)
+  if bufname_abs_path == "" then
     h.notify.error "[Tree] Unnamed current buffer"
     return
   end
 
-  local dirname = vim.fs.dirname(abs_bufname)
-  local tree_cwd = vim.fs.normalize(vim.fs.joinpath(dirname, ("../"):rep(dir_up)))
+  local dirname = vim.fs.dirname(bufname_abs_path)
+  local tree_abs_path = vim.fs.normalize(vim.fs.joinpath(dirname, dir_up))
+  local cwd_abs_path = vim.fn.getcwd()
 
-  local obj = vim.system({ "tree", "-J", "-f", "-a", }, { cwd = tree_cwd, }):wait()
+  local tree_rel_path_to_cwd = vim.fs.relpath(cwd_abs_path, tree_abs_path)
+  if tree_rel_path_to_cwd == nil then
+    h.notify.error "[Tree] Rel path is higher than the cwd"
+    return
+  end
+
+  local obj = vim.system({ "tree", "-J", "-f", "-a", }, { cwd = tree_abs_path, }):wait()
   if not obj.stdout then return end
   local tree_json = vim.json.decode(obj.stdout)
 
@@ -105,14 +112,15 @@ vim.api.nvim_create_user_command("Tree", function(opts)
     local indent_chars = ("  "):rep(indent)
 
     if json.type == "file" then
-      local tree_cwd_rel_json_name = vim.fs.normalize(json.name)
+      -- relative to the `tree_abs_path`
+      local json_name = vim.fs.normalize(json.name)
+      local json_name_abs_path = vim.fs.joinpath(tree_abs_path, json_name)
 
-      local vim_rel_cwd = vim.fs.relpath(vim.fn.getcwd(), tree_cwd)
-      local formatted = vim.fs.joinpath(vim_rel_cwd, tree_cwd_rel_json_name)
-      table.insert(lines, indent_chars .. formatted)
+      -- relative to the `cwd_abs_path`
+      local json_name_rel_path_to_cwd = vim.fs.normalize(vim.fs.joinpath(tree_rel_path_to_cwd, json_name))
+      table.insert(lines, indent_chars .. json_name_rel_path_to_cwd)
 
-      local abs_json_name = vim.fs.joinpath(tree_cwd, tree_cwd_rel_json_name)
-      if abs_json_name == abs_bufname then
+      if json_name_abs_path == bufname_abs_path then
         curr_bufnr_line = #lines
       end
     elseif json.type == "directory" then
