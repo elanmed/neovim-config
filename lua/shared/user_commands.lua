@@ -101,7 +101,7 @@ vim.api.nvim_create_user_command("Tree", function(opts)
     return
   end
 
-  local obj = vim.system({ "tree", "-J", "-f", "-a", }, { cwd = tree_abs_path, }):wait()
+  local obj = vim.system({ "tree", "-J", "-f", "-a", "--gitignore", }, { cwd = tree_abs_path, }):wait()
   if not obj.stdout then return end
   local tree_json = vim.json.decode(obj.stdout)
 
