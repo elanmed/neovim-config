@@ -69,3 +69,85 @@ vim.api.nvim_create_user_command("PackClean", function()
     vim.pack.del(unused_plugins)
   end
 end, {})
+
+vim.api.nvim_create_user_command("Tree", function(opts)
+  if #opts.fargs > 1 then
+    require "helpers".notify.error "Tree requires zero or one arg!"
+    return
+  end
+
+  local dir_up = (function()
+    if #opts.fargs == 0 then
+      return 0
+    end
+    return tonumber(opts.fargs[1])
+  end)()
+
+  local curr_bufnr = vim.api.nvim_get_current_buf()
+  local abs_bufname = vim.api.nvim_buf_get_name(curr_bufnr)
+  local dirname = vim.fs.dirname(abs_bufname)
+  local tree_cwd = vim.fs.normalize(vim.fs.joinpath(dirname, ("../"):rep(dir_up)))
+  if tree_cwd == vim.fn.getcwd() then
+    return
+  end
+
+  local obj = vim.system({ "tree", "-J", "-f", "-a", }, { cwd = tree_cwd, }):wait()
+  if not obj.stdout then return end
+  local tree_json = vim.json.decode(obj.stdout)
+
+  local curr_bufnr_line = 0
+  local lines = {}
+
+  local function indent_lines(json, indent)
+    local indent_chars = ("  "):rep(indent)
+
+    if json.type == "file" then
+      local tree_cwd_rel_json_name = vim.fs.normalize(json.name)
+
+      local vim_rel_cwd = vim.fs.relpath(vim.fn.getcwd(), tree_cwd)
+      local formatted = vim.fs.joinpath(vim_rel_cwd, tree_cwd_rel_json_name)
+      table.insert(lines, indent_chars .. formatted)
+
+      local abs_json_name = vim.fs.joinpath(tree_cwd, tree_cwd_rel_json_name)
+      if abs_json_name == abs_bufname then
+        curr_bufnr_line = #lines
+      end
+    elseif json.type == "directory" then
+      table.insert(lines, indent_chars .. vim.fs.basename(vim.fs.normalize(json.name)))
+      if not json.contents then return end
+      for _, file_json in ipairs(json.contents) do
+        indent_lines(file_json, indent + 1)
+      end
+    end
+  end
+
+  indent_lines(tree_json[1], 0)
+
+  local results_bufnr = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_set_option_value("buftype", "nofile", { buf = results_bufnr, })
+  vim.api.nvim_set_option_value("bufhidden", "wipe", { buf = results_bufnr, })
+  vim.api.nvim_set_option_value("buflisted", false, { buf = results_bufnr, })
+
+  local border_height = 2
+  local winnr = vim.api.nvim_open_win(results_bufnr, true, {
+    relative = "editor",
+    row = 1,
+    col = 0,
+    width = math.floor(vim.o.columns / 2),
+    height = vim.o.lines - 1 - border_height,
+    border = "rounded",
+    style = "minimal",
+  })
+  vim.api.nvim_set_option_value("foldmethod", "indent", { win = winnr, })
+
+  vim.api.nvim_win_set_buf(winnr, results_bufnr)
+  vim.api.nvim_buf_set_lines(results_bufnr, 0, -1, false, lines)
+  vim.api.nvim_win_set_cursor(winnr, { curr_bufnr_line, 0, })
+  vim.cmd "normal! ^"
+
+  vim.keymap.set("n", "<cr>", function()
+    local line = vim.api.nvim_get_current_line()
+    vim.api.nvim_win_close(winnr, true)
+    vim.cmd("edit " .. vim.trim(line))
+  end, { buffer = results_bufnr, })
+end, { nargs = "*", })
