@@ -71,8 +71,9 @@ vim.api.nvim_create_user_command("PackClean", function()
 end, {})
 
 vim.api.nvim_create_user_command("Tree", function(opts)
+  local h = require "helpers"
   if #opts.fargs > 1 then
-    require "helpers".notify.error "Tree requires zero or one arg!"
+    h.notify.error "[Tree] Command requires one or zero args"
     return
   end
 
@@ -85,11 +86,13 @@ vim.api.nvim_create_user_command("Tree", function(opts)
 
   local curr_bufnr = vim.api.nvim_get_current_buf()
   local abs_bufname = vim.api.nvim_buf_get_name(curr_bufnr)
-  local dirname = vim.fs.dirname(abs_bufname)
-  local tree_cwd = vim.fs.normalize(vim.fs.joinpath(dirname, ("../"):rep(dir_up)))
-  if tree_cwd == vim.fn.getcwd() then
+  if abs_bufname == "" then
+    h.notify.error "[Tree] Unnamed current buffer"
     return
   end
+
+  local dirname = vim.fs.dirname(abs_bufname)
+  local tree_cwd = vim.fs.normalize(vim.fs.joinpath(dirname, ("../"):rep(dir_up)))
 
   local obj = vim.system({ "tree", "-J", "-f", "-a", }, { cwd = tree_cwd, }):wait()
   if not obj.stdout then return end
