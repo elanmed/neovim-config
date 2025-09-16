@@ -113,7 +113,7 @@ vim.api.nvim_create_user_command("Tree", function(opts)
         curr_bufnr_line = #lines
       end
     elseif json.type == "directory" then
-      table.insert(lines, indent_chars .. vim.fs.basename(vim.fs.normalize(json.name)))
+      table.insert(lines, indent_chars .. vim.fs.basename(vim.fs.normalize(json.name)) .. "/")
       if not json.contents then return end
       for _, file_json in ipairs(json.contents) do
         indent_lines(file_json, indent + 1)
@@ -122,6 +122,11 @@ vim.api.nvim_create_user_command("Tree", function(opts)
   end
 
   indent_lines(tree_json[1], 0)
+
+  local max_line_width = 0
+  for _, line in ipairs(lines) do
+    max_line_width = math.max(max_line_width, #line)
+  end
 
   local results_bufnr = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_set_option_value("buftype", "nofile", { buf = results_bufnr, })
@@ -133,10 +138,11 @@ vim.api.nvim_create_user_command("Tree", function(opts)
     relative = "editor",
     row = 1,
     col = 0,
-    width = math.floor(vim.o.columns / 2),
-    height = vim.o.lines - 1 - border_height,
+    width = math.min(vim.o.columns, max_line_width + 2),
+    height = math.min(vim.o.lines - 1 - border_height, #lines),
     border = "rounded",
     style = "minimal",
+    title = "Tree",
   })
   vim.api.nvim_set_option_value("foldmethod", "indent", { win = winnr, })
 
@@ -150,4 +156,7 @@ vim.api.nvim_create_user_command("Tree", function(opts)
     vim.api.nvim_win_close(winnr, true)
     vim.cmd("edit " .. vim.trim(line))
   end, { buffer = results_bufnr, })
+
+  vim.keymap.set("n", "<esc>", function() vim.api.nvim_win_close(winnr, true) end, { buffer = results_bufnr, })
+  vim.keymap.set("n", "q", function() vim.api.nvim_win_close(winnr, true) end, { buffer = results_bufnr, nowait = true, })
 end, { nargs = "*", })
