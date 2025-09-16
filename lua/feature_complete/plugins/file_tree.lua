@@ -22,8 +22,7 @@ vim.keymap.set("n", "<C-f>", function()
   if not mini_files.close() then
     mini_files.open(vim.api.nvim_buf_get_name(0))
   end
-end, { desc = "Toggle oil", })
-vim.keymap.set("n", "<leader>t", snacks.explorer.reveal, { desc = "Open snacks explorer", })
+end, { desc = "Toggle mini files", })
 
 -- https://github.com/folke/snacks.nvim/blob/main/docs/rename.md#minifiles
 vim.api.nvim_create_autocmd("User", {
