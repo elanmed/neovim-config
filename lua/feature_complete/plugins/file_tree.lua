@@ -31,3 +31,13 @@ vim.api.nvim_create_autocmd("User", {
     snacks.rename.on_rename_file(event.data.from, event.data.to)
   end,
 })
+vim.keymap.set("n", "<leader>t", function()
+  require "tree".tree {
+    keymaps = {
+      ["<cr>"] = "select-close-tree",
+      ["t"] = "select-focus-tree",
+      ["o"] = "select-focus-win",
+      ["q"] = "close-tree",
+    },
+  }
+end)

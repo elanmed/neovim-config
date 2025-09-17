@@ -9,6 +9,8 @@ vim.pack.add {
   -- "xzbdmw/colorful-menu.nvim",
   -- far
   "https://github.com/MagicDuck/grug-far.nvim",
+  -- file_tree
+  "https://github.com/elanmed/tree.nvim",
   -- fzf
   "https://github.com/ibhagwan/fzf-lua",
   "https://github.com/elanmed/rg-glob-builder.nvim",
