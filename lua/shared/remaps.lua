@@ -185,7 +185,7 @@ end, { silent = true, desc = "*, but stay on the current search result", })
 
 -- https://yobibyte.github.io/vim.html
 -- TODO find a better remap
-vim.keymap.set("n", "<leader>j", function()
+vim.keymap.set("n", "<leader>'", function()
   vim.ui.input({ prompt = "$ ", }, function(cmd)
     if cmd and cmd ~= "" then
       vim.cmd "vnew"
@@ -197,8 +197,31 @@ vim.keymap.set("n", "<leader>j", function()
   end)
 end)
 
+vim.keymap.set("n", "<leader>j", function()
+  local editor_height = vim.o.lines - 1
+  local border_height = 2
+
+  local term_bufnr = vim.api.nvim_create_buf(false, true)
+  local term_winnr = vim.api.nvim_open_win(term_bufnr, true, {
+    relative = "editor",
+    row = editor_height,
+    col = 0,
+    width = vim.o.columns,
+    height = editor_height - border_height,
+    border = "rounded",
+    title = "Lazygit term",
+  })
+  vim.fn.jobstart("lazygit", {
+    term = true,
+    on_exit = function()
+      vim.api.nvim_win_close(term_winnr, true)
+    end,
+  })
+  vim.cmd "startinsert"
+end)
+
+vim.keymap.set("n", "<leader>,", h.keys.vim_cmd_cb "file", { desc = "Show the current file", })
+
 vim.keymap.set("n", "<C-h>", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<C-l>", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>/", "<nop>", { desc = "TODO find a remap", })
-vim.keymap.set("n", "<leader>'", "<nop>", { desc = "TODO find a remap", })
-vim.keymap.set("n", "<leader>,", "<nop>", { desc = "TODO find a remap", })
