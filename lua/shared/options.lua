@@ -24,7 +24,6 @@ vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.swapfile = false
 vim.opt.backup = false
 vim.opt.writebackup = false
-vim.opt.statusline = table.concat({
-  " ", "%f", "%=",
-  "%l:%c", " ",
-}, "")
+vim.opt.laststatus = 0
+vim.opt.ruler = false
+vim.opt.showcmd = false
