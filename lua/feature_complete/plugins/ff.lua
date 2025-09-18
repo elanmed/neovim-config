@@ -15,6 +15,7 @@ vim.keymap.set("n", "<leader>f", function()
   end
 
   ff.find {
+    get_max_results_considered = function() return 1000 end,
     keymaps = {
       i = {
         ["<cr>"] = "select",
