@@ -414,6 +414,36 @@ vim.keymap.set("n", "<leader>yw", function()
   vim.fn.setreg("+", stripped_filename)
 end, { desc = "Yank a file name starting with `wf_modules`", })
 
+--- @generic T
+--- @param items T[]
+--- @param opts vim.ui.select.Opts
+--- @param on_choice fun(item: T?, idx: integer?)
+local function fzf_ui_select(items, opts, on_choice)
+  opts.prompt = h.default(opts.prompt, "")
+  opts.format_item = h.default(opts.format_item, function(item) return item end)
+  local select_opts = {
+    [[--ghost='Select']],
+    [[--delimiter='|']],
+    [[--with-nth='2']],
+    ([[--header='%s']]):format(opts.prompt),
+  }
+  local formatted_items = h.tbl.map(function(item, index)
+    return ("%s|%s"):format(index, opts.format_item(item))
+  end, items)
+
+  M.fzf {
+    source = formatted_items,
+    height = "half",
+    options = M.extend(select_opts, M.default_opts, M.single_select_opts),
+    sink = function(entry)
+      local index = tonumber(vim.split(entry, "|")[1])
+      on_choice(items[tonumber(index)], tonumber(index))
+    end,
+  }
+end
+
+vim.ui.select = fzf_ui_select
+
 vim.api.nvim_create_autocmd("BufEnter", {
   callback = function(args)
     local bufnr = args.buf

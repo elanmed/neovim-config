@@ -37,6 +37,17 @@ tbl.filter = function(predicate, list)
   return filtered_list
 end
 
+--- @param predicate fun(curr_item, idx: number): any
+--- @param list table
+tbl.map = function(predicate, list)
+  local mapped_list = {}
+  for index, val in pairs(list) do
+    -- vim.tbl_map doesn't pass the index
+    table.insert(mapped_list, predicate(val, index))
+  end
+  return mapped_list
+end
+
 os.is_linux = function()
   return vim.fn.has "macunix" == vimscript_false
 end
@@ -100,6 +111,17 @@ local require_dir = function(dir)
   end
 end
 
+--- @generic T
+--- @param val T | nil
+--- @param default_val T
+--- @return T
+local default = function(val, default_val)
+  if val == nil then
+    return default_val
+  end
+  return val
+end
+
 return {
   keys = keys,
   tbl = tbl,
@@ -109,4 +131,5 @@ return {
   require_dir = require_dir,
   vimscript_true = vimscript_true,
   vimscript_false = vimscript_false,
+  default = default,
 }
