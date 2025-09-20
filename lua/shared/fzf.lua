@@ -107,7 +107,7 @@ local function maybe_close_tree()
   end
 end
 
---- @param script_name "get_marks"|"delete_mark"|"get_cmd_history"|"remove_frecency_file"|"get_qf_list"|"get_qf_stack"|"get_buffers"
+--- @param script_name "get_marks"|"delete_mark"|"get_cmd_history"|"remove_frecency_file"|"get_qf_list"|"get_qf_stack"|"get_buffers"|"get_lines"
 local function get_fzf_script(script_name)
   local lua_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "%s.lua"):format(script_name)
   return table.concat(
@@ -317,6 +317,48 @@ vim.keymap.set("n", "<leader>zs", function()
       local qf_id = vim.split(entry, "|")[1]
       vim.cmd("chistory " .. qf_id)
       vim.cmd "copen"
+    end,
+  }
+end)
+
+vim.keymap.set("n", "/", function()
+  local query_temp = vim.fn.tempname()
+  vim.fn.writefile({}, query_temp)
+  local slash_opts = {
+    [[--ghost='/']],
+    [[--delimiter='|']],
+    [[--with-nth='2']],
+    "--bind", ("'change:execute(echo {q} > %s)'"):format(query_temp),
+  }
+
+  local curr_bufnr = vim.api.nvim_get_current_buf()
+  local source = table.concat({
+    get_fzf_script "get_lines",
+    curr_bufnr,
+  }, " ")
+
+  M.fzf {
+    source = source,
+    height = "half",
+    options = M.extend(slash_opts, M.default_opts, M.single_select_opts),
+    sink = function(entry)
+      local line_nr, filename = unpack(vim.split(entry, "|"))
+      local query_content = vim.fn.readfile(query_temp)
+      if #query_content == 0 then
+        vim.fn.delete(query_temp)
+        vim.api.nvim_win_set_cursor(0, { tonumber(line_nr), 0, })
+        return
+      end
+      local query = query_content[1]
+      local _, positions = unpack(vim.fn.matchfuzzypos({ filename, }, query))
+      if #positions == 0 then
+        vim.fn.delete(query_temp)
+        vim.api.nvim_win_set_cursor(0, { tonumber(line_nr), 0, })
+        return
+      end
+
+      vim.api.nvim_win_set_cursor(0, { tonumber(line_nr), positions[1][1], })
+      vim.fn.delete(query_temp)
     end,
   }
 end)

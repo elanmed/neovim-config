@@ -1,7 +1,6 @@
 local snacks = require "snacks"
 snacks.setup {
   bigfile = {},
-  image = { enabled = true, },
   picker = {
     win = {
       input = {
@@ -15,28 +14,6 @@ snacks.setup {
     },
   },
 }
-
-vim.keymap.set("n", "/", function()
-    if vim.bo.filetype == "minifiles" then
-      vim.api.nvim_feedkeys("/", "n", false)
-      return
-    end
-
-    snacks.picker.lines {
-      layout = {
-        layout = {
-          backdrop = false,
-          row = -1,
-          width = 0,
-          height = 0.5,
-          box = "vertical",
-          { win = "list", border = "rounded", },
-          { win = "input", height = 1, border = "rounded", },
-        },
-      },
-    }
-  end,
-  { desc = "Search in the current buffer with snacks", })
 
 vim.keymap.set("n", "<leader>l", function()
     snacks.picker.undo {
