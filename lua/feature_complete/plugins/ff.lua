@@ -10,8 +10,8 @@ vim.api.nvim_set_hl(0, "FFPickerFuzzyHighlightChar", {
 vim.api.nvim_set_hl(0, "FFPickerCursorLine", { link = "Visual", })
 
 vim.keymap.set("n", "<leader>f", function()
-  if vim.bo.filetype == "minifiles" then
-    require "mini.files".close()
+  if vim.bo.filetype == "tree" then
+    vim.cmd "close"
   end
 
   ff.find {
