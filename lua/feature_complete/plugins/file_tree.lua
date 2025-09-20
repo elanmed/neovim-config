@@ -15,10 +15,11 @@ mini_files.setup {
   },
   options = {
     permanent_delete = false,
+    use_as_default_explorer = false,
   },
 }
 
-vim.keymap.set("n", "<C-f>", function()
+vim.keymap.set("n", "<leader>t", function()
   if not mini_files.close() then
     mini_files.open(vim.api.nvim_buf_get_name(0))
   end
@@ -31,13 +32,29 @@ vim.api.nvim_create_autocmd("User", {
     snacks.rename.on_rename_file(event.data.from, event.data.to)
   end,
 })
-vim.keymap.set("n", "<leader>t", function()
+local tree_keymaps = {
+  ["<cr>"] = "select",
+  ["q"] = "close-tree",
+  ["<esc>"] = "close-tree",
+  ["<C-f>"] = "close-tree",
+  ["<"] = "dec-limit",
+  [">"] = "inc-limit",
+  ["h"] = "out-dir",
+  ["l"] = "in-dir",
+}
+
+vim.keymap.set("n", "<C-f>", function()
   require "tree".tree {
-    keymaps = {
-      ["<cr>"] = "select-close-tree",
-      ["t"] = "select-focus-tree",
-      ["o"] = "select-focus-win",
-      ["q"] = "close-tree",
-    },
+    keymaps = tree_keymaps,
   }
 end)
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    local bufnr = vim.api.nvim_get_current_buf()
+    local bufname = vim.api.nvim_buf_get_name(bufnr)
+    if vim.fn.isdirectory(bufname) == require "helpers".vimscript_true then
+      require "tree".tree { keymaps = tree_keymaps, }
+    end
+  end,
+})

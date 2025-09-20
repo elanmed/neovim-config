@@ -101,8 +101,8 @@ M.qf_preview_opts = {
   [[--preview-window='+{2}/3']],
 }
 
-local function maybe_close_mini_files()
-  if vim.bo.filetype == "minifiles" then
+local function maybe_close_tree()
+  if vim.bo.filetype == "tree" then
     vim.cmd "close"
   end
 end
@@ -116,7 +116,7 @@ local function get_fzf_script(script_name)
 end
 
 vim.keymap.set("n", "<leader>zm", function()
-  maybe_close_mini_files()
+  maybe_close_tree()
 
   local source = get_fzf_script "get_marks"
   local delete_mark_source = get_fzf_script "delete_mark"
@@ -139,7 +139,7 @@ vim.keymap.set("n", "<leader>zm", function()
 end)
 
 vim.keymap.set("n", "<leader>b", function()
-  maybe_close_mini_files()
+  maybe_close_tree()
 
   local bufs_opts_tbl = {
     [[--ghost='Buffers']],
@@ -158,7 +158,7 @@ vim.keymap.set("n", "<leader>b", function()
 end)
 
 vim.keymap.set("n", "<leader>z;", function()
-  maybe_close_mini_files()
+  maybe_close_tree()
 
   local cmd_history_opts_tbl = {
     [[--ghost='Command history']],
@@ -185,7 +185,7 @@ vim.keymap.set("n", "<leader>z;", function()
 end)
 
 vim.keymap.set("n", "<leader>i", function()
-  maybe_close_mini_files()
+  maybe_close_tree()
 
   local diff_opts_tbl = {
     [[--preview='git diff --color=always {} | tail -n +5']],
@@ -246,12 +246,12 @@ local function rg_with_globs(default_query)
 end
 
 vim.keymap.set("n", "<leader>a", function()
-  maybe_close_mini_files()
+  maybe_close_tree()
   rg_with_globs ""
 end)
 
 vim.keymap.set("n", "<leader>zl", function()
-  maybe_close_mini_files()
+  maybe_close_tree()
   require "fzf-lua-frecency".frecency {
     hidden = true,
     cwd_only = true,
@@ -259,7 +259,7 @@ vim.keymap.set("n", "<leader>zl", function()
 end)
 
 vim.keymap.set("n", "<leader>zy", function()
-  maybe_close_mini_files()
+  maybe_close_tree()
 
   local get_frecency_and_fd_files_script = vim.fs.joinpath(
     vim.fn.stdpath "config",
@@ -322,7 +322,7 @@ vim.keymap.set("n", "<leader>zs", function()
 end)
 
 vim.keymap.set("n", "<leader>zr", function()
-  maybe_close_mini_files()
+  maybe_close_tree()
 
   local prev_rg_query_file = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "prev-rg-query.txt")
   --- @type table

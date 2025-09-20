@@ -197,7 +197,7 @@ vim.keymap.set("n", "<leader>'", function()
   end)
 end)
 
-vim.keymap.set("n", "<leader>j", function()
+vim.keymap.set("n", "<leader>g", function()
   local editor_height = vim.o.lines - 1
   local border_height = 2
 
