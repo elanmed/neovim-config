@@ -4,6 +4,7 @@ vim.pack.add {
   "https://github.com/mfussenegger/nvim-jdtls",
   "https://github.com/savq/paq-nvim",
   "https://github.com/nvim-mini/mini.nvim",
+  "https://github.com/mbbill/undotree",
   -- cmp
   -- "Saghen/blink.cmp",
   -- "xzbdmw/colorful-menu.nvim",
@@ -28,8 +29,6 @@ vim.pack.add {
   "https://github.com/karb94/neoscroll.nvim",
   -- quickfix
   "https://github.com/elanmed/quickfix-preview.nvim",
-  -- snacks
-  "https://github.com/folke/snacks.nvim",
   -- treesitter
   "https://github.com/nvim-treesitter/nvim-treesitter",
   "https://github.com/RRethy/nvim-treesitter-endwise",

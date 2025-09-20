@@ -1,4 +1,3 @@
-local snacks = require "snacks"
 local mini_files = require "mini.files"
 mini_files.setup {
   mappings = {
@@ -25,13 +24,6 @@ vim.keymap.set("n", "<leader>t", function()
   end
 end, { desc = "Toggle mini files", })
 
--- https://github.com/folke/snacks.nvim/blob/main/docs/rename.md#minifiles
-vim.api.nvim_create_autocmd("User", {
-  pattern = "MiniFilesActionRename",
-  callback = function(event)
-    snacks.rename.on_rename_file(event.data.from, event.data.to)
-  end,
-})
 local tree_keymaps = {
   ["<cr>"] = "select",
   ["q"] = "close-tree",
