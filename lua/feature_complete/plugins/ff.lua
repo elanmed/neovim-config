@@ -15,7 +15,6 @@ vim.keymap.set("n", "<leader>f", function()
   end
 
   ff.find {
-    get_max_results_considered = function() return 1000 end,
     keymaps = {
       i = {
         ["<cr>"] = "select",
@@ -28,9 +27,6 @@ vim.keymap.set("n", "<leader>f", function()
         ["<C-u>"] = "preview-scroll-up",
       },
     },
-    on_picker_open = function()
-      vim.b.completion = false
-    end,
     results_win_opts = {
       number = true,
       scrolloff = 0,

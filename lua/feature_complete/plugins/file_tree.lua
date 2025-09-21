@@ -24,21 +24,24 @@ vim.keymap.set("n", "<leader>t", function()
   end
 end, { desc = "Toggle mini files", })
 
-local tree_keymaps = {
-  ["<cr>"] = "select",
-  ["q"] = "close-tree",
-  ["<esc>"] = "close-tree",
-  ["<C-f>"] = "close-tree",
-  ["<"] = "dec-limit",
-  [">"] = "inc-limit",
-  ["h"] = "out-dir",
-  ["l"] = "in-dir",
+local tree_opts = {
+  keymaps = {
+    ["<cr>"] = "select",
+    ["q"] = "close-tree",
+    ["<esc>"] = "close-tree",
+    ["<C-f>"] = "close-tree",
+    ["<"] = "dec-limit",
+    [">"] = "inc-limit",
+    ["h"] = "out-dir",
+    ["l"] = "in-dir",
+  },
+  tree_win_opts = {
+    signcolumn = "yes",
+  },
 }
 
 vim.keymap.set("n", "<C-f>", function()
-  require "tree".tree {
-    keymaps = tree_keymaps,
-  }
+  require "tree".tree(tree_opts)
 end)
 
 vim.api.nvim_create_autocmd("VimEnter", {
@@ -46,7 +49,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
     local bufnr = vim.api.nvim_get_current_buf()
     local bufname = vim.api.nvim_buf_get_name(bufnr)
     if vim.fn.isdirectory(bufname) == require "helpers".vimscript_true then
-      require "tree".tree { keymaps = tree_keymaps, }
+      require "tree".tree(tree_opts)
     end
   end,
 })
