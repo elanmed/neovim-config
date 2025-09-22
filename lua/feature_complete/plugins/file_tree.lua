@@ -37,6 +37,7 @@ local tree_opts = {
   },
   tree_win_opts = {
     signcolumn = "yes",
+    relativenumber = true,
   },
 }
 
