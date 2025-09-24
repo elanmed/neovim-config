@@ -45,8 +45,12 @@ vim.api.nvim_create_autocmd("User", {
     "MiniFilesActionRename",
     "MiniFilesActionCopy",
     "MiniFilesActionMove",
+    "TreeCreate",
+    "TreeDelete",
+    "TreeRename",
   },
   callback = function()
+    require "helpers".notify.doing "Refreshing ff files cache"
     ff.refresh_files_cache()
   end,
 })
