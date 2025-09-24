@@ -322,12 +322,10 @@ vim.keymap.set("n", "<leader>zs", function()
 end)
 
 vim.keymap.set("n", "/", function()
-  local query_temp = vim.fn.tempname()
-  vim.fn.writefile({}, query_temp)
   local slash_opts = {
     [[--ghost='/']],
     [[--delimiter='|']],
-    "--bind", ("'change:execute(echo {q} > %s)'"):format(query_temp),
+    [[--print-query]],
   }
 
   local curr_bufnr = vim.api.nvim_get_current_buf()
@@ -340,24 +338,20 @@ vim.keymap.set("n", "/", function()
     source = source,
     height = "half",
     options = M.extend(slash_opts, M.default_opts, M.single_select_opts),
-    sink = function(entry)
-      local line_nr, filename = unpack(vim.split(entry, "|"))
-      local query_content = vim.fn.readfile(query_temp)
-      if #query_content == 0 then
-        vim.fn.delete(query_temp)
+    sinklist = function(entry)
+      local query = entry[1]
+      local line_nr, filename = unpack(vim.split(entry[2], "|"))
+      if #query == 0 then
         vim.api.nvim_win_set_cursor(0, { tonumber(line_nr), 0, })
         return
       end
-      local query = query_content[1]
       local _, positions = unpack(vim.fn.matchfuzzypos({ filename, }, query))
       if #positions == 0 then
-        vim.fn.delete(query_temp)
         vim.api.nvim_win_set_cursor(0, { tonumber(line_nr), 0, })
         return
       end
 
       vim.api.nvim_win_set_cursor(0, { tonumber(line_nr), positions[1][1], })
-      vim.fn.delete(query_temp)
     end,
   }
 end)
