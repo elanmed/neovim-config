@@ -24,39 +24,27 @@ vim.keymap.set("n", "<leader>t", function()
   end
 end, { desc = "Toggle mini files", })
 
-local tree_opts = {
-  keymaps = {
-    ["<cr>"] = "select",
-    ["<esc>"] = "close-tree",
-    ["<C-f>"] = "close-tree",
-    ["<"] = "dec-limit",
-    [">"] = "inc-limit",
-    q = "close-tree",
-    h = "out-dir",
-    l = "in-dir",
-    yr = "yank-rel-path",
-    ya = "yank-abs-path",
-    o = "create",
-    e = "refresh",
-    dd = "delete",
-    r = "rename",
-  },
-  tree_win_opts = {
-    signcolumn = "yes",
-    relativenumber = true,
-  },
-}
-
 vim.keymap.set("n", "<C-f>", function()
-  require "tree".tree(tree_opts)
+  require "tree".tree {
+    keymaps = {
+      ["<cr>"] = "select",
+      ["<esc>"] = "close-tree",
+      ["<C-f>"] = "close-tree",
+      ["<"] = "dec-limit",
+      [">"] = "inc-limit",
+      q = "close-tree",
+      h = "out-dir",
+      l = "in-dir",
+      yr = "yank-rel-path",
+      ya = "yank-abs-path",
+      o = "create",
+      e = "refresh",
+      dd = "delete",
+      r = "rename",
+    },
+    tree_win_opts = {
+      signcolumn = "yes",
+      relativenumber = true,
+    },
+  }
 end)
-
-vim.api.nvim_create_autocmd("VimEnter", {
-  callback = function()
-    local bufnr = vim.api.nvim_get_current_buf()
-    local bufname = vim.api.nvim_buf_get_name(bufnr)
-    if vim.fn.isdirectory(bufname) == require "helpers".vimscript_true then
-      require "tree".tree(tree_opts)
-    end
-  end,
-})
