@@ -108,7 +108,7 @@ local function maybe_close_tree()
   end
 end
 
---- @param script_name "get_marks"|"delete_mark"|"get_cmd_history"|"remove_frecency_file"|"get_qf_list"|"get_qf_stack"|"get_buffers"|"get_lines"
+--- @param script_name "get_marks"|"delete_mark"|"get_cmd_history"|"get_qf_list"|"get_qf_stack"|"get_buffers"|"get_lines"
 local function get_fzf_script(script_name)
   local lua_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "%s.lua"):format(script_name)
   return table.concat(
