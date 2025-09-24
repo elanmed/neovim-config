@@ -81,6 +81,7 @@ M.default_opts = {
   [[--preview-window='up:40%']],
   [[--bind='ctrl-d:preview-page-down']],
   [[--bind='ctrl-u:preview-page-up']],
+  [[--header-border='rounded']],
 }
 
 M.multi_select_opts = {
