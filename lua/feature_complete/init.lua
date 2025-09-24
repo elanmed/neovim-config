@@ -5,9 +5,6 @@ vim.pack.add {
   "https://github.com/savq/paq-nvim",
   "https://github.com/nvim-mini/mini.nvim",
   "https://github.com/mbbill/undotree",
-  -- cmp
-  -- "Saghen/blink.cmp",
-  -- "xzbdmw/colorful-menu.nvim",
   -- far
   "https://github.com/MagicDuck/grug-far.nvim",
   -- file_tree
