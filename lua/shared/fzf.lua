@@ -259,41 +259,6 @@ vim.keymap.set("n", "<leader>zl", function()
   }
 end)
 
-vim.keymap.set("n", "<leader>zy", function()
-  maybe_close_tree()
-
-  local get_frecency_and_fd_files_script = vim.fs.joinpath(
-    vim.fn.stdpath "config",
-    "fzf_scripts",
-    "get_frecency_and_fd_files.lua"
-  )
-  local sorted_files_path = require "fzf-lua-frecency.helpers".get_sorted_files_path()
-  local source = table.concat({ "nvim", "-u", "NONE", "--headless", "-l",
-    get_frecency_and_fd_files_script,
-    sorted_files_path,
-    vim.fn.getcwd(),
-  }, " ")
-
-  local remove_frecency_file_source = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "remove_frecency_file.lua")
-  local frecency_and_fd_opts = {
-    [[--ghost='Frecency']],
-    [[--delimiter='|']],
-    ([[--bind='ctrl-x:execute(%s {2})+reload(%s)']]):format(remove_frecency_file_source, source),
-  }
-
-  M.fzf {
-    source = source,
-    options = M.extend(frecency_and_fd_opts, M.default_opts, M.single_select_opts),
-    height = "half",
-    sink = function(entry)
-      local filename = vim.split(entry, "|")[2]
-      local abs_filename = vim.fs.joinpath(vim.fn.getcwd(), filename)
-      require "fzf-lua-frecency.algo".update_file_score(abs_filename, { update_type = "increase", })
-      vim.cmd("e " .. filename)
-    end,
-  }
-end)
-
 vim.keymap.set("n", "<leader>zf", function()
   vim.cmd "cclose"
   local source = get_fzf_script "get_qf_list"
