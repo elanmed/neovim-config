@@ -8,19 +8,12 @@ mini_cmp.setup {
     process_items = function(items, base)
       return mini_cmp.default_process_items(items, base, { filtersort = "fuzzy", kind_priority = { Snippet = -1, }, })
     end,
-    auto_setup = false,
   },
   mappings = {
     force_twostep = "<C-x>",
     force_fallback = "",
   },
 }
-
-vim.api.nvim_create_autocmd("LspAttach", {
-  callback = function(args)
-    vim.bo[args.buf].omnifunc = "v:lua.MiniCompletion.completefunc_lsp"
-  end,
-})
 
 -- vim.api.nvim_create_autocmd("LspAttach", {
 --   desc = "Enable inlay hints",
