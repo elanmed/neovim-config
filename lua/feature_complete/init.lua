@@ -2,7 +2,6 @@ local h = require "helpers"
 
 vim.pack.add {
   "https://github.com/mfussenegger/nvim-jdtls",
-  "https://github.com/savq/paq-nvim",
   "https://github.com/nvim-mini/mini.nvim",
   "https://github.com/mbbill/undotree",
   -- far
