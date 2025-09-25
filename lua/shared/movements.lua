@@ -65,7 +65,6 @@ end, { desc = "Delete all global marks", })
 local function smooth_scroll(direction)
   local top_bottom_padding = 2
   local lines = math.floor((vim.o.lines - top_bottom_padding) / 2) - 1
-  print(lines)
   local count = 0
   local function step()
     if count < lines then

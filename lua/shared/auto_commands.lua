@@ -14,9 +14,8 @@ vim.api.nvim_create_autocmd("BufEnter", {
       require "helpers".notify.doing "bigfile detected"
       vim.keymap.set("n", "/", function()
         vim.api.nvim_feedkeys("/", "n", false)
-      end, { buffer = bufnr, })
+      end, { buffer = bufnr, desc = "Disable fuzzy buffer search", })
       vim.cmd "NoMatchParen"
-      vim.cmd "NeoscrollEnableBufferPM"
     end
   end,
 })

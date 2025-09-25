@@ -22,7 +22,6 @@ vim.pack.add {
   "https://github.com/folke/flash.nvim",
   "https://github.com/chentoast/marks.nvim",
   "https://github.com/elanmed/ft-highlight.nvim",
-  "https://github.com/karb94/neoscroll.nvim",
   -- quickfix
   "https://github.com/elanmed/quickfix-preview.nvim",
   -- treesitter
