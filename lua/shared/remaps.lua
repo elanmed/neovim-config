@@ -8,9 +8,6 @@ vim.keymap.set({ "n", "v", }, "<C-t>", function()
 end)
 vim.keymap.set("n", "<leader>h", ":help<space>", { desc = "Fuzzy helptags with wilder", })
 
--- vim.keymap.set("n", "G", "G" .. "zz")
--- vim.keymap.set("n", "<C-o>", "<C-o>" .. "zz")
--- vim.keymap.set("n", "<C-i>", "<C-i>" .. "zz")
 vim.keymap.set("n", "<bs>", function()
   if vim.bo.readonly then
     h.notify.error "Buffer is readonly, aborting"

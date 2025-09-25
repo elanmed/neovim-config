@@ -37,14 +37,8 @@ vim.keymap.set("i", "<C-s>", function()
 )
 vim.keymap.set("n", "glr", vim.lsp.buf.references, { desc = "LSP go to type definition", })
 vim.keymap.set("n", "gla", vim.lsp.buf.code_action, { desc = "LSP go to type definition", })
-vim.keymap.set("n", "gly", function()
-  vim.lsp.buf.type_definition()
-  -- vim.cmd "normal! zz"
-end, { desc = "LSP go to type definition", })
-vim.keymap.set("n", "gli", function()
-  vim.lsp.buf.definition()
-  -- vim.cmd "normal! zz"
-end, { desc = "LSP go to definition", })
+vim.keymap.set("n", "gly", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
+vim.keymap.set("n", "gli", vim.lsp.buf.definition, { desc = "LSP go to definition", })
 vim.keymap.set("n", "K", function() vim.lsp.buf.hover { border = "rounded", } end, { desc = "LSP hover", })
 vim.keymap.set("n", "<leader>k", function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do

@@ -61,3 +61,32 @@ vim.keymap.set("n", "dgA", function()
   vim.cmd "delmarks A-Z"
   h.notify.doing "Deleted all global marks"
 end, { desc = "Delete all global marks", })
+
+local function smooth_scroll(direction)
+  local top_bottom_padding = 2
+  local lines = math.floor((vim.o.lines - top_bottom_padding) / 2) - 1
+  print(lines)
+  local count = 0
+  local function step()
+    if count < lines then
+      vim.cmd("normal! " .. direction)
+      count = count + 1
+      vim.defer_fn(step, 10)
+    end
+  end
+  step()
+end
+
+vim.keymap.set({ "n", "v", }, "<C-d>", function()
+  smooth_scroll "j"
+end, { desc = "Smooth-scroll half-page down", })
+vim.keymap.set({ "n", "v", }, "<C-u>", function()
+  smooth_scroll "k"
+end, { desc = "Smooth-scroll half-page up", })
+
+vim.api.nvim_create_autocmd("CursorMoved", {
+  callback = function()
+    vim.cmd "normal! zz"
+  end,
+  desc = "Center the screen on movement",
+})
