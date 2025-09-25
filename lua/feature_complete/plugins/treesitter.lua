@@ -38,4 +38,9 @@ vim.treesitter.language.register("markdown", "mdx")
 
 require "ts_context_commentstring".setup {}
 require "nvim-ts-autotag".setup {}
-require "mini.ai".setup()
+local gen_spec = require "mini.ai".gen_spec
+require "mini.ai".setup {
+  custom_textobjects = {
+    F = gen_spec.treesitter { a = "@function.outer", i = "@function.inner", },
+  },
+}
