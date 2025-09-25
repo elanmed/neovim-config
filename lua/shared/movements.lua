@@ -82,10 +82,3 @@ end, { desc = "Smooth-scroll half-page down", })
 vim.keymap.set({ "n", "v", }, "<C-u>", function()
   smooth_scroll "k"
 end, { desc = "Smooth-scroll half-page up", })
-
-vim.api.nvim_create_autocmd("CursorMoved", {
-  callback = function()
-    vim.cmd "normal! zz"
-  end,
-  desc = "Center the screen on movement",
-})
