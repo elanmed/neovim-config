@@ -1,6 +1,7 @@
 local ff = require "ff"
 ff.setup {
   find_cmd = "fd --absolute-path --hidden --type f --exclude .git --exclude node_modules --exclude dist",
+  notify_frecency_update = true,
 }
 
 vim.api.nvim_set_hl(0, "FFPickerFuzzyHighlightChar", {
@@ -50,7 +51,6 @@ vim.api.nvim_create_autocmd("User", {
     "TreeRename",
   },
   callback = function()
-    require "helpers".notify.doing "Refreshing ff files cache"
     ff.refresh_files_cache()
   end,
 })
