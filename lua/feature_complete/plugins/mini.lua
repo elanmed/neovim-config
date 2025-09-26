@@ -8,6 +8,7 @@ require "mini.splitjoin".setup()
 require "mini.operators".setup {
   evaluate = { prefix = "", },
   sort = { prefix = "", },
+  replace = { prefix = "", },
 }
 
 local hipatterns = require "mini.hipatterns"
