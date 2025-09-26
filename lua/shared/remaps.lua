@@ -62,8 +62,8 @@ vim.keymap.set("n", "<leader>P", h.keys.vim_cmd_cb "pu!", { desc = "Paste on the
 vim.keymap.set("n", "<leader>e", h.keys.vim_cmd_cb "e")
 vim.keymap.set("n", "j", "gj", { desc = "j with display lines", })
 vim.keymap.set("n", "k", "gk", { desc = "k with display lines", })
-vim.keymap.set("n", "$", "g$", { desc = "k with display lines", })
-vim.keymap.set("n", "0", "g0", { desc = "k with display lines", })
+vim.keymap.set("n", "$", "g$", { desc = "$ with display lines", })
+vim.keymap.set("n", "0", "g0", { desc = "0 with display lines", })
 vim.keymap.set("i", "<C-/>", "<C-o>gcc", { remap = true, })
 vim.keymap.set("n", "<C-/>", "gcc", { remap = true, })
 vim.keymap.set("v", "<C-/>",
@@ -172,7 +172,7 @@ vim.keymap.set("n", "q", function()
     return "q"
   end
 end, { expr = true, nowait = true, desc = "Record a macro", })
-vim.keymap.set("n", "<leader>V", "G" .. "V" .. "gg", { desc = "Execute a macro", })
+vim.keymap.set("n", "<leader>V", "G" .. "V" .. "gg", { desc = "Select the entire buffer", })
 vim.keymap.set("n", "*", function()
   local word = vim.fn.expand "<cword>"
   -- https://superuser.com/a/299693
@@ -181,7 +181,6 @@ vim.keymap.set("n", "*", function()
 end, { silent = true, desc = "*, but stay on the current search result", })
 
 -- https://yobibyte.github.io/vim.html
--- TODO find a better remap
 vim.keymap.set("n", "<leader>'", function()
   vim.ui.input({ prompt = "$ ", }, function(cmd)
     if cmd and cmd ~= "" then
