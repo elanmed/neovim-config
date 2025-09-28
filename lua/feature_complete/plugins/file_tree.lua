@@ -26,25 +26,29 @@ end, { desc = "Toggle mini files", })
 
 vim.keymap.set("n", "<C-f>", function()
   require "tree".tree {
-    keymaps = {
-      ["<cr>"] = "select",
-      ["<esc>"] = "close-tree",
-      ["<C-f>"] = "close-tree",
-      ["<"] = "dec-level",
-      [">"] = "inc-level",
-      q = "close-tree",
-      h = "out-dir",
-      l = "in-dir",
-      yr = "yank-rel-path",
-      ya = "yank-abs-path",
-      o = "create",
-      e = "refresh",
-      dd = "delete",
-      r = "rename",
-    },
     tree_win_opts = {
       signcolumn = "yes",
       relativenumber = true,
     },
   }
 end)
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "tree",
+  callback = function(args)
+    vim.keymap.set("n", "<cr>", "<Plug>TreeSelect", { buffer = args.buf, })
+    vim.keymap.set("n", "q", "<Plug>TreeCloseTree", { buffer = args.buf, })
+    vim.keymap.set("n", "<esc>", "<Plug>TreeCloseTree", { buffer = args.buf, })
+    vim.keymap.set("n", "<C-f>", "<Plug>TreeCloseTree", { buffer = args.buf, })
+    vim.keymap.set("n", "<", "<Plug>TreeDecreaseLevel", { buffer = args.buf, })
+    vim.keymap.set("n", ">", "<Plug>TreeIncreaseLevel", { buffer = args.buf, })
+    vim.keymap.set("n", "h", "<Plug>TreeOutDir", { buffer = args.buf, })
+    vim.keymap.set("n", "l", "<Plug>TreeInDir", { buffer = args.buf, })
+    vim.keymap.set("n", "yr", "<Plug>TreeYankRelativePath", { buffer = args.buf, })
+    vim.keymap.set("n", "ya", "<Plug>TreeYankAbsolutePath", { buffer = args.buf, })
+    vim.keymap.set("n", "o", "<Plug>TreeCreate", { buffer = args.buf, })
+    vim.keymap.set("n", "e", "<Plug>TreeRefresh", { buffer = args.buf, })
+    vim.keymap.set("n", "dd", "<Plug>TreeDelete", { buffer = args.buf, })
+    vim.keymap.set("n", "r", "<Plug>TreeRename", { buffer = args.buf, })
+  end,
+})
