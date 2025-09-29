@@ -1,5 +1,4 @@
 local flash = require "flash"
-require "ft-highlight".setup()
 
 flash.setup {
   modes = {
