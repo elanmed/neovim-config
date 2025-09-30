@@ -1,8 +1,32 @@
-local ff = require "ff"
-ff.setup {
+vim.g.ff = {
   find_cmd = "fd --absolute-path --hidden --type f --exclude .git --exclude node_modules --exclude dist",
   notify_frecency_update = true,
+  results_win_opts = {
+    number = true,
+    scrolloff = 0,
+  },
+  preview_win_opts = {
+    number = true,
+    scrolloff = 0,
+  },
 }
+
+vim.api.nvim_create_autocmd({ "FileType", }, {
+  pattern = "ff-picker",
+  callback = function()
+    vim.keymap.set("i", "<cr>", "<Plug>FFResultSelect", { buffer = true, })
+    vim.keymap.set("i", "<c-n>", "<Plug>FFResultNext", { buffer = true, })
+    vim.keymap.set("i", "<c-p>", "<Plug>FFResultPrev", { buffer = true, })
+    vim.keymap.set("i", "<c-c>", "<Plug>FFClose", { buffer = true, })
+    vim.keymap.set("i", "<esc>", "<Plug>FFClose", { buffer = true, })
+    vim.keymap.set("i", "<tab>", "<Plug>FFPreviewToggle", { buffer = true, })
+    vim.keymap.set("i", "<c-d>", "<Plug>FFPreviewScrollDown", { buffer = true, })
+    vim.keymap.set("i", "<c-u>", "<Plug>FFPreviewScrollUp", { buffer = true, })
+  end,
+})
+
+local ff = require "ff"
+ff.setup()
 
 vim.api.nvim_set_hl(0, "FFPickerFuzzyHighlightChar", {
   fg = require "feature_complete.plugins.colorscheme".yellow,
@@ -15,28 +39,7 @@ vim.keymap.set("n", "<leader>f", function()
     vim.cmd "close"
   end
 
-  ff.find {
-    keymaps = {
-      i = {
-        ["<cr>"] = "select",
-        ["<c-n>"] = "next",
-        ["<c-p>"] = "prev",
-        ["<c-c>"] = "close",
-        ["<esc>"] = "close",
-        ["<tab>"] = "preview-toggle",
-        ["<C-d>"] = "preview-scroll-down",
-        ["<C-u>"] = "preview-scroll-up",
-      },
-    },
-    results_win_opts = {
-      number = true,
-      scrolloff = 0,
-    },
-    preview_win_opts = {
-      number = true,
-      scrolloff = 0,
-    },
-  }
+  ff.find()
 end)
 
 vim.api.nvim_create_autocmd("User", {
