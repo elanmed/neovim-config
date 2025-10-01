@@ -1,6 +1,5 @@
 vim.g.ff = {
   find_cmd = "fd --absolute-path --hidden --type f --exclude .git --exclude node_modules --exclude dist",
-  notify_frecency_update = true,
   results_win_opts = {
     number = true,
     scrolloff = 0,
@@ -9,6 +8,13 @@ vim.g.ff = {
     number = true,
     scrolloff = 0,
   },
+  on_picker_open = function()
+    vim.api.nvim_set_hl(0, "FFPickerFuzzyHighlightChar", {
+      fg = require "feature_complete.plugins.colorscheme".yellow,
+      bold = true,
+    })
+    vim.api.nvim_set_hl(0, "FFPickerCursorLine", { link = "Visual", })
+  end,
 }
 
 vim.api.nvim_create_autocmd({ "FileType", }, {
@@ -26,14 +32,6 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
 })
 
 local ff = require "ff"
-ff.setup()
-
-vim.api.nvim_set_hl(0, "FFPickerFuzzyHighlightChar", {
-  fg = require "feature_complete.plugins.colorscheme".yellow,
-  bold = true,
-})
-vim.api.nvim_set_hl(0, "FFPickerCursorLine", { link = "Visual", })
-
 vim.keymap.set("n", "<leader>f", function()
   if vim.bo.filetype == "tree" then
     vim.cmd "close"
