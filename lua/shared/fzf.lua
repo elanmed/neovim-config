@@ -131,10 +131,12 @@ vim.keymap.set("n", "<leader>zm", function()
   M.fzf {
     height = "half",
     source = source,
-    options = M.extend(marks_opts_tbl, M.default_opts, M.single_select_opts),
-    sink = function(entry)
-      local filename = vim.split(entry, "|")[2]
-      vim.cmd("e " .. filename)
+    options = M.extend(marks_opts_tbl, M.default_opts, M.multi_select_opts),
+    sinklist = function(entries)
+      for _, entry in ipairs(entries) do
+        local _, filename = unpack(vim.split(entry, "|"))
+        vim.cmd("edit " .. filename)
+      end
     end,
   }
 end)
@@ -306,6 +308,9 @@ vim.keymap.set("n", "/", function()
     options = M.extend(slash_opts, M.default_opts, M.single_select_opts),
     sinklist = function(entry)
       local query = entry[1]
+      if not entry[2] then
+        return
+      end
       local line_nr, filename = unpack(vim.split(entry[2], "|"))
       if #query == 0 then
         vim.api.nvim_win_set_cursor(0, { tonumber(line_nr), 0, })
