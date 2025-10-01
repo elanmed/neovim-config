@@ -38,3 +38,10 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   end,
   desc = "Avoid listing unnamed buffers",
 })
+
+vim.api.nvim_create_autocmd("CmdlineChanged", {
+  pattern = ":",
+  callback = function()
+    vim.fn.wildtrigger()
+  end,
+})

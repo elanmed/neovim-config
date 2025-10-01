@@ -1,10 +1,6 @@
 local h = require "helpers"
 local fzf = require "shared.fzf"
 
-vim.cmd "set wildchar=<C-n>"
-
-vim.opt.scrolloff = 999
-vim.opt.completeopt = "menuone,noselect,fuzzy"
 vim.keymap.set("i", "<C-x>", "<C-x><C-o>")
 
 -- removing banner causes a bug where the terminal flickers

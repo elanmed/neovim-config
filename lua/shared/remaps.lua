@@ -217,6 +217,7 @@ vim.keymap.set("n", "<leader>g", function()
 end)
 
 vim.keymap.set("n", "<leader>,", h.keys.vim_cmd_cb "file", { desc = "Show the current file", })
+vim.keymap.set("c", "<C-e>", "<C-e><C-z>")
 
 vim.keymap.set("n", "<C-h>", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<C-l>", "<nop>", { desc = "TODO find a remap", })

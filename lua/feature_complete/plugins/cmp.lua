@@ -1,7 +1,6 @@
 local mini_cmp = require "mini.completion"
 require "nvim-autopairs".setup {}
 
-vim.opt.completeopt = "menuone,noselect,fuzzy"
 mini_cmp.setup {
   delay = { completion = 10 ^ 7, },
   lsp_completion = {
