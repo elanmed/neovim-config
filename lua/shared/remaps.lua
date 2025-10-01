@@ -36,11 +36,11 @@ vim.keymap.set("n", "<leader>cc", function()
   vim.cmd "pclose"
   vim.cmd "cclose"
 end)
-vim.keymap.set("n", "g/c", "/\\C<left><left>", { desc = "/ case sensitive", })
-vim.keymap.set("n", "g/w", "/\\<\\><left><left>", { desc = "/ word sensitive", })
-vim.keymap.set("n", "g//", "/\\<\\>\\C<left><left><left><left>", { desc = "/ case and word sensitive", })
-vim.keymap.set("n", "g/v", "/\\V", { desc = "/ without regex", })
-vim.keymap.set("n", "g/s", ":%s/\\<\\>\\C/<left><left><left><left><left>",
+vim.keymap.set("n", "<leader>/c", "/\\C<left><left>", { desc = "/ case sensitive", })
+vim.keymap.set("n", "<leader>/w", "/\\<\\><left><left>", { desc = "/ word sensitive", })
+vim.keymap.set("n", "<leader>//", "/\\<\\>\\C<left><left><left><left>", { desc = "/ case and word sensitive", })
+vim.keymap.set("n", "<leader>/v", "/\\V", { desc = "/ without regex", })
+vim.keymap.set("n", "<leader>/s", ":%s/\\<\\>\\C/<left><left><left><left><left>",
   { desc = "Search and replace in the current buffer, case and word sensitive", })
 vim.keymap.set("n", "<leader>n", h.keys.vim_cmd_cb "nohlsearch", { desc = "Turn off highlighting", })
 vim.keymap.set("n", "<leader>x", h.keys.vim_cmd_cb "tabclose", { desc = "Close the current tab", })
@@ -221,4 +221,5 @@ vim.keymap.set("c", "<C-e>", "<C-e><C-z>")
 
 vim.keymap.set("n", "<C-h>", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<C-l>", "<nop>", { desc = "TODO find a remap", })
-vim.keymap.set("n", "<leader>/", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>l", "<nop>", { desc = "TODO find a remap", })
