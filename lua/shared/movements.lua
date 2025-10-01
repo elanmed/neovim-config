@@ -63,8 +63,7 @@ vim.keymap.set("n", "dgA", function()
 end, { desc = "Delete all global marks", })
 
 local function smooth_scroll(direction)
-  local top_bottom_padding = 2
-  local lines = math.floor((vim.o.lines - top_bottom_padding) / 2) - 1
+  local lines = math.floor((vim.api.nvim_win_get_height(0)) / 2) - 1
   local count = 0
   local function step()
     if count < lines then
