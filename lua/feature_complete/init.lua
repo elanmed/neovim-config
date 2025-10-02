@@ -29,7 +29,6 @@ vim.pack.add {
   "https://github.com/RRethy/nvim-treesitter-endwise",
   "https://github.com/windwp/nvim-ts-autotag",
   "https://github.com/windwp/nvim-autopairs",
-  "https://github.com/JoosepAlviste/nvim-ts-context-commentstring",
 }
 
 vim.system({ "make", }, { cwd = vim.pack.get { "telescope-fzf-native.nvim", }[1].path, }):wait()

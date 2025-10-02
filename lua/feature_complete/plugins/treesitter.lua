@@ -36,7 +36,6 @@ require "nvim-treesitter.configs".setup {
 vim.filetype.add { extension = { mdx = "mdx", }, }
 vim.treesitter.language.register("markdown", "mdx")
 
-require "ts_context_commentstring".setup {}
 require "nvim-ts-autotag".setup {}
 local gen_spec = require "mini.ai".gen_spec
 require "mini.ai".setup {
