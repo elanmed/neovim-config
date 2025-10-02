@@ -1,18 +1,18 @@
-local mini_cmp = require "mini.completion"
+-- local mini_cmp = require "mini.completion"
 require "nvim-autopairs".setup {}
 
-mini_cmp.setup {
-  delay = { completion = 10 ^ 7, },
-  lsp_completion = {
-    process_items = function(items, base)
-      return mini_cmp.default_process_items(items, base, { filtersort = "fuzzy", kind_priority = { Snippet = -1, }, })
-    end,
-  },
-  mappings = {
-    force_twostep = "<C-x>",
-    force_fallback = "",
-  },
-}
+-- mini_cmp.setup {
+--   delay = { completion = 10 ^ 7, },
+--   lsp_completion = {
+--     process_items = function(items, base)
+--       return mini_cmp.default_process_items(items, base, { filtersort = "fuzzy", kind_priority = { Snippet = -1, }, })
+--     end,
+--   },
+--   mappings = {
+--     force_twostep = "<C-x>",
+--     force_fallback = "",
+--   },
+-- }
 
 -- vim.api.nvim_create_autocmd("LspAttach", {
 --   desc = "Enable inlay hints",
