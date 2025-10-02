@@ -14,7 +14,7 @@ end
 
 local global_marks = ("abcdefghijklmnopqrstuvwxyz"):upper()
 
-vim.keymap.set("n", "<leader>la", function()
+vim.keymap.set("n", "<leader>lt", function()
   local function set_mark(letter)
     vim.api.nvim_buf_set_mark(0, letter, vim.fn.line ".", 0, {})
     h.notify.doing(("Set global mark %s to line %s"):format(letter, vim.fn.line "."))
