@@ -27,14 +27,3 @@ vim.keymap.set("n", "<leader>S", function()
     pattern = "^",
   }
 end)
-
-require "marks".setup {
-  excluded_filetypes = { "oil", },
-  default_mappings = false,
-  mappings = {
-    toggle = "<leader>mt",
-    next = "]a",
-    prev = "[a",
-    delete_buf = "<leader>md",
-  },
-}

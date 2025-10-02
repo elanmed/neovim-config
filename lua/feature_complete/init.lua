@@ -20,7 +20,6 @@ vim.pack.add {
   "https://github.com/stevearc/conform.nvim",
   -- movements
   "https://github.com/folke/flash.nvim",
-  "https://github.com/chentoast/marks.nvim",
   "https://github.com/elanmed/ft-highlight.nvim",
   -- quickfix
   "https://github.com/elanmed/quickfix-preview.nvim",
