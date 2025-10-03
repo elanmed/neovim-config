@@ -1,15 +1,21 @@
 local h = require "helpers"
 
 --- @param mark_name string
-local function is_global_mark_unset(mark_name)
+local function get_global_mark_info(mark_name)
   local mark = vim.api.nvim_get_mark(mark_name, {})
-  return mark[1] == 0 and mark[2] == 0 and mark[3] == 0 and mark[4] == ""
+  if mark[1] == 0 and mark[2] == 0 and mark[3] == 0 and mark[4] == "" then
+    return nil
+  end
+  return { row = mark[1], bufnr = mark[3], }
 end
 
 --- @param mark_name string
-local function is_buffer_mark_unset(mark_name)
+local function get_buffer_mark_info(mark_name)
   local mark = vim.api.nvim_buf_get_mark(0, mark_name)
-  return mark[1] == 0 and mark[2] == 0
+  if mark[1] == 0 and mark[2] == 0 then
+    return nil
+  end
+  return { row = mark[1], col = mark[2], }
 end
 
 local local_marks = ("abcdefghijklmnopqrstuvwxyz")
@@ -36,8 +42,7 @@ local function refresh_mark_signs(bufnr)
   vim.fn.sign_unplace(group, { buffer = bufnr, })
 
   for letter in (global_marks .. local_marks):gmatch "." do
-    local is_buffer_mark_set = not is_buffer_mark_unset(letter)
-    if is_buffer_mark_set then
+    if get_buffer_mark_info(letter) then
       local id = letter:byte() * 100
       local lnum = unpack(vim.api.nvim_buf_get_mark(bufnr, letter))
       vim.fn.sign_place(id, group, letter, bufnr, { lnum = lnum, priority = 10, })
@@ -51,53 +56,112 @@ local function set_mark(letter)
   h.notify.doing(("Set mark %s to line %s"):format(letter, vim.fn.line "."))
 end
 
+local function del_mark(letter)
+  vim.api.nvim_buf_del_mark(0, letter)
+  refresh_mark_signs(0)
+  h.notify.doing(("Deleting mark %s"):format(letter))
+end
+
 vim.api.nvim_create_autocmd("BufWinEnter", {
   callback = function(args)
     refresh_mark_signs(args.buf)
   end,
 })
 
+vim.keymap.set("n", "<leader>me", function()
+  refresh_mark_signs(0)
+  h.notify.doing "Refreshing marks"
+end)
+
 vim.keymap.set("n", "<leader>mg", function()
   for letter in global_marks:gmatch "." do
-    local is_buffer_mark_set = not is_buffer_mark_unset(letter)
-
-    if is_buffer_mark_set then
+    local global_mark_info = get_global_mark_info(letter)
+    if not global_mark_info then
       set_mark(letter)
+      return
+    end
+
+    local bufnr = vim.api.nvim_get_current_buf()
+    if global_mark_info and global_mark_info.bufnr == bufnr then
+      if global_mark_info.row == vim.fn.line "." then
+        del_mark(letter)
+      else
+        set_mark(letter)
+      end
+      return
+    else
+    end
+  end
+end, { desc = "Set a global mark for the buffer", })
+
+vim.keymap.set("n", "<leader>ml", function()
+  for letter in local_marks:gmatch "." do
+    local mark_info = get_buffer_mark_info(letter)
+    if not mark_info then
+      set_mark(letter)
+      return
+    end
+
+    if mark_info and mark_info.row == vim.fn.line "." then
+      del_mark(letter)
+      return
+    end
+  end
+end, { desc = "Set a local mark for the buffer", })
+
+--- @param direction "next"|"prev"
+local function navigate_mark(direction)
+  --- @type {row: number, col: number}[]
+  local mark_list = {}
+  for letter in (global_marks .. local_marks):gmatch "." do
+    local mark_info = get_buffer_mark_info(letter)
+    if mark_info then
+      table.insert(mark_list, mark_info)
+    end
+  end
+
+  table.sort(mark_list, function(a, b)
+    if direction == "next" then
+      return b.row > a.row
+    else
+      return b.row < a.row
+    end
+  end)
+
+  for _, mark_info in ipairs(mark_list) do
+    local row_condition = (function()
+      if direction == "next" then
+        return mark_info.row > vim.fn.line "."
+      end
+      return mark_info.row < vim.fn.line "."
+    end)()
+
+    if row_condition then
+      vim.api.nvim_win_set_cursor(0, { mark_info.row, mark_info.col, })
       return
     end
   end
 
-  local next_avail_mark = nil
-  for letter in global_marks:gmatch "." do
-    if is_global_mark_unset(letter) then
-      next_avail_mark = letter
-      break
-    end
-  end
+  if #mark_list == 0 then return end
+  local mark_info = mark_list[1]
+  vim.api.nvim_win_set_cursor(0, { mark_info.row, mark_info.col, })
+end
 
-  if next_avail_mark then set_mark(next_avail_mark) end
-end, { desc = "Set a global mark for the buffer", })
-
-vim.keymap.set("n", "<leader>ml", function()
-  local next_avail_mark = nil
-  for letter in local_marks:gmatch "." do
-    if is_buffer_mark_unset(letter) then
-      next_avail_mark = letter
-      break
-    end
-  end
-
-  if next_avail_mark then set_mark(next_avail_mark) end
-end, { desc = "Set a local mark for the buffer", })
+vim.keymap.set("n", "]a", function() navigate_mark "next" end)
+vim.keymap.set("n", "[a", function() navigate_mark "prev" end)
 
 vim.keymap.set("n", "<leader>md", function()
+  local deleted = false
   for letter in (global_marks .. local_marks):gmatch "." do
-    local is_buffer_mark_set = not is_buffer_mark_unset(letter)
-
-    if is_buffer_mark_set then
+    if get_buffer_mark_info(letter) then
       vim.api.nvim_buf_del_mark(0, letter)
-      h.notify.doing("Deleted mark " .. letter)
+      deleted = true
     end
+  end
+  if deleted then
+    h.notify.doing "Deleted marks"
+  else
+    h.notify.doing "No marks in the buffer"
   end
 
   refresh_mark_signs(0)
