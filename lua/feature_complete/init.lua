@@ -25,7 +25,7 @@ vim.pack.add {
   "https://github.com/elanmed/quickfix-preview.nvim",
   -- treesitter
   "https://github.com/nvim-treesitter/nvim-treesitter",
-  "https://github.com/RRethy/nvim-treesitter-endwise",
+  "https://github.com/tpope/vim-endwise",
   "https://github.com/windwp/nvim-ts-autotag",
   "https://github.com/windwp/nvim-autopairs",
 }
