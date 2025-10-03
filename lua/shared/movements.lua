@@ -10,12 +10,12 @@ local function get_global_mark_info(mark_name)
 end
 
 --- @param mark_name string
-local function get_buffer_mark_info(mark_name)
+local function get_buffer_mark_row(mark_name)
   local mark = vim.api.nvim_buf_get_mark(0, mark_name)
   if mark[1] == 0 and mark[2] == 0 then
     return nil
   end
-  return { row = mark[1], col = mark[2], }
+  return mark[1]
 end
 
 local local_marks = ("abcdefghijklmnopqrstuvwxyz")
@@ -42,7 +42,7 @@ local function refresh_mark_signs(bufnr)
   vim.fn.sign_unplace(group, { buffer = bufnr, })
 
   for letter in (global_marks .. local_marks):gmatch "." do
-    if get_buffer_mark_info(letter) then
+    if get_buffer_mark_row(letter) then
       local id = letter:byte() * 100
       local lnum = unpack(vim.api.nvim_buf_get_mark(bufnr, letter))
       vim.fn.sign_place(id, group, letter, bufnr, { lnum = lnum, priority = 10, })
@@ -82,27 +82,26 @@ vim.keymap.set("n", "<leader>mg", function()
     end
 
     local bufnr = vim.api.nvim_get_current_buf()
-    if global_mark_info and global_mark_info.bufnr == bufnr then
+    if global_mark_info.bufnr == bufnr then
       if global_mark_info.row == vim.fn.line "." then
         del_mark(letter)
       else
         set_mark(letter)
       end
       return
-    else
     end
   end
 end, { desc = "Set a global mark for the buffer", })
 
 vim.keymap.set("n", "<leader>ml", function()
   for letter in local_marks:gmatch "." do
-    local mark_info = get_buffer_mark_info(letter)
-    if not mark_info then
+    local mark_row = get_buffer_mark_row(letter)
+    if not mark_row then
       set_mark(letter)
       return
     end
 
-    if mark_info and mark_info.row == vim.fn.line "." then
+    if mark_row == vim.fn.line "." then
       del_mark(letter)
       return
     end
@@ -111,40 +110,40 @@ end, { desc = "Set a local mark for the buffer", })
 
 --- @param direction "next"|"prev"
 local function navigate_mark(direction)
-  --- @type {row: number, col: number}[]
-  local mark_list = {}
+  --- @type number[]
+  local mark_row_list = {}
   for letter in (global_marks .. local_marks):gmatch "." do
-    local mark_info = get_buffer_mark_info(letter)
-    if mark_info then
-      table.insert(mark_list, mark_info)
+    local mark_row = get_buffer_mark_row(letter)
+    if mark_row then
+      table.insert(mark_row_list, mark_row)
     end
   end
 
-  table.sort(mark_list, function(a, b)
+  table.sort(mark_row_list, function(a, b)
     if direction == "next" then
-      return b.row > a.row
+      return b > a
     else
-      return b.row < a.row
+      return b < a
     end
   end)
 
-  for _, mark_info in ipairs(mark_list) do
+  for _, mark_row in ipairs(mark_row_list) do
     local row_condition = (function()
       if direction == "next" then
-        return mark_info.row > vim.fn.line "."
+        return mark_row > vim.fn.line "."
       end
-      return mark_info.row < vim.fn.line "."
+      return mark_row < vim.fn.line "."
     end)()
 
     if row_condition then
-      vim.api.nvim_win_set_cursor(0, { mark_info.row, mark_info.col, })
+      vim.api.nvim_win_set_cursor(0, { mark_row, 0, })
       return
     end
   end
 
-  if #mark_list == 0 then return end
-  local mark_info = mark_list[1]
-  vim.api.nvim_win_set_cursor(0, { mark_info.row, mark_info.col, })
+  if #mark_row_list == 0 then return end
+  local mark_row = mark_row_list[1]
+  vim.api.nvim_win_set_cursor(0, { mark_row, 0, })
 end
 
 vim.keymap.set("n", "]a", function() navigate_mark "next" end)
@@ -153,7 +152,7 @@ vim.keymap.set("n", "[a", function() navigate_mark "prev" end)
 vim.keymap.set("n", "<leader>md", function()
   local deleted = false
   for letter in (global_marks .. local_marks):gmatch "." do
-    if get_buffer_mark_info(letter) then
+    if get_buffer_mark_row(letter) then
       vim.api.nvim_buf_del_mark(0, letter)
       deleted = true
     end
