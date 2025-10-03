@@ -253,14 +253,6 @@ vim.keymap.set("n", "<leader>a", function()
   rg_with_globs ""
 end)
 
-vim.keymap.set("n", "<leader>zl", function()
-  maybe_close_tree()
-  require "fzf-lua-frecency".frecency {
-    hidden = true,
-    cwd_only = true,
-  }
-end)
-
 vim.keymap.set("n", "<leader>zf", function()
   vim.cmd "cclose"
   local source = get_fzf_script "get_qf_list"
