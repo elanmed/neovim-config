@@ -173,6 +173,12 @@ vim.keymap.set("n", "<leader>mD", function()
   h.notify.doing "Deleted all global marks"
 end, { desc = "Delete all global marks", })
 
+vim.keymap.set("n", "m", function()
+  local char = vim.fn.getcharstr()
+  vim.schedule(function() refresh_mark_signs(0) end)
+  return "m" .. char
+end, { nowait = true, expr = true, })
+
 local function smooth_scroll(direction)
   local lines = math.floor((vim.api.nvim_win_get_height(0)) / 2) - 1
   local count = 0
