@@ -3,7 +3,6 @@ local h = require "helpers"
 vim.pack.add {
   "https://github.com/mfussenegger/nvim-jdtls",
   "https://github.com/nvim-mini/mini.nvim",
-  "https://github.com/mbbill/undotree",
   -- far
   "https://github.com/MagicDuck/grug-far.nvim",
   -- file_tree
