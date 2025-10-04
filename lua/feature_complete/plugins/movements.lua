@@ -1,15 +1,5 @@
 local flash = require "flash"
-
-flash.setup {
-  modes = {
-    char = {
-      enabled = false,
-    },
-  },
-  prompt = {
-    prefix = { { "󱐋 ", "FlashPromptIcon", }, },
-  },
-}
+flash.setup { prompt = { prefix = {}, }, }
 
 vim.keymap.set("n", "<leader>v", function() flash.treesitter() end)
 vim.keymap.set("n", "<leader>s", function() flash.jump() end)
