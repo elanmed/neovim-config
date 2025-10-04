@@ -4,9 +4,9 @@ vim.keymap.set("n", "L", h.keys.vim_cmd_cb "bnext")
 vim.keymap.set("n", "H", h.keys.vim_cmd_cb "bprev")
 vim.keymap.set("i", "<C-t>", "<C-o>:Snippet<space>")
 vim.keymap.set({ "n", "v", }, "<C-t>", function()
-  h.notify.error "snippets only supported in insert mode!"
+  h.notify.error "Snippets only supported in insert mode!"
 end)
-vim.keymap.set("n", "<leader>h", ":help<space>", { desc = "Fuzzy helptags with wilder", })
+vim.keymap.set("n", "<leader>h", ":help<space>")
 
 vim.keymap.set("n", "<bs>", function()
   if vim.bo.readonly then
@@ -24,6 +24,11 @@ vim.keymap.set("n", "<leader>w", function()
     h.notify.error "Buffer is readonly, aborting"
     return
   end
+  if vim.bo.buftype ~= "" then
+    h.notify.error "`buftype` is set, aborting"
+    return
+  end
+
   local view = vim.fn.winsaveview()
   vim.cmd "normal! gg=G"
   vim.fn.winrestview(view)
@@ -103,11 +108,15 @@ vim.keymap.set("v", "<leader>yc",
   end, { expr = true, remap = true, desc = "Yank the current selection, comment it, and paste it below", })
 
 vim.keymap.set("n", "<leader>ya", function()
-  vim.fn.setreg("+", vim.fn.expand "%:p")
+  local abs_path = vim.api.nvim_buf_get_name(0)
+  vim.fn.setreg("+", abs_path)
+  h.notify.doing("yanked: " .. abs_path)
 end, { desc = "Yank the Absolute path of the current buffer", })
 
 vim.keymap.set("n", "<leader>yr", function()
-  vim.fn.setreg("+", vim.fn.expand "%:~:.")
+  local rel_path = vim.fs.relpath(vim.fn.getcwd(), vim.api.nvim_buf_get_name(0))
+  vim.fn.setreg("+", rel_path)
+  h.notify.doing("yanked: " .. rel_path)
 end, { desc = "Yank the Relative path of the current buffer", })
 
 vim.keymap.set("n", "<leader>yf", function()
@@ -194,7 +203,7 @@ vim.keymap.set("n", "<leader>'", function()
 end)
 
 vim.keymap.set("n", "<leader>g", function()
-  local editor_height = vim.o.lines - 1
+  local editor_height = vim.api.nvim_win_get_height(0)
   local border_height = 2
 
   local term_bufnr = vim.api.nvim_create_buf(false, true)

@@ -31,6 +31,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
 vim.keymap.set("n", "<C-n>", "<Plug>QuickfixPreviewCNext")
 vim.keymap.set("n", "<C-p>", "<Plug>QuickfixPreviewCPrev")
 
+-- TODO: fix this
 vim.api.nvim_create_autocmd({ "BufWinEnter", }, {
   callback = function()
     if not vim.api.nvim_get_option_value("previewwindow", { win = 0, }) then
