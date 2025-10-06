@@ -1,6 +1,5 @@
 vim.opt.clipboard = "unnamedplus" -- os clipboard
 vim.opt.cursorline = true
-vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.confirm = true
 vim.opt.splitright = true
