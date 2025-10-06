@@ -17,7 +17,7 @@ M.fzf = function(opts)
   local source_temp = vim.fn.tempname()
   vim.fn.writefile({}, sink_temp)
 
-  local editor_height = vim.api.nvim_win_get_height(0)
+  local editor_height = vim.o.lines
   local border_height = 2
 
   local term_bufnr = vim.api.nvim_create_buf(false, false)
