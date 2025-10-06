@@ -20,6 +20,13 @@ vim.opt.shiftwidth = 2 -- number of spaces to insert/delete when in insert mode
 vim.opt.foldlevelstart = 99
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+vim.opt.foldcolumn = "1"
+vim.opt.fillchars = {
+  foldclose = "",
+  foldopen = "",
+  foldsep = " ",
+  foldinner = " ",
+}
 -- disable vim backups
 vim.opt.swapfile = false
 vim.opt.backup = false
