@@ -13,7 +13,6 @@ vim.pack.add {
   "https://github.com/elanmed/fzf-lua-frecency.nvim",
   -- ff
   "https://github.com/elanmed/ff.nvim",
-  "https://github.com/nvim-telescope/telescope-fzf-native.nvim",
   -- lsp
   "https://github.com/neovim/nvim-lspconfig",
   "https://github.com/stevearc/conform.nvim",
@@ -28,7 +27,5 @@ vim.pack.add {
   "https://github.com/windwp/nvim-ts-autotag",
   "https://github.com/windwp/nvim-autopairs",
 }
-
-vim.system({ "make", }, { cwd = vim.pack.get { "telescope-fzf-native.nvim", }[1].path, }):wait()
 
 h.require_dir "feature_complete/plugins"
