@@ -1,5 +1,6 @@
 local mini_diff = require "mini.diff"
 mini_diff.setup {
+  view = { style = "number", },
   mappings = {
     apply = "",
     reset = "gh",
