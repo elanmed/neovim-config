@@ -21,8 +21,8 @@ vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 vim.opt.foldcolumn = "1"
 vim.opt.fillchars = {
-  foldclose = "",
-  foldopen = "",
+  foldclose = ">",
+  foldopen = "v",
   foldsep = " ",
   foldinner = " ",
 }

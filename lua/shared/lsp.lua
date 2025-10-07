@@ -1,17 +1,7 @@
 local h = require "helpers"
 
-local signs = {
-  text = {
-    [vim.diagnostic.severity.ERROR] = " ",
-    [vim.diagnostic.severity.INFO] = " ",
-    [vim.diagnostic.severity.WARN] = " ",
-    [vim.diagnostic.severity.HINT] = " ",
-  },
-}
-
 vim.diagnostic.config {
   virtual_lines = false,
-  signs = signs,
 }
 
 local function toggle_virtual_lines()
@@ -19,7 +9,6 @@ local function toggle_virtual_lines()
 
   vim.diagnostic.config {
     virtual_lines = not current_virtual_lines,
-    signs = signs,
   }
 
   if not current_virtual_lines then
