@@ -3,6 +3,7 @@ local tbl = {}
 local os = {}
 local dev = {}
 local notify = {}
+local utils = {}
 
 local vimscript_true = 1
 local vimscript_false = 0
@@ -115,11 +116,20 @@ end
 --- @param val T | nil
 --- @param default_val T
 --- @return T
-local default = function(val, default_val)
+utils.default = function(val, default_val)
   if val == nil then
     return default_val
   end
   return val
+end
+
+--- @param try string
+--- @param catch string
+utils.try_catch = function(try, catch)
+  local success, _ = pcall(vim.cmd, try)
+  if not success then
+    pcall(vim.cmd, catch)
+  end
 end
 
 return {
@@ -131,5 +141,5 @@ return {
   require_dir = require_dir,
   vimscript_true = vimscript_true,
   vimscript_false = vimscript_false,
-  default = default,
+  utils = utils,
 }

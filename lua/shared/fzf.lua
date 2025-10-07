@@ -375,8 +375,8 @@ end, { desc = "Yank a file name starting with `wf_modules`", })
 --- @param opts vim.ui.select.Opts
 --- @param on_choice fun(item: T?, idx: integer?)
 local function fzf_ui_select(items, opts, on_choice)
-  opts.prompt = h.default(opts.prompt, "")
-  opts.format_item = h.default(opts.format_item, function(item) return item end)
+  opts.prompt = h.utils.default(opts.prompt, "")
+  opts.format_item = h.utils.default(opts.format_item, function(item) return item end)
   local select_opts = {
     [[--ghost='Select']],
     [[--delimiter='|']],
