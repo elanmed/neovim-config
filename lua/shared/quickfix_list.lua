@@ -29,8 +29,9 @@ function _G.GetQuickfixTextFunc()
   local qf_list = vim.fn.getqflist()
 
   local function has_preview_win()
-    for _, win_id in ipairs(vim.api.nvim_list_wins()) do
-      if vim.api.nvim_get_option_value("previewwindow", { win = win_id, }) then
+    for _, winnr in ipairs(vim.api.nvim_list_wins()) do
+      local bufnr = vim.api.nvim_win_get_buf(winnr)
+      if vim.api.nvim_get_option_value("filetype", { buf = bufnr, }) == "quickfix-preview" then
         return true
       end
     end
@@ -70,12 +71,26 @@ function _G.GetQuickfixTextFunc()
   return items
 end
 
-vim.api.nvim_create_autocmd({ "Filetype", }, {
+vim.keymap.set("n", "<C-n>", function()
+  h.utils.try_catch("cnext", "cfirst")
+end)
+vim.keymap.set("n", "<C-n>", function()
+  h.utils.try_catch("cprev", "clast")
+end)
+
+vim.api.nvim_create_autocmd("FileType", {
   pattern = "qf",
   callback = function()
     vim.keymap.set("n", "<Esc>", h.keys.vim_cmd_cb "cclose", { buffer = true, })
     vim.keymap.set("n", "<C-c>", h.keys.vim_cmd_cb "cclose", { buffer = true, })
     vim.keymap.set("n", "q", h.keys.vim_cmd_cb "cclose", { buffer = true, nowait = true, })
+    vim.keymap.set("n", "o", h.keys.vim_cmd_cb("cc " .. vim.fn.line "."), { buffer = true, })
+    vim.keymap.set("n", "<cr>", function()
+      local curr_line = vim.fn.line "."
+      vim.cmd "cclose"
+      vim.cmd("cc " .. curr_line)
+    end, { buffer = true, })
+
     vim.keymap.set("n", "H", "<nop>", { buffer = true, })
     vim.keymap.set("n", "L", "<nop>", { buffer = true, })
     vim.keymap.set("n", "<C-o>", "<nop>", { buffer = true, })
