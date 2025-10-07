@@ -91,10 +91,35 @@ vim.api.nvim_create_autocmd("FileType", {
       vim.cmd("cc " .. curr_line)
     end, { buffer = true, })
 
-    vim.keymap.set("n", "H", "<nop>", { buffer = true, })
-    vim.keymap.set("n", "L", "<nop>", { buffer = true, })
-    vim.keymap.set("n", "<C-o>", "<nop>", { buffer = true, })
-    vim.keymap.set("n", "<C-i>", "<nop>", { buffer = true, })
+    local next = function()
+      local next_qf_index = (function()
+        local curr_qf_index = vim.fn.line "."
+        local qf_list = vim.fn.getqflist()
+        if curr_qf_index == #qf_list then
+          return 1
+        end
+        return curr_qf_index + 1
+      end)()
+
+      if next_qf_index == nil then return end
+      vim.fn.setqflist({}, "a", { ["idx"] = next_qf_index, })
+    end
+    vim.keymap.set("n", "<C-n>", next, { buffer = true, })
+
+    local prev = function()
+      local prev_qf_index = (function()
+        local curr_qf_index = vim.fn.line "."
+        local qf_list = vim.fn.getqflist()
+        if curr_qf_index == 1 then
+          return #qf_list
+        end
+        return curr_qf_index - 1
+      end)()
+
+      if prev_qf_index == nil then return end
+      vim.fn.setqflist({}, "a", { ["idx"] = prev_qf_index, })
+    end
+    vim.keymap.set("n", "<C-p>", prev, { buffer = true, })
 
     vim.keymap.set("n", ">", function()
       local success = pcall(vim.cmd, "cnewer")
@@ -109,5 +134,10 @@ vim.api.nvim_create_autocmd("FileType", {
         h.notify.error "No older list!"
       end
     end, { buffer = true, desc = "Go to the pre quickfix list", })
+
+    vim.keymap.set("n", "H", "<nop>", { buffer = true, })
+    vim.keymap.set("n", "L", "<nop>", { buffer = true, })
+    vim.keymap.set("n", "<C-o>", "<nop>", { buffer = true, })
+    vim.keymap.set("n", "<C-i>", "<nop>", { buffer = true, })
   end,
 })
