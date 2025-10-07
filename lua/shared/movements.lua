@@ -29,8 +29,8 @@ local function define_mark_signs(letters, hl)
   end
 end
 
-define_mark_signs(global_marks, "DiagnosticInfo")
-define_mark_signs(local_marks, "DiagnosticInfo")
+define_mark_signs(global_marks, "Mark")
+define_mark_signs(local_marks, "Mark")
 
 --- @param bufnr number
 local function refresh_mark_signs(bufnr)
