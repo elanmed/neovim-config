@@ -6,11 +6,12 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
     vim.keymap.set("n", "<C-p>", "<Plug>QuickfixPreviewPrev", { buffer = true, })
 
     vim.keymap.set("n", "<leader>x", function()
-      -- TODO: allow closing the quickfix preview
+      vim.cmd "QuickfixPreviewClosePreview"
       vim.fn.setqflist({}, "f")
     end, { buffer = true, desc = "Clear all quickfix lists", })
 
     vim.keymap.set("n", "<leader>d", function()
+      vim.cmd "QuickfixPreviewClosePreview"
       vim.fn.setqflist({}, "r")
     end, { buffer = true, desc = "Clear the current quickfix list", })
   end,
