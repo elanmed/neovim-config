@@ -83,8 +83,8 @@ vim.keymap.set("n", "<leader>yc",
     local z_register = [["z]]
     local yank_line = "yy"
     local comment_line = "gcc"
-    local paste_line = "p"
-    return z_register .. yank_line .. comment_line .. z_register .. paste_line
+    local paste = "p"
+    return z_register .. yank_line .. comment_line .. z_register .. paste
   end,
   { expr = true, remap = true, desc = "Yank the current line, comment it, and paste it below", })
 
@@ -103,9 +103,16 @@ vim.keymap.set("v", "<leader>yc",
         comment_selection ..
         move_to_end_selection ..
         z_register ..
-        paste ..
-        move_to_end_selection
+        paste
   end, { expr = true, remap = true, desc = "Yank the current selection, comment it, and paste it below", })
+
+vim.keymap.set("v", "<leader>yp", function()
+  local z_register = [["z]]
+  local yank_and_unselect = "y"
+  local move_to_end_selection = "`>"
+  local paste = "p"
+  return z_register .. yank_and_unselect .. move_to_end_selection .. z_register .. paste
+end, { expr = true, })
 
 vim.keymap.set("n", "<leader>ya", function()
   local abs_path = vim.api.nvim_buf_get_name(0)
@@ -227,6 +234,16 @@ end)
 
 vim.keymap.set("n", "<leader>,", h.keys.vim_cmd_cb "file", { desc = "Show the current file", })
 vim.keymap.set("c", "<C-e>", "<C-e><C-z>")
+
+-- https://vim.fandom.com/wiki/Moving_lines_up_or_down
+vim.keymap.set("n", "<A-j>", [[:m .+1<CR>==]])
+vim.keymap.set("n", "<A-k>", [[:m .-2<CR>==]])
+vim.keymap.set("i", "<A-j>", [[<Esc>:m .+1<CR>==gi]])
+vim.keymap.set("i", "<A-k>", [[<Esc>:m .-2<CR>==gi]])
+vim.keymap.set("v", "<A-j>", [[:m '>+1<CR>gv=gv]])
+vim.keymap.set("v", "<A-k>", [[:m '<-2<CR>gv=gv]])
+vim.keymap.set("v", ">", ">gv", { desc = "indent, preserving the selecting", })
+vim.keymap.set("v", "<", "<gv", { desc = "outdent, preserving the selecting", })
 
 vim.keymap.set("n", "<C-j>", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
