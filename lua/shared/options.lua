@@ -62,18 +62,6 @@ local function next_non_blank_line(lnum)
 end
 
 --- @param lnum number
-local function prev_non_blank_line(lnum)
-  local curr = lnum - 1
-  while curr >= 1 do
-    if vim.fn.getline(curr):match "%S+" then
-      return curr
-    end
-    curr = curr - 1
-  end
-  return -2
-end
-
---- @param lnum number
 local function indent_level(lnum)
   local shiftwidth = vim.api.nvim_get_option_value("shiftwidth", {})
   return tostring(math.floor(vim.fn.indent(lnum) / shiftwidth))
@@ -92,12 +80,9 @@ _G.FoldExpr = function()
 
   local curr_indent = indent_level(lnum)
   local next_indent = indent_level(next_non_blank_line(lnum))
-  local prev_indent = indent_level(prev_non_blank_line(lnum))
 
   if next_indent > curr_indent then
     return ">" .. next_indent
-  elseif prev_indent > curr_indent then
-    return "<" .. prev_indent
   else
     return curr_indent
   end
