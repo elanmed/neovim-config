@@ -27,5 +27,5 @@ vim.pack.add {
   "https://github.com/windwp/nvim-ts-autotag",
   "https://github.com/windwp/nvim-autopairs",
 }
-
+vim.cmd "packadd nvim.undotree"
 h.require_dir "feature_complete/plugins"
