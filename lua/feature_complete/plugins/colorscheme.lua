@@ -58,18 +58,6 @@ vim.api.nvim_set_hl(0, "NotifyDoing", { fg = M.orange, })
 vim.api.nvim_set_hl(0, "NotifyToggleOn", { fg = M.green, })
 vim.api.nvim_set_hl(0, "NotifyToggleOff", { fg = M.purple, })
 
-local diagnostic_hls = {
-  "DiagnosticUnderlineError",
-  "DiagnosticUnderlineWarn",
-  "DiagnosticUnderlineInfo",
-  "DiagnosticUnderlineHint",
-  "DiagnosticUnderlineOk",
-}
-
-for _, diagnostic_hl in ipairs(diagnostic_hls) do
-  vim.api.nvim_set_hl(0, diagnostic_hl, {})
-end
-
 vim.api.nvim_create_autocmd("TextYankPost", {
   pattern = "*",
   callback = function() vim.highlight.on_yank() end,

@@ -10,6 +10,7 @@ local signs = {
 }
 
 vim.diagnostic.config {
+  underline = false,
   virtual_lines = false,
   signs = signs,
 }
@@ -18,6 +19,7 @@ local function toggle_virtual_lines()
   local current_virtual_lines = vim.diagnostic.config().virtual_lines
 
   vim.diagnostic.config {
+    underline = false,
     virtual_lines = not current_virtual_lines,
     signs = signs,
   }
