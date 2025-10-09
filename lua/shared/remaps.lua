@@ -1,7 +1,5 @@
 local h = require "helpers"
 
-vim.keymap.set("n", "L", h.keys.vim_cmd_cb "bnext")
-vim.keymap.set("n", "H", h.keys.vim_cmd_cb "bprev")
 vim.keymap.set("i", "<C-t>", "<C-o>:Snippet<space>")
 vim.keymap.set({ "n", "v", }, "<C-t>", function()
   h.notify.error "Snippets only supported in insert mode!"
@@ -247,3 +245,5 @@ vim.keymap.set("v", "<", "<gv", { desc = "outdent, preserving the selecting", })
 
 vim.keymap.set("n", "<C-j>", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "L", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "H", "<nop>", { desc = "TODO find a remap", })
