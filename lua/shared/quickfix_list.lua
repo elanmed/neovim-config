@@ -74,7 +74,7 @@ end
 vim.keymap.set("n", "<C-n>", function()
   h.utils.try_catch("cnext", "cfirst")
 end)
-vim.keymap.set("n", "<C-n>", function()
+vim.keymap.set("n", "<C-p>", function()
   h.utils.try_catch("cprev", "clast")
 end)
 
