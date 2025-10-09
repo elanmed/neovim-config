@@ -245,5 +245,5 @@ vim.keymap.set("v", "<", "<gv", { desc = "outdent, preserving the selecting", })
 
 vim.keymap.set("n", "<C-j>", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
-vim.keymap.set("n", "L", "<nop>", { desc = "TODO find a remap", })
-vim.keymap.set("n", "H", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "L", "}")
+vim.keymap.set("n", "H", "{")

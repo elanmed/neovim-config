@@ -29,3 +29,16 @@ mini_diff.setup {
 }
 
 vim.keymap.set("n", "<C-b>", mini_diff.toggle_overlay, { desc = "Toggle mini diff overlay", })
+
+local input_wasted_keys = function(key)
+  local action = function()
+    vim.fn.input "Wasted keys:"
+  end
+  require "mini.keymap".map_combo("n", string.rep(key, 5), action)
+end
+input_wasted_keys "h"
+input_wasted_keys "j"
+input_wasted_keys "k"
+input_wasted_keys "l"
+input_wasted_keys "w"
+input_wasted_keys "b"
