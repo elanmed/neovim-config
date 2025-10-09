@@ -32,7 +32,7 @@ vim.keymap.set("n", "<C-b>", mini_diff.toggle_overlay, { desc = "Toggle mini dif
 
 local input_wasted_keys = function(key)
   local action = function()
-    vim.fn.input "Wasted keys:"
+    vim.fn.input "Wasted keys: "
   end
   require "mini.keymap".map_combo("n", string.rep(key, 5), action)
 end
