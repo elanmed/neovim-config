@@ -36,6 +36,7 @@ end)
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "tree",
   callback = function(args)
+    vim.b.minicursorword_disable = true
     vim.keymap.set("n", "<cr>", "<Plug>TreeSelect", { buffer = args.buf, })
     vim.keymap.set("n", "q", "<Plug>TreeCloseTree", { buffer = args.buf, })
     vim.keymap.set("n", "<esc>", "<Plug>TreeCloseTree", { buffer = args.buf, })
