@@ -155,7 +155,7 @@ vim.keymap.set("n", "<leader>b", function()
     source = source,
     options = M.extend(bufs_opts_tbl, M.default_opts, M.single_select_opts),
     sink = function(entry)
-      vim.cmd("edit " .. entry)
+      vim.cmd("edit " .. vim.split(entry, "|")[2])
     end,
   }
 end)

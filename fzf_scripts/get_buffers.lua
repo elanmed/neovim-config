@@ -30,7 +30,7 @@ for _, bufnr in ipairs(buf_list) do
   local rel_path = vim.fs.relpath(cwd, bufname)
 
   num_bufs = num_bufs + 1
-  io.write(rel_path .. "\n")
+  io.write(("%s|%s\n"):format(bufnr, rel_path))
   ::continue::
 end
 
