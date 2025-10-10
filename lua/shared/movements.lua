@@ -179,7 +179,7 @@ vim.keymap.set("n", "m", function()
 end, { nowait = true, expr = true, })
 
 local function smooth_scroll(direction)
-  local lines = math.floor((vim.api.nvim_win_get_height(0)) / 2) - 1
+  local lines = math.floor((vim.o.lines - 1) / 2) - 1
   local count = 0
   local function step()
     if count < lines then
