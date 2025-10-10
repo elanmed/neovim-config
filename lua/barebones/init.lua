@@ -1,8 +1,6 @@
 local h = require "helpers"
 local fzf = require "shared.fzf"
 
-vim.keymap.set("i", "<C-x>", "<C-x><C-o>")
-
 -- removing banner causes a bug where the terminal flickers
 -- vim.g.netrw_banner = 0 -- removes banner at the top
 
@@ -28,6 +26,3 @@ vim.keymap.set("n", "<leader>f", function()
     end,
   }
 end)
-
-vim.keymap.set("n", "<C-n>", h.keys.vim_cmd_cb "cnext")
-vim.keymap.set("n", "<C-p>", h.keys.vim_cmd_cb "cprev")
