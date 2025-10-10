@@ -135,8 +135,6 @@ vim.api.nvim_create_autocmd("FileType", {
       end
     end, { buffer = true, desc = "Go to the pre quickfix list", })
 
-    vim.keymap.set("n", "H", "<nop>", { buffer = true, })
-    vim.keymap.set("n", "L", "<nop>", { buffer = true, })
     vim.keymap.set("n", "<C-o>", "<nop>", { buffer = true, })
     vim.keymap.set("n", "<C-i>", "<nop>", { buffer = true, })
   end,
