@@ -43,10 +43,6 @@ _G.FoldExpr = function()
     return "-1"
   end
 
-  if line:match "^import.*^" then
-    return "1"
-  end
-
   local curr_indent = indent_level(lnum)
   local next_indent = indent_level(next_non_blank_line(lnum))
 
