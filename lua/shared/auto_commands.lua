@@ -64,7 +64,7 @@ vim.api.nvim_create_autocmd("CompleteChanged", {
     if not client then return end
 
     local pum_pos = vim.fn.pum_getpos()
-    if not pum_pos.width then return end
+    if not pum_pos then return end
 
     client:request("completionItem/resolve", completion_item, function(err, result)
       if err then return end
@@ -73,9 +73,12 @@ vim.api.nvim_create_autocmd("CompleteChanged", {
 
       local lines = vim.lsp.util.convert_input_to_markdown_lines(doc)
       vim.lsp.util.open_floating_preview(lines, "markdown", {
+        anchor_bias = "below",
         border = "rounded",
-        width = pum_pos.width * 1.5,
-        offset_x = -1 * (#item.word + 1),
+        width = pum_pos.width,
+        max_height = pum_pos.height,
+        offset_y = -1,
+        offset_x = pum_pos.width - #item.word + 2,
       })
     end)
   end,
