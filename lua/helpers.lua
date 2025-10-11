@@ -1,5 +1,6 @@
 local keys = {}
 local tbl = {}
+local str = {}
 local os = {}
 local dev = {}
 local notify = {}
@@ -132,6 +133,24 @@ utils.try_catch = function(try, catch)
   end
 end
 
+--- @class PadOpts
+--- @field val string | number
+--- @field max_len number
+--- @field side 'left' | 'right'
+--- @param opts PadOpts
+str.pad = function(opts)
+  if #tostring(opts.val) >= opts.max_len then
+    return tostring(opts.val)
+  end
+
+  local num_spaces = opts.max_len - #tostring(opts.val)
+  if opts.side == "left" then
+    return string.rep(" ", num_spaces) .. tostring(opts.val)
+  end
+  return tostring(opts.val) .. string.rep(" ", num_spaces)
+end
+
+
 return {
   keys = keys,
   tbl = tbl,
@@ -142,4 +161,5 @@ return {
   vimscript_true = vimscript_true,
   vimscript_false = vimscript_false,
   utils = utils,
+  str = str,
 }

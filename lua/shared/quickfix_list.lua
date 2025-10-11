@@ -7,21 +7,6 @@ end
 
 vim.opt.quickfixtextfunc = "v:lua.GetQuickfixTextFunc"
 
---- @param num number
---- @param num_digits number
---- @param side 'left' | 'right'
-local function pad_num(num, num_digits, side)
-  if #tostring(num) >= num_digits then
-    return tostring(num)
-  end
-
-  local num_spaces = num_digits - #tostring(num)
-  if side == "left" then
-    return string.rep(" ", num_spaces) .. tostring(num)
-  end
-  return tostring(num) .. string.rep(" ", num_spaces)
-end
-
 function _G.GetQuickfixTextFunc()
   local longest_bufname_len = 0
   local longest_row_len = 0
@@ -53,9 +38,9 @@ function _G.GetQuickfixTextFunc()
         bufname ..
         string.rep(" ", buffer_padding_right) ..
         " | " ..
-        pad_num(item.lnum, longest_row_len, "left") ..
+        h.str.pad { val = item.lnum, max_len = longest_row_len, side = "left", } ..
         ":" ..
-        pad_num(item.col, longest_col_len, "right") ..
+        h.str.pad { val = item.col, max_len = longest_col_len, side = "right", } ..
         " | " .. vim.fn.trim(item.text)
 
     local misc_padding = 10
