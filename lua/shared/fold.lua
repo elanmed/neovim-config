@@ -36,6 +36,7 @@ local function indent_level(lnum)
   return tostring(math.floor(vim.fn.indent(lnum) / shiftwidth))
 end
 
+-- https://learnvimscriptthehardway.stevelosh.com/chapters/49.html
 _G.FoldExpr = function()
   local lnum = vim.v.lnum
   local line = vim.fn.getline(lnum)
