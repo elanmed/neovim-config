@@ -231,7 +231,20 @@ vim.keymap.set("n", "<leader>g", function()
 end)
 
 vim.keymap.set("n", "<leader>,", h.keys.vim_cmd_cb "file", { desc = "Show the current file", })
+
 vim.keymap.set("c", "<C-e>", "<C-e><C-z>")
+vim.keymap.set("c", "<Left>", function()
+  if vim.fn.wildmenumode() == h.vimscript_true then
+    return "<C-e><Left><C-z>"
+  end
+  return "<Left>"
+end, { expr = true, })
+vim.keymap.set("c", "<Right>", function()
+  if vim.fn.wildmenumode() == h.vimscript_true then
+    return "<C-e><Right><C-z>"
+  end
+  return "<Right>"
+end, { expr = true, })
 
 -- https://vim.fandom.com/wiki/Moving_lines_up_or_down
 vim.keymap.set("n", "<A-j>", [[:m .+1<CR>==]])
