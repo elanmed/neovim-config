@@ -281,7 +281,7 @@ vim.keymap.set("n", "<leader>zs", function()
   }
 end)
 
-vim.keymap.set("n", "/", function()
+vim.keymap.set("n", "<leader>/z", function()
   local slash_opts = {
     [[--ghost='/']],
     [[--delimiter='|']],

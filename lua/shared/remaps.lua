@@ -39,10 +39,10 @@ vim.keymap.set("n", "<leader>cc", function()
   vim.cmd "pclose"
   vim.cmd "cclose"
 end)
+vim.keymap.set("n", "/", "/\\V", { desc = "/ without regex", })
 vim.keymap.set("n", "<leader>/c", "/\\C<left><left>", { desc = "/ case sensitive", })
 vim.keymap.set("n", "<leader>/w", "/\\<\\><left><left>", { desc = "/ word sensitive", })
 vim.keymap.set("n", "<leader>/e", "/\\<\\>\\C<left><left><left><left>", { desc = "/ case and word sensitive", })
-vim.keymap.set("n", "<leader>/v", "/\\V", { desc = "/ without regex", })
 vim.keymap.set("n", "<leader>/s", ":%s/\\<\\>\\C/<left><left><left><left><left>",
   { desc = "Search and replace in the current buffer, case and word sensitive", })
 vim.keymap.set("n", "<leader>n", h.keys.vim_cmd_cb "nohlsearch", { desc = "Turn off highlighting", })
