@@ -8,17 +8,20 @@ local get_tab_section = function()
   return table.concat({ "%#Search#", curr_tab, "%#TabLine#", }, " ")
 end
 
-local get_buf_section = function()
-  local alt_bufnr = vim.fn.bufnr "#"
-  if not vim.api.nvim_buf_is_valid(alt_bufnr) then
-    return "#"
+--- @param buf_type "curr"|"alt"
+local get_buf_section = function(buf_type)
+  local buf_symbol = buf_type == "alt" and "#" or "%"
+  local formatted_buf_symbol = buf_type == "alt" and "Alt: " or "Curr: "
+  local bufnr = vim.fn.bufnr(buf_symbol)
+  if not vim.api.nvim_buf_is_valid(bufnr) then
+    return formatted_buf_symbol
   end
-  local alt_bufname = vim.api.nvim_buf_get_name(alt_bufnr)
-  local dirname = vim.fs.basename(vim.fs.dirname(alt_bufname))
-  local basename = vim.fs.basename(alt_bufname)
-  return "%#TabLineSel#" .. "#" .. vim.fs.joinpath(dirname, basename)
+  local bufname = vim.api.nvim_buf_get_name(bufnr)
+  local dirname = vim.fs.basename(vim.fs.dirname(bufname))
+  local basename = vim.fs.basename(bufname)
+  return "%#TabLineTitle#" .. formatted_buf_symbol .. "%#TabLineSel#" .. vim.fs.joinpath(dirname, basename)
 end
 
 _G.Tabline = function()
-  return table.concat({ get_tab_section(), get_buf_section(), }, " ")
+  return table.concat({ get_buf_section "curr", "%=", get_buf_section "alt", "%=", "%=", }, " ")
 end

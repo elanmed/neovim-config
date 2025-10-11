@@ -47,6 +47,7 @@ vim.api.nvim_set_hl(0, "Mark", { fg = M.yellow, })
 vim.api.nvim_set_hl(0, "FlashLabel", { link = "IncSearch", })
 vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal", })
 vim.api.nvim_set_hl(0, "Pmenu", { link = "Normal", })
+vim.api.nvim_set_hl(0, "TabLineTitle", { fg = M.cyan, })
 
 vim.api.nvim_set_hl(0, "NotifyError", { fg = M.red, })
 vim.api.nvim_set_hl(0, "NotifyDoing", { fg = M.orange, })
