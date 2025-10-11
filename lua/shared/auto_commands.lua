@@ -55,8 +55,7 @@ vim.api.nvim_create_autocmd("CompleteChanged", {
         border = "rounded",
         width = pum_pos.width,
         max_height = pum_pos.height,
-        offset_y = -1,
-        offset_x = pum_pos.width - #item.word + 2,
+        offset_x = pum_pos.width - #item.word + 3,
       })
     end)
   end,

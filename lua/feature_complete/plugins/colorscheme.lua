@@ -46,12 +46,7 @@ vim.api.nvim_set_hl(0, "Mark", { fg = M.yellow, })
 
 vim.api.nvim_set_hl(0, "FlashLabel", { link = "IncSearch", })
 vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal", })
-
-vim.api.nvim_set_hl(0, "MiniTablineCurrent", { bold = true, fg = M.yellow, bg = M.dark_grey, })
-vim.api.nvim_set_hl(0, "MiniTablineModifiedCurrent", { link = "MiniTablineCurrent", })
-
-vim.api.nvim_set_hl(0, "MiniTablineModifiedVisible", { link = "MiniTablineVisible", })
-vim.api.nvim_set_hl(0, "MiniTablineModifiedHidden", { link = "MiniTablineHidden", })
+vim.api.nvim_set_hl(0, "Pmenu", { link = "Normal", })
 
 vim.api.nvim_set_hl(0, "NotifyError", { fg = M.red, })
 vim.api.nvim_set_hl(0, "NotifyDoing", { fg = M.orange, })
