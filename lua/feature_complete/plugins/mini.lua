@@ -2,7 +2,6 @@ require "mini.surround".setup()
 require "mini.indentscope".setup()
 require "mini.icons".setup()
 require "mini.cursorword".setup()
--- require "mini.tabline".setup()
 require "mini.splitjoin".setup()
 
 local hipatterns = require "mini.hipatterns"
@@ -35,6 +34,7 @@ local input_wasted_keys = function(key)
     if vim.api.nvim_get_option_value("buftype", { buf = 0, }) == "quickfix" then return end
     if vim.api.nvim_get_option_value("filetype", { buf = 0, }) == "help" then return end
     if vim.api.nvim_get_option_value("filetype", { buf = 0, }) == "tree" then return end
+    if vim.api.nvim_get_option_value("filetype", { buf = 0, }) == "nvim-undotree" then return end
     vim.fn.input "Wasted keys: "
   end
   require "mini.keymap".map_combo("n", string.rep(key, 5), action)
