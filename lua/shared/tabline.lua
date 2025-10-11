@@ -14,6 +14,7 @@ local get_buf_section = function(buf_type)
   local formatted_buf_symbol = buf_type == "alt" and "Alt: " or "Curr: "
   local bufnr = vim.fn.bufnr(buf_symbol)
   if not vim.api.nvim_buf_is_valid(bufnr) then
+    if buf_type == "alt" then return "" end
     return formatted_buf_symbol
   end
   local bufname = vim.api.nvim_buf_get_name(bufnr)
