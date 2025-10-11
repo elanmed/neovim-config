@@ -108,7 +108,7 @@ local function maybe_close_tree()
   end
 end
 
---- @param script_name "get_marks"|"delete_mark"|"get_cmd_history"|"get_qf_list"|"get_qf_stack"|"get_buffers"|"get_lines"
+--- @param script_name "get_marks"|"delete_mark"|"get_cmd_history"|"get_qf_list"|"get_qf_stack"|"get_buffers"|"get_lines"|"delete_buffer"
 local function get_fzf_script(script_name)
   local lua_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "%s.lua"):format(script_name)
   return table.concat(
@@ -144,11 +144,14 @@ end)
 vim.keymap.set("n", "<leader>b", function()
   maybe_close_tree()
 
+  local source = get_fzf_script "get_buffers"
+  local delete_buf_source = get_fzf_script "delete_buffer"
   local bufs_opts_tbl = {
+    [[--delimiter='|']],
     [[--ghost='Buffers']],
+    ([[--bind='ctrl-x:execute(%s {1})+reload(%s)']]):format(delete_buf_source, source),
   }
 
-  local source = get_fzf_script "get_buffers"
 
   M.fzf {
     height = "half",
