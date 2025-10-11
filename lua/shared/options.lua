@@ -24,7 +24,10 @@ vim.opt.writebackup = false
 vim.opt.laststatus = 0
 vim.opt.ruler = false
 vim.opt.showcmd = false
-vim.opt.suffixesadd = { ".tsx", ".jsx", ".ts", ".js", }
+vim.opt.suffixesadd = {
+  ".tsx", ".jsx", ".ts", ".js",
+  "index.tsx", "index.jsx", "index.ts", "index.js",
+}
 vim.opt.completeopt = { "menuone", "noselect", "fuzzy", }
 vim.opt.wildmode = "noselect"
 vim.opt.wildoptions = "fuzzy"
