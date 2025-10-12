@@ -50,6 +50,15 @@ tbl.map = function(predicate, list)
   return mapped_list
 end
 
+--- @param ... any[]
+tbl.extend = function(...)
+  local result = {}
+  for _, list in ipairs { ..., } do
+    vim.list_extend(result, list)
+  end
+  return result
+end
+
 os.is_linux = function()
   return vim.fn.has "macunix" == vimscript_false
 end

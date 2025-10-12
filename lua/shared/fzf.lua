@@ -68,14 +68,6 @@ local guicursor = vim.opt.guicursor:get()
 table.insert(guicursor, "a:blinkon0")
 vim.opt.guicursor = guicursor
 
-M.extend = function(...)
-  local result = {}
-  for _, list in ipairs { ..., } do
-    vim.list_extend(result, list)
-  end
-  return result
-end
-
 M.default_opts = {
   "--cycle",
   [[--preview-window='up:40%']],
@@ -131,7 +123,7 @@ vim.keymap.set("n", "<leader>zm", function()
   M.fzf {
     height = "half",
     source = source,
-    options = M.extend(marks_opts_tbl, M.default_opts, M.multi_select_opts),
+    options = h.tbl.extend(marks_opts_tbl, M.default_opts, M.multi_select_opts),
     sinklist = function(entries)
       for _, entry in ipairs(entries) do
         local _, filename = unpack(vim.split(entry, "|"))
@@ -156,7 +148,7 @@ vim.keymap.set("n", "<leader>b", function()
   M.fzf {
     height = "half",
     source = source,
-    options = M.extend(bufs_opts_tbl, M.default_opts, M.single_select_opts),
+    options = h.tbl.extend(bufs_opts_tbl, M.default_opts, M.single_select_opts),
     sink = function(entry)
       vim.cmd("edit " .. vim.split(entry, "|")[2])
     end,
@@ -182,7 +174,7 @@ vim.keymap.set("n", "<leader>z;", function()
 
   M.fzf {
     source = source,
-    options = M.extend(cmd_history_opts_tbl, M.default_opts, M.single_select_opts),
+    options = h.tbl.extend(cmd_history_opts_tbl, M.default_opts, M.single_select_opts),
     height = "half",
     sink = function(selected)
       vim.api.nvim_feedkeys(":" .. selected, "n", false)
@@ -199,7 +191,7 @@ vim.keymap.set("n", "<leader>i", function()
 
   M.fzf {
     source = "git diff --name-only HEAD",
-    options = M.extend(diff_opts_tbl, M.default_opts, M.single_select_opts),
+    options = h.tbl.extend(diff_opts_tbl, M.default_opts, M.single_select_opts),
     height = "full",
     sink = function(entry) vim.cmd("edit " .. entry) end,
   }
@@ -245,7 +237,7 @@ local function rg_with_globs(default_query)
 
   M.fzf {
     source = rg_with_globs_script,
-    options = M.extend(rg_options, M.default_opts, M.multi_select_opts, M.qf_preview_opts),
+    options = h.tbl.extend(rg_options, M.default_opts, M.multi_select_opts, M.qf_preview_opts),
     height = "full",
     sinklist = sinklist,
   }
@@ -262,7 +254,7 @@ vim.keymap.set("n", "<leader>zf", function()
   local quickfix_list_opts = { [[--ghost='Qf list']], }
   M.fzf {
     source = source,
-    options = M.extend(quickfix_list_opts, M.default_opts, M.multi_select_opts, M.qf_preview_opts),
+    options = h.tbl.extend(quickfix_list_opts, M.default_opts, M.multi_select_opts, M.qf_preview_opts),
     height = "full",
     sinklist = sinklist,
   }
@@ -274,7 +266,7 @@ vim.keymap.set("n", "<leader>zs", function()
   local quickfix_list_opts = { [[--ghost='Qf stack']], }
   M.fzf {
     source = source,
-    options = M.extend(quickfix_list_opts, M.default_opts, M.single_select_opts),
+    options = h.tbl.extend(quickfix_list_opts, M.default_opts, M.single_select_opts),
     height = "half",
     sink = function(entry)
       local qf_id = vim.split(entry, "|")[1]
@@ -300,7 +292,7 @@ vim.keymap.set("n", "<leader>/z", function()
   M.fzf {
     source = source,
     height = "half",
-    options = M.extend(slash_opts, M.default_opts, M.single_select_opts),
+    options = h.tbl.extend(slash_opts, M.default_opts, M.single_select_opts),
     sinklist = function(entry)
       local query = entry[1]
       if not entry[2] then
@@ -393,7 +385,7 @@ local function fzf_ui_select(items, opts, on_choice)
   M.fzf {
     source = formatted_items,
     height = "half",
-    options = M.extend(select_opts, M.default_opts, M.single_select_opts),
+    options = h.tbl.extend(select_opts, M.default_opts, M.single_select_opts),
     sink = function(entry)
       local index = tonumber(vim.split(entry, "|")[1])
       on_choice(items[tonumber(index)], tonumber(index))

@@ -18,7 +18,7 @@ vim.keymap.set("n", "<leader>f", function()
   fzf.fzf {
     source = "fd --hidden --type f --exclude .git --exclude node_modules --exclude dist",
     height = "half",
-    options = fzf.extend(fzf.default_opts, fzf.multi_select_opts),
+    options = h.tbl.extend(fzf.default_opts, fzf.multi_select_opts),
     sinklist = function(entries)
       for _, entry in ipairs(entries) do
         vim.cmd("edit " .. entry)
