@@ -23,7 +23,6 @@ vim.pack.add {
   "https://github.com/elanmed/quickfix-preview.nvim",
   -- treesitter
   "https://github.com/nvim-treesitter/nvim-treesitter",
-  "https://github.com/tpope/vim-endwise",
   "https://github.com/windwp/nvim-ts-autotag",
 }
 vim.cmd "packadd nvim.undotree"
