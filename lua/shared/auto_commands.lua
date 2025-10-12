@@ -1,5 +1,3 @@
-local h = require "helpers"
-
 vim.api.nvim_create_autocmd("CursorMoved", {
   callback = function(args)
     local filetype = vim.api.nvim_get_option_value("filetype", { buf = args.buf, })

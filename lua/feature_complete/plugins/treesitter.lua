@@ -25,4 +25,3 @@ require "mini.ai".setup {
     F = gen_spec.treesitter { a = "@function.outer", i = "@function.inner", },
   },
 }
-require "nvim-autopairs".setup {}
