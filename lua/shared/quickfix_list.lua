@@ -5,7 +5,7 @@ local function shorten_bufname(bufnr)
   return vim.fs.basename(vim.fn.bufname(bufnr))
 end
 
-vim.opt.quickfixtextfunc = "v:lua.GetQuickfixTextFunc"
+vim.o.quickfixtextfunc = "v:lua.GetQuickfixTextFunc"
 
 function _G.GetQuickfixTextFunc()
   local longest_bufname_len = 0

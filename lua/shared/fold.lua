@@ -1,5 +1,5 @@
-vim.opt.foldlevelstart = 99
-vim.opt.foldcolumn = "1"
+vim.o.foldlevelstart = 99
+vim.o.foldcolumn = "1"
 vim.opt.fillchars = {
   foldclose = "+",
   foldopen = "-",
@@ -11,8 +11,8 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function()
     -- automatically set to treesitter in `ftplugin/*.lua`
     vim.schedule(function()
-      vim.opt.foldmethod = "expr"
-      vim.opt.foldexpr = "v:lua.FoldExpr()"
+      vim.o.foldmethod = "expr"
+      vim.o.foldexpr = "v:lua.FoldExpr()"
     end)
   end,
 })

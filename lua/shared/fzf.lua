@@ -63,10 +63,8 @@ M.fzf = function(opts)
   vim.cmd "startinsert"
 end
 
-local guicursor = vim.opt.guicursor:get()
 -- :h cursor-blinking
-table.insert(guicursor, "a:blinkon0")
-vim.opt.guicursor = guicursor
+local guicursor = vim.opt.guicursor:append "a:blinkon0"
 
 M.default_opts = {
   "--cycle",

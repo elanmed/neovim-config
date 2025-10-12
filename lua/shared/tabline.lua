@@ -1,6 +1,6 @@
 local h = require "helpers"
-vim.opt.showtabline = 2
-vim.opt.tabline = "%!v:lua.Tabline()"
+vim.o.showtabline = 2
+vim.o.tabline = "%!v:lua.Tabline()"
 
 local max_len = math.floor(vim.o.columns / 2)
 

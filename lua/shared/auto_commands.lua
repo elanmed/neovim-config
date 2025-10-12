@@ -11,7 +11,7 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   callback = function(args)
     local bufname = vim.api.nvim_buf_get_name(args.buf)
     if bufname == "" then
-      vim.api.nvim_set_option_value("buflisted", false, { buf = args.buf, })
+      vim.bo[args.buf].buflisted = false
     end
   end,
   desc = "Avoid listing unnamed buffers",

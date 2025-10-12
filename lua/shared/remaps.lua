@@ -192,6 +192,7 @@ vim.keymap.set("n", "*", function()
   -- https://superuser.com/a/299693
   vim.cmd([[let @/ = '\<]] .. word .. [[\>']])
   vim.api.nvim_set_option_value("hlsearch", true, {})
+  vim.o.hlsearch = true
 end, { silent = true, desc = "*, but stay on the current search result", })
 
 -- https://yobibyte.github.io/vim.html
