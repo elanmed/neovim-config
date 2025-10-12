@@ -66,11 +66,8 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function()
     vim.keymap.set("i", "<Cr>", function()
       local current_line = vim.api.nvim_get_current_line()
-
       local patterns = {
-        "%s*local%s+function%s*",
         "%s*local%s+function%(%s*%)%s*",
-        "%s*function%s*",
         "%s*function%(%s*%)%s*",
         "%s+do%s*$",
         "%s+then%s*$",
@@ -87,7 +84,8 @@ vim.api.nvim_create_autocmd("FileType", {
       if current_line:match "end%s*$" then return "<Cr>" end
 
       local indent = current_line:match "^%s*"
-      return "\r" .. indent .. "end<C-o>O" .. indent .. (" "):rep(vim.o.shiftwidth)
+      vim.print(#indent)
+      return "\r" .. "end<C-o>O"
     end, { expr = true, buffer = true, })
   end,
 })
