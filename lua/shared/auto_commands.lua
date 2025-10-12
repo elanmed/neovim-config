@@ -60,3 +60,34 @@ vim.api.nvim_create_autocmd("CompleteChanged", {
     end)
   end,
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "lua",
+  callback = function()
+    vim.keymap.set("i", "<Cr>", function()
+      local current_line = vim.api.nvim_get_current_line()
+
+      local patterns = {
+        "^%s*local%s+function%s*",
+        "^%s*local%s+function%(%s*%)%s*",
+        "^%s*function%s*",
+        "^%s*function%(%s*%)%s*",
+        "%s+do%s*$",
+        "%s+then%s*$",
+      }
+      local has_match = false
+      for _, pattern in ipairs(patterns) do
+        if current_line:match(pattern) then
+          has_match = true
+          break
+        end
+      end
+
+      if not has_match then return "<Cr>" end
+      if current_line:match "end%s*$" then return "<Cr>" end
+
+      local indent = current_line:match "^%s*"
+      return "\r" .. indent .. "end<C-o>O" .. indent .. (" "):rep(vim.o.shiftwidth)
+    end, { expr = true, buffer = true, })
+  end,
+})
