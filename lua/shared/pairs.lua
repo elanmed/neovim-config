@@ -22,7 +22,7 @@ local function skip_or_insert_char(typed_char)
     local should_insert_pair =
         char_right == nil or
         char_right == "" or
-        char_right == left_to_right_pair[typed_char] or
+        vim.tbl_contains({ ")", "}", "]", }, char_right) or
         char_right:match "%s"
 
     if vim.tbl_contains({ "(", "{", "[", }, typed_char) then
