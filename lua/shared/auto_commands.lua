@@ -49,13 +49,24 @@ vim.api.nvim_create_autocmd("CompleteChanged", {
       local doc = vim.tbl_get(result, "documentation", "value")
       if not doc then return end
 
+      -- preview anchor is top-right
       local lines = vim.lsp.util.convert_input_to_markdown_lines(doc)
+      local preview_width = pum_pos.width
+      local preview_border = 2
+      local pum_border = 2
+
+      local tabline_height = 1
+      local offset_x = pum_pos.col + pum_pos.width + pum_border + preview_width + preview_border
+      local offset_y = pum_pos.row - tabline_height
+
       vim.lsp.util.open_floating_preview(lines, "markdown", {
         anchor_bias = "below",
+        relative = "editor",
+        offset_y = offset_y,
         border = "rounded",
-        width = pum_pos.width,
+        width = preview_width,
         max_height = pum_pos.height,
-        offset_x = pum_pos.width - #item.word + 3,
+        offset_x = offset_x,
       })
     end)
   end,
