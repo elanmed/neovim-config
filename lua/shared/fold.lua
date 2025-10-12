@@ -1,8 +1,8 @@
 vim.opt.foldlevelstart = 99
 vim.opt.foldcolumn = "1"
 vim.opt.fillchars = {
-  foldclose = ">",
-  foldopen = "v",
+  foldclose = "+",
+  foldopen = "-",
   foldsep = " ",
   foldinner = " ",
 }
