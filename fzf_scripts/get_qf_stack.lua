@@ -6,12 +6,6 @@ local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
 local qf_count = vim.rpcrequest(chan, "nvim_call_function", "getqflist", { { nr = "$", }, })
 if qf_count == nil then return vim.fn.chanclose(chan) end
 
-if qf_count.nr == 0 then
-  io.write("Quickfix stack is empty!" .. "\n")
-  vim.fn.chanclose(chan)
-  return
-end
-
 for i = 1, qf_count.nr do
   --- @type table|nil
   local qf_list_info = vim.rpcrequest(

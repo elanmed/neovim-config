@@ -12,7 +12,6 @@ if buf_list == nil then return end
 local cwd = vim.rpcrequest(chan, "nvim_call_function", "getcwd", {})
 if cwd == nil then return end
 
-local num_bufs = 0
 for _, bufnr in ipairs(buf_list) do
   --- @type string | nil
   local bufname = vim.rpcrequest(chan, "nvim_buf_get_name", bufnr)
@@ -29,13 +28,8 @@ for _, bufnr in ipairs(buf_list) do
 
   local rel_path = vim.fs.relpath(cwd, bufname)
 
-  num_bufs = num_bufs + 1
   io.write(("%s|%s\n"):format(bufnr, rel_path))
   ::continue::
-end
-
-if num_bufs == 0 then
-  io.write("No bufs" .. "\n")
 end
 
 vim.fn.chanclose(chan)
