@@ -94,8 +94,6 @@ vim.api.nvim_create_autocmd("FileType", {
       if not has_match then return "<Cr>" end
       if current_line:match "end%s*$" then return "<Cr>" end
 
-      local indent = current_line:match "^%s*"
-      vim.print(#indent)
       return "\r" .. "end<C-o>O"
     end, { expr = true, buffer = true, })
   end,
