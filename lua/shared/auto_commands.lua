@@ -67,8 +67,8 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.keymap.set("i", "<Cr>", function()
       local current_line = vim.api.nvim_get_current_line()
       local patterns = {
-        "%s*local%s+function%(%s*%)%s*",
-        "%s*function%(%s*%)%s*",
+        "%s*local%s+function%(%s*%)%s*$",
+        "%s*function%(%s*%)%s*$",
         "%s+do%s*$",
         "%s+then%s*$",
       }
