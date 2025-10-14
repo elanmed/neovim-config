@@ -1,10 +1,8 @@
-local h = require "helpers"
 vim.keymap.set("i", "<C-x><C-o>", function()
   local function trigger_omni()
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-x><C-o>", true, false, true), "n", false)
   end
   local function trigger_fallback()
-    h.notify.doing "Triggering fallback completion"
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-x><C-n>", true, false, true), "n", false)
   end
 
