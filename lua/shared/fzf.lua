@@ -129,7 +129,7 @@ vim.keymap.set("n", "<leader>zm", function()
       end
     end,
   }
-end)
+end, { desc = "fzf global marks", })
 
 vim.keymap.set("n", "<leader>b", function()
   maybe_close_tree()
@@ -151,7 +151,7 @@ vim.keymap.set("n", "<leader>b", function()
       vim.cmd("edit " .. vim.split(entry, "|")[2])
     end,
   }
-end)
+end, { desc = "fzf buffers", })
 
 vim.keymap.set("n", "<leader>z;", function()
   maybe_close_tree()
@@ -178,7 +178,7 @@ vim.keymap.set("n", "<leader>z;", function()
       vim.api.nvim_feedkeys(":" .. selected, "n", false)
     end,
   }
-end)
+end, { desc = "fzf command history", })
 
 vim.keymap.set("n", "<leader>i", function()
   maybe_close_tree()
@@ -193,7 +193,7 @@ vim.keymap.set("n", "<leader>i", function()
     height = "full",
     sink = function(entry) vim.cmd("edit " .. entry) end,
   }
-end)
+end, { desc = "fzf git diff", })
 
 local function sinklist(list)
   if vim.tbl_count(list) == 1 then
@@ -244,7 +244,7 @@ end
 vim.keymap.set("n", "<leader>a", function()
   maybe_close_tree()
   rg_with_globs ""
-end)
+end, { desc = "fzf rg with globs", })
 
 vim.keymap.set("n", "<leader>zf", function()
   vim.cmd "cclose"
@@ -256,7 +256,7 @@ vim.keymap.set("n", "<leader>zf", function()
     height = "full",
     sinklist = sinklist,
   }
-end)
+end, { desc = "fzf current quickfix list", })
 
 vim.keymap.set("n", "<leader>zs", function()
   vim.cmd "cclose"
@@ -272,7 +272,7 @@ vim.keymap.set("n", "<leader>zs", function()
       vim.cmd "copen"
     end,
   }
-end)
+end, { desc = "fzf quickfix stack", })
 
 vim.keymap.set("n", "<leader>/z", function()
   local slash_opts = {
@@ -310,7 +310,7 @@ vim.keymap.set("n", "<leader>/z", function()
       vim.api.nvim_win_set_cursor(0, { tonumber(line_nr), positions[1][1], })
     end,
   }
-end)
+end, { desc = "fzf lines in the buf", })
 
 vim.keymap.set("n", "<leader>zr", function()
   maybe_close_tree()
@@ -319,18 +319,18 @@ vim.keymap.set("n", "<leader>zr", function()
   --- @type table
   local prev_rg_query = vim.fn.readfile(prev_rg_query_file)
   rg_with_globs(prev_rg_query[1])
-end)
+end, { desc = "fzf resume rg with globs", })
 
 vim.keymap.set("v", "<leader>o", function()
   local region = vim.fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".")
   if #region > 0 then
     rg_with_globs(region[1] .. " -- ")
   end
-end, { desc = "Grep the current word", })
+end, { desc = "fzf rg with globs", })
 
 vim.keymap.set("n", "<leader>o", function()
   rg_with_globs(vim.fn.expand "<cword>" .. " -- ")
-end, { desc = "Grep the current visual selection", })
+end, { desc = "fzf rg with globs", })
 
 local function get_stripped_filename()
   local filepath = vim.fn.expand "%:p"
@@ -354,7 +354,7 @@ vim.keymap.set("n", "<leader>zw", function()
   if stripped_filename == nil then return end
 
   rg_with_globs(stripped_filename .. " -- ")
-end, { desc = "Grep the current file name starting with `wf_modules`", })
+end, { desc = "fzf rg with globs starting with `wf_modules`", })
 
 vim.keymap.set("n", "<leader>yw", function()
   local stripped_filename = get_stripped_filename()

@@ -58,10 +58,10 @@ end
 
 vim.keymap.set("n", "<C-n>", function()
   h.utils.try_catch("cnext", "cfirst")
-end)
+end, { desc = ":cnext", })
 vim.keymap.set("n", "<C-p>", function()
   h.utils.try_catch("cprev", "clast")
-end)
+end, { desc = ":cprev", })
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "qf",
@@ -111,14 +111,14 @@ vim.api.nvim_create_autocmd("FileType", {
       if not success then
         h.notify.error "No newer list!"
       end
-    end, { buffer = true, desc = "Go to the next quickfix list", })
+    end, { buffer = true, })
 
     vim.keymap.set("n", "<", function()
       local success = pcall(vim.cmd, "colder")
       if not success then
         h.notify.error "No older list!"
       end
-    end, { buffer = true, desc = "Go to the pre quickfix list", })
+    end, { buffer = true, })
 
     vim.keymap.set("n", "<C-o>", "<nop>", { buffer = true, })
     vim.keymap.set("n", "<C-i>", "<nop>", { buffer = true, })

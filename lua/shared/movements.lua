@@ -71,7 +71,7 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
 vim.keymap.set("n", "<leader>me", function()
   refresh_mark_signs(0)
   h.notify.doing "Refreshing marks"
-end)
+end, { desc = "Refresh the mark signs", })
 
 vim.keymap.set("n", "<leader>mg", function()
   for letter in global_marks:gmatch "." do
@@ -146,8 +146,8 @@ local function navigate_mark(direction)
   vim.api.nvim_win_set_cursor(0, { mark_row, 0, })
 end
 
-vim.keymap.set("n", "]a", function() navigate_mark "next" end)
-vim.keymap.set("n", "[a", function() navigate_mark "prev" end)
+vim.keymap.set("n", "]a", function() navigate_mark "next" end, { desc = "Navigate to the next mark in the buffer", })
+vim.keymap.set("n", "[a", function() navigate_mark "prev" end, { desc = "Navigate to the prev mark in the buffer", })
 
 vim.keymap.set("n", "<leader>md", function()
   local deleted = false
@@ -176,7 +176,7 @@ vim.keymap.set("n", "m", function()
   local char = vim.fn.getcharstr()
   vim.schedule(function() refresh_mark_signs(0) end)
   return "m" .. char
-end, { nowait = true, expr = true, })
+end, { nowait = true, expr = true, desc = "m", })
 
 local function smooth_scroll(direction)
   local lines = math.floor((vim.o.lines - 1) / 2) - 1
@@ -195,5 +195,5 @@ local function smooth_scroll_cb(direction)
   return function() smooth_scroll(direction) end
 end
 
-vim.keymap.set({ "n", "v", }, "<C-d>", smooth_scroll_cb "j", { desc = "Smooth-scroll half-page down", })
-vim.keymap.set({ "n", "v", }, "<C-u>", smooth_scroll_cb "k", { desc = "Smooth-scroll half-page up", })
+vim.keymap.set({ "n", "v", }, "<C-d>", smooth_scroll_cb "j", { desc = "Smooth-scroll a half-page down", })
+vim.keymap.set({ "n", "v", }, "<C-u>", smooth_scroll_cb "k", { desc = "Smooth-scroll a half-page up", })

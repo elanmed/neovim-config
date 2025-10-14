@@ -1,10 +1,10 @@
 local h = require "helpers"
 
-vim.keymap.set("i", "<C-t>", "<C-o>:Snippet<space>")
+vim.keymap.set("i", "<C-t>", "<C-o>:Snippet<space>", { desc = "Insert a snippet", })
 vim.keymap.set({ "n", "v", }, "<C-t>", function()
   h.notify.error "Snippets only supported in insert mode!"
-end)
-vim.keymap.set("n", "<leader>h", ":help<space>")
+end, { desc = "Insert a snippet", })
+vim.keymap.set("n", "<leader>h", ":help<space>", { desc = ":help", })
 
 vim.keymap.set("n", "<bs>", function()
   if vim.bo.readonly then
@@ -16,7 +16,7 @@ vim.keymap.set("n", "<bs>", function()
     return
   end
   vim.cmd "write"
-end, { desc = "Save", })
+end, { desc = "Write", })
 vim.keymap.set("n", "<leader>w", function()
   if vim.bo.readonly then
     h.notify.error "Buffer is readonly, aborting"
@@ -31,20 +31,16 @@ vim.keymap.set("n", "<leader>w", function()
   vim.cmd "normal! gg=G"
   vim.fn.winrestview(view)
   vim.cmd "write"
-end, { desc = "Save", })
+end, { desc = "Write", })
 vim.keymap.set("n", "<leader>q", h.keys.vim_cmd_cb "quit", { desc = "Quit", })
 vim.keymap.set("n", "J", "gJ", { desc = "J without whitespace", })
-vim.keymap.set("n", "<leader>co", h.keys.vim_cmd_cb "copen")
-vim.keymap.set("n", "<leader>cc", function()
-  vim.cmd "pclose"
-  vim.cmd "cclose"
-end)
+vim.keymap.set("n", "<leader>c", h.keys.vim_cmd_cb "copen", { desc = ":copen", })
 vim.keymap.set("n", "/", "/\\V", { desc = "/ without regex", })
 vim.keymap.set("n", "<leader>/c", "/\\C<left><left>", { desc = "/ case sensitive", })
 vim.keymap.set("n", "<leader>/w", "/\\<\\><left><left>", { desc = "/ word sensitive", })
 vim.keymap.set("n", "<leader>/e", "/\\<\\>\\C<left><left><left><left>", { desc = "/ case and word sensitive", })
 vim.keymap.set("n", "<leader>/s", ":%s/\\<\\>\\C/<left><left><left><left><left>",
-  { desc = "Search and replace in the current buffer, case and word sensitive", })
+  { desc = "%s in the current buffer, case and word sensitive", })
 vim.keymap.set("n", "<leader>n", h.keys.vim_cmd_cb "nohlsearch", { desc = "Turn off highlighting", })
 vim.keymap.set("n", "<leader>x", h.keys.vim_cmd_cb "tabclose", { desc = "Close the current tab", })
 vim.keymap.set("n", "<leader>d", function()
@@ -55,43 +51,43 @@ vim.keymap.set("n", "<leader>d", function()
     vim.cmd "silent! bdelete!"
   end
 end, { desc = "Close the current buffer", })
-vim.keymap.set("n", "<leader>;", ":")
-vim.keymap.set("n", "x", [["_x]])
-vim.keymap.set("n", "X", [["_X]])
-vim.keymap.set("n", "c", [["_c]])
-vim.keymap.set("n", "C", [["_C]])
-vim.keymap.set("n", "<leader>p", h.keys.vim_cmd_cb "pu", { desc = "Paste on the line below", })
-vim.keymap.set("n", "<leader>P", h.keys.vim_cmd_cb "pu!", { desc = "Paste on the line above", })
+vim.keymap.set("n", "<leader>;", ":", { desc = ":", })
+vim.keymap.set("n", "x", [["_x]], { desc = "x to the black hole buffer", })
+vim.keymap.set("n", "X", [["_X]], { desc = "X to the black hole buffer", })
+vim.keymap.set("n", "c", [["_c]], { desc = "c to the black hole buffer", })
+vim.keymap.set("n", "C", [["_C]], { desc = "C to the black hole buffer", })
+vim.keymap.set("n", "<leader>p", h.keys.vim_cmd_cb "pu", { desc = "Put on the line below", })
+vim.keymap.set("n", "<leader>P", h.keys.vim_cmd_cb "pu!", { desc = "Put on the line above", })
 vim.keymap.set("n", "<leader>e", h.keys.vim_cmd_cb "e")
 vim.keymap.set("n", "j", "gj", { desc = "j with display lines", })
 vim.keymap.set("n", "k", "gk", { desc = "k with display lines", })
 vim.keymap.set("n", "$", "g$", { desc = "$ with display lines", })
 vim.keymap.set("n", "0", "g0", { desc = "0 with display lines", })
-vim.keymap.set("i", "<C-/>", "<C-o>gcc", { remap = true, })
-vim.keymap.set("n", "<C-/>", "gcc", { remap = true, })
+vim.keymap.set("i", "<C-/>", "<C-o>gcc", { remap = true, desc = "Comment the current line", })
+vim.keymap.set("n", "<C-/>", "gcc", { remap = true, desc = "Comment the current line", })
 vim.keymap.set("v", "<C-/>",
   function()
     local comment = "gc"
     local reselect_last = "gv"
     return comment .. reselect_last
-  end, { expr = true, remap = true, })
+  end, { expr = true, remap = true, desc = "Comment the visual selection", })
 
 vim.keymap.set("n", "<leader>yc",
   function()
     local z_register = [["z]]
     local yank_line = "yy"
     local comment_line = "gcc"
-    local paste = "p"
-    return z_register .. yank_line .. comment_line .. z_register .. paste
+    local put = "p"
+    return z_register .. yank_line .. comment_line .. z_register .. put
   end,
-  { expr = true, remap = true, desc = "Yank the current line, comment it, and paste it below", })
+  { expr = true, remap = true, desc = "Yank the current line, comment it, and put it below", })
 
 vim.keymap.set("v", "<leader>yc",
   function()
     local z_register = [["z]]
     local yank_and_unselect = "y"
     local move_to_end_selection = "`>"
-    local paste = "p"
+    local put = "p"
     local reselect_last = "gv"
     local comment_selection = "gc"
     return
@@ -101,56 +97,33 @@ vim.keymap.set("v", "<leader>yc",
         comment_selection ..
         move_to_end_selection ..
         z_register ..
-        paste
-  end, { expr = true, remap = true, desc = "Yank the current selection, comment it, and paste it below", })
+        put
+  end, { expr = true, remap = true, desc = "Yank the current selection, comment, and put it below", })
 
 vim.keymap.set("v", "<leader>yp", function()
   local z_register = [["z]]
   local yank_and_unselect = "y"
   local move_to_end_selection = "`>"
-  local paste = "p"
-  return z_register .. yank_and_unselect .. move_to_end_selection .. z_register .. paste
-end, { expr = true, })
+  local put = "p"
+  return z_register .. yank_and_unselect .. move_to_end_selection .. z_register .. put
+end, { expr = true, desc = "Yank and put the visual selection", })
 
 vim.keymap.set("n", "<leader>ya", function()
   local abs_path = vim.api.nvim_buf_get_name(0)
   vim.fn.setreg("+", abs_path)
   h.notify.doing("yanked: " .. abs_path)
-end, { desc = "Yank the Absolute path of the current buffer", })
+end, { desc = "Yank the absolute path of the current buffer", })
 
 vim.keymap.set("n", "<leader>yr", function()
   local rel_path = vim.fs.relpath(vim.fn.getcwd(), vim.api.nvim_buf_get_name(0))
   vim.fn.setreg("+", rel_path)
   h.notify.doing("yanked: " .. rel_path)
-end, { desc = "Yank the Relative path of the current buffer", })
+end, { desc = "Yank the relative path of the current buffer", })
 
 vim.keymap.set("n", "<leader>yf", function()
   vim.fn.setqflist(vim.fn.getqflist())
   h.notify.doing "Created a new list!"
 end, { desc = "Duplicate the current quickfix list", })
-
-vim.keymap.set("n", "<leader>ua", h.keys.vim_cmd_cb "silent! bufdo bdelete", { desc = "Close all buffers", })
-vim.keymap.set("n", "<leader>uo", function()
-  local mini_ok, mini_bufremove = pcall(require, "mini.bufremove")
-  local cur_buf = vim.api.nvim_get_current_buf()
-
-  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
-    if buf == cur_buf then
-      goto continue
-    end
-    if vim.api.nvim_get_option_value("modified", { buf = buf, }) then
-      goto continue
-    end
-
-    if mini_ok then
-      mini_bufremove.delete(buf, true)
-    else
-      vim.api.nvim_buf_delete(buf, { force = true, })
-    end
-
-    ::continue::
-  end
-end)
 
 -- https://stackoverflow.com/a/9407015
 local function next_closed_fold(direction)
@@ -171,8 +144,8 @@ local function next_closed_fold(direction)
   end
 end
 
-vim.keymap.set("n", "zj", function() next_closed_fold "j" end)
-vim.keymap.set("n", "zk", function() next_closed_fold "k" end)
+vim.keymap.set("n", "zj", function() next_closed_fold "j" end, { desc = "Navigate to the next closed fold", })
+vim.keymap.set("n", "zk", function() next_closed_fold "k" end, { desc = "Navigate to the prev closed fold", })
 vim.keymap.set("n", "zt", "za", { desc = "Toggle fold", })
 vim.keymap.set("n", "zT", "zA", { desc = "Toggle fold", })
 vim.keymap.set("n", "z?", function()
@@ -193,7 +166,7 @@ vim.keymap.set("n", "*", function()
   vim.cmd([[let @/ = '\<]] .. word .. [[\>']])
   vim.api.nvim_set_option_value("hlsearch", true, {})
   vim.o.hlsearch = true
-end, { silent = true, desc = "*, but stay on the current search result", })
+end, { silent = true, desc = "* but stay on the current search result", })
 
 -- https://yobibyte.github.io/vim.html
 vim.keymap.set("n", "<leader>'", function()
@@ -206,7 +179,7 @@ vim.keymap.set("n", "<leader>'", function()
       vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.fn.systemlist(cmd))
     end
   end)
-end)
+end, { desc = "Execute a terminal command and output the result to a buffer", })
 
 vim.keymap.set("n", "<leader>g", function()
   local editor_height = vim.api.nvim_win_get_height(0)
@@ -229,23 +202,23 @@ vim.keymap.set("n", "<leader>g", function()
     end,
   })
   vim.cmd "startinsert"
-end)
+end, { desc = "Open lazygit", })
 
 vim.keymap.set("n", "<leader>,", h.keys.vim_cmd_cb "file", { desc = "Show the current file", })
 
-vim.keymap.set("c", "<C-e>", "<C-e><C-z>")
+vim.keymap.set("c", "<C-e>", "<C-e><C-z>", { desc = "<C-e> and retrigger wildtrigger", })
 vim.keymap.set("c", "<Left>", function()
   if vim.fn.wildmenumode() == h.vimscript_true then
     return "<C-e><Left><C-z>"
   end
   return "<Left>"
-end, { expr = true, })
+end, { expr = true, desc = "<Left> and retrigger wildtrigger", })
 vim.keymap.set("c", "<Right>", function()
   if vim.fn.wildmenumode() == h.vimscript_true then
     return "<C-e><Right><C-z>"
   end
   return "<Right>"
-end, { expr = true, })
+end, { expr = true, desc = "<Right> and retrigger wildtrigger", })
 
 -- https://vim.fandom.com/wiki/Moving_lines_up_or_down
 vim.keymap.set("n", "<A-j>", [[:m .+1<CR>==]])
@@ -257,7 +230,15 @@ vim.keymap.set("v", "<A-k>", [[:m '<-2<CR>gv=gv]])
 vim.keymap.set("v", ">", ">gv", { desc = "indent, preserving the selecting", })
 vim.keymap.set("v", "<", "<gv", { desc = "outdent, preserving the selecting", })
 
+vim.keymap.set("n", "H", "{", { desc = "{", })
+vim.keymap.set("n", "L", "}", { desc = "}", })
+
+vim.keymap.set("n", "<C-e>", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<C-i>", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<C-j>", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<C-x>", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<C-y>", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
-vim.keymap.set("n", "L", "}")
-vim.keymap.set("n", "H", "{")
+vim.keymap.set("n", "<leader>k", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>l", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>u", "<nop>", { desc = "TODO find a remap", })

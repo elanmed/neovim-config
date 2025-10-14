@@ -47,7 +47,7 @@ vim.keymap.set({ "n", "i", }, "<C-k>", function()
     local is_floating = vim.api.nvim_win_get_config(win).relative == "win"
     if is_floating then vim.api.nvim_win_close(win, false) end
   end
-end)
+end, { desc = "Close floating windows", })
 
 --- @param direction "next" | "prev"
 --- @param severity? vim.diagnostic.Severity
@@ -61,12 +61,28 @@ local function next_prev_diagnostic(direction, severity)
 
   vim.diagnostic.jump { severity = severity, count = direction == "next" and 1 or -1, }
 end
-vim.keymap.set("n", "]d", function() next_prev_diagnostic "next" end)
-vim.keymap.set("n", "[d", function() next_prev_diagnostic "prev" end)
-vim.keymap.set("n", "]w", function() next_prev_diagnostic("next", vim.diagnostic.severity.WARN) end)
-vim.keymap.set("n", "[w", function() next_prev_diagnostic("prev", vim.diagnostic.severity.WARN) end)
-vim.keymap.set("n", "]e", function() next_prev_diagnostic("next", vim.diagnostic.severity.ERROR) end)
-vim.keymap.set("n", "[e", function() next_prev_diagnostic("prev", vim.diagnostic.severity.ERROR) end)
+vim.keymap.set("n", "]d",
+  function() next_prev_diagnostic "next" end,
+  { desc = "Next diagnostic", }
+)
+vim.keymap.set("n", "[d",
+  function() next_prev_diagnostic "prev" end,
+  { desc = "Next diagnostic", }
+)
+vim.keymap.set("n", "]w",
+  function() next_prev_diagnostic("next", vim.diagnostic.severity.WARN) end,
+  { desc = "Next warning diagnostic", })
+vim.keymap.set("n", "[w",
+  function() next_prev_diagnostic("prev", vim.diagnostic.severity.WARN) end,
+  { desc = "Next warning diagnostic", })
+vim.keymap.set("n", "]e",
+  function() next_prev_diagnostic("next", vim.diagnostic.severity.ERROR) end,
+  { desc = "Next error diagnostic", }
+)
+vim.keymap.set("n", "[e",
+  function() next_prev_diagnostic("prev", vim.diagnostic.severity.ERROR) end,
+  { desc = "Next error diagnostic", }
+)
 
 local function enable_deno_lsp()
   return vim.fn.filereadable(vim.fs.joinpath(vim.fn.getcwd(), ".deno-enable-lsp")) == h.vimscript_true

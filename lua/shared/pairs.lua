@@ -51,7 +51,7 @@ local function skip_or_insert_char(typed_char)
 end
 
 for _, char in pairs(h.tbl.extend(same_pairs, opening_pairs, closing_pairs)) do
-  vim.keymap.set("i", char, skip_or_insert_char(char), { expr = true, })
+  vim.keymap.set("i", char, skip_or_insert_char(char), { expr = true, desc = char .. " with pairs", })
 end
 
 vim.keymap.set("i", "<bs>", function()
@@ -64,4 +64,4 @@ vim.keymap.set("i", "<bs>", function()
   local char_left = line:sub(col_one_indexed - 1, col_one_indexed - 1)
   if left_to_right_pair[char_left] ~= char then return "<bs>" end
   return "<right><bs><bs>"
-end, { expr = true, })
+end, { expr = true, desc = "<bs> with pairs", })

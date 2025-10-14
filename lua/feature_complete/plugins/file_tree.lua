@@ -31,7 +31,7 @@ vim.keymap.set("n", "<C-f>", function()
       relativenumber = true,
     },
   }
-end)
+end, { desc = "Toggle tree", })
 
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "tree",
