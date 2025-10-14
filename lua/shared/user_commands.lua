@@ -38,7 +38,7 @@ vim.api.nvim_create_user_command("Snippet", function(opts)
 
   local snippets_path = vim.fs.joinpath(vim.fn.stdpath "config", "snippets")
   local snippet_file = vim.fs.joinpath(snippets_path, snippet_trigger_to_file_mapping[snippet_trigger].file)
-  vim.cmd("-1read " .. snippet_file)
+  vim.cmd("keepalt -1read " .. snippet_file)
   vim.cmd("normal! " .. snippet_trigger_to_file_mapping[snippet_trigger].movement)
 end, { nargs = "*", })
 
