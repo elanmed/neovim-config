@@ -1,8 +1,10 @@
+local h = require "helpers"
 vim.keymap.set("i", "<C-x><C-o>", function()
   local function trigger_omni()
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-x><C-o>", true, false, true), "n", false)
   end
   local function trigger_fallback()
+    h.notify.doing "Triggering fallback completion"
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-x><C-n>", true, false, true), "n", false)
   end
 
@@ -48,6 +50,7 @@ vim.api.nvim_create_autocmd("CompleteChanged", {
 
     local pum_pos = vim.fn.pum_getpos()
     if not pum_pos then return end
+
 
     client:request("completionItem/resolve", completion_item, function(err, result)
       if err then return end
