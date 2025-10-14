@@ -49,25 +49,14 @@ vim.api.nvim_create_autocmd("CompleteChanged", {
       local doc = vim.tbl_get(result, "documentation", "value")
       if not doc then return end
 
-      -- preview anchor is top-right
-      local lines = vim.lsp.util.convert_input_to_markdown_lines(doc)
-      local preview_width = pum_pos.width
-      local preview_border = 2
-      local pum_border = 2
-
-      local tabline_height = 1
-      local offset_x = pum_pos.col + pum_pos.width + pum_border + preview_width + preview_border
-      local offset_y = pum_pos.row - tabline_height
-
-      vim.lsp.util.open_floating_preview(lines, "markdown", {
-        anchor_bias = "below",
-        relative = "editor",
-        offset_y = offset_y,
-        border = "rounded",
-        width = preview_width,
-        max_height = pum_pos.height,
-        offset_x = offset_x,
-      })
+      -- https://github.com/neovim/neovim/issues/29225
+      local win_data = vim.api.nvim__complete_set(info["selected"], { info = doc, })
+      if not vim.api.nvim_win_is_valid(win_data.winid) then
+        return
+      end
+      vim.api.nvim_win_set_config(win_data.winid, { border = "rounded", })
+      vim.treesitter.start(win_data.bufnr, "markdown")
+      vim.wo[win_data.winid].conceallevel = 3
     end)
   end,
 })
