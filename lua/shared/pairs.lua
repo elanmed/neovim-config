@@ -4,14 +4,13 @@ local left_to_right_pair = {
   ["("] = ")",
   ["{"] = "}",
   ["["] = "]",
-  ["<"] = ">",
   ["`"] = "`",
   ["'"] = "'",
   ['"'] = '"',
 }
 
-local opening_pairs = { "(", "{", "[", "<", }
-local closing_pairs = { ")", "}", "]", ">", }
+local opening_pairs = { "(", "{", "[", }
+local closing_pairs = { ")", "}", "]", }
 local same_pairs = { [[`]], [[']], [["]], }
 
 --- @param typed_char string
