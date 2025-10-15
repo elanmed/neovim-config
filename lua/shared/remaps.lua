@@ -1,7 +1,7 @@
 local h = require "helpers"
 
-vim.keymap.set("i", "<C-i>", "<C-o>:Snippet<space>", { desc = "Insert a snippet", })
-vim.keymap.set({ "n", "v", }, "<C-i>", function()
+vim.keymap.set("i", "<C-y>", "<C-o>:Snippet<space>", { desc = "Insert a snippet", })
+vim.keymap.set({ "n", "v", }, "<C-y>", function()
   h.notify.error "Snippets only supported in insert mode!"
 end, { desc = "Insert a snippet", })
 vim.keymap.set("n", "<leader>h", ":help<space>", { desc = ":help", })
@@ -234,8 +234,6 @@ vim.keymap.set("n", "H", "{", { desc = "{", })
 vim.keymap.set("n", "L", "}", { desc = "}", })
 vim.keymap.set("n", "<C-j>", "<C-]>", { desc = "<C-]>", })
 
-vim.keymap.set("n", "<C-x>", "<nop>", { desc = "TODO find a remap", })
-vim.keymap.set("n", "<C-y>", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>k", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>l", "<nop>", { desc = "TODO find a remap", })

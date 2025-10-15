@@ -11,7 +11,6 @@ vim.keymap.set("i", "<C-x><C-o>", function()
     return trigger_fallback()
   end
 
-
   local timer_id
   timer_id = vim.fn.timer_start(500, function()
     timer_id = nil
@@ -58,7 +57,6 @@ vim.api.nvim_create_autocmd("CompleteChanged", {
 
     local pum_pos = vim.fn.pum_getpos()
     if not pum_pos then return end
-
 
     client:request("completionItem/resolve", completion_item, function(err, result)
       if err then return end
