@@ -65,9 +65,8 @@ vim.api.nvim_create_autocmd("CompleteChanged", {
 
       -- https://github.com/neovim/neovim/issues/29225
       local win_data = vim.api.nvim__complete_set(info["selected"], { info = doc, })
-      local ok, win_is_valid = pcall(vim.api.nvim_win_is_valid, win_data.winid)
-      if not ok then return end
-      if not win_is_valid then return end
+      if vim.tbl_count(win_data) == 0 then return end
+      if not vim.api.nvim_win_is_valid(win_data.winid) then return end
 
       vim.api.nvim_win_set_config(win_data.winid, { border = "rounded", })
       vim.treesitter.start(win_data.bufnr, "markdown")
