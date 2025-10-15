@@ -11,8 +11,18 @@ vim.keymap.set("i", "<C-x><C-o>", function()
     return trigger_fallback()
   end
 
+
+  local timer_id
+  timer_id = vim.fn.timer_start(500, function()
+    timer_id = nil
+    return trigger_fallback()
+  end)
+
   local params = vim.lsp.util.make_position_params(0, "utf-8")
   vim.lsp.buf_request_all(bufnr, "textDocument/completion", params, function(results)
+    if timer_id == nil then return end
+    vim.fn.timer_stop(timer_id)
+
     local has_results = false
     for _, response in pairs(results) do
       if response.result then
