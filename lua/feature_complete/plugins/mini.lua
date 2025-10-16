@@ -1,7 +1,6 @@
 require "mini.surround".setup()
 require "mini.indentscope".setup()
 require "mini.icons".setup()
--- require "mini.cursorword".setup()
 require "mini.splitjoin".setup()
 
 local hipatterns = require "mini.hipatterns"
