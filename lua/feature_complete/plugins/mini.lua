@@ -1,7 +1,7 @@
 require "mini.surround".setup()
 require "mini.indentscope".setup()
 require "mini.icons".setup()
-require "mini.cursorword".setup()
+-- require "mini.cursorword".setup()
 require "mini.splitjoin".setup()
 
 local hipatterns = require "mini.hipatterns"
@@ -31,11 +31,12 @@ vim.keymap.set("n", "<C-b>", mini_diff.toggle_overlay, { desc = "Toggle mini dif
 
 local input_wasted_keys = function(key)
   local action = function()
-    if vim.bo.buftype == "quickfix" then return end
-    if vim.bo.filetype == "help" then return end
-    if vim.bo.filetype == "man" then return end
-    if vim.bo.filetype == "tree" then return end
-    if vim.bo.filetype == "nvim-undotree" then return end
+    if vim.bo.buftype ~= "" then return end
+    -- if vim.bo.buftype == "quickfix" then return end
+    -- if vim.bo.filetype == "help" then return end
+    -- if vim.bo.filetype == "man" then return end
+    -- if vim.bo.filetype == "tree" then return end
+    -- if vim.bo.filetype == "nvim-undotree" then return end
     vim.fn.input "Wasted keys: "
   end
   require "mini.keymap".map_combo("n", string.rep(key, 5), action)
