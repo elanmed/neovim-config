@@ -16,7 +16,7 @@ function _G.GetQuickfixTextFunc()
   local function has_preview_win()
     for _, winnr in ipairs(vim.api.nvim_list_wins()) do
       local bufnr = vim.api.nvim_win_get_buf(winnr)
-      if vim.api.nvim_get_option_value("filetype", { buf = bufnr, }) == "quickfix-preview" then
+      if vim.bo[bufnr].filetype == "quickfix-preview" then
         return true
       end
     end

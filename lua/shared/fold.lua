@@ -32,8 +32,7 @@ end
 
 --- @param lnum number
 local function indent_level(lnum)
-  local shiftwidth = vim.api.nvim_get_option_value("shiftwidth", {})
-  return tostring(math.floor(vim.fn.indent(lnum) / shiftwidth))
+  return tostring(math.floor(vim.fn.indent(lnum) / vim.o.shiftwidth))
 end
 
 -- https://learnvimscriptthehardway.stevelosh.com/chapters/49.html
