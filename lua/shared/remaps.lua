@@ -163,7 +163,7 @@ vim.keymap.set("n", "<leader>V", "G" .. "V" .. "gg", { desc = "Select the entire
 vim.keymap.set("n", "*", function()
   local word = vim.fn.expand "<cword>"
   -- https://superuser.com/a/299693
-  vim.cmd([[let @/ = '\<]] .. word .. [[\>']])
+  vim.cmd([[let @/ = '\<]] .. word .. [[\>\C']])
   vim.api.nvim_set_option_value("hlsearch", true, {})
   vim.o.hlsearch = true
 end, { silent = true, desc = "* but stay on the current search result", })

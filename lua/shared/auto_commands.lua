@@ -50,23 +50,3 @@ vim.api.nvim_create_autocmd("FileType", {
     end, { expr = true, buffer = true, })
   end,
 })
-
-vim.o.updatetime = 100
-vim.api.nvim_create_autocmd("CursorHold", {
-  callback = function(ev)
-    local bufnr = ev.buf
-    if vim.bo[bufnr].buftype ~= "" then
-      vim.cmd "match none"
-      return
-    end
-
-    local col = vim.api.nvim_win_get_cursor(0)[2] + 1
-    local line = vim.api.nvim_get_current_line()
-    if line:sub(col, col):match "[%p%s]" then
-      vim.cmd "match none"
-    else
-      local cword = vim.fn.expand "<cword>"
-      vim.cmd(("match Underlined /\\V\\<%s\\>/"):format(cword))
-    end
-  end,
-})
