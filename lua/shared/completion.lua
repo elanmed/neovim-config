@@ -1,41 +1,57 @@
-vim.keymap.set("i", "<C-x><C-o>", function()
-  local function trigger_omni()
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-x><C-o>", true, false, true), "n", false)
+local h = require "helpers"
+
+--- @class PollOpts
+--- @field limit number
+--- @field interval number
+--- @field on_limit fun():nil
+--- @field on_interval fun(clear: fun():nil):nil
+--- @param opts PollOpts
+local poll = function(opts)
+  local timer_id
+
+  local clear = function()
+    if timer_id == nil then return end
+    vim.fn.timer_stop(timer_id)
   end
-  local function trigger_fallback()
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-x><C-n>", true, false, true), "n", false)
+
+  local i = 0
+  timer_id = vim.fn.timer_start(opts.interval, function()
+    if i >= opts.limit then
+      opts.on_limit()
+      return clear()
+    end
+
+    i = i + 1
+    opts.on_interval(clear)
+  end, { ["repeat"] = opts.limit + 1, }) -- run + 1 iterations to call on_limit
+end
+
+vim.keymap.set("i", "<C-x><C-o>", function()
+  --- @param keys string
+  local feed_ctrl_keys = function(keys)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(keys, true, false, true), "n", false)
   end
 
   local bufnr = vim.api.nvim_get_current_buf()
   if vim.tbl_isempty(vim.lsp.get_clients { bufnr = bufnr, }) then
-    return trigger_fallback()
+    return feed_ctrl_keys "<C-x><C-n>"
   end
 
-  local timer_id
-  timer_id = vim.fn.timer_start(500, function()
-    timer_id = nil
-    return trigger_fallback()
-  end)
-
-  local params = vim.lsp.util.make_position_params(0, "utf-8")
-  vim.lsp.buf_request_all(bufnr, "textDocument/completion", params, function(results)
-    if timer_id == nil then return end
-    vim.fn.timer_stop(timer_id)
-
-    local has_results = false
-    for _, response in pairs(results) do
-      if response.result then
-        has_results = true
-        break
+  feed_ctrl_keys "<C-x><C-o>"
+  poll {
+    interval = 50,
+    limit = 10,
+    --- @param clear_interval fun():nil
+    on_interval = function(clear_interval)
+      local info = vim.fn.complete_info { "pum_visible", }
+      if info.pum_visible == h.vimscript_true then
+        clear_interval()
       end
-    end
-
-    if has_results then
-      trigger_omni()
-    else
-      trigger_fallback()
-    end
-  end)
+    end,
+    on_limit = function()
+      feed_ctrl_keys "<C-e><C-x><C-n>"
+    end,
+  }
 end, { desc = "Omnifunc with buffer lines backup", })
 
 vim.api.nvim_create_autocmd("CompleteChanged", {
