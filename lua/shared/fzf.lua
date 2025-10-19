@@ -64,7 +64,7 @@ M.fzf = function(opts)
 end
 
 -- :h cursor-blinking
-local guicursor = vim.opt.guicursor:append "a:blinkon0"
+vim.opt.guicursor:append "a:blinkon0"
 
 M.default_opts = {
   "--cycle",
