@@ -23,7 +23,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
     vim.keymap.set("i", "<cr>", "<Plug>FFResultSelect", { buffer = true, })
     vim.keymap.set("i", "<c-n>", "<Plug>FFResultNext", { buffer = true, })
     vim.keymap.set("i", "<c-p>", "<Plug>FFResultPrev", { buffer = true, })
-    vim.keymap.set("i", "<c-x>", "<Plug>FFResultDeleteFrecencyScore", { buffer = true, })
+    vim.keymap.set("i", "<c-x>", "<Plug>FFResultDeleteFrecencyScore", { buffer = true, nowait = true, })
     vim.keymap.set("i", "<c-c>", "<Plug>FFClose", { buffer = true, })
     vim.keymap.set("i", "<esc>", "<Plug>FFClose", { buffer = true, })
     vim.keymap.set("i", "<tab>", "<Plug>FFPreviewToggle", { buffer = true, })
@@ -43,18 +43,11 @@ end)
 
 vim.api.nvim_create_autocmd("User", {
   pattern = {
-    "MiniFilesActionCreate",
-    "MiniFilesActionDelete",
-    "MiniFilesActionRename",
-    "MiniFilesActionCopy",
-    "MiniFilesActionMove",
     "TreeCreate",
     "TreeDelete",
     "TreeRename",
   },
-  callback = function()
-    ff.refresh_files_cache()
-  end,
+  callback = function() ff.refresh_files_cache() end,
 })
 
 vim.keymap.set("n", "<leader>zl", function()

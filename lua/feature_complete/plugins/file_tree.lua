@@ -12,8 +12,7 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function(args)
     vim.b.minicursorword_disable = true
     vim.keymap.set("n", "<cr>", "<Plug>TreeSelect", { buffer = args.buf, })
-    vim.keymap.set("n", "q", "<Plug>TreeCloseTree", { buffer = args.buf, })
-    vim.keymap.set("n", "<esc>", "<Plug>TreeCloseTree", { buffer = args.buf, })
+    vim.keymap.set("n", "<C-c>", "<Plug>TreeCloseTree", { buffer = args.buf, })
     vim.keymap.set("n", "<C-f>", "<Plug>TreeCloseTree", { buffer = args.buf, })
     vim.keymap.set("n", "<", "<Plug>TreeDecreaseLevel", { buffer = args.buf, })
     vim.keymap.set("n", ">", "<Plug>TreeIncreaseLevel", { buffer = args.buf, })
