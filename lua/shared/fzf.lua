@@ -106,7 +106,7 @@ local function get_fzf_script(script_name)
     " ")
 end
 
-vim.keymap.set("n", "<leader>zm", function()
+vim.keymap.set("n", "<leader>l", function()
   maybe_close_tree()
 
   local source = get_fzf_script "get_marks"

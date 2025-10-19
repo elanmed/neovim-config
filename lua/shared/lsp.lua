@@ -96,7 +96,6 @@ else
         importModuleSpecifierPreference = "non-relative",
         jsxAttributeCompletionStyle = "braces",
         includeCompletionsWithSnippetText = false,
-        includeInlayVariableTypeHints = true,
       },
     },
   })
