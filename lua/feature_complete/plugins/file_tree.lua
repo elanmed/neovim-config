@@ -1,7 +1,6 @@
 vim.keymap.set("n", "<C-f>", function()
   require "tree".tree {
     tree_win_opts = {
-      signcolumn = "yes",
       relativenumber = true,
     },
   }
