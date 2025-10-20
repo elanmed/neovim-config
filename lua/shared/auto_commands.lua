@@ -7,16 +7,6 @@ vim.api.nvim_create_autocmd("CursorMoved", {
   desc = "Center the screen on movement",
 })
 
-vim.api.nvim_create_autocmd("BufWinEnter", {
-  callback = function(args)
-    local bufname = vim.api.nvim_buf_get_name(args.buf)
-    if bufname == "" then
-      vim.bo[args.buf].buflisted = false
-    end
-  end,
-  desc = "Avoid listing unnamed buffers",
-})
-
 vim.api.nvim_create_autocmd("CmdlineChanged", {
   pattern = ":",
   callback = function()
