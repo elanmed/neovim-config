@@ -20,17 +20,9 @@ end
 
 local local_marks = ("abcdefghijklmnopqrstuvwxyz")
 local global_marks = local_marks:upper()
-
---- @param letters string
---- @param hl string
-local function define_mark_signs(letters, hl)
-  for letter in letters:gmatch "." do
-    vim.fn.sign_define(letter, { text = letter, texthl = hl, })
-  end
+for letter in (global_marks .. local_marks):gmatch "." do
+  vim.fn.sign_define(letter, { text = letter, texthl = "Mark", })
 end
-
-define_mark_signs(global_marks, "Mark")
-define_mark_signs(local_marks, "Mark")
 
 --- @param bufnr number
 local function refresh_mark_signs(bufnr)
