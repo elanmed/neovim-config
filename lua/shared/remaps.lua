@@ -231,6 +231,8 @@ vim.keymap.set("n", "H", "{", { desc = "{", })
 vim.keymap.set("n", "L", "}", { desc = "}", })
 vim.keymap.set("n", "<C-j>", "<C-]>", { desc = "<C-]>", })
 
+vim.keymap.set("n", "<C-l>", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<C-h>", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>k", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>u", "<nop>", { desc = "TODO find a remap", })
