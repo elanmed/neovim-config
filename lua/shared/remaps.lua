@@ -28,7 +28,7 @@ vim.keymap.set("n", "<leader>w", function()
   end
 
   local view = vim.fn.winsaveview()
-  vim.cmd.normal("gg=G", { bang = true, })
+  vim.cmd.normal { "gg=G", bang = true, }
   vim.fn.winrestview(view)
   vim.cmd.write()
 end, { desc = "Write", })
@@ -231,8 +231,6 @@ vim.keymap.set("n", "H", "{", { desc = "{", })
 vim.keymap.set("n", "L", "}", { desc = "}", })
 vim.keymap.set("n", "<C-j>", "<C-]>", { desc = "<C-]>", })
 
-vim.keymap.set("n", "<C-l>", "<nop>", { desc = "TODO find a remap", })
-vim.keymap.set("n", "<C-h>", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>j", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>k", "<nop>", { desc = "TODO find a remap", })
 vim.keymap.set("n", "<leader>u", "<nop>", { desc = "TODO find a remap", })
