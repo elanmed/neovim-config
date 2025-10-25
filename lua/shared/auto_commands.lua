@@ -43,14 +43,20 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
---- https://wezterm.org/recipes/passing-data.html#user-vars
---- @param val 'true'|'false'
-local function format_is_nvim_var(val)
-  return ("\033]1337;SetUserVar=IS_NVIM=%s\007"):format(vim.base64.encode(val))
-end
+-- TODO convert to lua
+-- https://github.com/mrjones2014/smart-splits.nvim/blob/6c7c64b6e1be6eb95fd9583c0969e0df625c6cd6/autoload/smart_splits.vim#L51-L62
+vim.cmd [[
+function! s:is_nvim_var(val)
+  if a:val == "true"
+    return printf("\033]1337;SetUserVar=IS_NVIM=dHJ1ZQ==\007")
+  elseif a:val == "false"
+    return printf("\033]1337;SetUserVar=IS_NVIM=ZmFsc2U=\007")
+  endif
+endfunction
+]]
 
 local function write_var(var)
-  if vim.fn.filewritable "/dev/fd/2" == 1 then
+  if vim.fn.filewritable "/dev/fd/2" == h.vimscript_true then
     vim.fn.writefile({ var, }, "/dev/fd/2", "b")
   else
     vim.fn.chansend(vim.v.stderr, var)
@@ -58,9 +64,13 @@ local function write_var(var)
 end
 
 vim.api.nvim_create_autocmd("VimEnter", {
-  callback = function() write_var(format_is_nvim_var "true") end,
+  callback = function()
+    write_var(vim.fn["s:is_nvim_var"] "true")
+  end,
 })
 
 vim.api.nvim_create_autocmd("VimLeave", {
-  callback = function() write_var(format_is_nvim_var "false") end,
+  callback = function()
+    write_var(vim.fn["s:is_nvim_var"] "false")
+  end,
 })
