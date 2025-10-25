@@ -124,8 +124,9 @@ vim.keymap.set("n", "<leader>l", function()
     options = h.tbl.extend(marks_opts_tbl, M.default_opts, M.multi_select_opts),
     sinklist = function(entries)
       for _, entry in ipairs(entries) do
-        local _, filename = unpack(vim.split(entry, "|"))
-        vim.cmd("edit " .. filename)
+        local _, lnum, filename = unpack(vim.split(entry, "|"))
+        vim.cmd.edit(filename)
+        vim.api.nvim_win_set_cursor(0, { tonumber(lnum), 0, })
       end
     end,
   }

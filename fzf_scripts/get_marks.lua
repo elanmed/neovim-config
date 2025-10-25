@@ -6,6 +6,7 @@ local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
 --- @class MarkListEntry
 --- @field file string
 --- @field mark string -- prefixed with '
+--- @field pos [string, number]
 
 --- @type MarkListEntry[] | nil
 local mark_list = vim.rpcrequest(chan, "nvim_call_function", "getmarklist", {})
@@ -19,8 +20,9 @@ if mark_list == nil then return end
 
 for _, mark_entry in pairs(mark_list) do
   local name = mark_entry.mark:sub(2, 2)
+  local lnum = mark_entry.pos[2]
   if not name:match "[A-Z]" then goto continue end
   local rel_file = vim.fs.relpath(cwd, mark_entry.file)
-  io.write(("%s|%s"):format(name, rel_file) .. "\n")
+  io.write(("%s|%s|%s"):format(name, lnum, rel_file) .. "\n")
   ::continue::
 end
