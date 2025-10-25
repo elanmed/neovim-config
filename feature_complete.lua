@@ -1,6 +1,6 @@
 for _, arg in ipairs(vim.fn.argv()) do
   if vim.fn.isdirectory(arg) == 1 then
-    vim.cmd "quit"
+    vim.cmd.quit()
   end
 end
 

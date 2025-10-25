@@ -25,5 +25,5 @@ vim.pack.add {
   "https://github.com/nvim-treesitter/nvim-treesitter",
   "https://github.com/windwp/nvim-ts-autotag",
 }
-vim.cmd "packadd nvim.undotree"
+vim.cmd.packadd "nvim.undotree"
 h.require_dir "feature_complete/plugins"

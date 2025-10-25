@@ -15,7 +15,7 @@ vim.keymap.set("n", "<bs>", function()
     h.notify.error "`buftype` is set, aborting"
     return
   end
-  vim.cmd "write"
+  vim.cmd.write()
 end, { desc = "Write", })
 vim.keymap.set("n", "<leader>w", function()
   if vim.bo.readonly then
@@ -28,21 +28,21 @@ vim.keymap.set("n", "<leader>w", function()
   end
 
   local view = vim.fn.winsaveview()
-  vim.cmd "normal! gg=G"
+  vim.cmd.normal("gg=G", { bang = true, })
   vim.fn.winrestview(view)
-  vim.cmd "write"
+  vim.cmd.write()
 end, { desc = "Write", })
-vim.keymap.set("n", "<leader>q", h.keys.vim_cmd_cb "quit", { desc = "Quit", })
+vim.keymap.set("n", "<leader>q", vim.cmd.quit, { desc = "Quit", })
 vim.keymap.set("n", "J", "gJ", { desc = "J without whitespace", })
-vim.keymap.set("n", "<leader>c", h.keys.vim_cmd_cb "copen", { desc = ":copen", })
+vim.keymap.set("n", "<leader>c", vim.cmd.copen, { desc = ":copen", })
 vim.keymap.set("n", "/", "/\\V", { desc = "/ without regex", })
 vim.keymap.set("n", "<leader>/c", "/\\C<left><left>", { desc = "/ case sensitive", })
 vim.keymap.set("n", "<leader>/w", "/\\<\\><left><left>", { desc = "/ word sensitive", })
 vim.keymap.set("n", "<leader>/e", "/\\<\\>\\C<left><left><left><left>", { desc = "/ case and word sensitive", })
 vim.keymap.set("n", "<leader>/s", ":%s/\\<\\>\\C/<left><left><left><left><left>",
   { desc = "%s in the current buffer, case and word sensitive", })
-vim.keymap.set("n", "<leader>n", h.keys.vim_cmd_cb "nohlsearch", { desc = "Turn off highlighting", })
-vim.keymap.set("n", "<leader>x", h.keys.vim_cmd_cb "tabclose", { desc = "Close the current tab", })
+vim.keymap.set("n", "<leader>n", vim.cmd.nohlsearch, { desc = "Turn off highlighting", })
+vim.keymap.set("n", "<leader>x", vim.cmd.tabclose, { desc = "Close the current tab", })
 vim.keymap.set("n", "<leader>d", function()
   local mini_ok, mini_bufremove = pcall(require, "mini.bufremove")
   if mini_ok then
@@ -56,9 +56,9 @@ vim.keymap.set("n", "x", [["_x]], { desc = "x to the black hole buffer", })
 vim.keymap.set("n", "X", [["_X]], { desc = "X to the black hole buffer", })
 vim.keymap.set("n", "c", [["_c]], { desc = "c to the black hole buffer", })
 vim.keymap.set("n", "C", [["_C]], { desc = "C to the black hole buffer", })
-vim.keymap.set("n", "<leader>p", h.keys.vim_cmd_cb "pu", { desc = "Put on the line below", })
-vim.keymap.set("n", "<leader>P", h.keys.vim_cmd_cb "pu!", { desc = "Put on the line above", })
-vim.keymap.set("n", "<leader>e", h.keys.vim_cmd_cb "e")
+vim.keymap.set("n", "<leader>P", function() vim.cmd.pu { bang = true, } end, { desc = "Put on the line above", })
+vim.keymap.set("n", "<leader>p", vim.cmd.pu, { desc = "Put on the line below", })
+vim.keymap.set("n", "<leader>e", vim.cmd.edit)
 vim.keymap.set("n", "j", "gj", { desc = "j with display lines", })
 vim.keymap.set("n", "k", "gk", { desc = "k with display lines", })
 vim.keymap.set("n", "$", "g$", { desc = "$ with display lines", })
@@ -133,7 +133,7 @@ local function next_closed_fold(direction)
   local is_open = true
 
   while curr_line_num ~= prev_line_num and is_open do
-    vim.cmd("normal! z" .. direction)
+    vim.cmd.normal { "z", direction, bang = true, }
     prev_line_num = curr_line_num
     curr_line_num = vim.fn.line "."
     is_open = vim.fn.foldclosed(curr_line_num) < 0
@@ -169,7 +169,7 @@ end, { silent = true, desc = "* but stay on the current search result", })
 vim.keymap.set("n", "<leader>'", function()
   vim.ui.input({ prompt = "$ ", }, function(cmd)
     if cmd and cmd ~= "" then
-      vim.cmd "vnew"
+      vim.cmd.vnew()
       vim.bo.buftype = "nofile"
       vim.bo.bufhidden = "wipe"
       vim.bo.buflisted = false
@@ -198,10 +198,10 @@ vim.keymap.set("n", "<leader>g", function()
       vim.api.nvim_win_close(term_winnr, true)
     end,
   })
-  vim.cmd "startinsert"
+  vim.cmd.startinsert()
 end, { desc = "Open lazygit", })
 
-vim.keymap.set("n", "<leader>,", h.keys.vim_cmd_cb "file", { desc = "Show the current file", })
+vim.keymap.set("n", "<leader>,", vim.cmd.file, { desc = "Show the current file", })
 
 vim.keymap.set("c", "<C-e>", "<C-e><C-z>", { desc = "<C-e> and retrigger wildtrigger", })
 vim.keymap.set("c", "<Left>", function()

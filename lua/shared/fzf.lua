@@ -60,7 +60,7 @@ M.fzf = function(opts)
       vim.fn.delete(source_temp)
     end,
   })
-  vim.cmd "startinsert"
+  vim.cmd.startinsert()
 end
 
 -- :h cursor-blinking
@@ -94,7 +94,7 @@ M.qf_preview_opts = {
 
 local function maybe_close_tree()
   if vim.bo.filetype == "tree" then
-    vim.cmd "close"
+    vim.cmd.close()
   end
 end
 
@@ -149,7 +149,7 @@ vim.keymap.set("n", "<leader>b", function()
     source = source,
     options = h.tbl.extend(bufs_opts_tbl, M.default_opts, M.single_select_opts),
     sink = function(entry)
-      vim.cmd("edit " .. vim.split(entry, "|")[2])
+      vim.cmd.edit(vim.split(entry, "|")[2])
     end,
   }
 end, { desc = "fzf buffers", })
@@ -192,7 +192,7 @@ vim.keymap.set("n", "<leader>i", function()
     source = "git diff --name-only HEAD",
     options = h.tbl.extend(diff_opts_tbl, M.default_opts, M.single_select_opts),
     height = "full",
-    sink = function(entry) vim.cmd("edit " .. entry) end,
+    sink = function(entry) vim.cmd.edit(entry) end,
   }
 end, { desc = "fzf git diff", })
 
@@ -203,7 +203,7 @@ local function sinklist(list)
     local row_one_index = tonumber(split_entry[2])
     local col_one_index = tonumber(split_entry[3])
     local col_zero_index = col_one_index - 1
-    vim.cmd("e " .. filename)
+    vim.cmd.edit(filename)
     vim.api.nvim_win_set_cursor(0, { row_one_index, col_zero_index, })
     return
   end
@@ -213,7 +213,7 @@ local function sinklist(list)
     return { filename = filename, lnum = row, col = col, text = text, }
   end, list)
   vim.fn.setqflist(qf_list)
-  vim.cmd "copen"
+  vim.cmd.copen()
 end
 
 -- https://junegunn.github.io/fzf/tips/ripgrep-integration/
@@ -248,7 +248,7 @@ vim.keymap.set("n", "<leader>a", function()
 end, { desc = "fzf rg with globs", })
 
 vim.keymap.set("n", "<leader>zf", function()
-  vim.cmd "cclose"
+  vim.cmd.cclose()
   local source = get_fzf_script "get_qf_list"
   local quickfix_list_opts = { [[--ghost='Qf list']], }
   M.fzf {
@@ -260,7 +260,7 @@ vim.keymap.set("n", "<leader>zf", function()
 end, { desc = "fzf current quickfix list", })
 
 vim.keymap.set("n", "<leader>zs", function()
-  vim.cmd "cclose"
+  vim.cmd.cclose()
   local source = get_fzf_script "get_qf_stack"
   local quickfix_list_opts = { [[--ghost='Qf stack']], }
   M.fzf {
@@ -269,8 +269,8 @@ vim.keymap.set("n", "<leader>zs", function()
     height = "half",
     sink = function(entry)
       local qf_id = vim.split(entry, "|")[1]
-      vim.cmd("chistory " .. qf_id)
-      vim.cmd "copen"
+      vim.cmd.chistory(qf_id)
+      vim.cmd.copen()
     end,
   }
 end, { desc = "fzf quickfix stack", })

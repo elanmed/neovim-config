@@ -66,13 +66,13 @@ end, { desc = ":cprev", })
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "qf",
   callback = function()
-    vim.keymap.set("n", "<leader>c", h.keys.vim_cmd_cb "cclose", { buffer = true, })
-    vim.keymap.set("n", "<C-c>", h.keys.vim_cmd_cb "cclose", { buffer = true, })
-    vim.keymap.set("n", "o", h.keys.vim_cmd_cb("cc " .. vim.fn.line "."), { buffer = true, })
+    vim.keymap.set("n", "<leader>c", vim.cmd.cclose, { buffer = true, })
+    vim.keymap.set("n", "<C-c>", vim.cmd.cclose, { buffer = true, })
+    vim.keymap.set("n", "o", function() vim.cmd.cc(vim.fn.line ".") end, { buffer = true, })
     vim.keymap.set("n", "<cr>", function()
       local curr_line = vim.fn.line "."
-      vim.cmd "cclose"
-      vim.cmd("cc " .. curr_line)
+      vim.cmd.cclose()
+      vim.cmd.cc(curr_line)
     end, { buffer = true, })
 
     vim.keymap.set("n", ">", function()

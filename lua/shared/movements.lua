@@ -159,7 +159,7 @@ vim.keymap.set("n", "<leader>md", function()
 end, { desc = "Delete the alphabetic marks for the buffer", })
 
 vim.keymap.set("n", "<leader>mD", function()
-  vim.cmd "delmarks a-zA-Z"
+  vim.cmd.delmarks "a-zA-Z"
   refresh_mark_signs(0)
   h.notify.doing "Deleted all global marks"
 end, { desc = "Delete all global marks", })
@@ -175,7 +175,7 @@ local function smooth_scroll(direction)
   local count = 0
   local function step()
     if count < lines then
-      vim.cmd("normal! " .. direction)
+      vim.cmd.normal { direction, bang = true, }
       count = count + 1
       vim.defer_fn(step, 10)
     end

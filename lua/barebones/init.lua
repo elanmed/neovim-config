@@ -7,10 +7,10 @@ local fzf = require "shared.fzf"
 vim.keymap.set("n", "<C-f>", function()
   if vim.bo.filetype == "netrw" then
     while vim.bo.filetype == "netrw" do
-      vim.cmd "bdelete"
+      vim.cmd.bdelete()
     end
   else
-    vim.cmd "Explore %:p:h"
+    vim.cmd.Explore "%:p:h"
   end
 end, { desc = "Toggle netrw, focusing the current buffer", })
 
@@ -21,7 +21,7 @@ vim.keymap.set("n", "<leader>f", function()
     options = h.tbl.extend(fzf.default_opts, fzf.multi_select_opts),
     sinklist = function(entries)
       for _, entry in ipairs(entries) do
-        vim.cmd("edit " .. entry)
+        vim.cmd.edit(entry)
       end
     end,
   }
