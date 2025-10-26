@@ -19,6 +19,7 @@ vim.pack.add {
   -- movements
   "https://github.com/folke/flash.nvim",
   "https://github.com/elanmed/ft-highlight.nvim",
+  "https://github.com/elanmed/marks.nvim",
   -- quickfix
   "https://github.com/elanmed/quickfix-preview.nvim",
   -- treesitter
