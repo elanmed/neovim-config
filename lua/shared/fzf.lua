@@ -190,7 +190,7 @@ vim.keymap.set("n", "<leader>i", function()
 
   M.fzf {
     source = "git diff --name-only HEAD",
-    options = h.tbl.extend(diff_opts_tbl, M.default_opts, M.single_select_opts),
+    options = h.tbl.extend(diff_opts_tbl, M.default_opts, M.multi_select_opts),
     height = "full",
     sink = function(entry) vim.cmd.edit(entry) end,
   }
