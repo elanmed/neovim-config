@@ -42,7 +42,8 @@ local M = {
 }
 
 vim.api.nvim_set_hl(0, "WildMenu", { fg = M.yellow, bg = M.dark_grey, bold = true, })
-vim.api.nvim_set_hl(0, "Mark", { fg = M.yellow, })
+vim.api.nvim_set_hl(0, "MarkCol", { fg = M.yellow, bg = nil, bold = true, })
+vim.api.nvim_set_hl(0, "MarkRow", { fg = M.yellow, bg = nil, })
 
 vim.api.nvim_set_hl(0, "FlashLabel", { link = "IncSearch", })
 vim.api.nvim_set_hl(0, "NormalFloat", { link = "Normal", })

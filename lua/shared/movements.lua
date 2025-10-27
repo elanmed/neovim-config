@@ -42,7 +42,6 @@ vim.keymap.set("n", "<C-h>", function()
   local prev_win = vim.api.nvim_get_current_win()
   vim.cmd.wincmd "h"
   local curr_win = vim.api.nvim_get_current_win()
-
   if prev_win == curr_win then
     wezterm_cli_move "Left"
   end
