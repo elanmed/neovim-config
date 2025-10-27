@@ -21,7 +21,9 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.keymap.set("n", "ya", "<Plug>TreeYankAbsolutePath", { buffer = args.buf, })
     vim.keymap.set("n", "o", "<Plug>TreeCreate", { buffer = args.buf, })
     vim.keymap.set("n", "e", "<Plug>TreeRefresh", { buffer = args.buf, })
-    vim.keymap.set("n", "dd", "<Plug>TreeDelete", { buffer = args.buf, })
     vim.keymap.set("n", "r", "<Plug>TreeRename", { buffer = args.buf, })
+    vim.keymap.set("n", "dd", "<Plug>TreeDelete", { buffer = args.buf, })
+
+    vim.keymap.set("v", "d", "<Plug>TreeDelete", { buffer = args.buf, })
   end,
 })
