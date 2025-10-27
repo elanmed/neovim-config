@@ -22,7 +22,9 @@ for _, mark_entry in pairs(mark_list) do
   local name = mark_entry.mark:sub(2, 2)
   local lnum = mark_entry.pos[2]
   if not name:match "[A-Z]" then goto continue end
+  if not vim.startswith(mark_entry.file, cwd) then goto continue end
   local rel_file = vim.fs.relpath(cwd, mark_entry.file)
+
   io.write(("%s|%s|%s"):format(name, lnum, rel_file) .. "\n")
   ::continue::
 end
