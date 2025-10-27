@@ -48,12 +48,12 @@ M.fzf = function(opts)
     on_exit = function()
       vim.api.nvim_win_close(term_winnr, true)
       local sink_content = vim.fn.readfile(sink_temp)
-      if #sink_content == 0 then return end
-
-      if opts.sink then
-        opts.sink(sink_content[1])
-      elseif opts.sinklist then
-        opts.sinklist(sink_content)
+      if #sink_content > 0 then
+        if opts.sink then
+          opts.sink(sink_content[1])
+        elseif opts.sinklist then
+          opts.sinklist(sink_content)
+        end
       end
 
       vim.fn.delete(sink_temp)
@@ -192,11 +192,23 @@ vim.keymap.set("n", "<leader>i", function()
     source = "git diff --name-only HEAD",
     options = h.tbl.extend(diff_opts_tbl, M.default_opts, M.multi_select_opts),
     height = "full",
-    sink = function(entry) vim.cmd.edit(entry) end,
+    sinklist = function(entries)
+      if #entries == 0 then
+        vim.cmd.edit(entries[1])
+        return
+      end
+
+      local qf_list = vim.tbl_map(function(entry)
+        return { filename = entry, lnum = 1, col = 0, }
+      end, entries)
+
+      vim.fn.setqflist(qf_list)
+      vim.cmd.copen()
+    end,
   }
 end, { desc = "fzf git diff", })
 
-local function sinklist(list)
+local function ripgrep_sinklist(list)
   if vim.tbl_count(list) == 1 then
     local split_entry = vim.split(list[1], "|")
     local filename = split_entry[1]
@@ -238,7 +250,7 @@ local function rg_with_globs(default_query)
     source = rg_with_globs_script,
     options = h.tbl.extend(rg_options, M.default_opts, M.multi_select_opts, M.qf_preview_opts),
     height = "full",
-    sinklist = sinklist,
+    sinklist = ripgrep_sinklist,
   }
 end
 
@@ -255,7 +267,7 @@ vim.keymap.set("n", "<leader>zf", function()
     source = source,
     options = h.tbl.extend(quickfix_list_opts, M.default_opts, M.multi_select_opts, M.qf_preview_opts),
     height = "full",
-    sinklist = sinklist,
+    sinklist = ripgrep_sinklist,
   }
 end, { desc = "fzf current quickfix list", })
 
