@@ -51,6 +51,9 @@ vim.api.nvim_set_hl(0, "Pmenu", { link = "Normal", })
 vim.api.nvim_set_hl(0, "TabLineTitle", { fg = M.yellow, })
 
 vim.api.nvim_set_hl(0, "@field", { link = "@variable", })
+vim.api.nvim_set_hl(0, "@variable.builtin", { link = "@variable", })
+vim.api.nvim_set_hl(0, "@variable.parameter.builtin", { link = "@variable", })
+
 vim.api.nvim_set_hl(0, "@property", { link = "@variable", })
 vim.api.nvim_set_hl(0, "@lsp.type.property", { link = "@variable", })
 vim.api.nvim_set_hl(0, "@function", { link = "@variable", })
