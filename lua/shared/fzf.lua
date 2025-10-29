@@ -98,7 +98,7 @@ local function maybe_close_tree()
   end
 end
 
---- @param script_name "get_marks"|"delete_mark"|"get_cmd_history"|"get_qf_list"|"get_qf_stack"|"get_buffers"|"get_lines"|"delete_buffer"
+--- @param script_name "get_marks"|"delete_mark"|"ex_cmd"|"get_qf_list"|"get_qf_stack"|"get_buffers"|"get_lines"|"delete_buffer"
 local function get_fzf_script(script_name)
   local lua_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "%s.lua"):format(script_name)
   return table.concat(
@@ -157,8 +157,11 @@ end, { desc = "fzf buffers", })
 vim.keymap.set("n", "<leader>z;", function()
   maybe_close_tree()
 
+  local ex_cmd_source = get_fzf_script "ex_cmd"
+
   local cmd_history_opts_tbl = {
     [[--ghost='Command history']],
+    ("--bind='ctrl-e:execute(%s {1})+close'"):format(ex_cmd_source),
   }
 
   local source = {}
