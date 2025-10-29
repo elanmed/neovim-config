@@ -244,8 +244,10 @@ local function rg_with_globs(default_query)
     [[--ghost='Rg']],
     "--header", header,
     "--bind", ("'start:reload:%s {q} || true'"):format(rg_with_globs_script),
-    "--bind", ("'change:reload:%s {q} || true'"):format(rg_with_globs_script),
-    "--bind", ("'change:bg-transform-header:%s {q} || true'"):format(get_rg_globs_script),
+    "--bind", ("'change:reload(%s {q} || true)+bg-transform-header(%s {q} || true)'"):format(
+    rg_with_globs_script,
+    get_rg_globs_script
+  ),
   }
 
   M.fzf {
