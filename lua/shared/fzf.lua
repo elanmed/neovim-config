@@ -237,6 +237,7 @@ local function rg_with_globs(default_query)
   [['-e by *.[ext] | -f by file | -d by **/[dir]/** | -c by case sensitive | -nc by case insensitive | -w by whole word | -nw by partial word']]
 
   local rg_with_globs_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "rg-with-globs.sh")
+  local get_rg_globs_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "get-rg-globs.sh")
   local rg_options = {
     "--query", default_query,
     "--disabled",
@@ -244,6 +245,7 @@ local function rg_with_globs(default_query)
     "--header", header,
     "--bind", ("'start:reload:%s {q} || true'"):format(rg_with_globs_script),
     "--bind", ("'change:reload:%s {q} || true'"):format(rg_with_globs_script),
+    "--bind", ("'change:bg-transform-header:%s {q} || true'"):format(get_rg_globs_script),
   }
 
   M.fzf {
