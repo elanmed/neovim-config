@@ -161,7 +161,8 @@ vim.keymap.set("n", "<leader>z;", function()
 
   local cmd_history_opts_tbl = {
     [[--ghost='Command history']],
-    ("--bind='ctrl-e:execute(%s {1})+close'"):format(ex_cmd_source),
+    ("--bind='ctrl-e:execute(%s {1} %s %s)+close'"):format(ex_cmd_source, vim.api.nvim_get_current_win(),
+      vim.api.nvim_get_current_buf()),
   }
 
   local source = {}
