@@ -189,7 +189,7 @@ vim.keymap.set("n", "<leader>i", function()
   maybe_close_tree()
 
   local diff_opts_tbl = {
-    [[--preview='git diff --color=always {} | tail -n +5']],
+    [[--preview='git diff --color=always HEAD {} | tail -n +5']],
   }
 
   M.fzf {
