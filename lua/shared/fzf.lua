@@ -189,11 +189,13 @@ vim.keymap.set("n", "<leader>i", function()
   maybe_close_tree()
 
   local diff_opts_tbl = {
-    [[--preview='git diff --color=always HEAD {} | tail -n +5']],
+    [[--preview='git diff --color=always HEAD {2} | tail -n +5']],
+    [[--with-nth='{2}']],
+    [[--bind='ctrl-x:execute-silent(git restore --staged --worktree {2}; git clean -f {2})+reload(git status --short)']],
   }
 
   M.fzf {
-    source = "git diff --name-only HEAD",
+    source = "git status --short",
     options = h.tbl.extend(diff_opts_tbl, M.default_opts, M.multi_select_opts),
     height = "full",
     sinklist = function(entries)
