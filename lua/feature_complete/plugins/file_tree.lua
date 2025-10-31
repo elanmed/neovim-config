@@ -1,5 +1,8 @@
 vim.keymap.set("n", "<C-f>", function()
   require "tree".tree {
+    tree_win_config = {
+      border = "single",
+    },
     tree_win_opts = {
       relativenumber = true,
     },

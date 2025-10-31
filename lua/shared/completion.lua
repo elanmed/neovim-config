@@ -84,7 +84,7 @@ vim.api.nvim_create_autocmd("CompleteChanged", {
       if vim.tbl_count(win_data) == 0 then return end
       if not vim.api.nvim_win_is_valid(win_data.winid) then return end
 
-      vim.api.nvim_win_set_config(win_data.winid, { border = "rounded", })
+      vim.api.nvim_win_set_config(win_data.winid, { border = "single", })
       vim.treesitter.start(win_data.bufnr, "markdown")
       vim.wo[win_data.winid].conceallevel = 3
     end)

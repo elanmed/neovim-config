@@ -29,7 +29,7 @@ M.fzf = function(opts)
     height = opts.height == "full"
         and editor_height - border_height
         or math.floor(editor_height * 0.5 - border_height),
-    border = "rounded",
+    border = "single",
     title = "FZF term",
   })
 
@@ -71,7 +71,8 @@ M.default_opts = {
   [[--preview-window='up:40%']],
   [[--bind='ctrl-d:preview-page-down']],
   [[--bind='ctrl-u:preview-page-up']],
-  [[--header-border='rounded']],
+  [[--preview-border='sharp']],
+  [[--header-border='sharp']],
 }
 
 M.multi_select_opts = {

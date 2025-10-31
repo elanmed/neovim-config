@@ -1,5 +1,11 @@
 vim.g.ff = {
   find_cmd = "fd --absolute-path --hidden --type f --exclude .git --exclude node_modules --exclude dist",
+  results_win_config = {
+    border = "single",
+  },
+  input_win_config = {
+    border = "single",
+  },
   results_win_opts = {
     number = true,
     scrolloff = 0,

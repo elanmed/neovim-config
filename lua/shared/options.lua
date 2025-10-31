@@ -29,6 +29,6 @@ vim.opt.suffixesadd = {
   "index.tsx", "index.jsx", "index.ts", "index.js",
 }
 vim.opt.completeopt = { "menuone", "noselect", "fuzzy", "popup", }
-vim.o.pumborder = "rounded"
+vim.o.pumborder = "single"
 vim.o.wildmode = "noselect"
 vim.o.wildoptions = "fuzzy"

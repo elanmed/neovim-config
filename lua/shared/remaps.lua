@@ -189,7 +189,7 @@ vim.keymap.set("n", "<leader>g", function()
     col = 0,
     width = vim.o.columns,
     height = editor_height - border_height,
-    border = "rounded",
+    border = "single",
     title = "Lazygit term",
   })
   vim.fn.jobstart("lazygit", {
