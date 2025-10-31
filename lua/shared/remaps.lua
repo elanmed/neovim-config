@@ -239,5 +239,5 @@ end, { desc = "Yank the file vim.v.count below and put it on the current line", 
 
 vim.keymap.set("n", "<C-j>", "<C-]>", { desc = "<C-]>", })
 
-vim.keymap.set("n", "<leader>u", "<nop>", { desc = "TODO find a remap", })
-vim.keymap.set("n", "<leader>t", "<nop>", { desc = "TODO find a remap", })
+vim.keymap.set("n", "<leader>u", vim.pack.update, { desc = "Update all packages", })
+vim.keymap.set("n", "<leader>t", vim.cmd.so, { desc = ":so", })
