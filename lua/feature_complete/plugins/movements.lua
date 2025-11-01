@@ -4,7 +4,7 @@ flash.setup {
   prompt = { prefix = {}, },
 }
 
-vim.keymap.set("n", "<leader>s", function() flash.jump() end)
+-- vim.keymap.set("n", "<leader>s", function() flash.jump() end)
 vim.keymap.set("n", "<leader>S", function()
   -- https://github.com/folke/flash.nvim#-examples
   flash.jump {
