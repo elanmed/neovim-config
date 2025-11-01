@@ -1,5 +1,4 @@
 require "mini.surround".setup()
-require "mini.indentscope".setup()
 require "mini.icons".setup()
 require "mini.splitjoin".setup()
 

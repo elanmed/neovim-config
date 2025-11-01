@@ -41,6 +41,7 @@ local M = {
   brown = colors.base0F,
 }
 
+vim.api.nvim_set_hl(0, "Whitespace", { fg = M.dark_grey, })
 vim.api.nvim_set_hl(0, "WildMenu", { fg = M.yellow, bg = M.dark_grey, bold = true, })
 vim.api.nvim_set_hl(0, "MarkCol", { fg = M.yellow, bg = nil, bold = true, })
 vim.api.nvim_set_hl(0, "MarkRow", { fg = M.yellow, bg = nil, })

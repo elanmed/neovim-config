@@ -32,3 +32,5 @@ vim.opt.completeopt = { "menuone", "noselect", "fuzzy", "popup", }
 vim.o.pumborder = "single"
 vim.o.wildmode = "noselect"
 vim.o.wildoptions = "fuzzy"
+vim.o.list = true
+vim.o.listchars = "leadmultispace:│ ,trail:·,nbsp:◇"
