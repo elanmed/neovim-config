@@ -11,6 +11,9 @@ require "mini.surround".setup {
   },
   search_method = "cover_or_next",
 }
+-- ys forces to wait
+vim.keymap.set("v", "y", "y", { nowait = true, })
+
 require "mini.icons".setup()
 require "mini.splitjoin".setup()
 
