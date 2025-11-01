@@ -1,25 +1,3 @@
-local flash = require "flash"
-flash.setup {
-  modes = { char = { enabled = false, }, },
-  prompt = { prefix = {}, },
-}
-
--- vim.keymap.set("n", "<leader>s", function() flash.jump() end)
-vim.keymap.set("n", "<leader>S", function()
-  -- https://github.com/folke/flash.nvim#-examples
-  flash.jump {
-    forward = true,
-    search = {
-      mode = "search",
-      max_length = 0,
-    },
-    label = {
-      after = { 0, 0, },
-    },
-    pattern = "^",
-  }
-end)
-
 local marks = require "marks"
 vim.g.marks = {
   highlight_char_set = marks.char_sets.local_marks .. marks.char_sets.global_marks .. "<>^",

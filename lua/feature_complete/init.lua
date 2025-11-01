@@ -17,7 +17,6 @@ vim.pack.add {
   "https://github.com/neovim/nvim-lspconfig",
   "https://github.com/stevearc/conform.nvim",
   -- movements
-  "https://github.com/folke/flash.nvim",
   "https://github.com/elanmed/ft-highlight.nvim",
   "https://github.com/elanmed/marks.nvim",
   -- quickfix
