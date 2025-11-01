@@ -230,7 +230,7 @@ vim.keymap.set("v", "<", "<gv", { desc = "outdent, preserving the selecting", })
 vim.keymap.set("n", "H", "{", { desc = "{", })
 vim.keymap.set("n", "L", "}", { desc = "}", })
 
-vim.keymap.set("n", "<keader>k", function()
+vim.keymap.set("n", "<leader>k", function()
   return "k" .. [["zyy]] .. vim.v.count .. "j" .. [["zp]]
 end, { desc = "Yank the file vim.v.count above and put it on the current line", expr = true, })
 vim.keymap.set("n", "<leader>j", function()
