@@ -59,7 +59,23 @@ local get_key = function()
   return { type = "success", char = vim.fn.nr2char(char), }
 end
 
-local seek = function()
+--- @param tbl table
+local tbl_reverse = function(tbl)
+  local reversed = {}
+  for idx = #tbl, 1, -1 do
+    table.insert(reversed, tbl[idx])
+  end
+  return reversed
+end
+
+-- TODO
+-- case insensitive
+
+--- @class SeekOpts
+--- @field direction "before"|"after"
+
+--- @param opts SeekOpts
+local seek = function(opts)
   local first_key = get_key()
   if first_key.type == "error" then
     h.notify.doing "Exiting after key 1"
@@ -76,34 +92,60 @@ local seek = function()
 
   --- @class Match
   --- @field row_0i number
-  --- @field col_0i number
+  --- @field char_col_0i number
+  --- @field label_col_0i number
   --- @field label string
 
   --- @type Match[]
   local matches = {}
 
   local curr_line_0i = vim.fn.line "." - 1
-  local next_line_0i = curr_line_0i + 1
-  local end_line_0i = vim.fn.line "w$" - 1
+  local bottom_line_0i = vim.fn.line "w$" - 1
+  local top_line_0i = vim.fn.line "w0" - 1
 
-  local lines = vim.api.nvim_buf_get_lines(0, next_line_0i, end_line_0i + 1, false)
+  local lines = (function()
+    if opts.direction == "after" then
+      -- TODO: handle start line
+      local next_line_0i = curr_line_0i
+      return vim.api.nvim_buf_get_lines(0, next_line_0i, bottom_line_0i + 1, false)
+    end
+
+    local prev_line_0i = curr_line_0i
+    return tbl_reverse(vim.api.nvim_buf_get_lines(0, top_line_0i, prev_line_0i + 1, false))
+  end)()
+
   for line_idx_1i, line in ipairs(lines) do
     local plain = true
 
     local idx_1i = 1
     while true do
-      local start_pos_1i, end_pos_1i = line:find(keys, idx_1i, plain)
-      if not start_pos_1i then break end
+      local start_col_1i, end_col_1i = line:find(keys, idx_1i, plain)
+      if not start_col_1i then break end
 
       local row_0i = line_idx_1i - 1
-      row_0i = row_0i + next_line_0i
+      row_0i = (function()
+        if opts.direction == "before" then
+          return curr_line_0i - row_0i
+        end
+        return curr_line_0i + row_0i
+      end)()
 
-      local start_pos_adjusted_1i = start_pos_1i + 2
-      local start_pos_adjusted_0i = start_pos_adjusted_1i - 1
+      local char_col_0i = start_col_1i - 1
+
+      local label_col_1i = start_col_1i + 2
+      local label_col_0i = label_col_1i - 1
       local label = labels[#matches + 1]
-      table.insert(matches, { line = line, row_0i = row_0i, col_0i = start_pos_adjusted_0i, label = label, })
 
-      idx_1i = end_pos_1i + 1
+      table.insert(matches,
+        {
+          line = line,
+          row_0i = row_0i,
+          char_col_0i = char_col_0i,
+          label_col_0i = label_col_0i,
+          label = label,
+        })
+
+      idx_1i = end_col_1i + 1
     end
   end
 
@@ -115,11 +157,13 @@ local seek = function()
   if #matches == 1 then
     local match = matches[1]
     local row_1i = match.row_0i + 1
-    vim.api.nvim_win_set_cursor(0, { row_1i, match.col_0i, })
+    vim.api.nvim_win_set_cursor(0, { row_1i, match.char_col_0i, })
+    vim.api.nvim_buf_clear_namespace(0, ns_id, 0, -1)
+    return
   end
 
   for _, match in ipairs(matches) do
-    vim.api.nvim_buf_set_extmark(0, ns_id, match.row_0i, match.col_0i, {
+    vim.api.nvim_buf_set_extmark(0, ns_id, match.row_0i, match.label_col_0i, {
       virt_text = { { match.label, "CurSearch", }, },
       virt_text_pos = "overlay",
     })
@@ -137,8 +181,7 @@ local seek = function()
     for _, match in ipairs(matches) do
       if label_key.char == match.label then
         local row_1i = match.row_0i + 1
-        local col_adjusted_0i = match.col_0i - 2
-        vim.api.nvim_win_set_cursor(0, { row_1i, col_adjusted_0i, })
+        vim.api.nvim_win_set_cursor(0, { row_1i, match.char_col_0i, })
         vim.api.nvim_buf_clear_namespace(0, ns_id, 0, -1)
         return
       end
@@ -148,4 +191,5 @@ local seek = function()
     vim.api.nvim_buf_clear_namespace(0, ns_id, 0, -1)
   end)
 end
-vim.keymap.set("n", "<leader>s", seek)
+vim.keymap.set("n", "<leader>s", function() seek { direction = "after", } end)
+vim.keymap.set("n", "<leader>S", function() seek { direction = "before", } end)
