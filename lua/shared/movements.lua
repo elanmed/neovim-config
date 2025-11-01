@@ -191,5 +191,5 @@ local seek = function(opts)
     vim.api.nvim_buf_clear_namespace(0, ns_id, 0, -1)
   end)
 end
-vim.keymap.set("n", "<leader>s", function() seek { direction = "after", } end)
-vim.keymap.set("n", "<leader>S", function() seek { direction = "before", } end)
+vim.keymap.set("n", "s", function() seek { direction = "after", } end)
+vim.keymap.set("n", "S", function() seek { direction = "before", } end)

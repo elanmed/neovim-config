@@ -1,4 +1,16 @@
-require "mini.surround".setup()
+require "mini.surround".setup {
+  mappings = {
+    add = "ys",
+    delete = "ds",
+    find = "",
+    find_left = "",
+    highlight = "",
+    replace = "cs",
+    suffix_last = "",
+    suffix_next = "",
+  },
+  search_method = "cover_or_next",
+}
 require "mini.icons".setup()
 require "mini.splitjoin".setup()
 
