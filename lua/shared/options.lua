@@ -33,4 +33,4 @@ vim.o.pumborder = "single"
 vim.o.wildmode = "noselect"
 vim.o.wildoptions = "fuzzy"
 vim.o.list = true
-vim.o.listchars = "leadmultispace:│ ,trail:·,nbsp:◇"
+vim.o.listchars = "leadmultispace:| ,trail:·,nbsp:◇"
