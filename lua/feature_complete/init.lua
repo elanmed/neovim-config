@@ -16,6 +16,7 @@ vim.pack.add {
   -- lsp
   "https://github.com/neovim/nvim-lspconfig",
   "https://github.com/stevearc/conform.nvim",
+  "https://github.com/elanmed/lcs-diff.nvim",
   -- movements
   "https://github.com/elanmed/seek.nvim",
   "https://github.com/elanmed/ft-highlight.nvim",
