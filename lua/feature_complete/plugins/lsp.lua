@@ -64,6 +64,9 @@ vim.api.nvim_create_autocmd("FileType", {
             end
 
             local formatted = vim.split(result.stdout, "\n")
+            if formatted[#formatted] == "" then
+              table.remove(formatted)
+            end
 
             local start_time = os.clock()
             local diff = require "lcs-diff".diff(unformatted, formatted)
