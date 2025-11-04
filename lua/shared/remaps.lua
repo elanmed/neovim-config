@@ -6,17 +6,17 @@ vim.keymap.set({ "n", "v", }, "<C-a>", function()
 end, { desc = "Insert a snippet", })
 vim.keymap.set("n", "<leader>h", ":help<space>", { desc = ":help", })
 
-vim.keymap.set("n", "<bs>", function()
-  if vim.bo.readonly then
-    h.notify.error "Buffer is readonly, aborting"
-    return
+vim.keymap.set("n", "<leader>w", function()
+  if vim.bo.readonly or vim.bo.buftype ~= "" then
+    return h.notify.error "Aborting"
   end
-  if vim.bo.buftype ~= "" then
-    h.notify.error "`buftype` is set, aborting"
-    return
-  end
+
+  local view = vim.fn.winsaveview()
+  vim.cmd "keepjumps normal! gg=G"
+  vim.fn.winrestview(view)
   vim.cmd.write()
-end, { desc = "Write", })
+end)
+
 vim.keymap.set("n", "<leader>q", vim.cmd.quit, { desc = "Quit", })
 vim.keymap.set("n", "J", "gJ", { desc = "J without whitespace", })
 vim.keymap.set("n", "<leader>c", vim.cmd.copen, { desc = ":copen", })
@@ -25,7 +25,7 @@ vim.keymap.set("n", "<leader>/c", "/\\C<left><left>", { desc = "/ case sensitive
 vim.keymap.set("n", "<leader>/w", "/\\<\\><left><left>", { desc = "/ word sensitive", })
 vim.keymap.set("n", "<leader>/e", "/\\<\\>\\C<left><left><left><left>", { desc = "/ case and word sensitive", })
 vim.keymap.set("n", "<leader>/s", ":%s/\\<\\>\\C/<left><left><left><left><left>",
-  { desc = "%s in the current buffer, case and word sensitive", })
+{ desc = "%s in the current buffer, case and word sensitive", })
 vim.keymap.set("n", "<leader>n", vim.cmd.nohlsearch, { desc = "Turn off highlighting", })
 vim.keymap.set("n", "<leader>x", vim.cmd.tabclose, { desc = "Close the current tab", })
 vim.keymap.set("n", "<leader>d", function()
@@ -51,39 +51,39 @@ vim.keymap.set("n", "0", "g0", { desc = "0 with display lines", })
 vim.keymap.set("i", "<C-/>", "<C-o>gcc", { remap = true, desc = "Comment the current line", })
 vim.keymap.set("n", "<C-/>", "gcc", { remap = true, desc = "Comment the current line", })
 vim.keymap.set("v", "<C-/>",
-  function()
-    local comment = "gc"
-    local reselect_last = "gv"
-    return comment .. reselect_last
-  end, { expr = true, remap = true, desc = "Comment the visual selection", })
+function()
+  local comment = "gc"
+  local reselect_last = "gv"
+  return comment .. reselect_last
+end, { expr = true, remap = true, desc = "Comment the visual selection", })
 
 vim.keymap.set("n", "<leader>yc",
-  function()
-    local z_register = [["z]]
-    local yank_line = "yy"
-    local comment_line = "gcc"
-    local put = "p"
-    return z_register .. yank_line .. comment_line .. z_register .. put
-  end,
-  { expr = true, remap = true, desc = "Yank the current line, comment it, and put it below", })
+function()
+  local z_register = [["z]]
+  local yank_line = "yy"
+  local comment_line = "gcc"
+  local put = "p"
+  return z_register .. yank_line .. comment_line .. z_register .. put
+end,
+{ expr = true, remap = true, desc = "Yank the current line, comment it, and put it below", })
 
 vim.keymap.set("v", "<leader>yc",
-  function()
-    local z_register = [["z]]
-    local yank_and_unselect = "y"
-    local move_to_end_selection = "`>"
-    local put = "p"
-    local reselect_last = "gv"
-    local comment_selection = "gc"
-    return
-        z_register ..
-        yank_and_unselect ..
-        reselect_last ..
-        comment_selection ..
-        move_to_end_selection ..
-        z_register ..
-        put
-  end, { expr = true, remap = true, desc = "Yank the current selection, comment, and put it below", })
+function()
+  local z_register = [["z]]
+  local yank_and_unselect = "y"
+  local move_to_end_selection = "`>"
+  local put = "p"
+  local reselect_last = "gv"
+  local comment_selection = "gc"
+  return
+  z_register ..
+  yank_and_unselect ..
+  reselect_last ..
+  comment_selection ..
+  move_to_end_selection ..
+  z_register ..
+  put
+end, { expr = true, remap = true, desc = "Yank the current selection, comment, and put it below", })
 
 vim.keymap.set("v", "<leader>yp", function()
   local z_register = [["z]]

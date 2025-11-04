@@ -26,3 +26,11 @@ vim.keymap.set("n", "<leader>f", function()
     end,
   }
 end)
+
+vim.keymap.set("n", "<bs>", function()
+  if vim.bo.readonly or vim.bo.buftype ~= "" then
+    return h.notify.error "Aborting"
+  end
+
+  vim.cmd.write()
+end)

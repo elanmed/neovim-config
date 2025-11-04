@@ -70,11 +70,7 @@ local format_with_prettier = function()
         vim.schedule(function() h.notify.error("[prettier] " .. (result.stderr or "")) end)
         return
       end
-
-      if result.stdout == nil then
-        vim.schedule(function() h.notify.error "[prettier] `result.stdout` is `nil`" end)
-        return
-      end
+      if result.stdout == nil then return end
 
       local formatted = vim.split(result.stdout, "\n")
       apply_minimal_changes(unformatted, formatted)
@@ -97,21 +93,12 @@ local format_with_lsp = function()
       return h.notify.error("[lua_ls] " .. err.message)
     end
 
-    if not result or #result == 0 then
-      return h.notify.error("[lua_ls] " .. "textDocument/formatting result is `nil`")
-    end
+    if not result or #result == 0 then return end
 
     local unformatted = vim.api.nvim_buf_get_lines(0, 0, -1, false)
     local formatted = vim.split(result[1].newText, "\n")
     apply_minimal_changes(unformatted, formatted)
   end)
-end
-
-local format_with_vim = function()
-  local view = vim.fn.winsaveview()
-  vim.cmd "keepjumps normal! gg=G"
-  vim.fn.winrestview(view)
-  vim.cmd.write()
 end
 
 vim.api.nvim_create_autocmd("FileType", {
@@ -131,15 +118,9 @@ vim.api.nvim_create_autocmd("FileType", {
       "yaml",
     }
 
-    vim.keymap.set("n", "<leader>w", function()
-      if vim.bo.readonly then
-        h.notify.error "Buffer is readonly, aborting"
-        return
-      end
-
-      if vim.bo.buftype ~= "" then
-        h.notify.error "`buftype` is set, aborting"
-        return
+    vim.keymap.set("n", "<bs>", function()
+      if vim.bo.readonly or vim.bo.buftype ~= "" then
+        return h.notify.error "Aborting"
       end
 
       if vim.list_contains(prettier_ft, vim.bo.filetype) then
@@ -147,7 +128,7 @@ vim.api.nvim_create_autocmd("FileType", {
       elseif vim.bo.filetype == "lua" then
         format_with_lsp()
       else
-        format_with_vim()
+        vim.cmd.write()
       end
     end, { buffer = true, })
   end,
