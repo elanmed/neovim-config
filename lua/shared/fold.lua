@@ -9,9 +9,11 @@ vim.opt.fillchars = {
 
 vim.api.nvim_create_autocmd("BufWinEnter", {
   callback = function()
-    -- automatically set to treesitter in `ftplugin/*.lua`
-    vim.o.foldmethod = "expr"
-    vim.o.foldexpr = "v:lua.FoldExpr()"
+    vim.schedule(function()
+      -- automatically set to treesitter in `ftplugin/*.lua`
+      vim.o.foldmethod = "expr"
+      vim.o.foldexpr = "v:lua.FoldExpr()"
+    end)
   end,
 })
 
