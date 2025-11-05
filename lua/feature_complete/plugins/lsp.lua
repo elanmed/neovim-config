@@ -66,11 +66,8 @@ local format_with_prettier = function()
       text = true,
     },
     function(result)
-      if result.code ~= 0 then
-        vim.schedule(function() h.notify.error("[prettier] " .. (result.stderr or "")) end)
-        return
-      end
-      if result.stdout == nil then return end
+      if result.code ~= 0 then return vim.cmd.write() end
+      if result.stdout == nil then return vim.cmd.write() end
 
       local formatted = vim.split(result.stdout, "\n")
       apply_minimal_changes(unformatted, formatted)
@@ -89,11 +86,8 @@ local format_with_lsp = function()
 
   local client = clients[1]
   client:request("textDocument/formatting", vim.lsp.util.make_formatting_params(), function(err, result)
-    if err then
-      return h.notify.error("[lua_ls] " .. err.message)
-    end
-
-    if not result or #result == 0 then return end
+    if err then return vim.cmd.write() end
+    if not result or #result == 0 then return vim.cmd.write() end
 
     local unformatted = vim.api.nvim_buf_get_lines(0, 0, -1, false)
     local formatted = vim.split(result[1].newText, "\n")
