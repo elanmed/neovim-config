@@ -11,6 +11,7 @@ require "mini.surround".setup {
   },
   search_method = "cover_or_next",
 }
+vim.keymap.set("n", "yss", "ys_", { remap = true, })
 -- ys forces to wait
 vim.keymap.set("v", "y", "y", { nowait = true, })
 
