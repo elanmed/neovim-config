@@ -17,11 +17,3 @@ require "nvim-treesitter.configs".setup {
 
 vim.filetype.add { extension = { mdx = "mdx", }, }
 vim.treesitter.language.register("markdown", "mdx")
-
-require "nvim-ts-autotag".setup {}
-local gen_spec = require "mini.ai".gen_spec
-require "mini.ai".setup {
-  custom_textobjects = {
-    F = gen_spec.treesitter { a = "@function.outer", i = "@function.inner", },
-  },
-}

@@ -15,7 +15,6 @@ vim.pack.add {
   "https://github.com/elanmed/ff.nvim",
   -- lsp
   "https://github.com/neovim/nvim-lspconfig",
-  "https://github.com/stevearc/conform.nvim",
   "https://github.com/elanmed/lcs-diff.nvim",
   -- movements
   "https://github.com/elanmed/seek.nvim",
@@ -25,7 +24,6 @@ vim.pack.add {
   "https://github.com/elanmed/quickfix-preview.nvim",
   -- treesitter
   "https://github.com/nvim-treesitter/nvim-treesitter",
-  "https://github.com/windwp/nvim-ts-autotag",
 }
 vim.cmd.packadd "nvim.undotree"
 h.require_dir "feature_complete/plugins"
