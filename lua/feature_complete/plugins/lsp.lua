@@ -1,28 +1,5 @@
 local h = require "helpers"
 
--- require "conform".setup {
---   formatters_by_ft = {
---     css = { "prettier", },
---     graphql = { "prettier", },
---     html = { "prettier", },
---     javascript = { "prettier", },
---     javascriptreact = { "prettier", },
---     json = { "prettier", },
---     less = { "prettier", },
---     markdown = { "prettier", },
---     scss = { "prettier", },
---     typescript = { "prettier", },
---     typescriptreact = { "prettier", },
---     yaml = { "prettier", },
---     java = {},
---     lua = { lsp_format = "fallback", },
---   },
---   format_after_save = {
---     async = true,
---   },
--- }
-
-
 --- @param unformatted string[]
 --- @param formatted string[]
 local apply_minimal_changes = function(unformatted, formatted)
@@ -95,35 +72,38 @@ local format_with_lsp = function()
   end)
 end
 
-vim.api.nvim_create_autocmd("FileType", {
-  callback = function()
-    local prettier_ft = {
-      "css",
-      "graphql",
-      "html",
-      "javascript",
-      "javascriptreact",
-      "json",
-      "less",
-      "markdown",
-      "scss",
-      "typescript",
-      "typescriptreact",
-      "yaml",
-    }
+local prettier_ft = {
+  "css",
+  "graphql",
+  "html",
+  "javascript",
+  "javascriptreact",
+  "json",
+  "less",
+  "markdown",
+  "scss",
+  "typescript",
+  "typescriptreact",
+  "yaml",
+}
 
-    vim.keymap.set("n", "<bs>", function()
-      if vim.bo.readonly or vim.bo.buftype ~= "" then
-        return h.notify.error "Aborting"
-      end
+vim.keymap.set("n", "<bs>", function()
+  if vim.bo.readonly or vim.bo.buftype ~= "" then
+    return h.notify.error "Aborting"
+  end
 
-      if vim.list_contains(prettier_ft, vim.bo.filetype) then
-        format_with_prettier()
-      elseif vim.bo.filetype == "lua" then
-        format_with_lsp()
-      else
-        vim.cmd.write()
-      end
-    end, { buffer = true, })
-  end,
-})
+  local bufnr = vim.api.nvim_get_current_buf()
+  local bufname = vim.api.nvim_buf_get_name(bufnr)
+  local line_count = vim.api.nvim_buf_line_count(bufnr)
+
+  local one_pt_five_mb = 1.5 * 1024 * 1024
+  if vim.fn.getfsize(bufname) > one_pt_five_mb or line_count > 5000 then
+    vim.cmd.write()
+  elseif vim.list_contains(prettier_ft, vim.bo.filetype) then
+    format_with_prettier()
+  elseif vim.bo.filetype == "lua" then
+    format_with_lsp()
+  else
+    vim.cmd.write()
+  end
+end)
