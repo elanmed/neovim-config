@@ -58,7 +58,8 @@ local format_with_lsp = function()
   }
 
   if #clients == 0 then
-    return h.notify.error "No lua LSP client"
+    h.notify.error "No lua LSP client"
+    return vim.cmd.write()
   end
 
   local client = clients[1]

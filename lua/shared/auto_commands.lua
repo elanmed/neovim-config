@@ -74,3 +74,9 @@ vim.api.nvim_create_autocmd("VimLeave", {
     write_var(vim.fn["s:is_nvim_var"] "false")
   end,
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+  callback = function()
+    vim.opt.formatoptions:remove { "c", "r", "o", }
+  end,
+})
