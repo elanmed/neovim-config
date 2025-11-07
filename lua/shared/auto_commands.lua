@@ -2,8 +2,8 @@ local h = require "helpers"
 
 vim.api.nvim_create_autocmd("CursorMoved", {
   callback = function(args)
-    local filetype = vim.bo[args.buf].filetype
-    if filetype == "tree" or filetype == "nvim-undotree" then return end
+    local excluded_fts = { "tree", "nvim-undotree", "rg-far", }
+    if vim.list_contains(excluded_fts, vim.bo[args.buf].filetype) then return end
     vim.cmd.normal { "zz", bang = true, }
   end,
   desc = "Center the screen on movement",
