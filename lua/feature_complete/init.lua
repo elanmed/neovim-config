@@ -24,6 +24,6 @@ vim.keymap.set("n", "<leader>r", require "rg-far".open, { desc = "Open the rg-fa
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "rg-far",
   callback = function()
-    vim.keymap.set("n", "<leader>s", "<Plug>RgFarReplace")
+    vim.keymap.set("n", "<leader>s", "<Plug>RgFarReplace", { buffer = true, })
   end,
 })
