@@ -11,9 +11,7 @@ vim.api.nvim_create_autocmd("CursorMoved", {
 
 vim.api.nvim_create_autocmd("CmdlineChanged", {
   pattern = ":",
-  callback = function()
-    vim.fn.wildtrigger()
-  end,
+  callback = function() vim.fn.wildtrigger() end,
 })
 
 vim.api.nvim_create_autocmd("FileType", {
@@ -40,6 +38,12 @@ vim.api.nvim_create_autocmd("FileType", {
 
       return "\r" .. "end<C-o>O"
     end, { expr = true, buffer = true, })
+  end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
+  callback = function()
+    vim.opt.formatoptions:remove { "c", "r", "o", }
   end,
 })
 
@@ -72,11 +76,5 @@ vim.api.nvim_create_autocmd("VimEnter", {
 vim.api.nvim_create_autocmd("VimLeave", {
   callback = function()
     write_var(vim.fn["s:is_nvim_var"] "false")
-  end,
-})
-
-vim.api.nvim_create_autocmd("FileType", {
-  callback = function()
-    vim.opt.formatoptions:remove { "c", "r", "o", }
   end,
 })

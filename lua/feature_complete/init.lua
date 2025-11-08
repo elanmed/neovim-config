@@ -1,5 +1,3 @@
-local h = require "helpers"
-
 vim.pack.add {
   "https://github.com/neovim/nvim-lspconfig",
   "https://github.com/nvim-treesitter/nvim-treesitter",
@@ -20,7 +18,7 @@ vim.pack.add {
   "https://github.com/elanmed/quickfix-preview.nvim",
 }
 vim.cmd.packadd "nvim.undotree"
-h.require_dir "feature_complete/plugins"
+require "helpers".require_dir "feature_complete/plugins"
 
 vim.keymap.set("n", "<leader>r", require "rg-far".open, { desc = "Open the rg-far ui", })
 vim.api.nvim_create_autocmd("FileType", {
