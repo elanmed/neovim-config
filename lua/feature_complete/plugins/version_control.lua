@@ -127,6 +127,7 @@ vim.keymap.set("n", "<C-b>", function()
         vim.keymap.set("n", "<C-^>", "<Nop>", { buffer = bufnr, })
         vim.keymap.set("n", "<C-o>", "<Nop>", { buffer = bufnr, })
         vim.keymap.set("n", "<C-i>", "<Nop>", { buffer = bufnr, })
+        vim.keymap.set("n", "<leader>d", "<Nop>", { buffer = bufnr, })
       end
 
       vim.api.nvim_win_set_cursor(worktree_winnr, curr_cursor)
