@@ -9,12 +9,6 @@ local utils = {}
 local vimscript_true = 1
 local vimscript_false = 0
 
---- @param vim_cmd string
---- @return function
-keys.vim_cmd_cb = function(vim_cmd)
-  return function() vim.cmd(vim_cmd) end
-end
-
 --- @param table table
 --- @param target_key any
 --- @return boolean
@@ -70,8 +64,7 @@ dev.log = function(content)
     notify.error "Error opening file!"
     return
   end
-  file:write(vim.inspect(content))
-  file:write "\n"
+  file:write(vim.inspect(content) .. "\n")
   file:close()
 end
 
