@@ -8,15 +8,15 @@ vim.keymap.set("n", "<C-b>", function()
   local curr_bufname = vim.fs.relpath(vim.fn.getcwd(), vim.api.nvim_buf_get_name(curr_bufnr))
 
   local curr_filetype = vim.bo.filetype
-  local new_lines = vim.api.nvim_buf_get_lines(curr_bufnr, 0, -1, false)
+  local index_lines = vim.api.nvim_buf_get_lines(curr_bufnr, 0, -1, false)
 
   vim.cmd.tabnew()
-  local old_bufnr = vim.api.nvim_create_buf(false, true)
-  local new_bufnr = vim.api.nvim_create_buf(false, true)
-  local old_winnr = vim.api.nvim_tabpage_get_win(0)
+  local head_bufnr = vim.api.nvim_create_buf(false, true)
+  local worktree_bufnr = vim.api.nvim_create_buf(false, true)
+  local head_winnr = vim.api.nvim_tabpage_get_win(0)
 
-  vim.api.nvim_set_current_buf(old_bufnr)
-  local new_winnr = vim.api.nvim_open_win(new_bufnr, true, {
+  vim.api.nvim_set_current_buf(head_bufnr)
+  local worktree_winnr = vim.api.nvim_open_win(worktree_bufnr, true, {
     split = "right",
     win = 0,
   })
@@ -27,44 +27,42 @@ vim.keymap.set("n", "<C-b>", function()
       if out.stdout == nil then return "" end
       return out.stdout
     end)()
-    local old_lines = vim.split(stdout, "\n")
+    local head_lines = vim.split(stdout, "\n")
 
     local start_time = os.clock()
-    local diff = require "lcs-diff".diff(old_lines, new_lines)
+    local diff = require "lcs-diff".diff(head_lines, index_lines)
     local end_time = os.clock()
     vim.schedule(function()
       h.notify.doing(("lcs-diff: %ss"):format((end_time - start_time) * 1000))
     end)
 
-    local old_records = {}
-    local new_records = {}
+    local head_records = {}
+    local worktree_records = {}
 
     for _, record in ipairs(diff) do
       if record.type == "=" then
-        table.insert(old_records, record)
-        table.insert(new_records, record)
+        table.insert(head_records, record)
+        table.insert(worktree_records, record)
       elseif record.type == "+" then
-        table.insert(new_records, record)
+        table.insert(worktree_records, record)
       elseif record.type == "-" then
-        table.insert(old_records, record)
+        table.insert(head_records, record)
       end
     end
 
     vim.schedule(function()
-      local get_line_from_record = function(record)
-        return record.line
-      end
+      local get_line_from_record = function(record) return record.line end
 
-      vim.api.nvim_buf_set_lines(old_bufnr, 0, -1, false, vim.tbl_map(get_line_from_record, old_records))
-      vim.api.nvim_buf_set_lines(new_bufnr, 0, -1, false, vim.tbl_map(get_line_from_record, new_records))
+      vim.api.nvim_buf_set_lines(head_bufnr, 0, -1, false, vim.tbl_map(get_line_from_record, head_records))
+      vim.api.nvim_buf_set_lines(worktree_bufnr, 0, -1, false, vim.tbl_map(get_line_from_record, worktree_records))
 
       local apply_syntax_highlighting = function()
         local lang = vim.treesitter.language.get_lang(curr_filetype)
         vim.treesitter.start(0, lang)
       end
 
-      vim.api.nvim_buf_call(old_bufnr, apply_syntax_highlighting)
-      vim.api.nvim_buf_call(new_bufnr, apply_syntax_highlighting)
+      vim.api.nvim_buf_call(head_bufnr, apply_syntax_highlighting)
+      vim.api.nvim_buf_call(worktree_bufnr, apply_syntax_highlighting)
 
       --- @class HighlightLineOpts
       --- @field idx_1i number
@@ -86,12 +84,12 @@ vim.keymap.set("n", "<C-b>", function()
         vim.api.nvim_buf_call(opts.bufnr, marks.toggle_next_local_mark)
       end
 
-      for idx_1i, record in ipairs(new_records) do
-        highlight_line { bufnr = new_bufnr, idx_1i = idx_1i, record = record, }
+      for idx_1i, record in ipairs(worktree_records) do
+        highlight_line { bufnr = worktree_bufnr, idx_1i = idx_1i, record = record, }
       end
 
-      for idx_1i, record in ipairs(old_records) do
-        highlight_line { bufnr = old_bufnr, idx_1i = idx_1i, record = record, }
+      for idx_1i, record in ipairs(head_records) do
+        highlight_line { bufnr = head_bufnr, idx_1i = idx_1i, record = record, }
       end
 
       --- @class SyncCursorOpts
@@ -109,22 +107,22 @@ vim.keymap.set("n", "<C-b>", function()
       end
 
       vim.api.nvim_create_autocmd("CursorMoved", {
-        buffer = old_bufnr,
+        buffer = head_bufnr,
         callback = function()
-          sync_cursor { this_winnr = old_winnr, that_winnr = new_winnr, }
+          sync_cursor { this_winnr = head_winnr, that_winnr = worktree_winnr, }
           vim.keymap.set("n", "<C-b>", "<nop>", { buffer = true, })
         end,
       })
 
       vim.api.nvim_create_autocmd("CursorMoved", {
-        buffer = new_bufnr,
+        buffer = worktree_bufnr,
         callback = function()
-          sync_cursor { this_winnr = new_winnr, that_winnr = old_winnr, }
+          sync_cursor { this_winnr = worktree_winnr, that_winnr = head_winnr, }
           vim.keymap.set("n", "<C-b>", "<nop>", { buffer = true, })
         end,
       })
 
-      vim.api.nvim_win_set_cursor(new_winnr, curr_cursor)
+      vim.api.nvim_win_set_cursor(worktree_winnr, curr_cursor)
     end)
   end)
 end)
