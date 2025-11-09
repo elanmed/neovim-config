@@ -11,11 +11,11 @@ vim.keymap.set("n", "<C-b>", function()
   local index_lines = vim.api.nvim_buf_get_lines(curr_bufnr, 0, -1, false)
 
   vim.cmd.tabnew()
-  local head_bufnr = vim.api.nvim_create_buf(false, true)
-  local worktree_bufnr = vim.api.nvim_create_buf(false, true)
   local head_winnr = vim.api.nvim_tabpage_get_win(0)
-
+  local head_bufnr = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_set_current_buf(head_bufnr)
+
+  local worktree_bufnr = vim.api.nvim_create_buf(false, true)
   local worktree_winnr = vim.api.nvim_open_win(worktree_bufnr, true, {
     split = "right",
     win = 0,
@@ -78,8 +78,7 @@ vim.keymap.set("n", "<C-b>", function()
           end_col = end_col_0i + 1,
           hl_group = opts.record.type == "+" and "DiffAdd" or "DiffDelete",
         })
-        -- TODO: not working
-        vim.api.nvim_buf_call(opts.bufnr, marks.toggle_next_local_mark)
+        vim.api.nvim_buf_call(opts.bufnr, function() marks.toggle_next_local_mark() end)
       end
 
       for idx_1i, record in ipairs(worktree_records) do
@@ -108,7 +107,6 @@ vim.keymap.set("n", "<C-b>", function()
         buffer = head_bufnr,
         callback = function()
           sync_cursor { this_winnr = head_winnr, that_winnr = worktree_winnr, }
-          vim.keymap.set("n", "<C-b>", "<nop>", { buffer = true, })
         end,
       })
 
@@ -116,9 +114,15 @@ vim.keymap.set("n", "<C-b>", function()
         buffer = worktree_bufnr,
         callback = function()
           sync_cursor { this_winnr = worktree_winnr, that_winnr = head_winnr, }
-          vim.keymap.set("n", "<C-b>", "<nop>", { buffer = true, })
         end,
       })
+
+      for _, bufnr in ipairs { worktree_bufnr, head_bufnr, } do
+        vim.keymap.set("n", "<C-b>", vim.cmd.tabclose, { buffer = bufnr, })
+        vim.keymap.set("n", "<C-^>", "<Nop>", { buffer = bufnr, })
+        vim.keymap.set("n", "<C-o>", "<Nop>", { buffer = bufnr, })
+        vim.keymap.set("n", "<C-i>", "<Nop>", { buffer = bufnr, })
+      end
 
       vim.api.nvim_win_set_cursor(worktree_winnr, curr_cursor)
       vim.bo[worktree_bufnr].modifiable = false
