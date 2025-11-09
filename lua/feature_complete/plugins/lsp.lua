@@ -24,7 +24,7 @@ local apply_minimal_changes = function(unformatted, formatted)
       end
     end
     vim.fn.winrestview(view)
-    vim.cmd.write()
+    vim.cmd.write { mods = { silent = true, }, }
   end)
 end
 
