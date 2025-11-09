@@ -40,8 +40,6 @@ mini_diff.setup {
   },
 }
 
-vim.keymap.set("n", "<C-b>", mini_diff.toggle_overlay, { desc = "Toggle mini diff overlay", })
-
 local input_wasted_keys = function(key)
   local action = function()
     if vim.bo.buftype ~= "" then return end
