@@ -152,6 +152,47 @@ str.pad = function(opts)
   return tostring(opts.val) .. string.rep(" ", num_spaces)
 end
 
+--- @alias DiffRecordType "+"|"-"|"="
+--- @alias DiffRecord { type: DiffRecordType, line: string }
+
+--- @param a string[]
+--- @param b string[]
+--- @param cb fun(diff: DiffRecord[]):nil
+utils.diff = function(a, b, cb)
+  local temp_a = vim.fn.tempname()
+  vim.fn.writefile(a, temp_a)
+
+  local temp_b = vim.fn.tempname()
+  vim.fn.writefile(b, temp_b)
+
+  vim.system({ "diff", "--unified", temp_a, temp_b, }, {}, function(out)
+    local stdout = (function()
+      if out.stdout == nil then return "" end
+      return out.stdout
+    end)()
+
+    local stdout_entries = vim.split(stdout, "\n")
+    vim.print(stdout)
+    local records = {}
+    for idx, entry in ipairs(stdout_entries) do
+      local num_header_lines = 3
+      if idx <= num_header_lines then goto continue end
+      local type = entry:sub(1, 1)
+      local line = entry:sub(2)
+
+      if type == " " then
+        table.insert(records, { type = "=", line = line, })
+      elseif type == "-" then
+        table.insert(records, { type = "-", line = line, })
+      elseif type == "+" then
+        table.insert(records, { type = "+", line = line, })
+      end
+
+      ::continue::
+    end
+    vim.schedule(function() cb(records) end)
+  end)
+end
 
 return {
   keys = keys,
