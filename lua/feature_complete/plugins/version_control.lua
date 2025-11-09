@@ -62,13 +62,18 @@ vim.keymap.set("n", "<C-b>", function()
       vim.api.nvim_buf_call(head_bufnr, apply_syntax_highlighting)
       vim.api.nvim_buf_call(worktree_bufnr, apply_syntax_highlighting)
 
+      local marks_state = {}
+
       --- @class HighlightLineOpts
       --- @field idx_1i number
       --- @field record { type: "+"|"-"|"=", line: string }
       --- @field bufnr number
       --- @param opts HighlightLineOpts
       local highlight_line = function(opts)
-        if opts.record.type == "=" then return end
+        if opts.record.type == "=" then
+          marks_state.is_last_diff = false
+          return
+        end
 
         local idx_0i = opts.idx_1i - 1
         local end_col_1i = #opts.record.line
@@ -79,17 +84,22 @@ vim.keymap.set("n", "<C-b>", function()
           hl_group = opts.record.type == "+" and "DiffAdd" or "DiffDelete",
         })
 
-        vim.api.nvim_buf_call(opts.bufnr, function()
-          local letter = marks.get_next_avail_local_mark()
-          vim.api.nvim_buf_set_mark(0, letter, opts.idx_1i, 0, {})
-          marks.refresh_signs()
-        end)
+        if marks_state.is_last_diff == false then
+          vim.api.nvim_buf_call(opts.bufnr, function()
+            local letter = marks.get_next_avail_local_mark()
+            vim.api.nvim_buf_set_mark(0, letter, opts.idx_1i, 0, {})
+            marks.refresh_signs()
+          end)
+        end
+        marks_state.is_last_diff = true
       end
 
+      marks_state.is_last_diff = false
       for idx_1i, record in ipairs(worktree_records) do
         highlight_line { bufnr = worktree_bufnr, idx_1i = idx_1i, record = record, }
       end
 
+      marks_state.is_last_diff = false
       for idx_1i, record in ipairs(head_records) do
         highlight_line { bufnr = head_bufnr, idx_1i = idx_1i, record = record, }
       end
