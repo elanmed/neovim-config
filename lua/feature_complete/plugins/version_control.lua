@@ -78,7 +78,12 @@ vim.keymap.set("n", "<C-b>", function()
           end_col = end_col_0i + 1,
           hl_group = opts.record.type == "+" and "DiffAdd" or "DiffDelete",
         })
-        vim.api.nvim_buf_call(opts.bufnr, function() marks.toggle_next_local_mark() end)
+
+        vim.api.nvim_buf_call(opts.bufnr, function()
+          local letter = marks.get_next_avail_local_mark()
+          vim.api.nvim_buf_set_mark(0, letter, opts.idx_1i, 0, {})
+          marks.refresh_signs()
+        end)
       end
 
       for idx_1i, record in ipairs(worktree_records) do
