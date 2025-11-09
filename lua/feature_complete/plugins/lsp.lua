@@ -7,11 +7,7 @@ local apply_minimal_changes = function(unformatted, formatted)
     table.remove(formatted)
   end
 
-  local start_time = os.clock()
-  local diff = require "lcs-diff".diff(unformatted, formatted)
-  local end_time = os.clock()
-  vim.print(("lcs-diff: %ss"):format((end_time - start_time) * 1000))
-
+  local diff = h.utils.diff(unformatted, formatted)
   vim.schedule(function()
     local view = vim.fn.winsaveview()
     local linenr = 0

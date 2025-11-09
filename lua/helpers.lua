@@ -1,7 +1,7 @@
 local keys = {}
 local tbl = {}
 local str = {}
-local os = {}
+local _os = {}
 local dev = {}
 local notify = {}
 local utils = {}
@@ -157,46 +157,50 @@ end
 
 --- @param a string[]
 --- @param b string[]
---- @param cb fun(diff: DiffRecord[]):nil
-utils.diff = function(a, b, cb)
+--- @return DiffRecord[]
+utils.diff = function(a, b )
   local temp_a = vim.fn.tempname()
   vim.fn.writefile(a, temp_a)
 
   local temp_b = vim.fn.tempname()
   vim.fn.writefile(b, temp_b)
 
-  vim.system({ "diff", "--unified", temp_a, temp_b, }, {}, function(out)
-    local stdout = (function()
-      if out.stdout == nil then return "" end
-      return out.stdout
-    end)()
+  local start_time = os.clock()
+  local out = vim.system({ "diff", "--unified=1000000", temp_a, temp_b, }):wait()
+  local end_time = os.clock()
+  notify.doing(("utils.diff: %ss"):format((end_time - start_time) * 1000))
 
-    local stdout_entries = vim.split(stdout, "\n")
-    local records = {}
-    for idx, entry in ipairs(stdout_entries) do
-      local num_header_lines = 3
-      if idx <= num_header_lines then goto continue end
-      local type = entry:sub(1, 1)
-      local line = entry:sub(2)
+  local stdout = (function()
+    if out.stdout == nil then return "" end
+    return out.stdout
+  end)()
 
-      if type == " " then
-        table.insert(records, { type = "=", line = line, })
-      elseif type == "-" then
-        table.insert(records, { type = "-", line = line, })
-      elseif type == "+" then
-        table.insert(records, { type = "+", line = line, })
-      end
+  local stdout_entries = vim.split(stdout, "\n")
+  local records = {}
 
-      ::continue::
+  for idx, entry in ipairs(stdout_entries) do
+    local num_header_lines = 3
+    if idx <= num_header_lines then goto continue end
+    local type = entry:sub(1, 1)
+    local line = entry:sub(2)
+
+    if type == " " then
+      table.insert(records, { type = "=", line = line, })
+    elseif type == "-" then
+      table.insert(records, { type = "-", line = line, })
+    elseif type == "+" then
+      table.insert(records, { type = "+", line = line, })
     end
-    vim.schedule(function() cb(records) end)
-  end)
+
+    ::continue::
+  end
+  return records
 end
 
 return {
   keys = keys,
   tbl = tbl,
-  os = os,
+  os = _os,
   dev = dev,
   notify = notify,
   require_dir = require_dir,
