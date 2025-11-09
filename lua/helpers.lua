@@ -172,7 +172,6 @@ utils.diff = function(a, b, cb)
     end)()
 
     local stdout_entries = vim.split(stdout, "\n")
-    vim.print(stdout)
     local records = {}
     for idx, entry in ipairs(stdout_entries) do
       local num_header_lines = 3

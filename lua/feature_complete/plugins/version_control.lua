@@ -30,102 +30,101 @@ vim.keymap.set("n", "<C-b>", function()
     local head_lines = vim.split(stdout, "\n")
 
     local start_time = os.clock()
-    local diff = require "lcs-diff".diff(head_lines, index_lines)
-    local end_time = os.clock()
     vim.schedule(function()
-      h.notify.doing(("lcs-diff: %ss"):format((end_time - start_time) * 1000))
-    end)
+      h.utils.diff(head_lines, index_lines, function(diff)
+        local end_time = os.clock()
+        h.notify.doing(("lcs-diff: %ss"):format((end_time - start_time) * 1000))
 
-    local head_records = {}
-    local worktree_records = {}
+        local head_records = {}
+        local worktree_records = {}
 
-    for _, record in ipairs(diff) do
-      if record.type == "=" then
-        table.insert(head_records, record)
-        table.insert(worktree_records, record)
-      elseif record.type == "+" then
-        table.insert(worktree_records, record)
-      elseif record.type == "-" then
-        table.insert(head_records, record)
-      end
-    end
-
-    vim.schedule(function()
-      local get_line_from_record = function(record) return record.line end
-
-      vim.api.nvim_buf_set_lines(head_bufnr, 0, -1, false, vim.tbl_map(get_line_from_record, head_records))
-      vim.api.nvim_buf_set_lines(worktree_bufnr, 0, -1, false, vim.tbl_map(get_line_from_record, worktree_records))
-
-      local apply_syntax_highlighting = function()
-        local lang = vim.treesitter.language.get_lang(curr_filetype)
-        vim.treesitter.start(0, lang)
-      end
-
-      vim.api.nvim_buf_call(head_bufnr, apply_syntax_highlighting)
-      vim.api.nvim_buf_call(worktree_bufnr, apply_syntax_highlighting)
-
-      --- @class HighlightLineOpts
-      --- @field idx_1i number
-      --- @field record { type: "+"|"-"|"=", line: string }
-      --- @field bufnr number
-      --- @param opts HighlightLineOpts
-      local highlight_line = function(opts)
-        if opts.record.type == "=" then return end
-
-        local idx_0i = opts.idx_1i - 1
-        local end_col_1i = #opts.record.line
-        local end_col_0i = end_col_1i - 1
-
-        vim.api.nvim_buf_set_extmark(opts.bufnr, ns_id, idx_0i, 0, {
-          end_col = end_col_0i + 1,
-          hl_group = opts.record.type == "+" and "DiffAdd" or "DiffDelete",
-        })
-        -- TODO: not working
-        vim.api.nvim_buf_call(opts.bufnr, marks.toggle_next_local_mark)
-      end
-
-      for idx_1i, record in ipairs(worktree_records) do
-        highlight_line { bufnr = worktree_bufnr, idx_1i = idx_1i, record = record, }
-      end
-
-      for idx_1i, record in ipairs(head_records) do
-        highlight_line { bufnr = head_bufnr, idx_1i = idx_1i, record = record, }
-      end
-
-      --- @class SyncCursorOpts
-      --- @field this_winnr number
-      --- @field that_winnr number
-      --- @param opts SyncCursorOpts
-      local sync_cursor = function(opts)
-        local cursor = vim.api.nvim_win_get_cursor(opts.this_winnr)
-        local ok = pcall(vim.api.nvim_win_set_cursor, opts.that_winnr, cursor)
-        if ok then
-          vim.api.nvim_win_call(opts.that_winnr, function()
-            vim.cmd.normal { "zz", bang = true, }
-          end)
+        for _, record in ipairs(diff) do
+          if record.type == "=" then
+            table.insert(head_records, record)
+            table.insert(worktree_records, record)
+          elseif record.type == "+" then
+            table.insert(worktree_records, record)
+          elseif record.type == "-" then
+            table.insert(head_records, record)
+          end
         end
-      end
 
-      vim.api.nvim_create_autocmd("CursorMoved", {
-        buffer = head_bufnr,
-        callback = function()
-          sync_cursor { this_winnr = head_winnr, that_winnr = worktree_winnr, }
-          vim.keymap.set("n", "<C-b>", "<nop>", { buffer = true, })
-        end,
-      })
+        local get_line_from_record = function(record) return record.line end
 
-      vim.api.nvim_create_autocmd("CursorMoved", {
-        buffer = worktree_bufnr,
-        callback = function()
-          sync_cursor { this_winnr = worktree_winnr, that_winnr = head_winnr, }
-          vim.keymap.set("n", "<C-b>", "<nop>", { buffer = true, })
-        end,
-      })
+        vim.api.nvim_buf_set_lines(head_bufnr, 0, -1, false, vim.tbl_map(get_line_from_record, head_records))
+        vim.api.nvim_buf_set_lines(worktree_bufnr, 0, -1, false, vim.tbl_map(get_line_from_record, worktree_records))
 
-      vim.api.nvim_win_set_cursor(worktree_winnr, curr_cursor)
-      vim.bo[worktree_bufnr].modifiable = false
-      vim.wo[worktree_winnr].winbar = "Worktree"
-      vim.wo[head_winnr].winbar = "HEAD"
+        local apply_syntax_highlighting = function()
+          local lang = vim.treesitter.language.get_lang(curr_filetype)
+          vim.treesitter.start(0, lang)
+        end
+
+        vim.api.nvim_buf_call(head_bufnr, apply_syntax_highlighting)
+        vim.api.nvim_buf_call(worktree_bufnr, apply_syntax_highlighting)
+
+        --- @class HighlightLineOpts
+        --- @field idx_1i number
+        --- @field record { type: "+"|"-"|"=", line: string }
+        --- @field bufnr number
+        --- @param opts HighlightLineOpts
+        local highlight_line = function(opts)
+          if opts.record.type == "=" then return end
+
+          local idx_0i = opts.idx_1i - 1
+          local end_col_1i = #opts.record.line
+          local end_col_0i = end_col_1i - 1
+
+          vim.api.nvim_buf_set_extmark(opts.bufnr, ns_id, idx_0i, 0, {
+            end_col = end_col_0i + 1,
+            hl_group = opts.record.type == "+" and "DiffAdd" or "DiffDelete",
+          })
+          -- TODO: not working
+          vim.api.nvim_buf_call(opts.bufnr, marks.toggle_next_local_mark)
+        end
+
+        for idx_1i, record in ipairs(worktree_records) do
+          highlight_line { bufnr = worktree_bufnr, idx_1i = idx_1i, record = record, }
+        end
+
+        for idx_1i, record in ipairs(head_records) do
+          highlight_line { bufnr = head_bufnr, idx_1i = idx_1i, record = record, }
+        end
+
+        --- @class SyncCursorOpts
+        --- @field this_winnr number
+        --- @field that_winnr number
+        --- @param opts SyncCursorOpts
+        local sync_cursor = function(opts)
+          local cursor = vim.api.nvim_win_get_cursor(opts.this_winnr)
+          local ok = pcall(vim.api.nvim_win_set_cursor, opts.that_winnr, cursor)
+          if ok then
+            vim.api.nvim_win_call(opts.that_winnr, function()
+              vim.cmd.normal { "zz", bang = true, }
+            end)
+          end
+        end
+
+        vim.api.nvim_create_autocmd("CursorMoved", {
+          buffer = head_bufnr,
+          callback = function()
+            sync_cursor { this_winnr = head_winnr, that_winnr = worktree_winnr, }
+            vim.keymap.set("n", "<C-b>", "<nop>", { buffer = true, })
+          end,
+        })
+
+        vim.api.nvim_create_autocmd("CursorMoved", {
+          buffer = worktree_bufnr,
+          callback = function()
+            sync_cursor { this_winnr = worktree_winnr, that_winnr = head_winnr, }
+            vim.keymap.set("n", "<C-b>", "<nop>", { buffer = true, })
+          end,
+        })
+
+        vim.api.nvim_win_set_cursor(worktree_winnr, curr_cursor)
+        vim.bo[worktree_bufnr].modifiable = false
+        vim.wo[worktree_winnr].winbar = "Worktree"
+        vim.wo[head_winnr].winbar = "HEAD"
+      end)
     end)
   end)
 end)
