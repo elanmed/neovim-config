@@ -7,8 +7,8 @@ local apply_minimal_changes = function(unformatted, formatted)
     table.remove(formatted)
   end
 
-  local diff = h.utils.diff(unformatted, formatted)
   vim.schedule(function()
+    local diff = h.utils.diff(unformatted, formatted)
     local view = vim.fn.winsaveview()
     local linenr = 0
 
