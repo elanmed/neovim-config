@@ -123,6 +123,8 @@ vim.keymap.set("n", "<C-b>", function()
       })
 
       vim.api.nvim_win_set_cursor(worktree_winnr, curr_cursor)
+      vim.bo[worktree_bufnr].modifiable = false
+      vim.bo[head_bufnr].modifiable = false
     end)
   end)
 end)
