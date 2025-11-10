@@ -158,7 +158,7 @@ end
 --- @param a string[]
 --- @param b string[]
 --- @return DiffRecord[]
-utils.diff = function(a, b )
+utils.diff = function(a, b)
   local temp_a = vim.fn.tempname()
   vim.fn.writefile(a, temp_a)
 
@@ -166,9 +166,13 @@ utils.diff = function(a, b )
   vim.fn.writefile(b, temp_b)
 
   local start_time = os.clock()
-  local out = vim.system({ "diff", "--unified=1000000", temp_a, temp_b, }):wait()
+  -- TODO: investigate vim.text.diff
+  local out = vim.system { "diff", "--unified=1000000", temp_a, temp_b, }:wait()
   local end_time = os.clock()
   notify.doing(("utils.diff: %ss"):format((end_time - start_time) * 1000))
+
+  vim.fn.delete(temp_a)
+  vim.fn.delete(temp_b)
 
   local stdout = (function()
     if out.stdout == nil then return "" end
