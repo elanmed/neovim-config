@@ -190,14 +190,14 @@ vim.keymap.set("n", "<leader>i", function()
   maybe_close_tree()
 
   local diff_opts_tbl = {
-    [[--preview='git diff --color=always HEAD {2} | tail -n +5']],
+    [[--preview='if git diff --color=always HEAD {2} 2>/dev/null | grep -q .; then git diff --color=always HEAD {2} | tail -n +5; else bat --style=numbers --color=always {2}; fi']],
     [[--with-nth='{2}']],
     [[--accept-nth='{2}']],
-    [[--bind='ctrl-x:execute-silent(git restore --staged --worktree {2}; git clean -f {2})+reload(git status --short)']],
+    [[--bind='ctrl-x:execute-silent(git restore --staged --worktree {2}; git clean -f {2})+reload(git status --short --untracked-files)']],
   }
 
   M.fzf {
-    source = "git status --short",
+    source = "git status --short --untracked-files",
     options = h.tbl.extend(diff_opts_tbl, M.default_opts, M.multi_select_opts),
     height = "full",
     sinklist = function(entries)
