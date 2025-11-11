@@ -4,15 +4,18 @@ require "nvim-treesitter.configs".setup {
     enable = true,
     additional_vim_regex_highlighting = false,
   },
-  -- incremental_selection = {
-  --   enable = true,
-  --   keymaps = {
-  --     init_selection = "<leader>v",
-  --     node_incremental = "an",
-  --     scope_incremental = "an",
-  --     node_decremental = "in",
-  --   },
-  -- },
+  folding = {
+    enable = false,
+  },
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+      init_selection = "<leader>v",
+      node_incremental = "an",
+      scope_incremental = "an",
+      node_decremental = "in",
+    },
+  },
 }
 
 vim.filetype.add { extension = { mdx = "mdx", }, }
