@@ -53,7 +53,7 @@ tbl.extend = function(...)
   return result
 end
 
-os.is_linux = function()
+_os.is_linux = function()
   return vim.fn.has "macunix" == vimscript_false
 end
 
