@@ -34,10 +34,7 @@ vim.keymap.set("n", "<C-b>", function()
   local head_lines = vim.split(stdout, "\n", { trimempty = true, })
 
   vim.schedule(function()
-    local start_time = os.clock()
     local diff = h.utils.diff(head_lines, index_lines)
-    local end_time = os.clock()
-    h.notify.doing(("lcs-diff: %ss"):format((end_time - start_time) * 1000))
 
     local head_records = {}
     local worktree_records = {}
