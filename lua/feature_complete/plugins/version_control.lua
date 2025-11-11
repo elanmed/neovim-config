@@ -3,6 +3,10 @@ local marks = require "marks"
 local ns_id = vim.api.nvim_create_namespace "homegrown-diff"
 
 vim.keymap.set("n", "<C-b>", function()
+  if vim.bo.buftype ~= "" then
+    return h.notify.error "buftype is not normal"
+  end
+
   local curr_cursor = vim.api.nvim_win_get_cursor(0)
   local curr_bufnr = vim.api.nvim_get_current_buf()
   local curr_bufname = vim.fs.relpath(vim.fn.getcwd(), vim.api.nvim_buf_get_name(curr_bufnr))
@@ -27,7 +31,7 @@ vim.keymap.set("n", "<C-b>", function()
     if out.stdout == nil then return "" end
     return out.stdout
   end)()
-  local head_lines = vim.split(stdout, "\n")
+  local head_lines = vim.split(stdout, "\n", { trimempty = true, })
 
   vim.schedule(function()
     local start_time = os.clock()

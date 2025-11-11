@@ -3,10 +3,6 @@ local h = require "helpers"
 --- @param unformatted string[]
 --- @param formatted string[]
 local apply_minimal_changes = function(unformatted, formatted)
-  if formatted[#formatted] == "" then
-    table.remove(formatted)
-  end
-
   vim.schedule(function()
     local diff = h.utils.diff(unformatted, formatted)
     local view = vim.fn.winsaveview()
@@ -42,7 +38,7 @@ local format_with_prettier = function()
       if result.code ~= 0 then return vim.schedule(vim.cmd.write) end
       if result.stdout == nil then return vim.schedule(vim.cmd.write) end
 
-      local formatted = vim.split(result.stdout, "\n")
+      local formatted = vim.split(result.stdout, "\n", { trimempty = true, })
       apply_minimal_changes(unformatted, formatted)
     end)
 end
@@ -64,7 +60,7 @@ local format_with_lsp = function()
     if not result or #result == 0 then return vim.schedule(vim.cmd.write) end
 
     local unformatted = vim.api.nvim_buf_get_lines(0, 0, -1, false)
-    local formatted = vim.split(result[1].newText, "\n")
+    local formatted = vim.split(result[1].newText, "\n", { trimempty = true, })
     apply_minimal_changes(unformatted, formatted)
   end)
 end

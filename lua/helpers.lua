@@ -152,6 +152,7 @@ str.pad = function(opts)
   return tostring(opts.val) .. string.rep(" ", num_spaces)
 end
 
+
 --- @alias DiffRecordType "+"|"-"|"="
 --- @alias DiffRecord { type: DiffRecordType, line: string }
 
@@ -159,45 +160,52 @@ end
 --- @param b string[]
 --- @return DiffRecord[]
 utils.diff = function(a, b)
-  local temp_a = vim.fn.tempname()
-  vim.fn.writefile(a, temp_a)
+  --- @param num number
+  local max_decimals = function(num)
+    local decimals = 2
+    local factor = 10 ^ decimals
+    return math.floor(num * factor) / factor
+  end
 
-  local temp_b = vim.fn.tempname()
-  vim.fn.writefile(b, temp_b)
+  local str_a = table.concat(a, "\n")
+  local str_b = table.concat(b, "\n")
 
-  local start_time = os.clock()
-  -- TODO: investigate vim.text.diff
-  local out = vim.system { "diff", "--unified=1000000", temp_a, temp_b, }:wait()
-  local end_time = os.clock()
-  notify.doing(("utils.diff: %ss"):format((end_time - start_time) * 1000))
-
-  vim.fn.delete(temp_a)
-  vim.fn.delete(temp_b)
-
-  local stdout = (function()
-    if out.stdout == nil then return "" end
-    return out.stdout
-  end)()
-
-  local stdout_entries = vim.split(stdout, "\n")
   local records = {}
+  local start_time = os.clock()
+  local indices = vim.text.diff(str_a, str_b, { result_type = "indices", })
+  local end_time = os.clock()
+  local diff_time = max_decimals((end_time - start_time) * 1000)
+  notify.doing(("utils.diff: %ss"):format(diff_time))
 
-  for idx, entry in ipairs(stdout_entries) do
-    local num_header_lines = 3
-    if idx <= num_header_lines then goto continue end
-    local type = entry:sub(1, 1)
-    local line = entry:sub(2)
+  local idx_a = 1
+  local idx_b = 1
 
-    if type == " " then
-      table.insert(records, { type = "=", line = line, })
-    elseif type == "-" then
-      table.insert(records, { type = "-", line = line, })
-    elseif type == "+" then
-      table.insert(records, { type = "+", line = line, })
+  for _, hunk in ipairs(indices) do
+    local start_a, count_a, start_b, count_b = unpack(hunk)
+
+    while idx_a < start_a do
+      table.insert(records, { type = "=", line = a[idx_a], })
+      idx_a = idx_a + 1
+      idx_b = idx_b + 1
     end
 
-    ::continue::
+    for i = 1, count_a do
+      table.insert(records, { type = "-", line = a[start_a + i - 1], })
+    end
+
+    for i = 1, count_b do
+      table.insert(records, { type = "+", line = b[start_b + i - 1], })
+    end
+
+    idx_a = start_a + count_a
+    idx_b = start_b + count_b
   end
+
+  while idx_a <= #a do
+    table.insert(records, { type = "=", line = a[idx_a], })
+    idx_a = idx_a + 1
+  end
+
   return records
 end
 
