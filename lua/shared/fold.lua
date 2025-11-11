@@ -7,13 +7,11 @@ vim.opt.fillchars = {
   foldinner = " ",
 }
 
-vim.api.nvim_create_autocmd("BufWinEnter", {
+vim.api.nvim_create_autocmd("FileType", {
   callback = function()
-    vim.schedule(function()
-      -- automatically set to treesitter in `ftplugin/*.lua`
-      vim.o.foldmethod = "expr"
-      vim.o.foldexpr = "v:lua.FoldExpr()"
-    end)
+    vim.opt_local.foldmethod = "expr"
+    vim.opt_local.foldexpr = "v:lua.FoldExpr()"
+    vim.cmd "normal! zx"
   end,
 })
 
