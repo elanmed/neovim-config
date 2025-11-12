@@ -235,3 +235,8 @@ vim.keymap.set("n", "<leader>t", vim.cmd.so, { desc = ":so", })
 vim.keymap.set("n", "<leader>s", function()
   vim.cmd "mksession! Session.vim | restart source Session.vim"
 end, { desc = "restart and restore session", })
+
+vim.keymap.set("n", "<leader>mD", function()
+  vim.cmd.delmarks "A-Za-z"
+  h.notify.doing "Deleted all marks"
+end)
