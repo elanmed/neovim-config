@@ -17,9 +17,9 @@
 ---
 
 - Uses a unique project structure that supports:
-  1. A barebones config that requires no external dependencies
-  2. A feature-complete config with external plugins, treesitter parsers, and language servers
-  3. Options, remaps, and utilities shared between the two
+  - A barebones config that requires no external dependencies
+  - A feature-complete config with external plugins, treesitter parsers, and language servers
+  - Options, remaps, and utilities shared between the two
 
 ```
 ├── barebones.lua
