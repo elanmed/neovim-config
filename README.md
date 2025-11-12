@@ -18,7 +18,7 @@
 
 - Uses a unique project structure that supports:
   1. A barebones config that requires no external dependencies
-  2. An feature-complete config with plugins managed by paq
+  2. An feature-complete config with external plugins, treesitter parsers, and language servers
   3. Options, remaps, and utilities shared between the two
 
 ```
