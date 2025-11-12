@@ -238,5 +238,6 @@ end, { desc = "restart and restore session", })
 
 vim.keymap.set("n", "<leader>mD", function()
   vim.cmd.delmarks "A-Za-z"
+  pcall(require "marks".refresh_signs)
   h.notify.doing "Deleted all marks"
 end)
