@@ -24,6 +24,7 @@ vim.g.ff = {
 }
 
 vim.api.nvim_create_autocmd({ "FileType", }, {
+  group = vim.api.nvim_create_augroup("FFRemaps", { clear = true, }),
   pattern = "ff-picker",
   callback = function()
     vim.keymap.set("i", "<cr>", "<Plug>FFResultSelect", { buffer = true, })
@@ -48,6 +49,7 @@ vim.keymap.set("n", "<leader>f", function()
 end)
 
 vim.api.nvim_create_autocmd("User", {
+  group = vim.api.nvim_create_augroup("TreeUserEvents", { clear = true, }),
   pattern = {
     "TreeCreate",
     "TreeDelete",

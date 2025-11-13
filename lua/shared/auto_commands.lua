@@ -1,6 +1,7 @@
 local h = require "helpers"
 
 vim.api.nvim_create_autocmd("CursorMoved", {
+  group = vim.api.nvim_create_augroup("CenterScreen", { clear = true, }),
   callback = function(args)
     local excluded_fts = { "tree", "nvim-undotree", "rg-far", }
     if vim.list_contains(excluded_fts, vim.bo[args.buf].filetype) then return end
@@ -10,11 +11,13 @@ vim.api.nvim_create_autocmd("CursorMoved", {
 })
 
 vim.api.nvim_create_autocmd("CmdlineChanged", {
+  group = vim.api.nvim_create_augroup("FuzzyCommandLineMode", { clear = true, }),
   pattern = ":",
   callback = function() vim.fn.wildtrigger() end,
 })
 
 vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("DisableAutoComments", { clear = true, }),
   callback = function()
     vim.opt.formatoptions:remove { "c", "r", "o", }
   end,
@@ -41,12 +44,14 @@ local function write_var(var)
 end
 
 vim.api.nvim_create_autocmd("VimEnter", {
+  group = vim.api.nvim_create_augroup("SetWeztermIsNvimVar", { clear = true, }),
   callback = function()
     write_var(vim.fn["s:is_nvim_var"] "true")
   end,
 })
 
 vim.api.nvim_create_autocmd("VimLeave", {
+  group = vim.api.nvim_create_augroup("UnSetWeztermIsNvimVar", { clear = true, }),
   callback = function()
     write_var(vim.fn["s:is_nvim_var"] "false")
   end,

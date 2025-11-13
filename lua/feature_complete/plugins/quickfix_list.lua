@@ -1,4 +1,5 @@
 vim.api.nvim_create_autocmd({ "FileType", }, {
+  group = vim.api.nvim_create_augroup("QfListPreviewRemaps", { clear = true, }),
   pattern = "qf",
   callback = function()
     vim.keymap.set("n", "t", "<Plug>QuickfixPreviewToggle", { buffer = true, })

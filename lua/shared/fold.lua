@@ -7,13 +7,8 @@ vim.opt.fillchars = {
   foldinner = " ",
 }
 
-vim.api.nvim_create_autocmd("FileType", {
-  callback = function()
-    vim.opt_local.foldmethod = "expr"
-    vim.opt_local.foldexpr = "v:lua.FoldExpr()"
-    vim.cmd "normal! zx"
-  end,
-})
+vim.o.foldmethod = "expr"
+vim.o.foldexpr = "v:lua.FoldExpr()"
 
 --- @param lnum number
 local function next_non_blank_line(lnum)

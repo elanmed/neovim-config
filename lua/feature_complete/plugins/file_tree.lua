@@ -10,6 +10,7 @@ vim.keymap.set("n", "<C-f>", function()
 end, { desc = "Toggle tree", })
 
 vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("TreeRemaps", { clear = true, }),
   pattern = "tree",
   callback = function(args)
     vim.b.minicursorword_disable = true

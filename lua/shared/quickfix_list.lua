@@ -64,6 +64,7 @@ vim.keymap.set("n", "<C-p>", function()
 end, { desc = ":cprev", })
 
 vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("QfListRemaps", { clear = true, }),
   pattern = "qf",
   callback = function()
     vim.keymap.set("n", "<leader>c", vim.cmd.cclose, { buffer = true, })

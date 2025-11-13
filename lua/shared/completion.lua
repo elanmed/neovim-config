@@ -55,6 +55,7 @@ vim.keymap.set("i", "<C-x><C-o>", function()
 end, { desc = "Omnifunc with buffer lines backup", })
 
 vim.api.nvim_create_autocmd("CompleteChanged", {
+  group = vim.api.nvim_create_augroup("LspCompletionPopup", { clear = true, }),
   callback = function()
     local info = vim.fn.complete_info { "selected", "items", }
     if info.selected == -1 then return end
