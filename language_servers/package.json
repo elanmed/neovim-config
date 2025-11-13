@@ -8,6 +8,7 @@
     "css-variables-language-server": "*",
     "cssmodules-language-server": "*",
     "stylelint-lsp": "*",
-    "@tailwindcss/language-server": "*"
+    "@tailwindcss/language-server": "*",
+    "tree-sitter-cli": "*"
   }
 }
