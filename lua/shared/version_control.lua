@@ -43,7 +43,11 @@ vim.keymap.set("n", "<C-b>", function()
   vim.api.nvim_buf_call(worktree_bufnr, apply_syntax_highlighting)
 
   for _, bufnr in ipairs { worktree_bufnr, head_bufnr, } do
-    vim.keymap.set("n", "<C-b>", vim.cmd.tabclose, { buffer = bufnr, })
+    vim.keymap.set("n", "<C-b>", function()
+      local cursor = vim.api.nvim_win_get_cursor(0)
+      vim.cmd.tabclose()
+      vim.api.nvim_win_set_cursor(0, cursor)
+    end, { buffer = bufnr, })
     vim.keymap.set("n", "<C-^>", "<Nop>", { buffer = bufnr, })
     vim.keymap.set("n", "<C-o>", "<Nop>", { buffer = bufnr, })
     vim.keymap.set("n", "<C-i>", "<Nop>", { buffer = bufnr, })
