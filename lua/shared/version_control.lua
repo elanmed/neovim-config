@@ -52,6 +52,7 @@ vim.keymap.set("n", "<C-b>", function()
     vim.keymap.set("n", "<C-o>", "<Nop>", { buffer = bufnr, })
     vim.keymap.set("n", "<C-i>", "<Nop>", { buffer = bufnr, })
     vim.keymap.set("n", "<leader>d", "<Nop>", { buffer = bufnr, })
+    vim.keymap.set("n", "<leader>q", "<Nop>", { buffer = bufnr, })
     vim.keymap.set("n", "<leader>e", "<Nop>", { buffer = bufnr, })
   end
 

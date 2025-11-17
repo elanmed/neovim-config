@@ -31,7 +31,6 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
     vim.keymap.set("i", "<c-n>", "<Plug>FFResultNext", { buffer = true, })
     vim.keymap.set("i", "<c-p>", "<Plug>FFResultPrev", { buffer = true, })
     vim.keymap.set("i", "<c-x>", "<Plug>FFResultDeleteFrecencyScore", { buffer = true, nowait = true, })
-    vim.keymap.set("i", "<c-c>", "<Plug>FFClose", { buffer = true, })
     vim.keymap.set("i", "<esc>", "<Plug>FFClose", { buffer = true, })
     vim.keymap.set("i", "<tab>", "<Plug>FFPreviewToggle", { buffer = true, })
     vim.keymap.set("i", "<c-d>", "<Plug>FFPreviewScrollDown", { buffer = true, })

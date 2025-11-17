@@ -68,7 +68,6 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "qf",
   callback = function()
     vim.keymap.set("n", "<leader>c", vim.cmd.cclose, { buffer = true, })
-    vim.keymap.set("n", "<C-c>", vim.cmd.cclose, { buffer = true, })
     vim.keymap.set("n", "o", function() vim.cmd.cc(vim.fn.line ".") end, { buffer = true, })
     vim.keymap.set("n", "<cr>", function()
       local curr_line = vim.fn.line "."
