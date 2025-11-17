@@ -1,6 +1,7 @@
 local h = require "helpers"
 local term_bufnr = -1
 local term_winnr = -1
+local term_height = "full"
 
 local M = {}
 
@@ -11,6 +12,23 @@ local M = {}
 --- @field sinklist? fun(entry:string[])
 --- @field height "full"|"half"
 
+local open_term = function()
+  local editor_height = vim.o.lines - 1
+  local border_height = 2
+
+  term_winnr = vim.api.nvim_open_win(term_bufnr, true, {
+    relative = "editor",
+    row = editor_height,
+    col = 0,
+    width = vim.o.columns,
+    height = term_height == "full"
+        and editor_height - border_height
+        or math.floor(editor_height * 0.5 - border_height),
+    border = "single",
+    title = "FZF term",
+  })
+end
+
 --- @param opts FzfOpts
 M.fzf = function(opts)
   opts.options = opts.options or {}
@@ -19,21 +37,9 @@ M.fzf = function(opts)
   local source_temp = vim.fn.tempname()
   vim.fn.writefile({}, sink_temp)
 
-  local editor_height = vim.o.lines - 1
-  local border_height = 2
-
+  term_height = opts.height
   term_bufnr = vim.api.nvim_create_buf(false, true)
-  term_winnr = vim.api.nvim_open_win(term_bufnr, true, {
-    relative = "editor",
-    row = editor_height,
-    col = 0,
-    width = vim.o.columns,
-    height = opts.height == "full"
-        and editor_height - border_height
-        or math.floor(editor_height * 0.5 - border_height),
-    border = "single",
-    title = "FZF term",
-  })
+  open_term()
 
   vim.keymap.set("t", "<Esc>", function()
     vim.api.nvim_win_close(term_winnr, true)
@@ -346,18 +352,7 @@ end, { desc = "fzf lines in the buf", })
 
 vim.keymap.set("n", "<leader>zr", function()
   maybe_close_tree()
-
-  local editor_height = vim.o.lines - 1
-  local border_height = 2
-  term_winnr = vim.api.nvim_open_win(term_bufnr, true, {
-    relative = "editor",
-    row = editor_height,
-    col = 0,
-    width = vim.o.columns,
-    height = editor_height - border_height,
-    border = "single",
-    title = "FZF term",
-  })
+  open_term()
   vim.cmd.startinsert()
 end, { desc = "fzf resume rg with globs", })
 
