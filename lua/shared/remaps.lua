@@ -205,6 +205,7 @@ vim.keymap.set("n", "<leader>g", function()
     term = true,
     on_exit = function()
       vim.api.nvim_win_close(lazygit_term_winnr, true)
+      vim.cmd.bdelete(lazygit_term_bufnr)
     end,
   })
   vim.cmd.startinsert()

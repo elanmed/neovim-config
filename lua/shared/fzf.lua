@@ -59,6 +59,8 @@ M.fzf = function(opts)
     term = true,
     on_exit = function()
       vim.api.nvim_win_close(term_winnr, true)
+      vim.cmd.bdelete(term_bufnr)
+
       local sink_content = vim.fn.readfile(sink_temp)
       if #sink_content > 0 then
         if opts.sink then
