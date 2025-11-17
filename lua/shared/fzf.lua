@@ -114,7 +114,12 @@ end
 
 --- @param script_name "get_marks"|"delete_mark"|"ex_cmd"|"get_qf_list"|"get_qf_stack"|"get_buffers"|"get_lines"|"delete_buffer"
 local function get_fzf_script(script_name)
-  local lua_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "%s.lua"):format(script_name)
+  local lua_script = vim.fs.joinpath(
+    vim.fn.stdpath "config",
+    "fzf_scripts",
+    ("%s.lua"):format(script_name)
+  )
+
   return table.concat(
     { "nvim", "--clean", "-u", "NONE", "--headless", "-l", lua_script, vim.v.servername, },
     " ")
@@ -156,7 +161,6 @@ vim.keymap.set("n", "<leader>b", function()
     [[--ghost='Buffers']],
     ([[--bind='ctrl-x:execute(%s {1})+reload(%s)']]):format(delete_buf_source, source),
   }
-
 
   M.fzf {
     height = "half",
