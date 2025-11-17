@@ -58,7 +58,6 @@ M.fzf = function(opts)
   vim.fn.jobstart(cmd, {
     term = true,
     on_exit = function()
-      print "on_exit"
       vim.api.nvim_win_close(term_winnr, true)
       local sink_content = vim.fn.readfile(sink_temp)
       if #sink_content > 0 then
@@ -355,6 +354,9 @@ vim.keymap.set("n", "<leader>/z", function()
 end, { desc = "fzf lines in the buf", })
 
 vim.keymap.set("n", "<leader>zr", function()
+  if not vim.api.nvim_buf_is_valid(term_bufnr) then
+    return h.notify.error "No ongoing fzf buffer"
+  end
   maybe_close_tree()
   open_term()
   vim.cmd.startinsert()
