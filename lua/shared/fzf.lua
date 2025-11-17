@@ -1,4 +1,6 @@
 local h = require "helpers"
+local term_bufnr = -1
+local term_winnr = -1
 
 local M = {}
 
@@ -20,8 +22,8 @@ M.fzf = function(opts)
   local editor_height = vim.o.lines - 1
   local border_height = 2
 
-  local term_bufnr = vim.api.nvim_create_buf(false, false)
-  local term_winnr = vim.api.nvim_open_win(term_bufnr, true, {
+  term_bufnr = vim.api.nvim_create_buf(false, true)
+  term_winnr = vim.api.nvim_open_win(term_bufnr, true, {
     relative = "editor",
     row = editor_height,
     col = 0,
@@ -32,6 +34,10 @@ M.fzf = function(opts)
     border = "single",
     title = "FZF term",
   })
+
+  vim.keymap.set("t", "<Esc>", function()
+    vim.api.nvim_win_close(term_winnr, true)
+  end, { buffer = term_bufnr, })
 
   local source = (function()
     if type(opts.source) == "string" then
@@ -46,6 +52,7 @@ M.fzf = function(opts)
   vim.fn.jobstart(cmd, {
     term = true,
     on_exit = function()
+      print "on_exit"
       vim.api.nvim_win_close(term_winnr, true)
       local sink_content = vim.fn.readfile(sink_temp)
       if #sink_content > 0 then
@@ -340,10 +347,18 @@ end, { desc = "fzf lines in the buf", })
 vim.keymap.set("n", "<leader>zr", function()
   maybe_close_tree()
 
-  local prev_rg_query_file = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "prev-rg-query.txt")
-  --- @type table
-  local prev_rg_query = vim.fn.readfile(prev_rg_query_file)
-  rg_with_globs(prev_rg_query[1])
+  local editor_height = vim.o.lines - 1
+  local border_height = 2
+  term_winnr = vim.api.nvim_open_win(term_bufnr, true, {
+    relative = "editor",
+    row = editor_height,
+    col = 0,
+    width = vim.o.columns,
+    height = editor_height - border_height,
+    border = "single",
+    title = "FZF term",
+  })
+  vim.cmd.startinsert()
 end, { desc = "fzf resume rg with globs", })
 
 vim.keymap.set("v", "<leader>o", function()
