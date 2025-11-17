@@ -150,7 +150,7 @@ vim.keymap.set("n", "q", function()
     return "q"
   end
 end, { expr = true, nowait = true, desc = "Record a macro", })
-vim.keymap.set("n", "<leader>V", "G" .. "V" .. "gg", { desc = "Select the entire buffer", })
+vim.keymap.set("n", "<leader>v", "G" .. "V" .. "gg", { desc = "Select the entire buffer", })
 vim.keymap.set("n", "*", function()
   vim.fn.setreg("/", ("\\<%s\\>\\C"):format(vim.fn.expand "<cword>"))
   vim.o.hlsearch = true
