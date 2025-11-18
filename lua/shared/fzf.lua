@@ -376,14 +376,14 @@ vim.keymap.set("n", "<leader>o", function()
 end, { desc = "fzf rg with globs", })
 
 local function get_stripped_filename()
-  local filepath = vim.fn.expand "%:p"
+  local abs_path = vim.api.nvim_buf_get_name(0)
 
-  local start_idx = filepath:find "wf_modules"
+  local start_idx = abs_path:find "wf_modules"
   if not start_idx then
     h.notify.error "`wf_modules` not found in the filepath!"
     return nil
   end
-  local stripped_start = filepath:sub(start_idx)
+  local stripped_start = abs_path:sub(start_idx)
   local dot_idx = stripped_start:find "%." -- % escapes
   if dot_idx then
     stripped_start = stripped_start:sub(1, dot_idx - 1)

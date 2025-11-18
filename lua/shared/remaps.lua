@@ -191,24 +191,23 @@ vim.keymap.set("n", "<leader>g", function()
   if vim.api.nvim_buf_is_valid(lazygit_term_bufnr) then
     open_term()
     vim.cmd.startinsert()
-    return
   else
     lazygit_term_bufnr = vim.api.nvim_create_buf(false, true)
-  end
 
-  open_term()
-  vim.keymap.set("t", "<esc>", function()
-    vim.api.nvim_win_close(lazygit_term_winnr, true)
-  end, { buffer = lazygit_term_bufnr, })
-
-  vim.fn.jobstart("lazygit", {
-    term = true,
-    on_exit = function()
+    open_term()
+    vim.keymap.set("t", "<esc>", function()
       vim.api.nvim_win_close(lazygit_term_winnr, true)
-      vim.cmd.bdelete(lazygit_term_bufnr)
-    end,
-  })
-  vim.cmd.startinsert()
+    end, { buffer = lazygit_term_bufnr, })
+
+    vim.fn.jobstart("lazygit", {
+      term = true,
+      on_exit = function()
+        vim.api.nvim_win_close(lazygit_term_winnr, true)
+        vim.cmd.bdelete(lazygit_term_bufnr)
+      end,
+    })
+    vim.cmd.startinsert()
+  end
 end, { desc = "Open lazygit", })
 
 vim.keymap.set("n", "<leader>,", vim.cmd.file, { desc = "Show the current file", })
