@@ -14,13 +14,6 @@ vim.g.ff = {
     number = true,
     scrolloff = 0,
   },
-  on_picker_open = function()
-    vim.api.nvim_set_hl(0, "FFPickerFuzzyHighlightChar", {
-      fg = require "feature_complete.plugins.colorscheme".yellow,
-      bold = true,
-    })
-    vim.api.nvim_set_hl(0, "FFPickerCursorLine", { link = "Visual", })
-  end,
 }
 
 vim.api.nvim_create_autocmd({ "FileType", }, {
