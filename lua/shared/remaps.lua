@@ -195,7 +195,7 @@ vim.keymap.set("n", "<leader>g", function()
     lazygit_term_bufnr = vim.api.nvim_create_buf(false, true)
 
     open_term()
-    vim.keymap.set("t", "q", function()
+    vim.keymap.set("t", "<c-c>", function()
       vim.api.nvim_win_close(lazygit_term_winnr, true)
     end, { buffer = lazygit_term_bufnr, })
 
