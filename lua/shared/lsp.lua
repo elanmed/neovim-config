@@ -90,34 +90,9 @@ end
 if enable_deno_lsp() then
   vim.lsp.enable "denols"
 else
-  vim.lsp.config("ts_ls", {
-    init_options = {
-      preferences = {
-        importModuleSpecifierPreference = "non-relative",
-        jsxAttributeCompletionStyle = "braces",
-        includeCompletionsWithSnippetText = false,
-      },
-    },
-  })
   vim.lsp.enable "ts_ls"
   vim.lsp.enable "eslint"
 end
-
-vim.lsp.config("bashls", {
-  settings = {
-    bashIde = { shellcheckArguments = "--extended-analysis=false", shfmt = { simplifyCode = true, caseIndent = true, }, },
-  },
-})
-vim.lsp.config("lua_ls", {
-  settings = {
-    Lua = {
-      completion = {
-        callSnippet = "Disable",
-        keywordSnippet = "Disable",
-      },
-    },
-  },
-})
 
 vim.lsp.enable {
   "ruby_lsp",
