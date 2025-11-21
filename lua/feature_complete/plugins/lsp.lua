@@ -9,6 +9,7 @@ local h = require "helpers"
 --- @param opts ApplyMinimalChangesOpts
 local apply_minimal_changes = function(opts)
   vim.schedule(function()
+    h.notify.doing "Applying minimal diffs"
     local diff = h.utils.diff(opts.unformatted, opts.formatted)
     local view = vim.fn.winsaveview()
     local linenr = 0
@@ -46,8 +47,18 @@ local format_with_prettier = function()
       text = true,
     },
     function(result)
-      if result.code ~= 0 then return vim.schedule(vim.cmd.write) end
-      if result.stdout == nil then return vim.schedule(vim.cmd.write) end
+      if result.code ~= 0 then
+        return vim.schedule(function()
+          h.notify.doing "[prettier] non-zero exit code, writing"
+          vim.cmd.write { mods = { silent = true, }, }
+        end)
+      end
+      if result.stdout == nil then
+        return vim.schedule(function()
+          h.notify.doing "[prettier] no stdout, writing"
+          vim.cmd.write { mods = { silent = true, }, }
+        end)
+      end
 
       local formatted = vim.split(result.stdout, "\n", { trimempty = true, })
       apply_minimal_changes { unformatted = unformatted, formatted = formatted, winnr = winnr, bufnr = bufnr, }
@@ -61,8 +72,8 @@ local format_with_lsp = function()
   }
 
   if #clients == 0 then
-    h.notify.error "No lua LSP client"
-    return vim.cmd.write()
+    h.notify.doing "No LSP client, writing"
+    return vim.cmd.write { mods = { silent = true, }, }
   end
 
   local winnr = vim.api.nvim_get_current_win()
@@ -70,8 +81,18 @@ local format_with_lsp = function()
 
   local client = clients[1]
   client:request("textDocument/formatting", vim.lsp.util.make_formatting_params(), function(err, result)
-    if err then return vim.schedule(vim.cmd.write) end
-    if not result or #result == 0 then return vim.schedule(vim.cmd.write) end
+    if err then
+      return vim.schedule(function()
+        h.notify.doing "[textDocument/formatting] error, writing"
+        vim.cmd.write { mods = { silent = true, }, }
+      end)
+    end
+    if not result or #result == 0 then
+      return vim.schedule(function()
+        h.notify.doing "[textDocument/formatting] no result, writing"
+        vim.cmd.write { mods = { silent = true, }, }
+      end)
+    end
 
     local unformatted = vim.api.nvim_buf_get_lines(0, 0, -1, false)
     local formatted = vim.split(result[1].newText, "\n", { trimempty = true, })

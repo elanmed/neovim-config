@@ -171,11 +171,7 @@ utils.diff = function(a, b)
   local str_b = table.concat(b, "\n")
 
   local records = {}
-  local start_time = os.clock()
   local indices = vim.text.diff(str_a, str_b, { result_type = "indices", })
-  local end_time = os.clock()
-  local diff_time = max_decimals((end_time - start_time) * 1000)
-  notify.doing(("utils.diff: %ss"):format(diff_time))
 
   local idx_a = 1
   local idx_b = 1
