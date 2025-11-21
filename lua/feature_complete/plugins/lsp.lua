@@ -1,10 +1,15 @@
 local h = require "helpers"
 
---- @param unformatted string[]
---- @param formatted string[]
-local apply_minimal_changes = function(unformatted, formatted)
+--- @class ApplyMinimalChangesOpts
+--- @field unformatted string[]
+--- @field formatted string[]
+--- @field winnr number
+--- @field bufnr number
+
+--- @param opts ApplyMinimalChangesOpts
+local apply_minimal_changes = function(opts)
   vim.schedule(function()
-    local diff = h.utils.diff(unformatted, formatted)
+    local diff = h.utils.diff(opts.unformatted, opts.formatted)
     local view = vim.fn.winsaveview()
     local linenr = 0
 
@@ -19,14 +24,20 @@ local apply_minimal_changes = function(unformatted, formatted)
         linenr = linenr + 1
       end
     end
-    vim.fn.winrestview(view)
-    vim.cmd.write { mods = { silent = true, }, }
+    vim.api.nvim_win_call(opts.winnr, function()
+      vim.api.nvim_buf_call(opts.bufnr, function()
+        vim.fn.winrestview(view)
+        vim.cmd.write { mods = { silent = true, }, }
+      end)
+    end)
   end)
 end
 
 local format_with_prettier = function()
   local unformatted = vim.api.nvim_buf_get_lines(0, 0, -1, false)
   local content = table.concat(unformatted, "\n")
+  local winnr = vim.api.nvim_get_current_win()
+  local bufnr = vim.api.nvim_get_current_buf()
 
   vim.system(
     { "npx", "prettier", "--stdin-filepath", vim.api.nvim_buf_get_name(0), },
@@ -39,7 +50,7 @@ local format_with_prettier = function()
       if result.stdout == nil then return vim.schedule(vim.cmd.write) end
 
       local formatted = vim.split(result.stdout, "\n", { trimempty = true, })
-      apply_minimal_changes(unformatted, formatted)
+      apply_minimal_changes { unformatted = unformatted, formatted = formatted, winnr = winnr, bufnr = bufnr, }
     end)
 end
 
@@ -54,6 +65,9 @@ local format_with_lsp = function()
     return vim.cmd.write()
   end
 
+  local winnr = vim.api.nvim_get_current_win()
+  local bufnr = vim.api.nvim_get_current_buf()
+
   local client = clients[1]
   client:request("textDocument/formatting", vim.lsp.util.make_formatting_params(), function(err, result)
     if err then return vim.schedule(vim.cmd.write) end
@@ -61,7 +75,7 @@ local format_with_lsp = function()
 
     local unformatted = vim.api.nvim_buf_get_lines(0, 0, -1, false)
     local formatted = vim.split(result[1].newText, "\n", { trimempty = true, })
-    apply_minimal_changes(unformatted, formatted)
+    apply_minimal_changes { unformatted = unformatted, formatted = formatted, winnr = winnr, bufnr = bufnr, }
   end)
 end
 
