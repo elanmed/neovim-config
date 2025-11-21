@@ -34,8 +34,8 @@ mini_diff.setup {
     apply = "",
     reset = "gh",
     goto_first = "",
-    goto_next = "]g",
-    goto_prev = "[g",
+    goto_next = "]c",
+    goto_prev = "[c",
     goto_last = "",
   },
 }
