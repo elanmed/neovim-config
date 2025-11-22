@@ -30,13 +30,14 @@ local apply_minimal_changes = function(opts)
 
   local view = vim.fn.winsaveview()
   local indices = vim.text.diff(opts.unformatted, opts.formatted, { result_type = "indices", })
+  -- vim.print { unformatted = opts.unformatted, formatted = opts.formatted, indices = indices, }
 
   for i = #indices, 1, -1 do
     local start_unformatted_1i, count_unformatted, start_formatted, count_formatted = unpack(indices[i])
     local start_unformatted_0i = start_unformatted_1i - 1
 
     if count_unformatted > 0 then
-      vim.api.nvim_buf_set_lines(0, start_unformatted_0i, start_unformatted_0i - 1 + count_unformatted, false, {})
+      vim.api.nvim_buf_set_lines(0, start_unformatted_0i, start_unformatted_0i + count_unformatted, false, {})
     end
 
     if count_formatted > 0 then
@@ -196,7 +197,6 @@ local function toggle_virtual_lines()
     h.notify.toggle_on "Virtual lines enabled"
   else
     h.notify.toggle_off "Virtual lines disabled"
-end
 end
   end
 
