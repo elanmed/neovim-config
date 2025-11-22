@@ -9,7 +9,7 @@ local h = require "helpers"
 local call_write = function(opts)
   vim.api.nvim_win_call(opts.winnr, function()
     vim.api.nvim_buf_call(opts.bufnr, function()
-      if opts.view then 
+      if opts.view then
         vim.fn.winrestview(opts.view)
       end
       vim.cmd.write { mods = { silent = true, }, }
@@ -29,28 +29,26 @@ local apply_minimal_changes = function(opts)
   local tbl_formatted = vim.split(opts.formatted, "\n")
 
   local view = vim.fn.winsaveview()
-  local linenr_1i = 1
   local indices = vim.text.diff(opts.unformatted, opts.formatted, { result_type = "indices", })
-  vim.print { unformatted = opts.unformatted, formatted = opts.formatted, indices = indices, }
 
-  for _, hunk in ipairs(indices) do
-    local start_unformatted, count_unformatted, start_formatted, count_formatted = unpack(hunk)
+  for i = #indices, 1, -1 do
+    local start_unformatted_1i, count_unformatted, start_formatted, count_formatted = unpack(indices[i])
+    local start_unformatted_0i = start_unformatted_1i - 1
 
-    while linenr_1i < start_unformatted do
-      linenr_1i = linenr_1i + 1
+    if count_unformatted > 0 then
+      vim.api.nvim_buf_set_lines(0, start_unformatted_0i, start_unformatted_0i - 1 + count_unformatted, false, {})
     end
 
-    for _ = 1, count_unformatted do
-      vim.api.nvim_buf_set_lines(0, linenr_1i -1, linenr_1i , false, {})
-    end
-
-    for i = 1, count_formatted do
-      vim.api.nvim_buf_set_lines(0, linenr_1i-1, linenr_1i-1, false, { tbl_formatted[start_formatted + i - 1], })
-      linenr_1i = linenr_1i + 1
+    if count_formatted > 0 then
+      local new_lines = {}
+      for j = 0, count_formatted - 1 do
+        table.insert(new_lines, tbl_formatted[start_formatted + j])
+      end
+      vim.api.nvim_buf_set_lines(0, start_unformatted_0i, start_unformatted_0i, false, new_lines)
     end
   end
 
-  call_write({bufnr = opts.bufnr, winnr = opts.winnr, view = view})
+  call_write { bufnr = opts.bufnr, winnr = opts.winnr, view = view, }
 end
 
 local format_with_prettier = function()
@@ -68,7 +66,7 @@ local format_with_prettier = function()
       if result.code ~= 0 then
         return vim.schedule(function()
           h.notify.doing "[prettier] non-zero exit code, writing"
-          call_write({bufnr = bufnr, winnr = winnr})
+          call_write { bufnr = bufnr, winnr = winnr, }
         end)
       end
 
@@ -76,7 +74,7 @@ local format_with_prettier = function()
       if formatted == nil then
         return vim.schedule(function()
           h.notify.doing "[prettier] no stdout, writing"
-          call_write({bufnr = bufnr, winnr = winnr})
+          call_write { bufnr = bufnr, winnr = winnr, }
         end)
       end
 
@@ -88,121 +86,122 @@ local format_with_prettier = function()
         apply_minimal_changes { unformatted = unformatted, formatted = formatted, winnr = winnr, bufnr = bufnr, }
       end)
     end)
+end
+
+local format_with_lsp = function()
+  local clients = vim.lsp.get_clients {
+    bufnr = 0,
+    method = "textDocument/formatting",
+  }
+
+  if #clients == 0 then
+    h.notify.doing "No LSP client, writing"
+    return vim.cmd.write { mods = { silent = true, }, }
   end
 
-  local format_with_lsp = function()
-    local clients = vim.lsp.get_clients {
-      bufnr = 0,
-      method = "textDocument/formatting",
-    }
+  local winnr = vim.api.nvim_get_current_win()
+  local bufnr = vim.api.nvim_get_current_buf()
 
-    if #clients == 0 then
-      h.notify.doing "No LSP client, writing"
-      return vim.cmd.write { mods = { silent = true, }, }
-    end
-
-    local winnr = vim.api.nvim_get_current_win()
-    local bufnr = vim.api.nvim_get_current_buf()
-
-    local client = clients[1]
-    client:request("textDocument/formatting", vim.lsp.util.make_formatting_params(), function(err, result)
-      if err then
-        return vim.schedule(function()
-          h.notify.doing "[textDocument/formatting] error, writing"
-          call_write({bufnr = bufnr, winnr = winnr})
-        end)
-      end
-
-      if not result or #result == 0 then
-        return vim.schedule(function()
-          h.notify.doing "[textDocument/formatting] no result, writing"
-          call_write({bufnr = bufnr, winnr = winnr})
-        end)
-      end
-
-      local unformatted = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n") .. "\n"
-      local formatted = result[1].newText
-      if not formatted:match "\n$" then
-        formatted = formatted .. "\n"
-      end
-
-      vim.schedule(function()
-        apply_minimal_changes { unformatted = unformatted, formatted = result[1].newText, winnr = winnr, bufnr = bufnr, }
+  local client = clients[1]
+  client:request("textDocument/formatting", vim.lsp.util.make_formatting_params(), function(err, result)
+    if err then
+      return vim.schedule(function()
+        h.notify.doing "[textDocument/formatting] error, writing"
+        call_write { bufnr = bufnr, winnr = winnr, }
       end)
+    end
+
+    if not result or #result == 0 then
+      return vim.schedule(function()
+        h.notify.doing "[textDocument/formatting] no result, writing"
+        call_write { bufnr = bufnr, winnr = winnr, }
+      end)
+    end
+
+    local unformatted = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n") .. "\n"
+    local formatted = result[1].newText
+    if not formatted:match "\n$" then
+      formatted = formatted .. "\n"
+    end
+
+    vim.schedule(function()
+      apply_minimal_changes { unformatted = unformatted, formatted = result[1].newText, winnr = winnr, bufnr = bufnr, }
     end)
+  end)
+end
+
+local prettier_ft = {
+  "css",
+  "graphql",
+  "html",
+  "javascript",
+  "javascriptreact",
+  "json",
+  "less",
+  "markdown",
+  "scss",
+  "typescript",
+  "typescriptreact",
+  "yaml",
+}
+
+vim.keymap.set("n", ",", vim.cmd.write)
+
+vim.keymap.set("n", "<bs>", function()
+  if vim.bo.readonly or vim.bo.buftype ~= "" then
+    return h.notify.error "Aborting"
   end
 
-  local prettier_ft = {
-    "css",
-    "graphql",
-    "html",
-    "javascript",
-    "javascriptreact",
-    "json",
-    "less",
-    "markdown",
-    "scss",
-    "typescript",
-    "typescriptreact",
-    "yaml",
-  }
+  local bufnr = vim.api.nvim_get_current_buf()
+  local bufname = vim.api.nvim_buf_get_name(bufnr)
+  local line_count = vim.api.nvim_buf_line_count(bufnr)
 
-  vim.keymap.set("n", ",", vim.cmd.write)
+  local one_pt_five_mb = 1.5 * 1024 * 1024
+  if vim.fn.getfsize(bufname) > one_pt_five_mb or line_count > 5000 then
+    vim.cmd.write()
+  elseif vim.list_contains(prettier_ft, vim.bo.filetype) then
+    format_with_prettier()
+  elseif vim.bo.filetype == "lua" then
+    format_with_lsp()
+  else
+    vim.cmd.write()
+  end
+end)
 
-  vim.keymap.set("n", "<bs>", function()
-    if vim.bo.readonly or vim.bo.buftype ~= "" then
-      return h.notify.error "Aborting"
-    end
+local signs = {
+  text = {
+    [vim.diagnostic.severity.ERROR] = "!!",
+    [vim.diagnostic.severity.INFO] = "?",
+    [vim.diagnostic.severity.HINT] = "•",
+    [vim.diagnostic.severity.WARN] = "•",
+  },
+}
 
-    local bufnr = vim.api.nvim_get_current_buf()
-    local bufname = vim.api.nvim_buf_get_name(bufnr)
-    local line_count = vim.api.nvim_buf_line_count(bufnr)
+vim.diagnostic.config {
+  underline = false,
+  virtual_lines = false,
+  signs = signs,
+}
 
-    local one_pt_five_mb = 1.5 * 1024 * 1024
-    if vim.fn.getfsize(bufname) > one_pt_five_mb or line_count > 5000 then
-      vim.cmd.write()
-    elseif vim.list_contains(prettier_ft, vim.bo.filetype) then
-      format_with_prettier()
-    elseif vim.bo.filetype == "lua" then
-      format_with_lsp()
-    else
-      vim.cmd.write()
-    end
-  end)
-
-  local signs = {
-    text = {
-      [vim.diagnostic.severity.ERROR] = "!!",
-      [vim.diagnostic.severity.INFO] = "?",
-      [vim.diagnostic.severity.HINT] = "•",
-      [vim.diagnostic.severity.WARN] = "•",
-    },
-  }
+local function toggle_virtual_lines()
+  local current_virtual_lines = vim.diagnostic.config().virtual_lines
 
   vim.diagnostic.config {
     underline = false,
-    virtual_lines = false,
+    virtual_lines = not current_virtual_lines,
     signs = signs,
   }
 
-  local function toggle_virtual_lines()
-    local current_virtual_lines = vim.diagnostic.config().virtual_lines
-
-    vim.diagnostic.config {
-      underline = false,
-      virtual_lines = not current_virtual_lines,
-      signs = signs,
-    }
-
-    if not current_virtual_lines then
-      h.notify.toggle_on "Virtual lines enabled"
-    else
-      h.notify.toggle_off "Virtual lines disabled"
-    end
+  if not current_virtual_lines then
+    h.notify.toggle_on "Virtual lines enabled"
+  else
+    h.notify.toggle_off "Virtual lines disabled"
+end
+end
   end
 
-  vim.keymap.set({ "i", "n", }, "<C-g>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
-  vim.keymap.set("i", "<C-s>", function()
+vim.keymap.set({ "i", "n", }, "<C-g>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
+vim.keymap.set("i", "<C-s>", function()
     vim.lsp.buf.signature_help { border = "single", }
   end,
   { desc = "LSP signature help", }
@@ -231,26 +230,26 @@ local function next_prev_diagnostic(direction, severity)
   vim.diagnostic.jump { severity = severity, count = direction == "next" and 1 or -1, }
 end
 vim.keymap.set("n", "]d",
-function() next_prev_diagnostic "next" end,
-{ desc = "Next diagnostic", }
+  function() next_prev_diagnostic "next" end,
+  { desc = "Next diagnostic", }
 )
 vim.keymap.set("n", "[d",
-function() next_prev_diagnostic "prev" end,
-{ desc = "Next diagnostic", }
+  function() next_prev_diagnostic "prev" end,
+  { desc = "Next diagnostic", }
 )
 vim.keymap.set("n", "]w",
-function() next_prev_diagnostic("next", vim.diagnostic.severity.WARN) end,
-{ desc = "Next warning diagnostic", })
+  function() next_prev_diagnostic("next", vim.diagnostic.severity.WARN) end,
+  { desc = "Next warning diagnostic", })
 vim.keymap.set("n", "[w",
-function() next_prev_diagnostic("prev", vim.diagnostic.severity.WARN) end,
-{ desc = "Next warning diagnostic", })
+  function() next_prev_diagnostic("prev", vim.diagnostic.severity.WARN) end,
+  { desc = "Next warning diagnostic", })
 vim.keymap.set("n", "]e",
-function() next_prev_diagnostic("next", vim.diagnostic.severity.ERROR) end,
-{ desc = "Next error diagnostic", }
+  function() next_prev_diagnostic("next", vim.diagnostic.severity.ERROR) end,
+  { desc = "Next error diagnostic", }
 )
 vim.keymap.set("n", "[e",
-function() next_prev_diagnostic("prev", vim.diagnostic.severity.ERROR) end,
-{ desc = "Next error diagnostic", }
+  function() next_prev_diagnostic("prev", vim.diagnostic.severity.ERROR) end,
+  { desc = "Next error diagnostic", }
 )
 
 local function enable_deno_lsp()
