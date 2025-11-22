@@ -26,28 +26,38 @@ end
 --- @param opts ApplyMinimalChangesOpts
 local apply_minimal_changes = function(opts)
   h.notify.doing "Applying minimal diffs"
-  local tbl_formatted = vim.split(opts.formatted, "\n")
 
   local view = vim.fn.winsaveview()
   local indices = vim.text.diff(opts.unformatted, opts.formatted, { result_type = "indices", })
-  -- vim.print { unformatted = opts.unformatted, formatted = opts.formatted, indices = indices, }
 
-  for i = #indices, 1, -1 do
-    local start_unformatted_1i, count_unformatted, start_formatted, count_formatted = unpack(indices[i])
+  local edits = {}
+  local tbl_formatted = vim.split(opts.formatted, "\n")
+
+  for _, hunk in ipairs(indices) do
+    local start_unformatted_1i, count_unformatted, start_formatted, count_formatted = unpack(hunk)
     local start_unformatted_0i = start_unformatted_1i - 1
 
-    if count_unformatted > 0 then
-      vim.api.nvim_buf_set_lines(0, start_unformatted_0i, start_unformatted_0i + count_unformatted, false, {})
+    local new_text_lines = {}
+
+    for i = 0, count_formatted - 1 do
+      table.insert(new_text_lines, tbl_formatted[start_formatted + i])
     end
 
-    if count_formatted > 0 then
-      local new_lines = {}
-      for j = 0, count_formatted - 1 do
-        table.insert(new_lines, tbl_formatted[start_formatted + j])
-      end
-      vim.api.nvim_buf_set_lines(0, start_unformatted_0i, start_unformatted_0i, false, new_lines)
+    local new_text = table.concat(new_text_lines, "\n")
+    if #new_text > 0 then
+      new_text = new_text .. "\n"
     end
+
+    table.insert(edits, {
+      range = {
+        start = { line = start_unformatted_0i, character = 0, },
+        ["end"] = { line = start_unformatted_0i + count_unformatted, character = 0, },
+      },
+      newText = new_text,
+    })
   end
+
+  vim.lsp.util.apply_text_edits(edits, opts.bufnr, "utf-8")
 
   call_write { bufnr = opts.bufnr, winnr = opts.winnr, view = view, }
 end
@@ -197,17 +207,16 @@ local function toggle_virtual_lines()
     h.notify.toggle_on "Virtual lines enabled"
   else
     h.notify.toggle_off "Virtual lines disabled"
-end
   end
+end
 
 vim.keymap.set({ "i", "n", }, "<C-g>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
-vim.keymap.set("i", "<C-s>", function()
-    vim.lsp.buf.signature_help { border = "single", }
-  end,
+vim.keymap.set("i", "<C-s>", function() vim.lsp.buf.signature_help { border = "single", } end,
   { desc = "LSP signature help", }
 )
-vim.keymap.set("n", "glr", vim.lsp.buf.references, { desc = "LSP go to type definition", })
-vim.keymap.set("n", "gla", vim.lsp.buf.code_action, { desc = "LSP go to type definition", })
+vim.keymap.set("n", "glr", vim.lsp.buf.references, { desc = "LSP go to references", })
+vim.keymap.set("n", "gli", vim.lsp.buf.definition, { desc = "LSP go to definition", })
+vim.keymap.set("n", "gla", vim.lsp.buf.code_action, { desc = "LSP code action", })
 vim.keymap.set("n", "gly", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
 vim.keymap.set("n", "K", function() vim.lsp.buf.hover { border = "single", } end, { desc = "LSP hover", })
 vim.keymap.set({ "n", "i", }, "<C-k>", function()
