@@ -156,9 +156,7 @@ local prettier_ft = {
   "yaml",
 }
 
-vim.keymap.set("n", ",", vim.cmd.write)
-
-vim.keymap.set("n", "<bs>", function()
+vim.keymap.set("n", ",", function()
   if vim.bo.readonly or vim.bo.buftype ~= "" then
     return h.notify.error "Aborting"
   end
