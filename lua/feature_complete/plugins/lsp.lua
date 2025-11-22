@@ -25,8 +25,6 @@ end
 
 --- @param opts ApplyMinimalChangesOpts
 local apply_minimal_changes = function(opts)
-  h.notify.doing "Applying minimal diffs"
-
   local view = vim.fn.winsaveview()
   local indices = vim.text.diff(opts.unformatted, opts.formatted, { result_type = "indices", })
 
@@ -94,6 +92,7 @@ local format_with_prettier = function()
       end
 
       vim.schedule(function()
+        h.notify.doing "[prettier] applying diff, writing"
         apply_minimal_changes { unformatted = unformatted, formatted = formatted, winnr = winnr, bufnr = bufnr, }
       end)
     end)
@@ -136,6 +135,7 @@ local format_with_lsp = function()
     end
 
     vim.schedule(function()
+      h.notify.doing "[textDocument/formatting] applying diff, writing"
       apply_minimal_changes { unformatted = unformatted, formatted = result[1].newText, winnr = winnr, bufnr = bufnr, }
     end)
   end)
