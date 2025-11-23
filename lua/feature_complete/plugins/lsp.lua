@@ -41,11 +41,11 @@ local apply_minimal_changes = function(opts)
       table.insert(new_text_lines, tbl_formatted[start_formatted + i])
     end
 
-
     local new_text = (function()
       if count_formatted == 0 then
         return ""
       end
+      -- lsp expects that every line in `newText` will end with a newline
       return table.concat(new_text_lines, "\n") .. "\n"
     end)()
 
