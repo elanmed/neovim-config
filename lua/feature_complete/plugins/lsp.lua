@@ -91,7 +91,7 @@ local format_with_prettier = function()
       end
 
       vim.schedule(function()
-        h.notify.doing "[prettier] applying diff, writing"
+        h.notify.doing "[prettier] applying minimal diff, writing"
         apply_minimal_changes { unformatted = unformatted, formatted = formatted, winnr = winnr, bufnr = bufnr, }
       end)
     end)
@@ -146,7 +146,7 @@ local format_with_lsp = function()
       local formatted = result[1].newText
 
       vim.schedule(function()
-        h.notify.doing "[textDocument/formatting] applying diff, writing"
+        h.notify.doing "[textDocument/formatting] applying minimal diff, writing"
         apply_minimal_changes { unformatted = unformatted, formatted = formatted, winnr = winnr, bufnr = bufnr, }
       end)
     else
