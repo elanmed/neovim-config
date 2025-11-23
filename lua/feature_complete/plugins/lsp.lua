@@ -131,16 +131,39 @@ local format_with_lsp = function()
       end)
     end
 
-    local unformatted = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
-    local formatted = result[1].newText
-    if formatted:sub(-1) == "\n" then
-      formatted = formatted:sub(1, -2)
-    end
+    local is_full_replace = (function()
+      if #result == 1 then
+        local range = result[1].range
+        local line_count = vim.api.nvim_buf_line_count(bufnr)
 
-    vim.schedule(function()
-      h.notify.doing "[textDocument/formatting] applying diff, writing"
-      apply_minimal_changes { unformatted = unformatted, formatted = formatted, winnr = winnr, bufnr = bufnr, }
-    end)
+        if range.start.line == 0 and range.start.character == 0 and range["end"].line >= line_count then
+          return true
+        end
+
+        return false
+      end
+
+      return false
+    end)()
+
+    if is_full_replace then
+      local unformatted = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
+      local formatted = result[1].newText
+      if formatted:sub(-1) == "\n" then
+        formatted = formatted:sub(1, -2)
+      end
+
+      vim.schedule(function()
+        h.notify.doing "[textDocument/formatting] applying diff, writing"
+        apply_minimal_changes { unformatted = unformatted, formatted = formatted, winnr = winnr, bufnr = bufnr, }
+      end)
+    else
+      vim.schedule(function()
+        h.notify.doing "[textDocument/formatting] applying LSP edits directly, writing"
+        vim.lsp.util.apply_text_edits(result, bufnr, "utf-8")
+        call_write { bufnr = bufnr, winnr = winnr, }
+      end)
+    end
   end)
 end
 
