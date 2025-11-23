@@ -33,7 +33,10 @@ local apply_minimal_changes = function(opts)
 
   for _, hunk in ipairs(indices) do
     local start_unformatted_1i, count_unformatted, start_formatted, count_formatted = unpack(hunk)
-    local start_unformatted_0i = start_unformatted_1i - 1
+    local start_unformatted_0i = (function()
+      if start_unformatted_1i == 0 then return 0 end
+      return start_unformatted_1i - 1
+    end)()
 
     local new_text_lines = {}
 
@@ -174,6 +177,7 @@ local prettier_ft = {
   "yaml",
 }
 
+-- vim.keymap.set("n", ",", vim.cmd.write)
 vim.keymap.set("n", "<bs>", function()
   if vim.bo.readonly or vim.bo.buftype ~= "" then
     return h.notify.error "Aborting"
