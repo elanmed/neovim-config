@@ -90,10 +90,6 @@ local format_with_prettier = function()
         end)
       end
 
-      if formatted:sub(-1) == "\n" then
-        formatted = formatted:sub(1, -2)
-      end
-
       vim.schedule(function()
         h.notify.doing "[prettier] applying diff, writing"
         apply_minimal_changes { unformatted = unformatted, formatted = formatted, winnr = winnr, bufnr = bufnr, }
@@ -139,7 +135,6 @@ local format_with_lsp = function()
         if range.start.line == 0 and range.start.character == 0 and range["end"].line >= line_count then
           return true
         end
-
         return false
       end
 
@@ -149,9 +144,6 @@ local format_with_lsp = function()
     if is_full_replace then
       local unformatted = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
       local formatted = result[1].newText
-      if formatted:sub(-1) == "\n" then
-        formatted = formatted:sub(1, -2)
-      end
 
       vim.schedule(function()
         h.notify.doing "[textDocument/formatting] applying diff, writing"
