@@ -41,10 +41,13 @@ local apply_minimal_changes = function(opts)
       table.insert(new_text_lines, tbl_formatted[start_formatted + i])
     end
 
-    local new_text = table.concat(new_text_lines, "\n")
-    if #new_text > 0 then
-      new_text = new_text .. "\n"
-    end
+
+    local new_text = (function()
+      if count_formatted == 0 then
+        return ""
+      end
+      return table.concat(new_text_lines, "\n") .. "\n"
+    end)()
 
     table.insert(edits, {
       range = {
@@ -61,7 +64,7 @@ local apply_minimal_changes = function(opts)
 end
 
 local format_with_prettier = function()
-  local unformatted = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n") .. "\n"
+  local unformatted = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
   local winnr = vim.api.nvim_get_current_win()
   local bufnr = vim.api.nvim_get_current_buf()
 
@@ -87,8 +90,8 @@ local format_with_prettier = function()
         end)
       end
 
-      if not formatted:match "\n$" then
-        formatted = formatted .. "\n"
+      if formatted:sub(-1) == "\n" then
+        formatted = formatted:sub(1, -2)
       end
 
       vim.schedule(function()
@@ -128,15 +131,15 @@ local format_with_lsp = function()
       end)
     end
 
-    local unformatted = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n") .. "\n"
+    local unformatted = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
     local formatted = result[1].newText
-    if not formatted:match "\n$" then
-      formatted = formatted .. "\n"
+    if formatted:sub(-1) == "\n" then
+      formatted = formatted:sub(1, -2)
     end
 
     vim.schedule(function()
       h.notify.doing "[textDocument/formatting] applying diff, writing"
-      apply_minimal_changes { unformatted = unformatted, formatted = result[1].newText, winnr = winnr, bufnr = bufnr, }
+      apply_minimal_changes { unformatted = unformatted, formatted = formatted, winnr = winnr, bufnr = bufnr, }
     end)
   end)
 end
@@ -156,7 +159,7 @@ local prettier_ft = {
   "yaml",
 }
 
-vim.keymap.set("n", ",", function()
+vim.keymap.set("n", "<bs>", function()
   if vim.bo.readonly or vim.bo.buftype ~= "" then
     return h.notify.error "Aborting"
   end
