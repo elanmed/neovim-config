@@ -124,7 +124,7 @@ local function next_closed_fold(direction)
   local is_open = true
 
   while curr_line_num ~= prev_line_num and is_open do
-    vim.cmd.normal { "z", direction, bang = true, }
+    vim.cmd("normal! z" .. direction)
     prev_line_num = curr_line_num
     curr_line_num = vim.fn.line "."
     is_open = vim.fn.foldclosed(curr_line_num) < 0

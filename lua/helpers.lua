@@ -104,7 +104,7 @@ notify.toggle_off = function(message)
 end
 
 --- @param dir string i.e. "/feature_complete/plugins/"
-local require_dir = function(dir)
+utils.require_dir = function(dir)
   local base_lua_path = vim.fs.joinpath(vim.fn.stdpath "config", "lua")
   local glob_path = vim.fs.joinpath(base_lua_path, dir, "*.lua")
   local paths_str = vim.fn.glob(glob_path)
@@ -158,7 +158,6 @@ return {
   os = _os,
   dev = dev,
   notify = notify,
-  require_dir = require_dir,
   vimscript_true = vimscript_true,
   vimscript_false = vimscript_false,
   utils = utils,

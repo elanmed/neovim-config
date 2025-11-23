@@ -189,7 +189,8 @@ vim.keymap.set("n", "<bs>", function()
 
   local one_pt_five_mb = 1.5 * 1024 * 1024
   if vim.fn.getfsize(bufname) > one_pt_five_mb or line_count > 5000 then
-    vim.cmd.write()
+    h.notify.doing "Bigfile, writing"
+    vim.cmd.write { mods = { silent = true, }, }
   elseif vim.list_contains(prettier_ft, vim.bo.filetype) then
     format_with_prettier()
   elseif vim.bo.filetype == "lua" then

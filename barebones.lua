@@ -2,5 +2,5 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
-require "helpers".require_dir "shared"
+require "helpers".utils.require_dir "shared"
 require "barebones"

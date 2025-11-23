@@ -17,4 +17,4 @@ vim.pack.add {
   "https://github.com/elanmed/quickfix-preview.nvim",
 }
 vim.cmd.packadd "nvim.undotree"
-require "helpers".require_dir "feature_complete/plugins"
+require "helpers".utils.require_dir "feature_complete/plugins"
