@@ -32,17 +32,19 @@
 -- })
 
 local mini_icons = require "mini.icons"
+local h = require "helpers"
+
 vim.g.netrw_banner = 0
 vim.g.netrw_altfile = 1
-vim.g.netrw_keepdir = 0
 vim.g.netrw_localcopydircmd = "cp -r"
+-- bottom right
 vim.g.netrw_preview = 0
 vim.g.netrw_alto = 0
 
 vim.keymap.set("n", "<C-f>", function()
-  local bufname = vim.api.nvim_buf_get_name(0)
-  local dirname = vim.fs.dirname(bufname)
+  local dirname = vim.fs.dirname(vim.api.nvim_buf_get_name(0))
   vim.cmd.Explore(dirname)
+
   if vim.api.nvim_get_current_line() == "../" then
     vim.cmd.normal "gh"
   end
@@ -66,6 +68,22 @@ vim.api.nvim_create_autocmd("BufModifiedSet", {
     vim.keymap.set("n", "r", "R", { buffer = true, remap = true, })
     vim.keymap.set("n", "P", "<C-w>z", { buffer = true, remap = true, })
     vim.keymap.set("n", "<C-f>", vim.cmd.bdelete, { buffer = true, })
+
+    vim.keymap.set("n", "ya", function()
+      local line = vim.api.nvim_get_current_line()
+      local abs_path = vim.fs.joinpath(vim.fn.getcwd(), vim.fn.expand "%", line)
+      vim.fn.setreg("", abs_path)
+      vim.fn.setreg("+", abs_path)
+      h.notify.doing("yanked: " .. abs_path)
+    end, { buffer = true, })
+
+    vim.keymap.set("n", "yr", function()
+      local line = vim.api.nvim_get_current_line()
+      local rel_path = vim.fs.joinpath(vim.fn.expand "%", line)
+      vim.fn.setreg("", rel_path)
+      vim.fn.setreg("+", rel_path)
+      h.notify.doing("yanked: " .. rel_path)
+    end, { buffer = true, })
 
     local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
     local ns_id = vim.api.nvim_create_namespace "netrw"
