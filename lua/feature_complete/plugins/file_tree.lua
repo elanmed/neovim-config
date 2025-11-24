@@ -73,7 +73,11 @@ vim.api.nvim_create_autocmd("BufModifiedSet", {
     for idx_1i, line in ipairs(lines) do
       local idx_0i = idx_1i - 1
       if line == "../" or line == "./" then goto continue end
-      local icon, hl_group = mini_icons.get("file", line)
+
+      local icon, hl_group = mini_icons.get(
+        vim.endswith(line, "/") and "directory" or "file",
+        line
+      )
 
       vim.api.nvim_buf_set_extmark(0, ns_id, idx_0i, 0, {
         id = idx_1i,
