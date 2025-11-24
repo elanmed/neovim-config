@@ -31,6 +31,7 @@
 --   end,
 -- })
 
+local mini_icons = require "mini.icons"
 vim.g.netrw_banner = 0
 vim.g.netrw_altfile = 1
 vim.g.netrw_keepdir = 0
@@ -67,6 +68,23 @@ vim.api.nvim_create_autocmd("BufModifiedSet", {
     vim.keymap.set("n", "r", "R", { buffer = true, remap = true, })
     vim.keymap.set("n", "P", "<C-w>z", { buffer = true, remap = true, })
     vim.keymap.set("n", "<C-f>", vim.cmd.bdelete, { buffer = true, })
+
+    local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+    local ns_id = vim.api.nvim_create_namespace "netrw"
+
+    for idx_1i, line in ipairs(lines) do
+      local idx_0i = idx_1i - 1
+      if line == "../" or line == "./" then goto continue end
+      local icon, hl_group = mini_icons.get("file", line)
+
+      vim.api.nvim_buf_set_extmark(0, ns_id, idx_0i, 0, {
+        id = idx_1i,
+        virt_text = { { icon, hl_group, }, { " ", "", }, },
+        virt_text_pos = "inline",
+      })
+
+      ::continue::
+    end
   end,
   group = vim.api.nvim_create_augroup("netrw", { clear = false, }),
 })
