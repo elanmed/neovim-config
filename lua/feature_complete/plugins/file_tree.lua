@@ -50,9 +50,7 @@ end, { desc = "Toggle netrw, focusing the current buffer", })
 
 vim.api.nvim_create_autocmd("BufModifiedSet", {
   callback = function()
-    if not (vim.bo and vim.bo.filetype == "netrw") then
-      return
-    end
+    if vim.bo.filetype ~= "netrw" then return end
 
     vim.opt_local.relativenumber = true
 
