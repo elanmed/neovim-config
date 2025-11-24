@@ -43,6 +43,7 @@ mini_diff.setup {
 local input_wasted_keys = function(key)
   local action = function()
     if vim.bo.buftype ~= "" then return end
+    if vim.bo.filetype == "netrw" then return end
     vim.fn.input "Wasted keys: "
   end
   require "mini.keymap".map_combo("n", string.rep(key, 5), action)
