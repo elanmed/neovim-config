@@ -122,7 +122,7 @@ local function get_fzf_script(script_name)
   )
 
   return table.concat(
-    { "nvim", "--clean", "-u", "NONE", "--headless", "-l", lua_script, vim.v.servername, },
+    { "nvim", "-i", "NONE", "--clean", "-u", "NONE", "--headless", "-l", lua_script, vim.v.servername, },
     " ")
 end
 
