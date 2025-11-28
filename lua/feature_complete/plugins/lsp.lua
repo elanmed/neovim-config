@@ -28,6 +28,53 @@ local apply_minimal_changes = function(opts)
   local view = vim.fn.winsaveview()
   local indices = vim.text.diff(opts.unformatted, opts.formatted, { result_type = "indices", })
 
+  -- Notes on vim.text.diff:
+
+  -- insertion at the start
+  -- local a = table.concat({ "a", "b", "c", }, "\n")
+  -- local b = table.concat({ "d", "a", "b", "c", }, "\n")
+  -- { { 0, 0, 1, 1 } }
+
+  -- insertion in the middle
+  -- local a = table.concat({ "a", "b", "c", }, "\n")
+  -- local b = table.concat({ "a", "d", "b", "c", }, "\n")
+  -- { { 1, 0, 2, 1 } }
+
+  -- insertion at the end
+  -- local a = table.concat({ "a", "b", "c", }, "\n")
+  -- local b = table.concat({ "a", "b", "c", "d" }, "\n")
+  -- { { 3, 1, 3, 2 } }
+
+  -- delete at the start
+  -- local a = table.concat({ "a", "b", "c", }, "\n")
+  -- local b = table.concat({ "b", "c", }, "\n")
+  -- { { 2, 1, 1, 0 } }
+
+  -- delete in the middle
+  -- local a = table.concat({ "a", "b", "c", }, "\n")
+  -- local b = table.concat({ "a", "c", }, "\n")
+  -- { { 1, 0, 2, 1 } }
+
+  -- delete at the end
+  -- local a = table.concat({ "a", "b", "c", }, "\n")
+  -- local b = table.concat({ "a", "b", }, "\n")
+  -- { { 2, 2, 2, 1 } }
+
+  -- replace at the start
+  -- local a = table.concat({ "a", "b", "c", }, "\n")
+  -- local b = table.concat({ "d", "b", "c", }, "\n")
+  -- { { 1, 1, 1, 1 } }
+
+  -- replace in the middle
+  -- local a = table.concat({ "a", "b", "c", }, "\n")
+  -- local b = table.concat({ "a", "d", "c", }, "\n")
+  -- { { 2, 1, 2, 1 } }
+
+  -- replace at the end
+  -- local a = table.concat({ "a", "b", "c", }, "\n")
+  -- local b = table.concat({ "a", "b", "d" }, "\n")
+  -- { { 3, 1, 3, 1 } }
+
   local edits = {}
   local tbl_formatted = vim.split(opts.formatted, "\n")
 
