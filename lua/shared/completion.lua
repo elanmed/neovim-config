@@ -49,7 +49,7 @@ vim.keymap.set("i", "<C-x><C-o>", function()
       end
     end,
     on_limit = function()
-      feed_ctrl_keys "<C-e><C-x><C-n>"
+      feed_ctrl_keys "<C-x><C-n>"
     end,
   }
 end, { desc = "Omnifunc with buffer lines backup", })
