@@ -1,6 +1,7 @@
 vim.pack.add {
   "https://github.com/neovim/nvim-lspconfig",
   { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main", },
+  { src = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects", version = "main", },
 
   "https://github.com/mfussenegger/nvim-jdtls",
   "https://github.com/nvim-mini/mini.nvim",
@@ -18,3 +19,10 @@ vim.pack.add {
 }
 vim.cmd.packadd "nvim.undotree"
 require "helpers".utils.require_dir "feature_complete/plugins"
+
+vim.keymap.set({ "x", "o", }, "af", function()
+  require "nvim-treesitter-textobjects.select".select_textobject("@function.outer", "textobjects")
+end)
+vim.keymap.set({ "x", "o", }, "if", function()
+  require "nvim-treesitter-textobjects.select".select_textobject("@function.inner", "textobjects")
+end)
