@@ -26,83 +26,46 @@ end
 --- @param opts ApplyMinimalChangesOpts
 local apply_minimal_changes = function(opts)
   local view = vim.fn.winsaveview()
+  --- @type integer[][]
   local indices = vim.text.diff(opts.unformatted, opts.formatted, { result_type = "indices", })
-
-  -- Notes on vim.text.diff:
-
-  -- insertion at the start
-  -- local a = table.concat({ "a", "b", "c", }, "\n")
-  -- local b = table.concat({ "d", "a", "b", "c", }, "\n")
-  -- { { 0, 0, 1, 1 } }
-
-  -- insertion in the middle
-  -- local a = table.concat({ "a", "b", "c", }, "\n")
-  -- local b = table.concat({ "a", "d", "b", "c", }, "\n")
-  -- { { 1, 0, 2, 1 } }
-
-  -- insertion at the end
-  -- local a = table.concat({ "a", "b", "c", }, "\n")
-  -- local b = table.concat({ "a", "b", "c", "d" }, "\n")
-  -- { { 3, 1, 3, 2 } }
-
-  -- delete at the start
-  -- local a = table.concat({ "a", "b", "c", }, "\n")
-  -- local b = table.concat({ "b", "c", }, "\n")
-  -- { { 2, 1, 1, 0 } }
-
-  -- delete in the middle
-  -- local a = table.concat({ "a", "b", "c", }, "\n")
-  -- local b = table.concat({ "a", "c", }, "\n")
-  -- { { 1, 0, 2, 1 } }
-
-  -- delete at the end
-  -- local a = table.concat({ "a", "b", "c", }, "\n")
-  -- local b = table.concat({ "a", "b", }, "\n")
-  -- { { 2, 2, 2, 1 } }
-
-  -- replace at the start
-  -- local a = table.concat({ "a", "b", "c", }, "\n")
-  -- local b = table.concat({ "d", "b", "c", }, "\n")
-  -- { { 1, 1, 1, 1 } }
-
-  -- replace in the middle
-  -- local a = table.concat({ "a", "b", "c", }, "\n")
-  -- local b = table.concat({ "a", "d", "c", }, "\n")
-  -- { { 2, 1, 2, 1 } }
-
-  -- replace at the end
-  -- local a = table.concat({ "a", "b", "c", }, "\n")
-  -- local b = table.concat({ "a", "b", "d" }, "\n")
-  -- { { 3, 1, 3, 1 } }
-
   local edits = {}
   local tbl_formatted = vim.split(opts.formatted, "\n")
 
   for _, hunk in ipairs(indices) do
-    local start_unformatted_1i, count_unformatted, start_formatted, count_formatted = unpack(hunk)
-    local start_unformatted_0i = (function()
-      if start_unformatted_1i == 0 then return 0 end
-      return start_unformatted_1i - 1
-    end)()
+    local start_unformatted_1i, count_unformatted, start_formatted_1i, count_formatted = unpack(hunk)
+    local end_formatted_1i_excl = start_formatted_1i + count_formatted
+    local end_formatted_1i_incl = end_formatted_1i_excl - 1
 
-    local new_text_lines = {}
+    local start_unformatted_0i = start_unformatted_1i - 1
+    local end_unformatted_0i_excl = start_unformatted_0i + count_unformatted
 
-    for i = 0, count_formatted - 1 do
-      table.insert(new_text_lines, tbl_formatted[start_formatted + i])
-    end
+    local new_text_lines = vim.list_slice(tbl_formatted, start_formatted_1i, end_formatted_1i_incl)
 
+    local is_deletion = count_formatted == 0
     local new_text = (function()
-      if count_formatted == 0 then
-        return ""
-      end
+      if is_deletion then return "" end
       -- lsp expects that every line in `newText` will end with a newline
       return table.concat(new_text_lines, "\n") .. "\n"
     end)()
 
+    -- for deletions/replacement, line_x is `starting from and including`
+    -- for insertions, line_x is `after`
+    local is_insertion = count_unformatted == 0
+
+    local start_line = (function()
+      if is_insertion then return start_unformatted_0i + 1 end
+      return start_unformatted_0i
+    end)()
+
+    local end_line = (function()
+      if is_insertion then return start_unformatted_0i + 1 end
+      return end_unformatted_0i_excl
+    end)()
+
     table.insert(edits, {
       range = {
-        start = { line = start_unformatted_0i, character = 0, },
-        ["end"] = { line = start_unformatted_0i + count_unformatted, character = 0, },
+        start = { line = start_line, character = 0, },
+        ["end"] = { line = end_line, character = 0, },
       },
       newText = new_text,
     })
@@ -181,13 +144,8 @@ local format_with_lsp = function()
       if #result == 1 then
         local range = result[1].range
         local line_count = vim.api.nvim_buf_line_count(bufnr)
-
-        if range.start.line == 0 and range.start.character == 0 and range["end"].line >= line_count then
-          return true
-        end
-        return false
+        return range.start.line == 0 and range.start.character == 0 and range["end"].line >= line_count
       end
-
       return false
     end)()
 
