@@ -249,8 +249,7 @@ end, { desc = "Yank the file vim.v.count below and put it on the current line", 
 vim.keymap.set("n", "<C-j>", "<C-]>", { desc = "<C-]>", })
 
 vim.keymap.set("n", "<leader>u", vim.pack.update, { desc = "Update all packages", })
-vim.keymap.set("n", "<leader>t", vim.cmd.so, { desc = ":so", })
-vim.keymap.set("n", "<leader>s", function()
+vim.keymap.set("n", "<leader>t", function()
   vim.cmd "mksession! Session.vim | restart source Session.vim"
 end, { desc = "restart and restore session", })
 
