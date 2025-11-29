@@ -304,12 +304,6 @@ end
 vim.lsp.enable {
   "ruby_lsp",
   "bashls",
-  "jsonls",
   "lua_ls",
-  "css_variables",
-  "cssls",
-  "cssmodules_ls",
-  "stylelint_lsp",
-  "tailwindcss",
   "vimls",
 }

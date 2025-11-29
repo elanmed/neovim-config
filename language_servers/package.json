@@ -5,10 +5,6 @@
     "typescript": "*",
     "typescript-language-server": "*",
     "bash-language-server": "*",
-    "css-variables-language-server": "*",
-    "cssmodules-language-server": "*",
-    "stylelint-lsp": "*",
-    "@tailwindcss/language-server": "*",
     "tree-sitter-cli": "*"
   }
 }
