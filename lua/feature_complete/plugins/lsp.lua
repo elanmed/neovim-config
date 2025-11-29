@@ -185,6 +185,7 @@ local prettier_ft = {
   "yaml",
 }
 
+vim.keymap.set("n", "<bs>", function() h.notify.error "Use s instead!" end)
 vim.keymap.set("n", "s", function()
   if vim.bo.readonly or vim.bo.buftype ~= "" then
     return h.notify.error "Aborting"
