@@ -25,11 +25,14 @@ end
 
 --- @param opts ApplyMinimalChangesOpts
 local apply_minimal_changes = function(opts)
-  local view = vim.fn.winsaveview()
+  opts.formatted = opts.formatted:gsub("\n$", "") .. "\n"
+  opts.unformatted = opts.unformatted:gsub("\n$", "") .. "\n"
+
   --- @type integer[][]
   local indices = vim.text.diff(opts.unformatted, opts.formatted, { result_type = "indices", })
   local edits = {}
   local tbl_formatted = vim.split(opts.formatted, "\n")
+  table.remove(tbl_formatted)
 
   for _, hunk in ipairs(indices) do
     local start_unformatted_1i, count_unformatted, start_formatted_1i, count_formatted = unpack(hunk)
@@ -71,8 +74,8 @@ local apply_minimal_changes = function(opts)
     })
   end
 
+  local view = vim.fn.winsaveview()
   vim.lsp.util.apply_text_edits(edits, opts.bufnr, "utf-8")
-
   call_write { bufnr = opts.bufnr, winnr = opts.winnr, view = view, }
 end
 
@@ -182,7 +185,6 @@ local prettier_ft = {
   "yaml",
 }
 
--- vim.keymap.set("n", ",", vim.cmd.write)
 vim.keymap.set("n", "<bs>", function()
   if vim.bo.readonly or vim.bo.buftype ~= "" then
     return h.notify.error "Aborting"
