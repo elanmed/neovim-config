@@ -32,13 +32,13 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
 })
 
 local ff = require "ff"
--- vim.keymap.set("n", "<leader>f", function()
---   if vim.bo.filetype == "tree" then
---     vim.cmd.close()
---   end
---
---   ff.find()
--- end)
+vim.keymap.set("n", "<leader>f", function()
+  if vim.bo.filetype == "tree" then
+    vim.cmd.close()
+  end
+
+  ff.find()
+end)
 
 vim.api.nvim_create_autocmd("User", {
   group = vim.api.nvim_create_augroup("TreeUserEvents", { clear = true, }),
