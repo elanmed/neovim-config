@@ -36,6 +36,17 @@ vim.api.nvim_create_autocmd("BufWinEnter", {
   end,
 })
 
+vim.api.nvim_create_autocmd("TextYankPost", {
+  group = vim.api.nvim_create_augroup("SetYankRing", { clear = true, }),
+  callback = function()
+    if vim.v.event.operator == "y" then
+      for i = 9, 1, -1 do
+        vim.fn.setreg(tostring(i), vim.fn.getreg(tostring(i - 1)))
+      end
+    end
+  end,
+})
+
 -- TODO convert to lua
 -- https://github.com/mrjones2014/smart-splits.nvim/blob/6c7c64b6e1be6eb95fd9583c0969e0df625c6cd6/autoload/smart_splits.vim#L51-L62
 vim.cmd [[
