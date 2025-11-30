@@ -113,7 +113,7 @@ local function maybe_close_tree()
   end
 end
 
---- @param script_name "get_marks"|"delete_mark"|"ex_cmd"|"get_qf_list"|"get_qf_stack"|"get_buffers"|"get_lines"|"delete_buffer"
+--- @param script_name "get_marks"|"delete_mark"|"ex_cmd"|"get_qf_list"|"get_qf_stack"|"get_buffers"|"get_lines"|"delete_buffer"|"get_oldfiles"
 local function get_fzf_script(script_name)
   local lua_script = vim.fs.joinpath(
     vim.fn.stdpath "config",
@@ -169,6 +169,24 @@ vim.keymap.set("n", "<leader>b", function()
     options = h.tbl.extend(bufs_opts_tbl, M.default_opts, M.single_select_opts),
     sink = function(entry)
       vim.cmd.edit(vim.split(entry, "|")[2])
+    end,
+  }
+end, { desc = "fzf buffers", })
+
+vim.keymap.set("n", "<leader>o", function()
+  maybe_close_tree()
+
+  local source = get_fzf_script "get_oldfiles"
+  local oldfiles_opts_tbl = { [[--ghost='Oldfiles']], }
+
+  M.fzf {
+    height = "half",
+    source = source,
+    options = h.tbl.extend(oldfiles_opts_tbl, M.default_opts, M.multi_select_opts),
+    sinklist = function(entries)
+      for _, entry in ipairs(entries) do
+        vim.cmd.edit(entry)
+      end
     end,
   }
 end, { desc = "fzf buffers", })
@@ -364,14 +382,14 @@ vim.keymap.set("n", "<leader>zr", function()
   vim.cmd.startinsert()
 end, { desc = "fzf resume rg with globs", })
 
-vim.keymap.set("v", "<leader>o", function()
+vim.keymap.set("v", "<leader>zo", function()
   local region = vim.fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".")
   if #region > 0 then
     rg_with_globs(region[1] .. " -- ")
   end
 end, { desc = "fzf rg with globs", })
 
-vim.keymap.set("n", "<leader>o", function()
+vim.keymap.set("n", "<leader>zo", function()
   rg_with_globs(vim.fn.expand "<cword>" .. " -- ")
 end, { desc = "fzf rg with globs", })
 
