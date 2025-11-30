@@ -11,20 +11,19 @@ end, {})
 vim.api.nvim_create_user_command("SetPlusRegTo", function(opts)
   local source_reg = opts.fargs[1] or ""
   vim.fn.setreg("+", vim.fn.getreg(source_reg))
-  h.notify.doing(("Set register %s with value %s"):format("+", vim.fn.getreg(source_reg)))
+  h.notify.doing(("Set register `%s` with value `%s`"):format("+", vim.fn.getreg(source_reg)))
 end, { nargs = "?", })
 
 vim.api.nvim_create_user_command("SetRegToPlus", function(opts)
   local dest_reg = opts.fargs[1] or ""
   vim.fn.setreg(dest_reg, vim.fn.getreg "+")
-  h.notify.doing(("Set register %s with value %s"):format(dest_reg, vim.fn.getreg "+"))
+  h.notify.doing(("Set register `%s` with value `%s`"):format(dest_reg, vim.fn.getreg "+"))
 end, { nargs = "?", })
 
 vim.api.nvim_create_user_command("PackUpdate", function() vim.pack.update() end, {})
 vim.api.nvim_create_user_command("Res", function()
   vim.cmd "mksession! Session.vim | restart source Session.vim"
 end, {})
-
 
 vim.api.nvim_create_user_command("Snippet", function(opts)
   local snippet_trigger_to_file_mapping = {
@@ -65,7 +64,6 @@ end, { nargs = "*", })
 -- https://github.com/neovim/neovim/issues/35303
 -- assumes nothing lazy-loaded
 vim.api.nvim_create_user_command("PackClean", function()
-  local h = require "helpers"
   local active_plugins = {}
   local unused_plugins = {}
 

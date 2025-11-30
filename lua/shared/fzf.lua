@@ -113,7 +113,7 @@ local function maybe_close_tree()
   end
 end
 
---- @param script_name "get_marks"|"delete_mark"|"ex_cmd"|"get_qf_list"|"get_qf_stack"|"get_buffers"|"get_lines"|"delete_buffer"|"get_oldfiles"
+--- @param script_name "get_marks"|"delete_mark"|"ex_cmd"|"get_qf_list"|"get_qf_stack"|"get_buffers"|"get_lines"|"delete_buffer"|"get_oldfiles"|'get_registers'
 local function get_fzf_script(script_name)
   local lua_script = vim.fs.joinpath(
     vim.fn.stdpath "config",
@@ -189,7 +189,26 @@ vim.keymap.set("n", "<leader>o", function()
       end
     end,
   }
-end, { desc = "fzf buffers", })
+end, { desc = "fzf oldfiles", })
+
+vim.keymap.set("n", "<leader>zu", function()
+  maybe_close_tree()
+
+  local source = get_fzf_script "get_registers"
+  local registers_opts_tbl = { [[--ghost='Registers']], }
+
+  M.fzf {
+    height = "half",
+    source = source,
+    options = h.tbl.extend(registers_opts_tbl, M.default_opts, M.multi_select_opts),
+    sink = function(entry)
+      local reg = vim.split(entry, "|")[1]
+      local reg_value = vim.fn.getreg(reg)
+      vim.fn.setreg("", reg_value)
+      h.notify.doing(("Set the unnamed register to: %s"):format(reg_value:gsub("\n", "NEWLINE")))
+    end,
+  }
+end, { desc = "fzf register", })
 
 vim.keymap.set("n", "<leader>z;", function()
   maybe_close_tree()
