@@ -1,20 +1,3 @@
-require "mini.surround".setup {
-  mappings = {
-    add = "ys",
-    delete = "ds",
-    find = "",
-    find_left = "",
-    highlight = "",
-    replace = "cs",
-    suffix_last = "",
-    suffix_next = "",
-  },
-  search_method = "cover_or_next",
-}
-vim.keymap.set("n", "yss", "ys_", { remap = true, })
--- ys forces to wait
-vim.keymap.set("v", "y", "y", { nowait = true, })
-
 require "mini.icons".setup()
 require "mini.splitjoin".setup()
 
@@ -43,7 +26,6 @@ mini_diff.setup {
 local input_wasted_keys = function(key)
   local action = function()
     if vim.bo.buftype ~= "" then return end
-    if vim.bo.filetype == "netrw" then return end
     vim.fn.input "Wasted keys: "
   end
   require "mini.keymap".map_combo("n", string.rep(key, 5), action)
