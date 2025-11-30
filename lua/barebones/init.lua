@@ -21,7 +21,6 @@ vim.keymap.set("n", "s", function()
   vim.cmd.write()
 end)
 
-vim.g.netrw_banner = 0
 vim.g.netrw_altfile = 1
 vim.g.netrw_localcopydircmd = "cp -r"
 -- bottom right
