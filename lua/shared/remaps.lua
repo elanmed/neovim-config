@@ -70,10 +70,13 @@ vim.keymap.set("n", "<leader>ua", function()
   vim.cmd.SetPlusReg "a"
 end)
 vim.keymap.set("n", "<leader>ud", function()
-  vim.cmd.SetPlusReg "a"
+  vim.cmd.SetPlusReg "d"
 end)
 vim.keymap.set("n", "<leader>ub", function()
   vim.cmd.SetPlusReg "b"
+end)
+vim.keymap.set("n", "<leader>up", function()
+  vim.cmd.SetPlusReg()
 end)
 
 vim.keymap.set("n", "<leader>yc",
