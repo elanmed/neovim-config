@@ -217,20 +217,21 @@ local signs = {
   },
 }
 
-vim.diagnostic.config {
+local base_diagnostic_config = {
   underline = false,
-  virtual_lines = false,
   signs = signs,
+  update_in_insert = false,
 }
+
+vim.diagnostic.config(
+  vim.tbl_extend("error", base_diagnostic_config, { virtual_lines = false, })
+)
 
 local function toggle_virtual_lines()
   local current_virtual_lines = vim.diagnostic.config().virtual_lines
-
-  vim.diagnostic.config {
-    underline = false,
-    virtual_lines = not current_virtual_lines,
-    signs = signs,
-  }
+  vim.diagnostic.config(
+    vim.tbl_extend("error", base_diagnostic_config, { virtual_lines = not current_virtual_lines, })
+  )
 
   if not current_virtual_lines then
     h.notify.toggle_on "Virtual lines enabled"
