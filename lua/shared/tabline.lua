@@ -2,7 +2,7 @@ local h = require "helpers"
 vim.o.showtabline = 2
 vim.o.tabline = "%!v:lua.Tabline()"
 
-local max_len = math.floor(vim.o.columns / 2)
+local max_len = math.floor(vim.o.columns * 3 / 4)
 
 local get_tab_section = function()
   local tabs = vim.api.nvim_list_tabpages()
