@@ -8,20 +8,20 @@ vim.api.nvim_create_user_command("PrintRemaps", function()
   vim.cmd "redir! > remaps.txt | silent map | redir END"
 end, {})
 
-vim.api.nvim_create_user_command("SetPlusReg", function(opts)
+vim.api.nvim_create_user_command("SetPlusRegTo", function(opts)
   local source_reg = opts.fargs[1] or ""
   vim.fn.setreg("+", vim.fn.getreg(source_reg))
   h.notify.doing(("Set register %s with value %s"):format("+", vim.fn.getreg(source_reg)))
 end, { nargs = "?", })
 
-vim.api.nvim_create_user_command("GetPlusReg", function(opts)
+vim.api.nvim_create_user_command("SetRegToPlus", function(opts)
   local dest_reg = opts.fargs[1] or ""
   vim.fn.setreg(dest_reg, vim.fn.getreg "+")
   h.notify.doing(("Set register %s with value %s"):format(dest_reg, vim.fn.getreg "+"))
 end, { nargs = "?", })
 
 vim.api.nvim_create_user_command("PackUpdate", function() vim.pack.update() end, {})
-vim.api.nvim_create_user_command("Restart", function()
+vim.api.nvim_create_user_command("Res", function()
   vim.cmd "mksession! Session.vim | restart source Session.vim"
 end, {})
 

@@ -64,19 +64,22 @@ vim.keymap.set("v", "<C-/>",
   end, { expr = true, remap = true, desc = "Comment the visual selection", })
 
 vim.keymap.set("n", "<leader>ur", function()
-  vim.cmd.SetPlusReg "r"
+  vim.cmd.SetPlusRegTo "r"
 end)
 vim.keymap.set("n", "<leader>ua", function()
-  vim.cmd.SetPlusReg "a"
+  vim.cmd.SetPlusRegTo "a"
 end)
 vim.keymap.set("n", "<leader>ud", function()
-  vim.cmd.SetPlusReg "d"
+  vim.cmd.SetPlusRegTo "d"
 end)
 vim.keymap.set("n", "<leader>ub", function()
-  vim.cmd.SetPlusReg "b"
+  vim.cmd.SetPlusRegTo "b"
 end)
 vim.keymap.set("n", "<leader>up", function()
-  vim.cmd.SetPlusReg()
+  vim.cmd.SetPlusRegTo()
+end)
+vim.keymap.set("n", "<leader>uu", function()
+  vim.cmd.SetRegToPlus()
 end)
 
 vim.keymap.set("n", "<leader>yc",
