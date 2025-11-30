@@ -23,6 +23,19 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
+vim.api.nvim_create_autocmd("BufWinEnter", {
+  group = vim.api.nvim_create_augroup("UpdateOldfiles", { clear = true, }),
+  callback = function(args)
+    local filtered = vim.tbl_filter(function(oldfile)
+      if oldfile == vim.api.nvim_buf_get_name(args.buf) then return false end
+      if not vim.uv.fs_stat(oldfile) then return false end
+      return true
+    end, vim.v.oldfiles)
+    table.insert(filtered, 1, vim.api.nvim_buf_get_name(args.buf))
+    vim.v.oldfiles = filtered
+  end,
+})
+
 -- TODO convert to lua
 -- https://github.com/mrjones2014/smart-splits.nvim/blob/6c7c64b6e1be6eb95fd9583c0969e0df625c6cd6/autoload/smart_splits.vim#L51-L62
 vim.cmd [[
