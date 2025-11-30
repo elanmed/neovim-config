@@ -63,6 +63,19 @@ vim.keymap.set("v", "<C-/>",
     return comment .. reselect_last
   end, { expr = true, remap = true, desc = "Comment the visual selection", })
 
+vim.keymap.set("n", "<leader>ur", function()
+  vim.cmd.SetPlusReg "r"
+end)
+vim.keymap.set("n", "<leader>ua", function()
+  vim.cmd.SetPlusReg "a"
+end)
+vim.keymap.set("n", "<leader>ud", function()
+  vim.cmd.SetPlusReg "a"
+end)
+vim.keymap.set("n", "<leader>ub", function()
+  vim.cmd.SetPlusReg "b"
+end)
+
 vim.keymap.set("n", "<leader>yc",
   function()
     local z_register = [["z]]
@@ -248,13 +261,11 @@ end, { desc = "Yank the file vim.v.count below and put it on the current line", 
 
 vim.keymap.set("n", "<C-j>", "<C-]>", { desc = "<C-]>", })
 
-vim.keymap.set("n", "<leader>u", vim.pack.update, { desc = "Update all packages", })
-vim.keymap.set("n", "<leader>t", function()
-  vim.cmd "mksession! Session.vim | restart source Session.vim"
-end, { desc = "restart and restore session", })
+vim.keymap.set("n", "<leader>t", vim.cmd.source, { desc = "restart and restore session", })
 
 vim.keymap.set("n", "<leader>mD", function()
   vim.cmd.delmarks "A-Za-z"
   pcall(require "marks".refresh_signs)
   h.notify.doing "Deleted all marks"
 end)
+

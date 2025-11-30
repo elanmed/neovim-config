@@ -1,4 +1,3 @@
-vim.o.clipboard = "unnamedplus" -- os clipboard
 vim.o.cursorline = true
 vim.o.relativenumber = true
 vim.o.number = true
