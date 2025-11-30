@@ -13,6 +13,4 @@ vim.keymap.set("n", "<leader>me", marks.refresh_signs)
 vim.keymap.set("n", "<leader>md", marks.delete_buffer_marks)
 vim.keymap.set("n", "<leader>mf", marks.global_marks_to_qf_list)
 
-local seek = require "seek"
-vim.keymap.set("n", "<leader>s", function() seek.seek { direction = "forwards", } end)
-vim.keymap.set("n", "<leader>S", function() seek.seek { direction = "backwards", } end)
+vim.keymap.set("n", "<leader>s", function() require "seek".seek() end)
