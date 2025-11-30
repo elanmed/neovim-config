@@ -173,6 +173,20 @@ vim.keymap.set("n", "<leader>b", function()
   }
 end, { desc = "fzf buffers", })
 
+vim.keymap.set("n", "<leader>f", function()
+  local fd_opts_tbl = { [[--ghost='Fd']], }
+  M.fzf {
+    source = "fd --hidden --type f --exclude .git --exclude node_modules --exclude dist",
+    height = "half",
+    options = h.tbl.extend(fd_opts_tbl, M.default_opts, M.multi_select_opts),
+    sinklist = function(entries)
+      for _, entry in ipairs(entries) do
+        vim.cmd.edit(entry)
+      end
+    end,
+  }
+end)
+
 vim.keymap.set("n", "<leader>o", function()
   maybe_close_tree()
 
