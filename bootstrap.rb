@@ -16,7 +16,6 @@ def bootstrap_nvim(server:, package_manager:)
   install_package(package_manager, 'ripgrep')
   install_package(package_manager, 'fd')
   install_package(package_manager, 'cargo')
-  install_package(package_manager, 'ImageMagick')
 
   puts 'installing bob'.doing
   `cargo install bob-nvim`
