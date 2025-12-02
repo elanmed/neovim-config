@@ -23,19 +23,6 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
-vim.api.nvim_create_autocmd("BufWinEnter", {
-  group = vim.api.nvim_create_augroup("UpdateOldfiles", { clear = true, }),
-  callback = function(args)
-    local filtered = vim.tbl_filter(function(oldfile)
-      if oldfile == vim.api.nvim_buf_get_name(args.buf) then return false end
-      if not vim.uv.fs_stat(oldfile) then return false end
-      return true
-    end, vim.v.oldfiles)
-    table.insert(filtered, 1, vim.api.nvim_buf_get_name(args.buf))
-    vim.v.oldfiles = filtered
-  end,
-})
-
 vim.api.nvim_create_autocmd("TextYankPost", {
   group = vim.api.nvim_create_augroup("SetYankRing", { clear = true, }),
   callback = function()
