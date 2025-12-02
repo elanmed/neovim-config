@@ -63,23 +63,27 @@ vim.keymap.set("v", "<C-/>",
     return comment .. reselect_last
   end, { expr = true, remap = true, desc = "Comment the visual selection", })
 
+--- @param source_reg string
+local set_unnamed_and_clipboard = function(source_reg)
+  vim.fn.setreg("", vim.fn.getreg(source_reg))
+  vim.fn.setreg("+", vim.fn.getreg(source_reg))
+  for i = 9, 1, -1 do
+    vim.fn.setreg(tostring(i), vim.fn.getreg(tostring(i - 1)))
+  end
+  h.notify.doing(("Set register `\"\"` and `+` with value `%s`"):format(vim.fn.getreg(source_reg)))
+end
+
 vim.keymap.set("n", "<leader>ur", function()
-  vim.cmd.SetPlusRegTo "r"
+  set_unnamed_and_clipboard "r"
 end)
 vim.keymap.set("n", "<leader>ua", function()
-  vim.cmd.SetPlusRegTo "a"
+  set_unnamed_and_clipboard "a"
 end)
 vim.keymap.set("n", "<leader>ud", function()
-  vim.cmd.SetPlusRegTo "d"
+  set_unnamed_and_clipboard "d"
 end)
 vim.keymap.set("n", "<leader>ub", function()
-  vim.cmd.SetPlusRegTo "b"
-end)
-vim.keymap.set("n", "<leader>up", function()
-  vim.cmd.SetPlusRegTo()
-end)
-vim.keymap.set("n", "<leader>uu", function()
-  vim.cmd.SetRegToPlus()
+  set_unnamed_and_clipboard "b"
 end)
 
 vim.keymap.set("n", "<leader>yc",
