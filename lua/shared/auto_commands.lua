@@ -3,7 +3,7 @@ local h = require "helpers"
 vim.api.nvim_create_autocmd("CursorMoved", {
   group = vim.api.nvim_create_augroup("CenterScreen", { clear = true, }),
   callback = function(args)
-    local excluded_fts = { "tree", "nvim-undotree", "rg-far", "netrw", }
+    local excluded_fts = { "tree", "nvim-undotree", "rg-far", }
     if vim.list_contains(excluded_fts, vim.bo[args.buf].filetype) then return end
     vim.cmd.normal { "zz", bang = true, }
   end,
