@@ -5,6 +5,7 @@
     "typescript": "*",
     "typescript-language-server": "*",
     "bash-language-server": "*",
+    "@typescript/native-preview": "*",
     "tree-sitter-cli": "*"
   }
 }
