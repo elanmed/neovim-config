@@ -4,14 +4,10 @@ local left_to_right_pair = {
   ["("] = ")",
   ["{"] = "}",
   ["["] = "]",
-  ["`"] = "`",
-  ["'"] = "'",
-  ['"'] = '"',
 }
 
 local opening_pairs = { "(", "{", "[", }
 local closing_pairs = { ")", "}", "]", }
-local same_pairs = { [[`]], [[']], [["]], }
 
 --- @param typed_char string
 local function skip_or_insert_char(typed_char)
@@ -25,33 +21,15 @@ local function skip_or_insert_char(typed_char)
       return "<right>"
     end
 
-    local should_insert_pair =
-        char_right == nil or
-        char_right == "" or
-        vim.tbl_contains(closing_pairs, char_right) or
-        char_right == ">" or
-        char_right == "," or
-        char_right:match "%s"
-
     if vim.tbl_contains(opening_pairs, typed_char) then
-      if should_insert_pair then
-        return typed_char .. left_to_right_pair[typed_char] .. "<left>"
-      end
-
-      return typed_char
+      return typed_char .. left_to_right_pair[typed_char] .. "<left>"
     elseif vim.tbl_contains(closing_pairs, typed_char) then
-      return typed_char
-    elseif vim.tbl_contains(same_pairs, typed_char) then
-      if should_insert_pair then
-        return typed_char .. typed_char .. "<left>"
-      end
-
       return typed_char
     end
   end
 end
 
-for _, char in pairs(h.tbl.extend(same_pairs, opening_pairs, closing_pairs)) do
+for _, char in pairs(h.tbl.extend(opening_pairs, closing_pairs)) do
   vim.keymap.set("i", char, skip_or_insert_char(char), { expr = true, desc = char .. " with pairs", })
 end
 
