@@ -185,9 +185,7 @@ vim.keymap.set("n", "<leader>zu", function()
     options = h.tbl.extend(registers_opts_tbl, M.default_opts, M.multi_select_opts),
     sink = function(entry)
       local reg = vim.split(entry, "|")[1]
-      local reg_value = vim.fn.getreg(reg)
-      vim.fn.setreg("", reg_value)
-      h.notify.doing(("Set the unnamed register to: %s"):format(reg_value:gsub("\n", "NEWLINE")))
+      h.utils.set_unnamed_and_plus(vim.fn.getreg(reg))
     end,
   }
 end, { desc = "fzf register", })
@@ -422,7 +420,7 @@ vim.keymap.set("n", "<leader>yw", function()
   local stripped_filename = get_stripped_filename()
   if stripped_filename == nil then return end
 
-  vim.fn.setreg("+", stripped_filename)
+  h.utils.set_and_rotate(stripped_filename)
 end, { desc = "Yank a file name starting with `wf_modules`", })
 
 --- @generic T

@@ -62,17 +62,13 @@ vim.api.nvim_create_autocmd("BufModifiedSet", {
     vim.keymap.set("n", "ya", function()
       local line = vim.api.nvim_get_current_line()
       local abs_path = vim.fs.joinpath(vim.fn.getcwd(), vim.fn.expand "%", line)
-      vim.fn.setreg("", abs_path)
-      vim.fn.setreg("+", abs_path)
-      h.notify.doing("Yanked: " .. abs_path)
+      h.utils.set_and_rotate(abs_path)
     end, { buffer = true, })
 
     vim.keymap.set("n", "yr", function()
       local line = vim.api.nvim_get_current_line()
       local rel_path = vim.fs.joinpath(vim.fn.expand "%", line)
-      vim.fn.setreg("", rel_path)
-      vim.fn.setreg("+", rel_path)
-      h.notify.doing("Yanked: " .. rel_path)
+      h.utils.set_and_rotate(rel_path)
     end, { buffer = true, })
   end,
   group = vim.api.nvim_create_augroup("netrw", { clear = false, }),

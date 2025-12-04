@@ -27,9 +27,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   group = vim.api.nvim_create_augroup("SetYankRing", { clear = true, }),
   callback = function()
     if vim.v.event.operator == "y" then
-      for i = 9, 1, -1 do
-        vim.fn.setreg(tostring(i), vim.fn.getreg(tostring(i - 1)))
-      end
+      h.utils.rotate_registers()
     end
   end,
 })

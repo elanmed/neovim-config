@@ -135,6 +135,20 @@ utils.try_catch = function(try, catch)
   end
 end
 
+utils.rotate_registers = function()
+  for i = 9, 1, -1 do
+    vim.fn.setreg(tostring(i), vim.fn.getreg(tostring(i - 1)))
+  end
+end
+
+--- @param val string
+utils.set_and_rotate = function(val)
+  vim.fn.setreg("", val)
+  vim.fn.setreg("+", val)
+  notify.doing("Setting the unnamed and + registers to: " .. val)
+  utils.rotate_registers()
+end
+
 --- @class PadOpts
 --- @field val string | number
 --- @field max_len number

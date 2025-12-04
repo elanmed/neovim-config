@@ -63,28 +63,11 @@ vim.keymap.set("v", "<C-/>",
     return comment .. reselect_last
   end, { expr = true, remap = true, desc = "Comment the visual selection", })
 
---- @param source_reg string
-local set_unnamed_and_clipboard = function(source_reg)
-  vim.fn.setreg("", vim.fn.getreg(source_reg))
-  vim.fn.setreg("+", vim.fn.getreg(source_reg))
-  for i = 9, 1, -1 do
-    vim.fn.setreg(tostring(i), vim.fn.getreg(tostring(i - 1)))
-  end
-  h.notify.doing(("Set register `\"\"` and `+` with value `%s`"):format(vim.fn.getreg(source_reg)))
-end
 
-vim.keymap.set("n", "<leader>ur", function()
-  set_unnamed_and_clipboard "r"
-end)
-vim.keymap.set("n", "<leader>ua", function()
-  set_unnamed_and_clipboard "a"
-end)
-vim.keymap.set("n", "<leader>ud", function()
-  set_unnamed_and_clipboard "d"
-end)
-vim.keymap.set("n", "<leader>ub", function()
-  set_unnamed_and_clipboard "b"
-end)
+vim.keymap.set("n", "<leader>ur", function() h.utils.set_and_rotate(vim.fn.getreg "r") end)
+vim.keymap.set("n", "<leader>ua", function() h.utils.set_and_rotate(vim.fn.getreg "a") end)
+vim.keymap.set("n", "<leader>ud", function() h.utils.set_and_rotate(vim.fn.getreg "d") end)
+vim.keymap.set("n", "<leader>ub", function() h.utils.set_and_rotate(vim.fn.getreg "b") end)
 
 vim.keymap.set("n", "<leader>yc",
   function()
@@ -124,14 +107,12 @@ end, { expr = true, desc = "Yank and put the visual selection", })
 
 vim.keymap.set("n", "<leader>ya", function()
   local abs_path = vim.api.nvim_buf_get_name(0)
-  vim.fn.setreg("+", abs_path)
-  h.notify.doing("yanked: " .. abs_path)
+  h.utils.set_and_rotate(abs_path)
 end, { desc = "Yank the absolute path of the current buffer", })
 
 vim.keymap.set("n", "<leader>yr", function()
   local rel_path = vim.fs.relpath(vim.fn.getcwd(), vim.api.nvim_buf_get_name(0))
-  vim.fn.setreg("+", rel_path)
-  h.notify.doing("yanked: " .. rel_path)
+  h.utils.set_and_rotate(rel_path)
 end, { desc = "Yank the relative path of the current buffer", })
 
 vim.keymap.set("n", "<leader>yf", function()
