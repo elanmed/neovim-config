@@ -21,8 +21,20 @@ local function skip_or_insert_char(typed_char)
       return "<right>"
     end
 
+    local should_insert_pair =
+        char_right == nil or
+        char_right == "" or
+        vim.tbl_contains(closing_pairs, char_right) or
+        char_right == ">" or
+        char_right == "," or
+        char_right:match "%s"
+
     if vim.tbl_contains(opening_pairs, typed_char) then
-      return typed_char .. left_to_right_pair[typed_char] .. "<left>"
+      if should_insert_pair then
+        return typed_char .. left_to_right_pair[typed_char] .. "<left>"
+      end
+
+      return typed_char
     elseif vim.tbl_contains(closing_pairs, typed_char) then
       return typed_char
     end
