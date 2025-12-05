@@ -29,8 +29,10 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.keymap.set("n", "r", "<Plug>TreeRename", { buffer = args.buf, })
     vim.keymap.set("n", "dd", "<Plug>TreeDelete", { buffer = args.buf, })
     vim.keymap.set("n", "yy", "<Plug>TreeCopy", { buffer = args.buf, })
+    vim.keymap.set("n", "m", "<Plug>TreeMove", { buffer = args.buf, })
 
     vim.keymap.set("v", "d", "<Plug>TreeDelete", { buffer = args.buf, })
     vim.keymap.set("v", "yy", "<Plug>TreeCopy", { buffer = args.buf, })
+    vim.keymap.set("v", "m", "<Plug>TreeMove", { buffer = args.buf, })
   end,
 })
