@@ -35,3 +35,4 @@ vim.o.wildoptions = "fuzzy"
 vim.o.list = true
 vim.o.listchars = "leadmultispace:| ,trail:·,nbsp:◇"
 vim.o.iskeyword = "@,48-57,_,192-255,-" -- Treat dash as `word` textobject part
+vim.o.pummaxwidth = 50
