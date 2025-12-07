@@ -36,3 +36,13 @@ vim.o.list = true
 vim.o.listchars = "leadmultispace:| ,trail:·,nbsp:◇"
 vim.o.iskeyword = "@,48-57,_,192-255,-" -- Treat dash as `word` textobject part
 vim.o.pummaxwidth = 50
+vim.o.foldlevelstart = 99
+vim.o.foldcolumn = "1"
+vim.opt.fillchars = {
+  foldclose = "+",
+  foldopen = "-",
+  foldsep = " ",
+  foldinner = " ",
+}
+vim.o.foldmethod = "indent"
+
