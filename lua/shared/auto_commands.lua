@@ -10,10 +10,21 @@ vim.api.nvim_create_autocmd("CursorMoved", {
   desc = "Center the screen on movement",
 })
 
+vim.o.pumheight = 10
+vim.api.nvim_create_autocmd("CmdlineEnter", { callback = function() vim.o.pumheight = 5 end, })
+vim.api.nvim_create_autocmd("CmdlineLeave", { callback = function() vim.o.pumheight = 10 end, })
 vim.api.nvim_create_autocmd("CmdlineChanged", {
-  group = vim.api.nvim_create_augroup("FuzzyCommandLineMode", { clear = true, }),
-  pattern = ":",
-  callback = function() vim.fn.wildtrigger() end,
+  pattern = { ":", "/", },
+  callback = function()
+    local cmdline = vim.fn.getcmdline()
+    local cmdtype = vim.fn.getcmdtype()
+
+    if cmdtype == "/" and cmdline:match "^\\V." then
+      vim.fn.wildtrigger()
+    elseif cmdtype == ":" then
+      vim.fn.wildtrigger()
+    end
+  end,
 })
 
 vim.api.nvim_create_autocmd("FileType", {
