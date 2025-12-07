@@ -215,6 +215,7 @@ local signs = {
     [vim.diagnostic.severity.HINT] = "•",
     [vim.diagnostic.severity.WARN] = "•",
   },
+  priority = 9999,
 }
 
 local base_diagnostic_config = {
