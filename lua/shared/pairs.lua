@@ -25,8 +25,7 @@ local function skip_or_insert_char(typed_char)
         char_right == nil or
         char_right == "" or
         vim.tbl_contains(closing_pairs, char_right) or
-        char_right == ">" or
-        char_right == "," or
+        char_right:match "%p" or
         char_right:match "%s"
 
     if vim.tbl_contains(opening_pairs, typed_char) then
