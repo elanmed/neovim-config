@@ -39,8 +39,8 @@ vim.keymap.set("i", "<C-x><C-o>", function()
 
   feed_ctrl_keys "<C-x><C-o>"
   poll {
-    interval = 50,
-    limit = 10,
+    interval = 100,
+    limit = 15,
     --- @param clear_interval fun():nil
     on_interval = function(clear_interval)
       local info = vim.fn.complete_info { "pum_visible", }
