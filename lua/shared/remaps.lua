@@ -251,8 +251,7 @@ vim.keymap.set("n", "<leader>j", function()
 end, { desc = "Yank the file vim.v.count below and put it on the current line", expr = true, })
 
 vim.keymap.set("n", "<C-j>", "<C-]>", { desc = "<C-]>", })
-
-vim.keymap.set("n", "<leader>t", vim.cmd.source, { desc = "restart and restore session", })
+vim.keymap.set("n", "<leader>t", vim.cmd.source, { desc = ":source", })
 
 vim.keymap.set("n", "<leader>mD", function()
   vim.cmd.delmarks "A-Za-z"
