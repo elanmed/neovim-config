@@ -126,6 +126,31 @@ local function get_fzf_script(script_name)
     " ")
 end
 
+--- @class QfSinklistOpts
+--- @field get_filename fun(entry:string):string
+--- @field get_qf_entry fun(entry:string):{ filename:string, lnum:number, col:number, text:string, }
+--- @field get_cursor_pos? fun(entry:string):[integer, integer]
+--- @param opts QfSinklistOpts
+local build_sinklist = function(opts)
+  return function(entries)
+    if #entries == 1 then
+      vim.cmd.edit(opts.get_filename(entries[1]))
+      if opts.get_cursor_pos then
+        vim.api.nvim_win_set_cursor(0, opts.get_cursor_pos(entries[1]))
+      end
+      return
+    end
+
+    local qf_list = vim.tbl_map(function(entry)
+      return opts.get_qf_entry(entry)
+    end, entries)
+
+    vim.fn.setqflist(qf_list)
+    vim.cmd.copen()
+  end
+end
+
+
 vim.keymap.set("n", "<leader>l", function()
   maybe_close_tree()
 
@@ -142,13 +167,14 @@ vim.keymap.set("n", "<leader>l", function()
     height = "half",
     source = source,
     options = h.tbl.extend(marks_opts_tbl, M.default_opts, M.multi_select_opts),
-    sinklist = function(entries)
-      for _, entry in ipairs(entries) do
-        local _, lnum, filename = unpack(vim.split(entry, "|"))
-        vim.cmd.edit(filename)
-        vim.api.nvim_win_set_cursor(0, { tonumber(lnum), 0, })
-      end
-    end,
+    sinklist = build_sinklist {
+      get_filename = function(entry) return vim.split(entry, "|")[3] end,
+      get_qf_entry = function(entry)
+        local mark, lnum, filename = unpack(vim.split(entry, "|"))
+        return { filename = filename, lnum = lnum, col = 0, text = filename, }
+      end,
+      get_cursor_pos = function(entry) return { tonumber(vim.split(entry, "|")[2]), 0, } end,
+    },
   }
 end, { desc = "fzf global marks", })
 
@@ -166,10 +192,14 @@ vim.keymap.set("n", "<leader>b", function()
   M.fzf {
     height = "half",
     source = source,
-    options = h.tbl.extend(bufs_opts_tbl, M.default_opts, M.single_select_opts),
-    sink = function(entry)
-      vim.cmd.edit(vim.split(entry, "|")[2])
-    end,
+    options = h.tbl.extend(bufs_opts_tbl, M.default_opts, M.multi_select_opts),
+    sinklist = build_sinklist {
+      get_filename = function(entry) return vim.split(entry, "|")[2] end,
+      get_qf_entry = function(entry)
+        local _, filename = unpack(vim.split(entry, "|"))
+        return { filename = filename, lnum = 1, col = 0, text = filename, }
+      end,
+    },
   }
 end, { desc = "fzf buffers", })
 
@@ -182,7 +212,7 @@ vim.keymap.set("n", "<leader>zu", function()
   M.fzf {
     height = "half",
     source = source,
-    options = h.tbl.extend(registers_opts_tbl, M.default_opts, M.multi_select_opts),
+    options = h.tbl.extend(registers_opts_tbl, M.default_opts, M.single_select_opts),
     sink = function(entry)
       local reg = vim.split(entry, "|")[1]
       h.utils.set_unnamed_and_plus(vim.fn.getreg(reg))
@@ -235,19 +265,10 @@ vim.keymap.set("n", "<leader>i", function()
     source = "git status --short --untracked-files",
     options = h.tbl.extend(diff_opts_tbl, M.default_opts, M.multi_select_opts),
     height = "full",
-    sinklist = function(entries)
-      if #entries == 1 then
-        vim.cmd.edit(entries[1])
-        return
-      end
-
-      local qf_list = vim.tbl_map(function(entry)
-        return { filename = entry, lnum = 1, col = 0, }
-      end, entries)
-
-      vim.fn.setqflist(qf_list)
-      vim.cmd.copen()
-    end,
+    sinklist = build_sinklist {
+      get_filename = function(entry) return entry end,
+      get_qf_entry = function(entry) return { lnum = 1, col = 0, filename = entry, } end,
+    },
   }
 end, { desc = "fzf git diff", })
 
