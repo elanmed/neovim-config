@@ -107,12 +107,6 @@ M.qf_preview_opts = {
   [[--preview-window='+{2}/3']],
 }
 
-local function maybe_close_tree()
-  if vim.bo.filetype == "tree" then
-    vim.cmd.close()
-  end
-end
-
 --- @param script_name "get_marks"|"delete_mark"|"ex_cmd"|"get_qf_list"|"get_qf_stack"|"get_buffers"|"get_lines"|"delete_buffer"|'get_registers'
 local function get_fzf_script(script_name)
   local lua_script = vim.fs.joinpath(
@@ -152,8 +146,6 @@ end
 
 
 vim.keymap.set("n", "<leader>l", function()
-  maybe_close_tree()
-
   local source = get_fzf_script "get_marks"
   local delete_mark_source = get_fzf_script "delete_mark"
 
@@ -179,8 +171,6 @@ vim.keymap.set("n", "<leader>l", function()
 end, { desc = "fzf global marks", })
 
 vim.keymap.set("n", "<leader>b", function()
-  maybe_close_tree()
-
   local source = get_fzf_script "get_buffers"
   local delete_buf_source = get_fzf_script "delete_buffer"
   local bufs_opts_tbl = {
@@ -204,8 +194,6 @@ vim.keymap.set("n", "<leader>b", function()
 end, { desc = "fzf buffers", })
 
 vim.keymap.set("n", "<leader>zu", function()
-  maybe_close_tree()
-
   local source = get_fzf_script "get_registers"
   local registers_opts_tbl = { [[--ghost='Registers']], }
 
@@ -221,8 +209,6 @@ vim.keymap.set("n", "<leader>zu", function()
 end, { desc = "fzf register", })
 
 vim.keymap.set("n", "<leader>z;", function()
-  maybe_close_tree()
-
   local ex_cmd_source = get_fzf_script "ex_cmd"
 
   local cmd_history_opts_tbl = {
@@ -252,8 +238,6 @@ vim.keymap.set("n", "<leader>z;", function()
 end, { desc = "fzf command history", })
 
 vim.keymap.set("n", "<leader>i", function()
-  maybe_close_tree()
-
   local diff_opts_tbl = {
     [[--preview='if git diff --color=always HEAD {2} 2>/dev/null | grep -q .; then git diff --color=always HEAD {2} | tail -n +5; else bat --style=numbers --color=always {2}; fi']],
     [[--with-nth='{2}']],
@@ -323,7 +307,6 @@ local function rg_with_globs(default_query)
 end
 
 vim.keymap.set("n", "<leader>a", function()
-  maybe_close_tree()
   rg_with_globs ""
 end, { desc = "fzf rg with globs", })
 
@@ -397,7 +380,6 @@ vim.keymap.set("n", "<leader>zr", function()
   if not vim.api.nvim_buf_is_valid(term_bufnr) then
     return h.notify.error "No ongoing fzf buffer"
   end
-  maybe_close_tree()
   open_term()
   vim.cmd.startinsert()
 end, { desc = "fzf resume rg with globs", })
