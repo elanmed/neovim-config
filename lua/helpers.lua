@@ -81,6 +81,9 @@ local function _notify(message, level)
 
   local add_to_history = true
   vim.api.nvim_echo({ { message, hl_group, }, }, add_to_history, {})
+  vim.fn.timer_start(1500, function()
+    vim.cmd [[normal! :<Esc>]]
+  end)
 end
 
 --- @param message string

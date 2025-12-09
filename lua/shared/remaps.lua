@@ -14,7 +14,8 @@ vim.keymap.set("n", "<leader>w", function()
   local view = vim.fn.winsaveview()
   vim.cmd "keepjumps normal! gg=G"
   vim.fn.winrestview(view)
-  vim.cmd.write()
+  h.notify.doing "Formatting with gg=G, writing"
+  vim.cmd.write { mods = { silent = true, }, }
 end)
 
 vim.keymap.set("n", "<leader>q", vim.cmd.quit, { desc = "Quit", })
@@ -251,7 +252,11 @@ vim.keymap.set("n", "<leader>j", function()
 end, { desc = "Yank the file vim.v.count below and put it on the current line", expr = true, })
 
 vim.keymap.set("n", "<C-j>", "<C-]>", { desc = "<C-]>", })
-vim.keymap.set("n", "<leader>t", vim.cmd.source, { desc = ":source", })
+vim.keymap.set("n", "<leader>t",
+  function()
+    vim.cmd.source()
+    h.notify.doing(":source " .. vim.api.nvim_buf_get_name(0))
+  end, { desc = ":source", })
 
 vim.keymap.set("n", "<leader>mD", function()
   vim.cmd.delmarks "A-Za-z"
