@@ -82,7 +82,7 @@ local function _notify(message, level)
   local add_to_history = true
   vim.api.nvim_echo({ { message, hl_group, }, }, add_to_history, {})
   vim.fn.timer_start(1500, function()
-    vim.cmd [[normal! :<Esc>]]
+    if vim.fn.mode() ~= "t" then vim.cmd [[normal! :<Esc>]] end
   end)
 end
 
