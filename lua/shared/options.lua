@@ -34,7 +34,6 @@ vim.o.wildmode = "noselect"
 vim.o.wildoptions = "pum,fuzzy"
 vim.o.list = true
 vim.o.listchars = "leadmultispace:| ,trail:·,nbsp:◇"
-vim.o.iskeyword = "@,48-57,_,192-255,-" -- Treat dash as `word` textobject part
 vim.o.pummaxwidth = 30
 vim.o.foldlevelstart = 99
 vim.o.foldcolumn = "1"
@@ -45,3 +44,10 @@ vim.opt.fillchars = {
   foldinner = " ",
 }
 vim.o.foldmethod = "indent"
+-- mini max
+vim.o.iskeyword = "@,48-57,_,192-255,-" -- Treat dash as `word` textobject part
+vim.o.shada = "'100,<50,s10,:1000,/100,@100,h" -- Limit ShaDa file
+-- Enable all filetype plugins and syntax
+vim.cmd "filetype plugin indent on"
+vim.o.shortmess = "CFOSWaco" -- Disable some built-in completion messages
+vim.o.cursorlineopt = "screenline,number" -- Show cursor line per screen line
