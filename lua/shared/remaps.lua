@@ -206,6 +206,9 @@ vim.keymap.set("n", "<leader>g", function()
     open_term()
     vim.keymap.set("t", "<c-c>", function()
       vim.api.nvim_win_close(lazygit_term_winnr, true)
+      vim.schedule(function()
+        h.notify.doing "Closing the lazygit window, buffer saved"
+      end)
     end, { buffer = lazygit_term_bufnr, })
 
     vim.fn.jobstart("lazygit", {

@@ -41,8 +41,11 @@ M.fzf = function(opts)
   term_bufnr = vim.api.nvim_create_buf(false, true)
   open_term()
 
-  vim.keymap.set("t", "<Esc>", function()
+  vim.keymap.set("t", "<C-c>", function()
     vim.api.nvim_win_close(term_winnr, true)
+    vim.schedule(function()
+      h.notify.doing "Closing the fzf window, buffer saved"
+    end)
   end, { buffer = term_bufnr, })
 
   local source = (function()
