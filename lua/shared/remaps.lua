@@ -199,7 +199,6 @@ vim.keymap.set("n", "<leader>g", function()
 
   if vim.api.nvim_buf_is_valid(lazygit_term_bufnr) then
     open_term()
-    vim.cmd.startinsert()
   else
     lazygit_term_bufnr = vim.api.nvim_create_buf(false, true)
 
@@ -218,8 +217,8 @@ vim.keymap.set("n", "<leader>g", function()
         vim.cmd.bdelete(lazygit_term_bufnr)
       end,
     })
-    vim.cmd.startinsert()
   end
+  vim.cmd.startinsert()
 end, { desc = "Open lazygit", })
 
 vim.keymap.set("n", "<leader>,", vim.cmd.file, { desc = "Show the current file", })
