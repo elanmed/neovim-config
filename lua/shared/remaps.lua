@@ -179,29 +179,35 @@ local lazygit_term_bufnr = -1
 
 vim.keymap.set("n", "<leader>g", function()
   local open_term = function()
-    local editor_height = vim.api.nvim_win_get_height(0)
-    local border_height = 2
+    -- local editor_height = vim.api.nvim_win_get_height(0)
+    -- local border_height = 2
 
     lazygit_term_winnr = vim.api.nvim_open_win(lazygit_term_bufnr, true, {
-      relative = "editor",
-      row = editor_height,
-      col = 0,
-      width = vim.o.columns,
-      height = editor_height - border_height,
-      border = "single",
-      title = "Lazygit term",
+      split = "right",
+      win = 0,
     })
+    -- lazygit_term_winnr = vim.api.nvim_open_win(lazygit_term_bufnr, true, {
+    --   relative = "editor",
+    --   row = editor_height,
+    --   col = 0,
+    --   width = vim.o.columns,
+    --   height = editor_height - border_height,
+    --   border = "single",
+    --   title = "Lazygit term",
+    -- })
   end
 
   if vim.api.nvim_buf_is_valid(lazygit_term_bufnr) then
     open_term()
-    vim.cmd.startinsert()
   else
     lazygit_term_bufnr = vim.api.nvim_create_buf(false, true)
 
     open_term()
     vim.keymap.set("t", "<c-c>", function()
       vim.api.nvim_win_close(lazygit_term_winnr, true)
+      vim.schedule(function()
+        h.notify.doing "Closing the lazygit window, buffer saved"
+      end)
     end, { buffer = lazygit_term_bufnr, })
 
     vim.fn.jobstart("lazygit", {
@@ -211,8 +217,8 @@ vim.keymap.set("n", "<leader>g", function()
         vim.cmd.bdelete(lazygit_term_bufnr)
       end,
     })
-    vim.cmd.startinsert()
   end
+  vim.cmd.startinsert()
 end, { desc = "Open lazygit", })
 
 vim.keymap.set("n", "<leader>,", vim.cmd.file, { desc = "Show the current file", })
@@ -263,4 +269,3 @@ vim.keymap.set("n", "<leader>mD", function()
   pcall(require "marks".refresh_signs)
   h.notify.doing "Deleted all marks"
 end)
-
