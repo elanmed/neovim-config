@@ -49,7 +49,7 @@ function Batch:each(cb, on_complete)
     coroutine.resume(co)
     if coroutine.status(co) == "suspended" then
       vim.schedule(step)
-    else
+    elseif coroutine.status(co) == "dead" then
       vim.schedule(on_complete)
     end
   end
