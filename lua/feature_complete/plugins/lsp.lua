@@ -183,6 +183,7 @@ local prettier_ft = {
   "typescript",
   "typescriptreact",
   "yaml",
+  "mdx",
 }
 
 vim.keymap.set("n", "<bs>", function() h.notify.error "Use s instead!" end)
