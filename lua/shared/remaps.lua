@@ -185,6 +185,7 @@ vim.keymap.set("n", "<leader>g", function()
     lazygit_term_winnr = vim.api.nvim_open_win(lazygit_term_bufnr, true, {
       split = "right",
       win = 0,
+      width = math.floor(vim.o.columns * 3 / 4),
     })
     -- lazygit_term_winnr = vim.api.nvim_open_win(lazygit_term_bufnr, true, {
     --   relative = "editor",
