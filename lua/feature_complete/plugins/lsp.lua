@@ -85,7 +85,7 @@ local format_with_prettier = function()
   local bufnr = vim.api.nvim_get_current_buf()
 
   vim.system(
-    { "npx", "prettier", "--stdin-filepath", vim.api.nvim_buf_get_name(0), },
+    { "prettier", "--stdin-filepath", vim.api.nvim_buf_get_name(0), },
     {
       stdin = unformatted,
       text = true,
