@@ -123,7 +123,7 @@ end
 utils.set_and_rotate = function(val)
   vim.fn.setreg("", val)
   vim.fn.setreg("+", val)
-  notify.doing("Setting the unnamed and + registers to: " .. val)
+  notify.doing("Setting the unnamed and + registers to: `" .. val .. "`")
   utils.rotate_registers()
 end
 

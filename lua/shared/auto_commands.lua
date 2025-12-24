@@ -30,6 +30,7 @@ vim.api.nvim_create_autocmd("CmdlineChanged", {
 vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("DisableAutoComments", { clear = true, }),
   callback = function()
+    -- :h fo-table
     vim.o.formatoptions = "rl1j"
   end,
 })
