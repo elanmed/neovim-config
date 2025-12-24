@@ -1,4 +1,3 @@
-local keys = {}
 local tbl = {}
 local str = {}
 local _os = {}
@@ -8,30 +7,6 @@ local utils = {}
 
 local vimscript_true = 1
 local vimscript_false = 0
-
---- @param table table
---- @param target_key any
---- @return boolean
-tbl.contains_key = function(table, target_key)
-  for key in pairs(table) do
-    if key == target_key then
-      return true
-    end
-  end
-  return false
-end
-
---- @param predicate fun(curr_item, idx: number): boolean
---- @param list table
-tbl.filter = function(predicate, list)
-  local filtered_list = {}
-  for index, val in pairs(list) do
-    if (predicate(val, index)) then -- vim.tbl_filter doesn't pass the index
-      table.insert(filtered_list, val)
-    end
-  end
-  return filtered_list
-end
 
 --- @param predicate fun(curr_item, idx: number): any
 --- @param list table
@@ -120,11 +95,11 @@ end
 
 --- @generic T
 --- @param val T | nil
---- @param default_val T
+--- @param fallback T
 --- @return T
-utils.default = function(val, default_val)
+utils.if_nil = function(val, fallback)
   if val == nil then
-    return default_val
+    return fallback
   end
   return val
 end
@@ -170,7 +145,6 @@ str.pad = function(opts)
 end
 
 return {
-  keys = keys,
   tbl = tbl,
   os = _os,
   dev = dev,
