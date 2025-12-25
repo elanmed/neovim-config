@@ -7,7 +7,7 @@ local Batch = {}
 Batch.__index = Batch
 
 --- @generic IterState, IterVar
---- @param iter_factory fun(): fun(invariant_state: IterState, control_var: IterVar):IterVar, IterState, IterVar
+--- @param iter_factory fun(): ((fun(invariant_state: IterState, control_var: IterVar):IterVar), IterState, IterVar)
 function Batch:new(iter_factory)
   local this = {
     _iter_factory = iter_factory,
