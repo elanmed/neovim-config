@@ -1,4 +1,3 @@
-local h = require "helpers"
 vim.o.showtabline = 2
 vim.o.tabline = "%!v:lua.Tabline()"
 
@@ -13,6 +12,8 @@ end
 
 --- @param buf_type "curr"|"alt"
 local get_buf_section = function(buf_type)
+  local h = require "helpers"
+
   local buf_symbol = buf_type == "alt" and "#" or "%"
   local formatted_buf_symbol = buf_type == "alt" and "# " or "%% "
   local bufnr = vim.fn.bufnr(buf_symbol)

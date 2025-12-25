@@ -1,5 +1,3 @@
-local h = require "helpers"
-
 local function smooth_scroll(direction)
   local lines = math.floor((vim.o.lines - 1) / 2) - 1
   local count = 0
@@ -22,7 +20,7 @@ vim.keymap.set({ "n", "v", }, "<C-u>", smooth_scroll_cb "k", { desc = "Smooth-sc
 
 local function wezterm_cli_move(direction)
   local cmd = "wezterm cli activate-pane-direction " .. direction
-  if h.os.is_linux() then
+  if require "helpers".os.is_linux() then
     cmd = "flatpak-spawn --host " .. cmd
   end
 

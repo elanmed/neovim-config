@@ -19,8 +19,10 @@ vim.pack.add {
   "https://github.com/elanmed/marks.nvim",
   "https://github.com/elanmed/quickfix-preview.nvim",
 }
-vim.cmd.packadd "nvim.undotree"
-require "helpers".utils.require_dir "feature_complete/plugins"
+
+local h = require "helpers"
+h.utils.require_dir "feature_complete/plugins"
+h.utils.lazy_load(function() vim.cmd.packadd "nvim.undotree" end)
 
 vim.keymap.set({ "x", "o", }, "af", function()
   require "nvim-treesitter-textobjects.select".select_textobject("@function.outer", "textobjects")

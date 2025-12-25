@@ -1,5 +1,3 @@
-local h = require "helpers"
-
 local left_to_right_pair = {
   ["("] = ")",
   ["{"] = "}",
@@ -40,7 +38,7 @@ local function skip_or_insert_char(typed_char)
   end
 end
 
-for _, char in pairs(h.tbl.extend(opening_pairs, closing_pairs)) do
+for _, char in pairs(require "helpers".tbl.extend(opening_pairs, closing_pairs)) do
   vim.keymap.set("i", char, skip_or_insert_char(char), { expr = true, desc = char .. " with pairs", })
 end
 

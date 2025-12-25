@@ -1,5 +1,3 @@
-local h = require "helpers"
-
 vim.api.nvim_create_user_command("PrintHighlights", function()
   vim.cmd "redir! > highlights.txt | silent hi | redir END"
 end, {})
@@ -66,7 +64,7 @@ vim.api.nvim_create_user_command("PackClean", function()
   end
 
   if #unused_plugins == 0 then
-    h.notify.doing "No unused plugins"
+    require "helpers".notify.doing "No unused plugins"
     return
   end
 

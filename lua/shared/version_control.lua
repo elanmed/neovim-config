@@ -1,8 +1,6 @@
-local h = require "helpers"
-
 vim.keymap.set("n", "<C-b>", function()
   if vim.bo.buftype ~= "" then
-    return h.notify.error "buftype is not normal"
+    return require "helpers".notify.error "buftype is not normal"
   end
 
   local curr_cursor = vim.api.nvim_win_get_cursor(0)

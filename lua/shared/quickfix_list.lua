@@ -1,5 +1,3 @@
-local h = require "helpers"
-
 --- @param bufnr number
 local function shorten_bufname(bufnr)
   return vim.fs.basename(vim.fn.bufname(bufnr))
@@ -8,6 +6,7 @@ end
 vim.o.quickfixtextfunc = "v:lua.GetQuickfixTextFunc"
 
 function _G.GetQuickfixTextFunc()
+  local h = require "helpers"
   local longest_bufname_len = 0
   local longest_row_len = 0
   local longest_col_len = 0
@@ -57,10 +56,10 @@ function _G.GetQuickfixTextFunc()
 end
 
 vim.keymap.set("n", "<C-n>", function()
-  h.utils.try_catch("cnext", "cfirst")
+  require "helpers".utils.try_catch("cnext", "cfirst")
 end, { desc = ":cnext", })
 vim.keymap.set("n", "<C-p>", function()
-  h.utils.try_catch("cprev", "clast")
+  require "helpers".utils.try_catch("cprev", "clast")
 end, { desc = ":cprev", })
 
 vim.api.nvim_create_autocmd("FileType", {
@@ -78,14 +77,14 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.keymap.set("n", ">", function()
       local success = pcall(vim.cmd, "cnewer")
       if not success then
-        h.notify.error "No newer list!"
+        require "helpers".notify.error "No newer list!"
       end
     end, { buffer = true, })
 
     vim.keymap.set("n", "<", function()
       local success = pcall(vim.cmd, "colder")
       if not success then
-        h.notify.error "No older list!"
+        require "helpers".notify.error "No older list!"
       end
     end, { buffer = true, })
 

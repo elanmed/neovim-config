@@ -1,5 +1,3 @@
-local h = require "helpers"
-
 vim.api.nvim_create_autocmd("CursorMoved", {
   group = vim.api.nvim_create_augroup("CenterScreen", { clear = true, }),
   callback = function(args)
@@ -38,7 +36,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   group = vim.api.nvim_create_augroup("SetYankRing", { clear = true, }),
   callback = function()
     if vim.v.event.operator == "y" then
-      h.utils.rotate_registers()
+      require "helpers".utils.rotate_registers()
     end
   end,
 })
@@ -56,7 +54,7 @@ endfunction
 ]]
 
 local function write_var(var)
-  if vim.fn.filewritable "/dev/fd/2" == h.vimscript_true then
+  if vim.fn.filewritable "/dev/fd/2" == require "helpers".vimscript_true then
     vim.fn.writefile({ var, }, "/dev/fd/2", "b")
   else
     vim.fn.chansend(vim.v.stderr, var)

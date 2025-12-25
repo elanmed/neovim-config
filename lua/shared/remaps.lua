@@ -1,20 +1,18 @@
-local h = require "helpers"
-
 vim.keymap.set("i", "<C-a>", "<C-o>:Snippet<space>", { desc = "Insert a snippet", })
 vim.keymap.set({ "n", "v", }, "<C-a>", function()
-  h.notify.error "Snippets only supported in insert mode!"
+  require "helpers".notify.error "Snippets only supported in insert mode!"
 end, { desc = "Insert a snippet", })
 vim.keymap.set("n", "<leader>h", ":help<space>", { desc = ":help", })
 
 vim.keymap.set("n", "<leader>w", function()
   if vim.bo.readonly or vim.bo.buftype ~= "" then
-    return h.notify.error "Aborting"
+    return require "helpers".notify.error "Aborting"
   end
 
   local view = vim.fn.winsaveview()
   vim.cmd "keepjumps normal! gg=G"
   vim.fn.winrestview(view)
-  h.notify.doing "Formatting with gg=G, writing"
+  require "helpers".notify.doing "Formatting with gg=G, writing"
   vim.cmd.write { mods = { silent = true, }, }
 end)
 
@@ -65,10 +63,10 @@ vim.keymap.set("v", "<C-/>",
   end, { expr = true, remap = true, desc = "Comment the visual selection", })
 
 
-vim.keymap.set("n", "<leader>ur", function() h.utils.set_and_rotate(vim.fn.getreg "r") end)
-vim.keymap.set("n", "<leader>ua", function() h.utils.set_and_rotate(vim.fn.getreg "a") end)
-vim.keymap.set("n", "<leader>ud", function() h.utils.set_and_rotate(vim.fn.getreg "d") end)
-vim.keymap.set("n", "<leader>ub", function() h.utils.set_and_rotate(vim.fn.getreg "b") end)
+vim.keymap.set("n", "<leader>ur", function() require "helpers".utils.set_and_rotate(vim.fn.getreg "r") end)
+vim.keymap.set("n", "<leader>ua", function() require "helpers".utils.set_and_rotate(vim.fn.getreg "a") end)
+vim.keymap.set("n", "<leader>ud", function() require "helpers".utils.set_and_rotate(vim.fn.getreg "d") end)
+vim.keymap.set("n", "<leader>ub", function() require "helpers".utils.set_and_rotate(vim.fn.getreg "b") end)
 
 vim.keymap.set("n", "<leader>yc",
   function()
@@ -108,17 +106,17 @@ end, { expr = true, desc = "Yank and put the visual selection", })
 
 vim.keymap.set("n", "<leader>ya", function()
   local abs_path = vim.api.nvim_buf_get_name(0)
-  h.utils.set_and_rotate(abs_path)
+  require "helpers".utils.set_and_rotate(abs_path)
 end, { desc = "Yank the absolute path of the current buffer", })
 
 vim.keymap.set("n", "<leader>yr", function()
   local rel_path = assert(vim.fs.relpath(vim.fn.getcwd(), vim.api.nvim_buf_get_name(0)))
-  h.utils.set_and_rotate(rel_path)
+  require "helpers".utils.set_and_rotate(rel_path)
 end, { desc = "Yank the relative path of the current buffer", })
 
 vim.keymap.set("n", "<leader>yf", function()
   vim.fn.setqflist(vim.fn.getqflist())
-  h.notify.doing "Created a new list!"
+  require "helpers".notify.doing "Created a new list!"
 end, { desc = "Duplicate the current quickfix list", })
 
 -- https://stackoverflow.com/a/9407015
@@ -145,7 +143,7 @@ vim.keymap.set("n", "zk", function() next_closed_fold "k" end, { desc = "Navigat
 vim.keymap.set("n", "zt", "za", { desc = "Toggle fold", })
 vim.keymap.set("n", "zT", "zA", { desc = "Toggle fold", })
 vim.keymap.set("n", "z?", function()
-  h.notify.doing "common fold commands: z{t,T,c,C,o,O,R(open all folds),M(close all folds)}"
+  require "helpers".notify.doing "common fold commands: z{t,T,c,C,o,O,R(open all folds),M(close all folds)}"
 end, { desc = "Toggle fold", })
 
 vim.keymap.set("n", "q", function()
@@ -207,7 +205,7 @@ vim.keymap.set("n", "<leader>g", function()
     vim.keymap.set("t", "<c-c>", function()
       vim.api.nvim_win_close(lazygit_term_winnr, true)
       vim.schedule(function()
-        h.notify.doing "Closing the lazygit window, buffer saved"
+        require "helpers".notify.doing "Closing the lazygit window, buffer saved"
       end)
     end, { buffer = lazygit_term_bufnr, })
 
@@ -226,13 +224,13 @@ vim.keymap.set("n", "<leader>,", vim.cmd.file, { desc = "Show the current file",
 
 vim.keymap.set("c", "<C-e>", "<C-e><C-z>", { desc = "<C-e> and retrigger wildtrigger", })
 vim.keymap.set("c", "<Left>", function()
-  if vim.fn.wildmenumode() == h.vimscript_true then
+  if vim.fn.wildmenumode() == require "helpers".vimscript_true then
     return "<C-e><Left><C-z>"
   end
   return "<Left>"
 end, { expr = true, desc = "<Left> and retrigger wildtrigger", })
 vim.keymap.set("c", "<Right>", function()
-  if vim.fn.wildmenumode() == h.vimscript_true then
+  if vim.fn.wildmenumode() == require "helpers".vimscript_true then
     return "<C-e><Right><C-z>"
   end
   return "<Right>"
@@ -262,11 +260,11 @@ vim.keymap.set("n", "<C-j>", "<C-]>", { desc = "<C-]>", })
 vim.keymap.set("n", "<leader>t",
   function()
     vim.cmd.source()
-    h.notify.doing(":source " .. vim.api.nvim_buf_get_name(0))
+    require "helpers".notify.doing(":source " .. vim.api.nvim_buf_get_name(0))
   end, { desc = ":source", })
 
 vim.keymap.set("n", "<leader>mD", function()
   vim.cmd.delmarks "A-Za-z"
   pcall(require "marks".refresh_signs)
-  h.notify.doing "Deleted all marks"
+  require "helpers".notify.doing "Deleted all marks"
 end)

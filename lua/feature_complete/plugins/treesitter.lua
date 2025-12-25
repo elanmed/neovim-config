@@ -1,5 +1,3 @@
-local h = require "helpers"
-
 vim.filetype.add { extension = { mdx = "mdx", }, }
 vim.treesitter.language.register("markdown", "mdx")
 
@@ -34,7 +32,7 @@ vim.api.nvim_create_autocmd("PackChanged", {
   group = vim.api.nvim_create_augroup("TreesitterUpdate", { clear = true, }),
   pattern = "nvim-treesitter",
   callback = function()
-    h.notify.doing "Updating treesitter parsers"
+    require "helpers".notify.doing "Updating treesitter parsers"
     require "nvim-treesitter".update(nil, { summary = true, })
   end,
 })
