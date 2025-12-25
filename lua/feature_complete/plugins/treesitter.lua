@@ -20,7 +20,7 @@ vim.api.nvim_create_autocmd("FileType", {
       local available_langs = treesitter.get_available()
 
       if vim.tbl_contains(available_langs, lang) then
-        treesitter.install { lang, }:wait(30 * 1000)
+        treesitter.install { lang, }
       end
     end
 
