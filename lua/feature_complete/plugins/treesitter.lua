@@ -8,11 +8,10 @@ vim.api.nvim_create_autocmd("FileType", {
   callback = function() pcall(vim.treesitter.start) end,
 })
 
-local treesitter = require "nvim-treesitter"
-
 vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("TreesitterInstall", { clear = true, }),
   callback = function(event)
+    local treesitter = require "nvim-treesitter"
     local filetype = event.match
     local lang = vim.treesitter.language.get_lang(filetype)
     if lang == nil then return end
@@ -36,6 +35,6 @@ vim.api.nvim_create_autocmd("PackChanged", {
   pattern = "nvim-treesitter",
   callback = function()
     h.notify.doing "Updating treesitter parsers"
-    treesitter.update(nil, { summary = true, })
+    require "nvim-treesitter".update(nil, { summary = true, })
   end,
 })

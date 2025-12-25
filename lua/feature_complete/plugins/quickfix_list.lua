@@ -3,6 +3,8 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
   pattern = "qf",
   callback = function()
     vim.keymap.set("n", "t", "<Plug>QuickfixPreviewToggle", { buffer = true, })
+    vim.keymap.set("n", "<C-d>", "<Plug>QuickfixPreviewScrollDown", { buffer = true, })
+    vim.keymap.set("n", "<C-u>", "<Plug>QuickfixPreviewScrollUp", { buffer = true, })
 
     vim.keymap.set("n", "<leader>x", function()
       vim.cmd.QuickfixPreviewClosePreview()

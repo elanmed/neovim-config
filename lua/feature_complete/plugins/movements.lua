@@ -1,3 +1,5 @@
+local h = require "helpers"
+
 local marks = require "marks"
 vim.g.marks = {
   highlight_char_set = marks.char_sets.local_marks .. marks.char_sets.global_marks .. "<>^",

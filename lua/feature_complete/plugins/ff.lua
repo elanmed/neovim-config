@@ -31,8 +31,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
   end,
 })
 
-local ff = require "ff"
-vim.keymap.set("n", "<leader>f", ff.find)
+vim.keymap.set("n", "<leader>f", require "ff".find)
 
 vim.api.nvim_create_autocmd("User", {
   group = vim.api.nvim_create_augroup("TreeUserEvents", { clear = true, }),
@@ -41,7 +40,7 @@ vim.api.nvim_create_autocmd("User", {
     "TreeDelete",
     "TreeRename",
   },
-  callback = function() ff.refresh_files_cache() end,
+  callback = function() require "ff".refresh_files_cache() end,
 })
 
 vim.keymap.set("n", "<leader>zl", function()
