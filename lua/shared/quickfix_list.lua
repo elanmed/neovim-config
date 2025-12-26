@@ -90,5 +90,6 @@ vim.api.nvim_create_autocmd("FileType", {
 
     vim.keymap.set("n", "<C-o>", "<nop>", { buffer = true, })
     vim.keymap.set("n", "<C-i>", "<nop>", { buffer = true, })
+    vim.keymap.set("n", "q", "<nop>", { buffer = true, })
   end,
 })
