@@ -12,7 +12,7 @@ vim.o.signcolumn = "yes"
 vim.o.linebreak = true
 vim.o.breakindent = true -- wrapped lines will be properly indented
 vim.o.spelllang = "en_us"
-vim.o.spell = false -- TODO: look into
+vim.o.spell = true
 vim.o.expandtab = true -- use spaces in tabs
 vim.o.tabstop = 2 -- number of columns in a tab
 vim.o.softtabstop = 2 -- number of spaces to delete when deleting a tab
@@ -45,9 +45,5 @@ vim.opt.fillchars = {
 }
 vim.o.foldmethod = "indent"
 -- mini max
-vim.o.iskeyword = "@,48-57,_,192-255,-" -- Treat dash as `word` textobject part
-vim.o.shada = "'100,<50,s10,:1000,/100,@100,h" -- Limit ShaDa file
--- Enable all filetype plugins and syntax
-vim.cmd "filetype plugin indent on"
-vim.o.shortmess = "CFOSWaco" -- Disable some built-in completion messages
-vim.o.cursorlineopt = "screenline,number" -- Show cursor line per screen line
+vim.o.iskeyword = "@,48-57,_,192-255,-" -- treat dash as `word` textobject part
+vim.o.cursorlineopt = "screenline,number" -- show cursor line per screen line
