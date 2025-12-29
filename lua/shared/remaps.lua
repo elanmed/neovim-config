@@ -62,7 +62,6 @@ vim.keymap.set("v", "<C-/>",
     return comment .. reselect_last
   end, { expr = true, remap = true, desc = "Comment the visual selection", })
 
-
 vim.keymap.set("n", "<leader>ur", function() require "helpers".utils.set_and_rotate(vim.fn.getreg "r") end)
 vim.keymap.set("n", "<leader>ua", function() require "helpers".utils.set_and_rotate(vim.fn.getreg "a") end)
 vim.keymap.set("n", "<leader>ud", function() require "helpers".utils.set_and_rotate(vim.fn.getreg "d") end)
@@ -145,6 +144,7 @@ vim.keymap.set("n", "zT", "zA", { desc = "Toggle fold", })
 vim.keymap.set("n", "z?", function()
   require "helpers".notify.doing "common fold commands: z{t,T,c,C,o,O,R(open all folds),M(close all folds)}"
 end, { desc = "Toggle fold", })
+vim.keymap.set("n", "ze", "z=", { desc = "z=", })
 
 vim.keymap.set("n", "q", function()
   if vim.fn.reg_recording() == "" then
