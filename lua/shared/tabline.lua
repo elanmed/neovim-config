@@ -25,10 +25,15 @@ local get_buf_section = function(buf_type)
     end
   end
 
-  local bufname = vim.api.nvim_buf_get_name(bufnr)
-  local dirname = vim.fs.basename(vim.fs.dirname(bufname))
-  local basename = vim.fs.basename(bufname)
-  local buf_section = "%#TabLineTitle#" .. formatted_buf_symbol .. "%#TabLineSel#" .. vim.fs.joinpath(dirname, basename)
+  local name = (function()
+    local bufname = vim.api.nvim_buf_get_name(bufnr)
+    if bufname == "" then return "[unnamed]" end
+
+    local dirname = vim.fs.basename(vim.fs.dirname(bufname))
+    local basename = vim.fs.basename(bufname)
+    return vim.fs.joinpath(dirname, basename)
+  end)()
+  local buf_section = "%#TabLineTitle#" .. formatted_buf_symbol .. "%#TabLineSel#" .. name
 
   if buf_type == "alt" then
     return buf_section
