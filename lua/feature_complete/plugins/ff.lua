@@ -39,6 +39,8 @@ vim.api.nvim_create_autocmd("User", {
     "TreeCreate",
     "TreeDelete",
     "TreeRename",
+    "TreeMove",
+    "TreeCopy",
   },
   callback = function() require "ff".refresh_files_cache() end,
 })
