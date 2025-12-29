@@ -45,5 +45,12 @@ local get_buf_section = function(buf_type)
 end
 
 _G.Tabline = function()
-  return table.concat({ get_tab_section(), get_buf_section "curr", get_buf_section "alt", }, " ")
+  local alt_section = (function()
+    if vim.fn.bufnr "#" == vim.fn.bufnr "%" then
+      return ""
+    end
+    return get_buf_section "alt"
+  end)()
+
+  return table.concat({ get_tab_section(), get_buf_section "curr", alt_section, }, " ")
 end
