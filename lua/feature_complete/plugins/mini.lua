@@ -1,9 +1,9 @@
 local h = require "helpers"
 
-h.utils.lazy_load(function() require "mini.icons".setup() end)
-h.utils.lazy_load(function() require "mini.splitjoin".setup() end)
+h.utils.lazy_setup(function() require "mini.icons".setup() end)
+h.utils.lazy_setup(function() require "mini.splitjoin".setup() end)
 
-h.utils.lazy_load(function()
+h.utils.lazy_setup(function()
   local hipatterns = require "mini.hipatterns"
   -- https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-hipatterns.md#example-usage
   hipatterns.setup {
@@ -14,7 +14,7 @@ h.utils.lazy_load(function()
   }
 end)
 
-h.utils.lazy_load(function()
+h.utils.lazy_setup(function()
   local mini_diff = require "mini.diff"
   mini_diff.setup {
     view = { style = "number", },
@@ -29,7 +29,7 @@ h.utils.lazy_load(function()
   }
 end)
 
-h.utils.lazy_load(function()
+h.utils.lazy_setup(function()
   local input_wasted_keys = function(key)
     local action = function()
       if vim.bo.buftype ~= "" then return end

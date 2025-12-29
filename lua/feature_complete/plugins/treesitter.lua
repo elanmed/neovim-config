@@ -36,3 +36,18 @@ vim.api.nvim_create_autocmd("PackChanged", {
     require "nvim-treesitter".update(nil, { summary = true, })
   end,
 })
+
+vim.keymap.set({ "x", "o", }, "af", function()
+  require "nvim-treesitter-textobjects.select".select_textobject("@function.outer", "textobjects")
+end)
+vim.keymap.set({ "x", "o", }, "if", function()
+  require "nvim-treesitter-textobjects.select".select_textobject("@function.inner", "textobjects")
+end)
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "html", "javascript", "javascriptreact", "typescript", "typescriptreact", },
+  callback = function()
+    require "nvim-ts-autotag".setup()
+  end,
+  once = true,
+})

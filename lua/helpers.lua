@@ -95,7 +95,7 @@ end
 
 
 --- @param callback function
-utils.lazy_load = function(callback)
+utils.lazy_setup = function(callback)
   vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile", }, {
     callback = callback,
     once = true,

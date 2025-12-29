@@ -23,12 +23,4 @@ vim.pack.add {
 
 local h = require "helpers"
 h.utils.require_dir "feature_complete/plugins"
-h.utils.lazy_load(function() vim.cmd.packadd "nvim.undotree" end)
-h.utils.lazy_load(function() require "nvim-ts-autotag".setup() end)
-
-vim.keymap.set({ "x", "o", }, "af", function()
-  require "nvim-treesitter-textobjects.select".select_textobject("@function.outer", "textobjects")
-end)
-vim.keymap.set({ "x", "o", }, "if", function()
-  require "nvim-treesitter-textobjects.select".select_textobject("@function.inner", "textobjects")
-end)
+h.utils.lazy_setup(function() vim.cmd.packadd "nvim.undotree" end)
