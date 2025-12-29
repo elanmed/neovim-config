@@ -268,5 +268,5 @@ vim.keymap.set("n", "<leader>mD", function()
   pcall(require "marks".refresh_signs)
   require "helpers".notify.doing "Deleted all marks"
 end)
-vim.keymap.set({ "i", "c", }, "<C-r><C-\'>", '<C-r>"', { noremap = true, })
-vim.keymap.set({ "i", "c", }, "<C-r>\'", '<C-r>"', { noremap = true, })
+vim.keymap.set({ "i", "c", }, "<C-r><C-'>", "<C-r>+", { noremap = true, })
+vim.keymap.set({ "i", "c", }, "<C-r>\'", "<C-r>+", { noremap = true, })
