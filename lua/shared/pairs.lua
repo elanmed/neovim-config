@@ -38,18 +38,18 @@ local function skip_or_insert_char(typed_char)
   end
 end
 
-for _, char in pairs(require "helpers".tbl.extend(opening_pairs, closing_pairs)) do
-  vim.keymap.set("i", char, skip_or_insert_char(char), { expr = true, desc = char .. " with pairs", })
-end
+-- for _, char in pairs(require "helpers".tbl.extend(opening_pairs, closing_pairs)) do
+--   vim.keymap.set("i", char, skip_or_insert_char(char), { expr = true, desc = char .. " with pairs", })
+-- end
 
-vim.keymap.set("i", "<bs>", function()
-  local col_zero_indexed = vim.api.nvim_win_get_cursor(0)[2]
-  local col_one_indexed = col_zero_indexed + 1
-  local line = vim.api.nvim_get_current_line()
-  local char = line:sub(col_one_indexed, col_one_indexed)
-  if char == "" then return "<bs>" end
-
-  local char_left = line:sub(col_one_indexed - 1, col_one_indexed - 1)
-  if left_to_right_pair[char_left] ~= char then return "<bs>" end
-  return "<right><bs><bs>"
-end, { expr = true, desc = "<bs> with pairs", })
+-- vim.keymap.set("i", "<bs>", function()
+--   local col_zero_indexed = vim.api.nvim_win_get_cursor(0)[2]
+--   local col_one_indexed = col_zero_indexed + 1
+--   local line = vim.api.nvim_get_current_line()
+--   local char = line:sub(col_one_indexed, col_one_indexed)
+--   if char == "" then return "<bs>" end
+--
+--   local char_left = line:sub(col_one_indexed - 1, col_one_indexed - 1)
+--   if left_to_right_pair[char_left] ~= char then return "<bs>" end
+--   return "<right><bs><bs>"
+-- end, { expr = true, desc = "<bs> with pairs", })
