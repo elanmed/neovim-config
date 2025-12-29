@@ -115,7 +115,7 @@ end, { desc = "Yank the relative path of the current buffer", })
 
 vim.keymap.set("n", "<leader>yf", function()
   vim.fn.setqflist(vim.fn.getqflist())
-  require "helpers".notify.doing "Created a new list!"
+  require "helpers".notify.doing "Duplicated the current quickfix list"
 end, { desc = "Duplicate the current quickfix list", })
 
 -- https://stackoverflow.com/a/9407015
