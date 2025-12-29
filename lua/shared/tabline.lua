@@ -26,6 +26,8 @@ local get_buf_section = function(buf_type)
   end
 
   local name = (function()
+    if vim.bo[bufnr].buftype == "terminal" then return "[terminal]" end
+
     local bufname = vim.api.nvim_buf_get_name(bufnr)
     if bufname == "" then return "[unnamed]" end
 
