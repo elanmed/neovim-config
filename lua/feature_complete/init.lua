@@ -4,6 +4,7 @@ vim.pack.add {
   { src = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects", version = "main", },
   "https://github.com/nvim-treesitter/nvim-treesitter-context",
   "https://github.com/tpope/vim-surround",
+  "https://github.com/windwp/nvim-ts-autotag",
 
   "https://github.com/mfussenegger/nvim-jdtls",
   "https://github.com/nvim-mini/mini.nvim",
@@ -23,6 +24,7 @@ vim.pack.add {
 local h = require "helpers"
 h.utils.require_dir "feature_complete/plugins"
 h.utils.lazy_load(function() vim.cmd.packadd "nvim.undotree" end)
+h.utils.lazy_load(function() require "nvim-ts-autotag".setup() end)
 
 vim.keymap.set({ "x", "o", }, "af", function()
   require "nvim-treesitter-textobjects.select".select_textobject("@function.outer", "textobjects")
