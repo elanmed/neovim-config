@@ -32,7 +32,7 @@ def bootstrap_nvim(server:, package_manager:)
   response = Net::HTTP.get(url)
   data = JSON.parse(response)
   selected_asset = data['assets'].find do |asset|
-    lua_ls_regex = if linux?
+    lua_ls_regex = if `uname -s`.strip == 'Linux'
                      /lua-language-server-.*-linux-x64.tar.gz/
                    else
                      /lua-language-server-.*-darwin-arm64.tar.gz/
