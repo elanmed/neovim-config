@@ -22,5 +22,6 @@ vim.pack.add {
 }
 
 local h = require "helpers"
-h.utils.require_dir "feature_complete/plugins"
+h.utils.require_dir "feature_complete/vim_plugins"
+h.utils.require_dir "feature_complete/shell_plugins"
 h.utils.lazy_setup(function() vim.cmd.packadd "nvim.undotree" end)

@@ -1,17 +1,60 @@
 local h = require "helpers"
-local fzf = require "shared.fzf"
 
-vim.keymap.set("n", "<leader>f", function()
-  fzf.fzf {
-    source = "fd --hidden --type f --exclude .git --exclude node_modules --exclude dist",
-    height = "half",
-    options = h.tbl.extend(fzf.default_opts, fzf.multi_select_opts),
-    sinklist = function(entries)
-      for _, entry in ipairs(entries) do
-        vim.cmd.edit(entry)
-      end
+vim.keymap.set("n", "<leader>f", ":edit ")
+vim.keymap.set("n", "<leader>b", function()
+  local buffers = vim.iter(vim.api.nvim_list_bufs())
+      :filter(function(bufnr)
+        local bname = vim.api.nvim_buf_get_name(bufnr)
+        if bname == nil then return false end
+        if bname == "" then return false end
+
+        local is_loaded = vim.api.nvim_buf_is_loaded(bufnr)
+        if not is_loaded then return false end
+
+        local is_listed = vim.bo[bufnr].buflisted
+
+        if not is_listed then return false end
+        return true
+      end)
+      :totable()
+
+  vim.ui.select(buffers, {
+    format_item = function(bufnr)
+      return vim.fs.relpath(vim.fn.getcwd(), vim.api.nvim_buf_get_name(bufnr))
     end,
-  }
+  }, function(bufnr)
+    if bufnr == nil then return end
+    vim.cmd.buffer(bufnr)
+  end)
+end)
+vim.keymap.set("n", "<leader>l", function()
+  local marks = vim.iter(vim.fn.getmarklist())
+      :map(function(mark_entry)
+        local name = mark_entry.mark:sub(2, 2)
+        local lnum = mark_entry.pos[2]
+        return { name = name, lnum = lnum, file = mark_entry.file, }
+      end)
+      :filter(function(mark)
+        if not mark.name:match "[A-Z]" then return false end
+
+        local normalized = vim.fs.normalize(mark.file)
+        if not normalized then return false end
+
+        if not vim.startswith(normalized, vim.fn.getcwd()) then return false end
+
+        return true
+      end)
+      :totable()
+
+  vim.ui.select(marks, {
+    format_item = function(mark)
+      return mark.name .. "|" .. vim.fs.relpath(vim.fn.getcwd(), mark.file)
+    end,
+  }, function(mark)
+    if mark == nil then return end
+    vim.cmd.edit(mark.file)
+    vim.api.nvim_win_set_cursor(0, { mark.lnum, 0, })
+  end)
 end)
 
 vim.keymap.set("n", "s", function()
@@ -50,8 +93,9 @@ vim.api.nvim_create_autocmd("BufModifiedSet", {
       end
     end, { expr = true, buffer = true, remap = true, })
 
-    vim.keymap.set("n", "o", "%<cmd>write<cr>", { buffer = true, remap = true, })
+    vim.keymap.set("n", "o", "%", { buffer = true, remap = true, })
     vim.keymap.set("n", "r", "R", { buffer = true, remap = true, })
+    vim.keymap.set("n", "dd", "D", { buffer = true, remap = true, })
     vim.keymap.set("n", "P", "<C-w>z", { buffer = true, remap = true, })
     vim.keymap.set("n", "<C-f>", vim.cmd.bdelete, { buffer = true, })
 
