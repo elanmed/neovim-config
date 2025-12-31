@@ -161,6 +161,10 @@ tree = function(opts)
     return require "helpers".utils.set_and_rotate(vim.fs.basename(line.abs_path))
   end, { buffer = opts._bufnr, })
 
+  vim.keymap.set("n", "e", function()
+    tree({ _dir = opts._dir, _bufnr = opts._bufnr})
+  end, { buffer = opts._bufnr, })
+
   vim.keymap.set("n", "<C-f>", function()
     vim.cmd.bdelete(opts._bufnr)
   end, { buffer = opts._bufnr, })
