@@ -72,58 +72,103 @@ vim.keymap.set("n", "s", function()
   vim.cmd.write()
 end)
 
-vim.g.netrw_altfile = 1
-vim.g.netrw_localcopydircmd = "cp -r"
--- bottom right
-vim.g.netrw_preview = 0
-vim.g.netrw_alto = 0
+local tree
+--- @class TreeOpts
+--- @field _dir string
+--- @field _bufnr number
+--- @param opts TreeOpts
+tree = function(opts)
+  --- @class Line
+  --- @field abs_path string
+  --- @field rel_path string
+  --- @field type "file"|"directory"
+
+  local cwd = vim.fn.getcwd()
+
+  --- @type Line[]
+  local lines = {}
+  for name, type in vim.fs.dir(opts._dir) do
+    local abs_path = vim.fs.normalize(vim.fs.joinpath(opts._dir, name))
+    --- @type Line
+    local line = {
+      abs_path = abs_path,
+      rel_path = vim.fs.relpath(cwd, abs_path),
+      type = type,
+    }
+    table.insert(lines, line)
+  end
+
+  opts._bufnr = (function()
+    if vim.api.nvim_buf_is_valid(opts._bufnr) then
+      return opts._bufnr
+    end
+    return vim.api.nvim_create_buf(false, true)
+  end)()
+  vim.api.nvim_win_set_buf(0, opts._bufnr)
+
+  local formatted_lines = vim.iter(lines)
+      :map(function(line)
+        if line.type == "directory" then
+          return vim.fs.joinpath(line.rel_path, "/")
+        end
+        return line.rel_path
+      end)
+      :totable()
+  vim.api.nvim_buf_set_lines(opts._bufnr, 0, -1, false, formatted_lines)
+
+  vim.keymap.set("n", "<cr>", function()
+    local line = lines[vim.fn.line "."]
+    if not line then return end
+
+    if line.type == "file" then
+      vim.cmd.edit(line.abs_path)
+      vim.cmd.bdelete(opts._bufnr)
+      return
+    elseif line.type == "directory" then
+      return tree { _dir = line.abs_path, _bufnr = opts._bufnr, }
+    end
+  end, { buffer = opts._bufnr, })
+
+  vim.keymap.set("n", "l", function()
+    local line = lines[vim.fn.line "."]
+    if not line then return end
+
+    if line.type ~= "directory" then return end
+    return tree { _dir = line.abs_path, _bufnr = opts._bufnr, }
+  end, { buffer = opts._bufnr, })
+
+  vim.keymap.set("n", "h", function()
+    local line = lines[vim.fn.line "."]
+    if not line then return end
+    return tree { _dir = vim.fs.dirname(opts._dir), _bufnr = opts._bufnr, }
+  end, { buffer = opts._bufnr, })
+
+  vim.keymap.set("n", "yr", function()
+    local line = lines[vim.fn.line "."]
+    if not line then return end
+    return require "helpers".utils.set_and_rotate(line.rel_path)
+  end, { buffer = opts._bufnr, })
+
+  vim.keymap.set("n", "ya", function()
+    local line = lines[vim.fn.line "."]
+    if not line then return end
+    return require "helpers".utils.set_and_rotate(line.abs_path)
+  end, { buffer = opts._bufnr, })
+
+  vim.keymap.set("n", "yb", function()
+    local line = lines[vim.fn.line "."]
+    if not line then return end
+    return require "helpers".utils.set_and_rotate(vim.fs.basename(line.abs_path))
+  end, { buffer = opts._bufnr, })
+
+  vim.keymap.set("n", "<C-f>", function()
+    vim.cmd.bdelete(opts._bufnr)
+  end, { buffer = opts._bufnr, })
+end
 
 vim.keymap.set("n", "<C-f>", function()
-  local dirname = vim.fs.dirname(vim.api.nvim_buf_get_name(0))
-  vim.cmd.Explore(dirname)
-
-  if vim.api.nvim_get_current_line() == "../" then
-    vim.cmd.normal "gh"
-  end
-end, { desc = "Toggle netrw, focusing the current dir", })
-
-vim.api.nvim_create_autocmd("BufModifiedSet", {
-  callback = function()
-    if vim.bo.filetype ~= "netrw" then return end
-    local h = require "helpers"
-
-    vim.opt_local.relativenumber = true
-
-    vim.keymap.set("n", "h", "-", { buffer = true, remap = true, })
-    vim.keymap.set("n", "l", function()
-      local line = vim.api.nvim_get_current_line()
-      if vim.endswith(line, "/") then
-        return "<cr>"
-      end
-    end, { expr = true, buffer = true, remap = true, })
-
-    vim.keymap.set("n", "o", "%", { buffer = true, remap = true, })
-    vim.keymap.set("n", "r", "R", { buffer = true, remap = true, })
-    vim.keymap.set("n", "dd", "D", { buffer = true, remap = true, })
-    vim.keymap.set("n", "P", "<C-w>z", { buffer = true, remap = true, })
-    vim.keymap.set("n", "<C-f>", vim.cmd.bdelete, { buffer = true, })
-
-    vim.keymap.set("n", "mp", function()
-      h.notify.doing("Target dir: " .. vim.b.netrw_curdir)
-    end, { buffer = true, })
-
-    vim.keymap.set("n", "ya", function()
-      local line = vim.api.nvim_get_current_line()
-      local abs_path = vim.fs.joinpath(vim.fn.getcwd(), vim.fn.expand "%", line)
-      h.utils.set_and_rotate(abs_path)
-    end, { buffer = true, })
-
-    vim.keymap.set("n", "yr", function()
-      local line = vim.api.nvim_get_current_line()
-      local rel_path = vim.fs.joinpath(vim.fn.expand "%", line)
-      h.utils.set_and_rotate(rel_path)
-    end, { buffer = true, })
-  end,
-  group = vim.api.nvim_create_augroup("netrw", { clear = false, }),
-})
-
+  tree {
+    _dir = vim.fs.dirname(vim.api.nvim_buf_get_name(0)),
+    _bufnr = -1,
+  }
+end)
