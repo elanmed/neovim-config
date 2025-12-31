@@ -20,8 +20,8 @@ vim.keymap.set("n", "<leader>b", function()
         if not is_loaded then return false end
 
         local is_listed = vim.bo[bufnr].buflisted
-
         if not is_listed then return false end
+
         return true
       end)
       :totable()
@@ -114,7 +114,11 @@ tree = function(opts)
         return line.rel_path
       end)
       :totable()
+
+  vim.bo[opts._bufnr].modifiable = true
   vim.api.nvim_buf_set_lines(opts._bufnr, 0, -1, false, formatted_lines)
+  vim.bo[opts._bufnr].modifiable = false
+  vim.wo[0].winbar = vim.fs.joinpath(vim.fs.basename(opts._dir), "/")
 
   vim.keymap.set("n", "<cr>", function()
     local line = lines[vim.fn.line "."]
