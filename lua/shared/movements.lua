@@ -27,7 +27,7 @@ local function wezterm_cli_move(direction)
   vim.fn.system(cmd)
 end
 
-vim.keymap.set("n", "<C-l>", function()
+vim.keymap.set("n", "<C-Space><C-l>", function()
   local prev_win = vim.api.nvim_get_current_win()
   vim.cmd.wincmd "l"
   local curr_win = vim.api.nvim_get_current_win()
@@ -36,7 +36,7 @@ vim.keymap.set("n", "<C-l>", function()
   end
 end)
 
-vim.keymap.set("n", "<C-h>", function()
+vim.keymap.set("n", "<C-Space><C-h>", function()
   local prev_win = vim.api.nvim_get_current_win()
   vim.cmd.wincmd "h"
   local curr_win = vim.api.nvim_get_current_win()
