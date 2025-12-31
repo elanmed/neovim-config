@@ -1,6 +1,18 @@
-local h = require "helpers"
+vim.o.pummaxwidth = vim.o.columns
 
-vim.keymap.set("n", "<leader>f", ":edit ")
+if vim.fn.executable "fd" == 1 then
+  function _G.FdFindFiles(cmdarg)
+    local fnames = vim.fn.systemlist(require "helpers".fd_cmd)
+    if #cmdarg == 0 then
+      return fnames
+    else
+      return vim.fn.matchfuzzy(fnames, cmdarg, { matchseq = 1, limit = 100, })
+    end
+  end
+
+  vim.o.findfunc = "v:lua.FdFindFiles"
+end
+vim.keymap.set("n", "<leader>f", ":find ", { desc = ":find", })
 vim.keymap.set("n", "<leader>b", function()
   local buffers = vim.iter(vim.api.nvim_list_bufs())
       :filter(function(bufnr)
@@ -59,7 +71,7 @@ end)
 
 vim.keymap.set("n", "s", function()
   if vim.bo.readonly or vim.bo.buftype ~= "" then
-    return h.notify.error "Aborting"
+    return require "helpers".notify.error "Aborting"
   end
   vim.cmd.write()
 end)
@@ -82,6 +94,7 @@ end, { desc = "Toggle netrw, focusing the current dir", })
 vim.api.nvim_create_autocmd("BufModifiedSet", {
   callback = function()
     if vim.bo.filetype ~= "netrw" then return end
+    local h = require "helpers"
 
     vim.opt_local.relativenumber = true
 

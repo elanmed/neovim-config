@@ -160,6 +160,7 @@ return {
   notify = notify,
   vimscript_true = vimscript_true,
   vimscript_false = vimscript_false,
+  fd_cmd = "fd --absolute-path --hidden --type f --exclude .git --exclude node_modules --exclude dist",
   utils = utils,
   str = str,
 }
