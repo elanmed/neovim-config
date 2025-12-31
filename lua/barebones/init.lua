@@ -3,11 +3,7 @@ vim.o.pummaxwidth = vim.o.columns
 if vim.fn.executable "fd" == 1 then
   function _G.FdFindFiles(cmdarg)
     local fnames = vim.fn.systemlist(require "helpers".fd_cmd)
-    if #cmdarg == 0 then
-      return fnames
-    else
-      return vim.fn.matchfuzzy(fnames, cmdarg, { matchseq = 1, limit = 100, })
-    end
+    return vim.fn.matchfuzzy(fnames, cmdarg, { matchseq = 1, limit = 100, })
   end
 
   vim.o.findfunc = "v:lua.FdFindFiles"
