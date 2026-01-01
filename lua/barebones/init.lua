@@ -92,7 +92,7 @@ tree = function(opts)
     --- @type Line
     local line = {
       abs_path = abs_path,
-      rel_path = vim.fs.relpath(cwd, abs_path),
+      rel_path = vim.fs.relpath(cwd, abs_path) or "",
       type = type,
     }
     table.insert(lines, line)
@@ -102,9 +102,12 @@ tree = function(opts)
     if vim.api.nvim_buf_is_valid(opts._bufnr) then
       return opts._bufnr
     end
-    return vim.api.nvim_create_buf(false, true)
+    local bufnr = vim.api.nvim_create_buf(false, true)
+    vim.bo[bufnr].bufhidden = "delete"
+    vim.api.nvim_win_set_buf(0, bufnr)
+    return bufnr
   end)()
-  vim.api.nvim_win_set_buf(0, opts._bufnr)
+  vim.api.nvim_buf_set_name(opts._bufnr, vim.fs.joinpath(vim.fs.basename(opts._dir), "/"))
 
   local formatted_lines = vim.iter(lines)
       :map(function(line)
@@ -118,18 +121,27 @@ tree = function(opts)
   vim.bo[opts._bufnr].modifiable = true
   vim.api.nvim_buf_set_lines(opts._bufnr, 0, -1, false, formatted_lines)
   vim.bo[opts._bufnr].modifiable = false
-  vim.wo[0].winbar = vim.fs.joinpath(vim.fs.basename(opts._dir), "/")
+
+  --- @param alt_bufnr number
+  local function set_alt_bufnr(alt_bufnr)
+    if vim.api.nvim_buf_is_valid(alt_bufnr) then
+      vim.fn.setreg("#", alt_bufnr)
+    end
+  end
 
   vim.keymap.set("n", "<cr>", function()
     local line = lines[vim.fn.line "."]
     if not line then return end
 
     if line.type == "file" then
+      local alt_bufnr = vim.fn.bufnr "#"
       vim.cmd.edit(line.abs_path)
-      vim.cmd.bdelete(opts._bufnr)
+      set_alt_bufnr(alt_bufnr)
       return
     elseif line.type == "directory" then
-      return tree { _dir = line.abs_path, _bufnr = opts._bufnr, }
+      local alt_bufnr = vim.fn.bufnr "#"
+      tree { _dir = line.abs_path, _bufnr = opts._bufnr, }
+      set_alt_bufnr(alt_bufnr)
     end
   end, { buffer = opts._bufnr, })
 
@@ -138,45 +150,62 @@ tree = function(opts)
     if not line then return end
 
     if line.type ~= "directory" then return end
-    return tree { _dir = line.abs_path, _bufnr = opts._bufnr, }
+    local alt_bufnr = vim.fn.bufnr "#"
+    tree { _dir = line.abs_path, _bufnr = opts._bufnr, }
+    set_alt_bufnr(alt_bufnr)
   end, { buffer = opts._bufnr, })
 
   vim.keymap.set("n", "h", function()
     local line = lines[vim.fn.line "."]
     if not line then return end
-    return tree { _dir = vim.fs.dirname(opts._dir), _bufnr = opts._bufnr, }
+    local alt_bufnr = vim.fn.bufnr "#"
+    tree { _dir = vim.fs.dirname(opts._dir), _bufnr = opts._bufnr, }
+    set_alt_bufnr(alt_bufnr)
   end, { buffer = opts._bufnr, })
 
   vim.keymap.set("n", "yr", function()
     local line = lines[vim.fn.line "."]
     if not line then return end
-    return require "helpers".utils.set_and_rotate(line.rel_path)
+    require "helpers".utils.set_and_rotate(line.rel_path)
   end, { buffer = opts._bufnr, })
 
   vim.keymap.set("n", "ya", function()
     local line = lines[vim.fn.line "."]
     if not line then return end
-    return require "helpers".utils.set_and_rotate(line.abs_path)
+    require "helpers".utils.set_and_rotate(line.abs_path)
   end, { buffer = opts._bufnr, })
 
   vim.keymap.set("n", "yb", function()
     local line = lines[vim.fn.line "."]
     if not line then return end
-    return require "helpers".utils.set_and_rotate(vim.fs.basename(line.abs_path))
+    require "helpers".utils.set_and_rotate(vim.fs.basename(line.abs_path))
   end, { buffer = opts._bufnr, })
 
   vim.keymap.set("n", "e", function()
-    tree({ _dir = opts._dir, _bufnr = opts._bufnr})
+    local alt_bufnr = vim.fn.bufnr "#"
+    tree { _dir = opts._dir, _bufnr = opts._bufnr, }
+    set_alt_bufnr(alt_bufnr)
+    require "helpers".notify.doing "Refreshed tree"
   end, { buffer = opts._bufnr, })
 
   vim.keymap.set("n", "<C-f>", function()
+    local alt_bufnr = vim.fn.bufnr "#"
     vim.cmd.bdelete(opts._bufnr)
+    set_alt_bufnr(alt_bufnr)
   end, { buffer = opts._bufnr, })
+
+  vim.keymap.set("n", "<C-^>", "<nop>", { buffer = opts._bufnr, })
+  vim.keymap.set("n", "<C-o>", "<nop>", { buffer = opts._bufnr, })
+  vim.keymap.set("n", "<C-i>", "<nop>", { buffer = opts._bufnr, })
 end
 
 vim.keymap.set("n", "<C-f>", function()
+  local alt_bufnr = vim.fn.bufnr "#"
   tree {
     _dir = vim.fs.dirname(vim.api.nvim_buf_get_name(0)),
     _bufnr = -1,
   }
+  if vim.api.nvim_buf_is_valid(alt_bufnr) then
+    vim.fn.setreg("#", alt_bufnr)
+  end
 end)
