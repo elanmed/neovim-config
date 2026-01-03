@@ -107,6 +107,7 @@ tree = function(opts)
     vim.api.nvim_win_set_buf(0, bufnr)
     return bufnr
   end)()
+  vim.wo.spell = false
   vim.api.nvim_buf_set_name(opts._bufnr, vim.fs.joinpath(vim.fs.basename(opts._dir), "/"))
 
   local formatted_lines = vim.iter(lines)
