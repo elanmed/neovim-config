@@ -47,3 +47,7 @@ vim.o.foldmethod = "indent"
 -- mini max
 vim.o.iskeyword = "@,48-57,_,192-255,-" -- treat dash as `word` textobject part
 vim.o.cursorlineopt = "screenline,number" -- show cursor line per screen line
+
+-- :h netrw-noload
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
