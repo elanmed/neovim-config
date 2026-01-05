@@ -53,7 +53,3 @@ end
 --   if left_to_right_pair[char_left] ~= char then return "<bs>" end
 --   return "<right><bs><bs>"
 -- end, { expr = true, desc = "<bs> with pairs", })
-
-vim.cmd.iabbrev("tihs", "this")
-vim.cmd.iabbrev("hte", "the")
-vim.cmd.iabbrev("fo", "of")
