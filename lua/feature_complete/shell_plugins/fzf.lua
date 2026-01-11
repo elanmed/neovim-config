@@ -5,15 +5,17 @@ local prev_height = nil
 local prev_query_file = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "prev_query")
 vim.fn.writefile({ "", }, prev_query_file)
 
---- @class FzfOpts
+--- @class FzfResumeOpts
 --- @field is_resume? boolean
+
+--- @class FzfNewOpts
 --- @field source string|table
 --- @field options? table
 --- @field sink? fun(entry: string)
 --- @field sinklist? fun(entry:string[])
 --- @field height "full"|"half"
 
---- @param opts FzfOpts
+--- @param opts FzfNewOpts | FzfResumeOpts
 local fzf = function(opts)
   local editor_height = vim.o.lines - 1
   local border_height = 2
@@ -396,12 +398,9 @@ end, { desc = "fzf lines in the buf", })
 
 vim.keymap.set("n", "<leader>zr", function()
   if prev_bare_cmd == nil then
-    return h.notify.error "No ongoing fzf buffer"
+    return h.notify.error "No previous fzf terminal buffer"
   end
   fzf { is_resume = true, }
-
-  -- save prev command
-  -- save prev input
 end, { desc = "fzf resume", })
 
 vim.keymap.set("v", "<leader>o", function()
@@ -928,4 +927,3 @@ local function fzf_ui_select(items, opts, on_choice)
 end
 
 vim.ui.select = fzf_ui_select
-
