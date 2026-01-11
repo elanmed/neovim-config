@@ -71,7 +71,7 @@ local fzf = function(opts)
 
   local cmd_with_record_prev_query = table.concat({
     bare_cmd,
-    ([[--bind='change:execute-silent(echo {q} > %s)']]):format(prev_query_file),
+    ([[--bind='result:execute-silent(echo {q} > %s)']]):format(prev_query_file),
   }, " ")
 
   local cmd_with_sink = ("%s > %s"):format(cmd_with_record_prev_query, sink_temp)
@@ -80,7 +80,6 @@ local fzf = function(opts)
     term = true,
     on_exit = function()
       vim.api.nvim_win_close(term_winnr, true)
-      vim.cmd.bdelete(term_bufnr)
 
       local sink_content = vim.fn.readfile(sink_temp)
       if #sink_content > 0 then
@@ -237,12 +236,12 @@ vim.keymap.set("n", "<leader>z;", function()
       vim.api.nvim_get_current_buf()),
   }
 
-  local source_tbl = {}
+  local source = {}
   local num_cmd_history = vim.fn.histnr "cmd"
   for i = 1, math.min(num_cmd_history, 15) do
     local item = vim.fn.histget("cmd", i * -1)
     if item == "" then goto continue end
-    table.insert(source_tbl, item)
+    table.insert(source, item)
 
     ::continue::
   end
@@ -311,11 +310,11 @@ local function rg_with_globs(default_query)
     "--disabled",
     [[--ghost='Rg']],
     "--header", header,
-    "--bind", ([['start:reload:%s {q} || true']]):format(rg_with_globs_script),
-    "--bind", ([['change:reload(%s {q} || true)+bg-transform-header(%s {q} || true)']]):format(
-    rg_with_globs_script,
-    get_rg_globs_script
-  ),
+    ([[--bind='start:reload:%s {q} || true']]):format(rg_with_globs_script),
+    ([[--bind='change:reload(%s {q} || true)+bg-transform-header(%s {q} || true)']]):format(
+      rg_with_globs_script,
+      get_rg_globs_script
+    ),
   }
 
   fzf {
