@@ -2,3 +2,4 @@ highlights.txt
 remaps.txt
 nvim-pack-lock.json
 Session.vim
+fzf_scripts/prev_query
