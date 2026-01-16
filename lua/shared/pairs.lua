@@ -17,17 +17,22 @@ vim.keymap.set("i", "jj", [[''<left>]])
 vim.keymap.set("i", "<bs>", function()
   local char_idx_0i = vim.api.nvim_win_get_cursor(0)[2]
   local char_idx = char_idx_0i + 1
+  local line = vim.api.nvim_get_current_line()
 
   if char_idx == 1 then return "<bs>" end
+  local char = line:sub(char_idx, char_idx)
 
   local char_left_idx = char_idx - 1
+  local char_left = line:sub(char_left_idx, char_left_idx)
 
-  if left_to_right_pair[char_left_idx] == left_to_right_pair[char_idx] then return "<right><bs><bs>" end
+  if left_to_right_pair[char_left] == char then return "<right><bs><bs>" end
 
   if char_idx == 2 then return "<bs>" end
   local char_two_left_idx = char_idx - 2
+  local char_two_left = line:sub(char_two_left_idx, char_two_left_idx)
 
-  if left_to_right_pair[char_two_left_idx] == left_to_right_pair[char_left_idx] then return "<bs><bs>" end
+  if left_to_right_pair[char_two_left] == char_left then return "<bs><bs>" end
 
   return "<bs>"
 end, { expr = true, })
+
