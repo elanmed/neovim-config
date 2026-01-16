@@ -1,6 +1,10 @@
 local h = require "helpers"
-local prev_bare_cmd = nil
-local prev_height = nil
+local prev_state = {
+  bare_cmd = nil,
+  height = nil,
+  sink = nil,
+  sinklist = nil,
+}
 
 local prev_query_file = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "prev_query")
 vim.fn.writefile({ "", }, prev_query_file)
@@ -25,9 +29,9 @@ local fzf = function(opts)
 
   local height = (function()
     if opts.is_resume then
-      return prev_height
+      return prev_state.height
     else
-      prev_height = opts.height
+      prev_state.height = opts.height
       return opts.height
     end
   end)()
@@ -48,7 +52,7 @@ local fzf = function(opts)
 
   local bare_cmd = (function()
     if opts.is_resume then
-      return prev_bare_cmd
+      return prev_state.bare_cmd
     else
       local source = (function()
         if type(opts.source) == "string" then
@@ -59,9 +63,23 @@ local fzf = function(opts)
       end)()
 
       local new_bare_cmd = ("%s | fzf %s"):format(source, table.concat(opts.options or {}, " "))
-      prev_bare_cmd = new_bare_cmd
+      prev_state.bare_cmd = new_bare_cmd
       return new_bare_cmd
     end
+  end)()
+
+  local sink = (function()
+    if opts.is_resume then
+      return prev_state.sink
+    end
+    prev_state.sink = opts.sink
+  end)()
+
+  local sinklist = (function()
+    if opts.is_resume then
+      return prev_state.sinklist
+    end
+    prev_state.sinklist = opts.sinklist
   end)()
 
   if opts.is_resume then
@@ -83,10 +101,10 @@ local fzf = function(opts)
 
       local sink_content = vim.fn.readfile(sink_temp)
       if #sink_content > 0 then
-        if opts.sink then
-          opts.sink(sink_content[1])
-        elseif opts.sinklist then
-          opts.sinklist(sink_content)
+        if sink then
+          sink(sink_content[1])
+        elseif sinklist then
+          sinklist(sink_content)
         end
       end
 
@@ -396,7 +414,7 @@ vim.keymap.set("n", "<leader>/z", function()
 end, { desc = "fzf lines in the buf", })
 
 vim.keymap.set("n", "<leader>zr", function()
-  if prev_bare_cmd == nil then
+  if prev_state.bare_cmd == nil then
     return h.notify.error "No previous fzf terminal buffer"
   end
   fzf { is_resume = true, }
