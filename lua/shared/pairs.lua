@@ -7,12 +7,12 @@ local left_to_right_pair = {
   ["`"] = [[`]],
 }
 
-vim.keymap.set("i", ";;u", "()<left>")
-vim.keymap.set("i", ";;v", "[]<left>")
-vim.keymap.set("i", ";;c", "{}<left>")
-vim.keymap.set("i", ";;a", "<><left>")
-vim.keymap.set("i", ";;d", [[""<left>]])
-vim.keymap.set("i", ";;s", [[''<left>]])
+vim.keymap.set("i", ";u", "()<left>")
+vim.keymap.set("i", ";v", "[]<left>")
+vim.keymap.set("i", ";c", "{}<left>")
+vim.keymap.set("i", ";a", "<><left>")
+vim.keymap.set("i", ";d", [[""<left>]])
+vim.keymap.set("i", ";s", [[''<left>]])
 
 vim.keymap.set("i", "<C-d>", function()
   local char_idx_0i = vim.api.nvim_win_get_cursor(0)[2]
