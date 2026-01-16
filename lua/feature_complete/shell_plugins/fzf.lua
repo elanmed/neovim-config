@@ -36,6 +36,20 @@ local fzf = function(opts)
     end
   end)()
 
+  local sink = (function()
+    if opts.is_replay then
+      return prev_state.sink
+    end
+    prev_state.sink = opts.sink
+  end)()
+
+  local sinklist = (function()
+    if opts.is_replay then
+      return prev_state.sinklist
+    end
+    prev_state.sinklist = opts.sinklist
+  end)()
+
   local term_bufnr = vim.api.nvim_create_buf(false, true)
   vim.bo[term_bufnr].bufhidden = "delete"
   local term_winnr = vim.api.nvim_open_win(term_bufnr, true, {
@@ -66,20 +80,6 @@ local fzf = function(opts)
       prev_state.bare_cmd = new_bare_cmd
       return new_bare_cmd
     end
-  end)()
-
-  local sink = (function()
-    if opts.is_replay then
-      return prev_state.sink
-    end
-    prev_state.sink = opts.sink
-  end)()
-
-  local sinklist = (function()
-    if opts.is_replay then
-      return prev_state.sinklist
-    end
-    prev_state.sinklist = opts.sinklist
   end)()
 
   if opts.is_replay then
