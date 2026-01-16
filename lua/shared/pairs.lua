@@ -2,54 +2,32 @@ local left_to_right_pair = {
   ["("] = ")",
   ["{"] = "}",
   ["["] = "]",
+  ["'"] = [[']],
+  ['"'] = [["]],
+  ["`"] = [[`]],
 }
 
-local opening_pairs = { "(", "{", "[", }
-local closing_pairs = { ")", "}", "]", }
+vim.keymap.set("i", "uu", "()<left>")
+vim.keymap.set("i", "vv", "[]<left>")
+vim.keymap.set("i", "kk", "{}<left>")
+vim.keymap.set("i", "aa", "<><left>")
+vim.keymap.set("i", "qq", [[""<left>]])
+vim.keymap.set("i", "jj", [[''<left>]])
 
---- @param typed_char string
-local function skip_or_insert_char(typed_char)
-  return function()
-    local col_zero_indexed = vim.api.nvim_win_get_cursor(0)[2]
-    local col_one_indexed = col_zero_indexed + 1
-    local line = vim.api.nvim_get_current_line()
-    local char_right = line:sub(col_one_indexed, col_one_indexed)
+vim.keymap.set("i", "<bs>", function()
+  local char_idx_0i = vim.api.nvim_win_get_cursor(0)[2]
+  local char_idx = char_idx_0i + 1
 
-    if char_right == typed_char then
-      return "<right>"
-    end
+  if char_idx == 1 then return "<bs>" end
 
-    local should_insert_pair =
-        char_right == nil or
-        char_right == "" or
-        vim.tbl_contains(closing_pairs, char_right) or
-        char_right:match "%p" or
-        char_right:match "%s"
+  local char_left_idx = char_idx - 1
 
-    if vim.tbl_contains(opening_pairs, typed_char) then
-      if should_insert_pair then
-        return typed_char .. left_to_right_pair[typed_char] .. "<left>"
-      end
+  if left_to_right_pair[char_left_idx] == left_to_right_pair[char_idx] then return "<right><bs><bs>" end
 
-      return typed_char
-    elseif vim.tbl_contains(closing_pairs, typed_char) then
-      return typed_char
-    end
-  end
-end
+  if char_idx == 2 then return "<bs>" end
+  local char_two_left_idx = char_idx - 2
 
--- for _, char in pairs(require "helpers".tbl.extend(opening_pairs, closing_pairs)) do
---   vim.keymap.set("i", char, skip_or_insert_char(char), { expr = true, desc = char .. " with pairs", })
--- end
+  if left_to_right_pair[char_two_left_idx] == left_to_right_pair[char_left_idx] then return "<bs><bs>" end
 
--- vim.keymap.set("i", "<bs>", function()
---   local col_zero_indexed = vim.api.nvim_win_get_cursor(0)[2]
---   local col_one_indexed = col_zero_indexed + 1
---   local line = vim.api.nvim_get_current_line()
---   local char = line:sub(col_one_indexed, col_one_indexed)
---   if char == "" then return "<bs>" end
---
---   local char_left = line:sub(col_one_indexed - 1, col_one_indexed - 1)
---   if left_to_right_pair[char_left] ~= char then return "<bs>" end
---   return "<right><bs><bs>"
--- end, { expr = true, desc = "<bs> with pairs", })
+  return "<bs>"
+end, { expr = true, })
