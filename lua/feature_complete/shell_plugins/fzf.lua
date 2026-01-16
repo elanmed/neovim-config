@@ -10,7 +10,7 @@ local prev_query_file = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", 
 vim.fn.writefile({ "", }, prev_query_file)
 
 --- @class FzfResumeOpts
---- @field is_resume? boolean
+--- @field is_replay? boolean
 
 --- @class FzfNewOpts
 --- @field source string|table
@@ -28,7 +28,7 @@ local fzf = function(opts)
   vim.fn.writefile({}, sink_temp)
 
   local height = (function()
-    if opts.is_resume then
+    if opts.is_replay then
       return prev_state.height
     else
       prev_state.height = opts.height
@@ -51,7 +51,7 @@ local fzf = function(opts)
   })
 
   local bare_cmd = (function()
-    if opts.is_resume then
+    if opts.is_replay then
       return prev_state.bare_cmd
     else
       local source = (function()
@@ -69,20 +69,20 @@ local fzf = function(opts)
   end)()
 
   local sink = (function()
-    if opts.is_resume then
+    if opts.is_replay then
       return prev_state.sink
     end
     prev_state.sink = opts.sink
   end)()
 
   local sinklist = (function()
-    if opts.is_resume then
+    if opts.is_replay then
       return prev_state.sinklist
     end
     prev_state.sinklist = opts.sinklist
   end)()
 
-  if opts.is_resume then
+  if opts.is_replay then
     local prev_query = vim.fn.readfile(prev_query_file)[1]
     bare_cmd = table.concat({ bare_cmd, ([[--query=%s]]):format(vim.fn.shellescape(prev_query)), }, " ")
   end
@@ -417,8 +417,8 @@ vim.keymap.set("n", "<leader>zr", function()
   if prev_state.bare_cmd == nil then
     return h.notify.error "No previous fzf terminal buffer"
   end
-  fzf { is_resume = true, }
-end, { desc = "fzf resume", })
+  fzf { is_replay = true, }
+end, { desc = "fzf replay", })
 
 vim.keymap.set("v", "<leader>o", function()
   local region = vim.fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".")
