@@ -251,7 +251,7 @@ vim.keymap.set("n", "gli", vim.lsp.buf.definition, { desc = "LSP go to definitio
 vim.keymap.set("n", "gla", vim.lsp.buf.code_action, { desc = "LSP code action", })
 vim.keymap.set("n", "gly", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
 vim.keymap.set("n", "K", function() vim.lsp.buf.hover { border = "single", } end, { desc = "LSP hover", })
-vim.keymap.set({ "n", "i", }, "<C-w><C-k>", function()
+vim.keymap.set({ "n", "i", }, "<C-c>", function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     local is_floating = vim.api.nvim_win_get_config(win).relative == "win"
     if is_floating then vim.api.nvim_win_close(win, false) end
