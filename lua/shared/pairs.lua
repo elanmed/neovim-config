@@ -16,7 +16,8 @@ vim.keymap.set("i", ";d", [[""<left>]])
 vim.keymap.set("i", ";s", [[''<left>]])
 vim.keymap.set("i", ";t", [[``<left>]])
 
-vim.keymap.set("i", "<C-d>", function()
+vim.keymap.set("i", "<C-d>", "<bs>")
+vim.keymap.set("i", "<bs>", function()
   local char_idx_0i = vim.api.nvim_win_get_cursor(0)[2]
   local char_idx = char_idx_0i + 1
   local line = vim.api.nvim_get_current_line()
