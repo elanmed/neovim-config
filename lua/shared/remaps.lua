@@ -226,3 +226,8 @@ vim.keymap.set({ "i", "c", }, "<C-h>", "<left>")
 vim.keymap.set({ "i", "c", }, "<C-l>", "<right>")
 vim.keymap.set("i", "<C-j>", "<down>")
 vim.keymap.set("i", "<C-k>", "<up>")
+vim.keymap.set({ "i", "c", }, "<C-w>", "<C-o>w")
+vim.keymap.set({ "i", "c", }, "<C-b>", "<C-o>b")
+
+vim.keymap.set({ "i", "c", }, "<C-a>", "<C-o>0")
+vim.keymap.set({ "i", "c", }, "<C-e>", "<C-o>$")
