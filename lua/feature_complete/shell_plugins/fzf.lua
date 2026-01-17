@@ -13,7 +13,7 @@ vim.fn.writefile({ "", }, prev_query_file)
 --- @field is_replay? boolean
 
 --- @class FzfNewOpts
---- @field source string|table
+--- @field source string|table|nil
 --- @field options? table
 --- @field sink? fun(entry: string)
 --- @field sinklist? fun(entry:string[])
@@ -73,12 +73,18 @@ local fzf = function(opts)
       local source = (function()
         if type(opts.source) == "string" then
           return opts.source
-        else
+        elseif type(opts.source) == "table" then
           return ([[echo %s]]):format(vim.fn.shellescape(table.concat(opts.source, "\n")))
+        elseif opts.source == nil then
+          return nil
         end
       end)()
 
-      local new_bare_cmd = ("%s | fzf %s"):format(source, table.concat(opts.options or {}, " "))
+      local new_bare_cmd = ("fzf %s"):format(table.concat(opts.options or {}, " "))
+      if opts.source then
+        new_bare_cmd = source .. " | " .. new_bare_cmd
+      end
+
       prev_state.bare_cmd = new_bare_cmd
       return new_bare_cmd
     end
@@ -86,15 +92,16 @@ local fzf = function(opts)
 
   if opts.is_replay then
     local prev_query = vim.fn.readfile(prev_query_file)[1]
-    bare_cmd = table.concat({ bare_cmd, ([[--query=%s]]):format(vim.fn.shellescape(prev_query)), }, " ")
+    bare_cmd = table.concat({ bare_cmd, ("--query %s"):format(prev_query), }, " ")
   end
 
   local cmd_with_record_prev_query = table.concat({
     bare_cmd,
-    ([[--bind='result:execute-silent(echo {q} > %s)']]):format(prev_query_file),
+    ([['--bind=result:execute-silent(echo {q} > %s)']]):format(prev_query_file),
   }, " ")
 
-  local cmd_with_sink = ("%s > %s"):format(cmd_with_record_prev_query, sink_temp)
+  local cmd_with_sink = cmd_with_record_prev_query .. " > " .. sink_temp
+  vim.fn.setreg("+", cmd_with_sink)
 
   vim.fn.jobstart(cmd_with_sink, {
     term = true,
@@ -133,11 +140,6 @@ local multi_select_opts = {
   [[--bind='ctrl-a:toggle-all']],
   [[--bind='tab:select+up']],
   [[--bind='shift-tab:down+deselect']],
-}
-
-local single_select_opts = {
-  [[--bind='tab:up']],
-  [[--bind='shift-tab:down']],
 }
 
 local qf_preview_opts = {
@@ -191,7 +193,7 @@ vim.keymap.set("n", "<leader>l", function()
   local marks_opts_tbl = {
     [[--delimiter='|']],
     ([[--bind='ctrl-x:execute(%s {1})+reload(%s)']]):format(delete_mark_source, source),
-    [[--ghost='Marks']],
+    [[--ghost=Marks]],
   }
 
   fzf {
@@ -214,7 +216,7 @@ vim.keymap.set("n", "<leader>b", function()
   local delete_buf_source = get_fzf_script "delete_buffer"
   local bufs_opts_tbl = {
     [[--delimiter='|']],
-    [[--ghost='Buffers']],
+    [[--ghost=Buffers]],
     ([[--bind='ctrl-x:execute(%s {1})+reload(%s)']]):format(delete_buf_source, source),
   }
 
@@ -234,12 +236,12 @@ end, { desc = "fzf buffers", })
 
 vim.keymap.set("n", "<leader>zu", function()
   local source = get_fzf_script "get_registers"
-  local registers_opts_tbl = { [[--ghost='Registers']], }
+  local registers_opts_tbl = { [[--ghost=Registers]], }
 
   fzf {
     height = "half",
     source = source,
-    options = h.tbl.extend(registers_opts_tbl, default_opts, single_select_opts),
+    options = h.tbl.extend(registers_opts_tbl, default_opts),
     sink = function(entry)
       local reg = vim.split(entry, "|")[1]
       h.utils.set_unnamed_and_plus(vim.fn.getreg(reg))
@@ -252,8 +254,11 @@ vim.keymap.set("n", "<leader>z;", function()
 
   local cmd_history_opts_tbl = {
     [[--ghost='Command history']],
-    ([[--bind='ctrl-e:execute(%s {1} %s %s)+close']]):format(ex_cmd_source, vim.api.nvim_get_current_win(),
-      vim.api.nvim_get_current_buf()),
+    ([[--bind='ctrl-e:execute(%s {1} %s %s)+close']]):format(
+      ex_cmd_source,
+      vim.api.nvim_get_current_win(),
+      vim.api.nvim_get_current_buf()
+    ),
   }
 
   local source = {}
@@ -268,7 +273,7 @@ vim.keymap.set("n", "<leader>z;", function()
 
   fzf {
     source = source,
-    options = h.tbl.extend(cmd_history_opts_tbl, default_opts, single_select_opts),
+    options = h.tbl.extend(cmd_history_opts_tbl, default_opts),
     height = "half",
     sink = function(selected)
       vim.api.nvim_feedkeys(":" .. selected, "n", false)
@@ -317,28 +322,29 @@ end
 
 -- https://junegunn.github.io/fzf/tips/ripgrep-integration/
 local function rg_with_globs(default_query)
-  default_query = default_query or ""
-  default_query = [[']] .. default_query .. [[']]
-
-  local header =
-  [['-e by *.[ext] | -f by file | -d by **/[dir]/** | -c by case sensitive | -nc by case insensitive | -w by whole word | -nw by partial word']]
+  local base_header =
+  [['-i --ignore-case | -s --case-sensitive | -S --smart-case | -w --word-regexp | -F --fixed-strings | -g --glob= | -t --type= | -. --hidden']]
 
   local rg_with_globs_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "rg-with-globs.sh")
-  local get_rg_globs_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "get-rg-globs.sh")
+
   local rg_options = {
-    "--query", default_query,
     "--disabled",
-    [[--ghost='Rg']],
-    "--header", header,
-    ([[--bind='start:reload:%s {q} || true']]):format(rg_with_globs_script),
-    ([[--bind='change:reload(%s {q} || true)+bg-transform-header(%s {q} || true)']]):format(
+    "--ghost", "Rg",
+    "--header", base_header,
+    ([[--bind="change:reload(%s {q} || true)+transform-header(echo %s\\\n%s)"]]):format(
       rg_with_globs_script,
-      get_rg_globs_script
+      base_header,
+      "rg --hidden {q}"
     ),
+    ([[--bind="start:reload(%s {q} || true)"]]):format(rg_with_globs_script),
   }
+  if default_query then
+    table.insert(rg_options, "-q")
+    table.insert(rg_options, default_query)
+  end
 
   fzf {
-    source = rg_with_globs_script,
+    source = nil,
     options = h.tbl.extend(rg_options, default_opts, multi_select_opts, qf_preview_opts),
     height = "full",
     sinklist = ripgrep_sinklist,
@@ -346,7 +352,7 @@ local function rg_with_globs(default_query)
 end
 
 vim.keymap.set("n", "<leader>a", function()
-  rg_with_globs ""
+  rg_with_globs()
 end, { desc = "fzf rg with globs", })
 
 vim.keymap.set("n", "<leader>zf", function()
@@ -367,7 +373,7 @@ vim.keymap.set("n", "<leader>zs", function()
   local quickfix_list_opts = { [[--ghost='Qf stack']], }
   fzf {
     source = source,
-    options = h.tbl.extend(quickfix_list_opts, default_opts, single_select_opts),
+    options = h.tbl.extend(quickfix_list_opts, default_opts),
     height = "half",
     sink = function(entry)
       local qf_id = vim.split(entry, "|")[1]
@@ -393,7 +399,7 @@ vim.keymap.set("n", "<leader>/z", function()
   fzf {
     source = source,
     height = "half",
-    options = h.tbl.extend(slash_opts, default_opts, single_select_opts),
+    options = h.tbl.extend(slash_opts, default_opts),
     sinklist = function(entry)
       local query = entry[1]
       if not entry[2] then
@@ -425,12 +431,12 @@ end, { desc = "fzf replay", })
 vim.keymap.set("v", "<leader>o", function()
   local region = vim.fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".")
   if #region > 0 then
-    rg_with_globs(region[1] .. " -- ")
+    rg_with_globs(region[1])
   end
 end, { desc = "fzf rg with globs", })
 
 vim.keymap.set("n", "<leader>o", function()
-  rg_with_globs(vim.fn.expand "<cword>" .. " -- ")
+  rg_with_globs(vim.fn.expand "<cword>")
 end, { desc = "fzf rg with globs", })
 
 local function get_stripped_filename()
@@ -454,7 +460,7 @@ vim.keymap.set("n", "<leader>zw", function()
   local stripped_filename = get_stripped_filename()
   if stripped_filename == nil then return end
 
-  rg_with_globs(stripped_filename .. " -- ")
+  rg_with_globs(stripped_filename)
 end, { desc = "fzf rg with globs starting with `wf_modules`", })
 
 vim.keymap.set("n", "<leader>yw", function()
@@ -484,7 +490,7 @@ local function fzf_ui_select(items, opts, on_choice)
   fzf {
     source = formatted_items,
     height = "half",
-    options = h.tbl.extend(select_opts, default_opts, single_select_opts),
+    options = h.tbl.extend(select_opts, default_opts),
     sink = function(entry)
       local index = tonumber(vim.split(entry, "|")[1])
       on_choice(items[tonumber(index)], tonumber(index))

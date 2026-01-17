@@ -13,7 +13,7 @@ vim.pack.add {
   "https://github.com/elanmed/fzf-lua-frecency.nvim",
   "https://github.com/elanmed/rg-far.nvim",
   "https://github.com/elanmed/tree.nvim",
-  "https://github.com/elanmed/rg-glob-builder.nvim",
+  -- "https://github.com/elanmed/rg-glob-builder.nvim",
   "https://github.com/elanmed/ff.nvim",
   "https://github.com/elanmed/seek.nvim",
   "https://github.com/elanmed/ft-highlight.nvim",
