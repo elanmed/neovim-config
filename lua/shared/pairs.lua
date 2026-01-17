@@ -8,15 +8,15 @@ local left_to_right_pair = {
   ["`"] = [[`]],
 }
 
-vim.keymap.set("i", ";u", "()<left>")
-vim.keymap.set("i", ";v", "[]<left>")
-vim.keymap.set("i", ";c", "{}<left>")
-vim.keymap.set("i", ";a", "<><left>")
-vim.keymap.set("i", ";d", [[""<left>]])
-vim.keymap.set("i", ";s", [[''<left>]])
-vim.keymap.set("i", ";t", [[``<left>]])
+vim.keymap.set({ "i", "c", }, ";u", "()<left>")
+vim.keymap.set({ "i", "c", }, ";v", "[]<left>")
+vim.keymap.set({ "i", "c", }, ";c", "{}<left>")
+vim.keymap.set({ "i", "c", }, ";a", "<><left>")
+vim.keymap.set({ "i", "c", }, ";d", [[""<left>]])
+vim.keymap.set({ "i", "c", }, ";s", [[''<left>]])
+vim.keymap.set({ "i", "c", }, ";t", [[``<left>]])
 
-vim.keymap.set("i", "<C-d>", "<bs>")
+vim.keymap.set({ "i", "c", }, "<C-d>", "<bs>")
 vim.keymap.set("i", "<bs>", function()
   local char_idx_0i = vim.api.nvim_win_get_cursor(0)[2]
   local char_idx = char_idx_0i + 1
