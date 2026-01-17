@@ -1,7 +1,4 @@
-vim.keymap.set("i", "<C-a>", "<C-o>:Snippet<space>", { desc = "Insert a snippet", })
-vim.keymap.set({ "n", "v", }, "<C-a>", function()
-  require "helpers".notify.error "Snippets only supported in insert mode!"
-end, { desc = "Insert a snippet", })
+vim.keymap.set("i", "<C-n>", "<C-o>:Snippet<space>", { desc = "Insert a snippet", })
 vim.keymap.set("n", "<leader>h", ":help<space>", { desc = ":help", })
 
 vim.keymap.set("n", "<leader>w", function()
