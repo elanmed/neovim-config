@@ -41,6 +41,7 @@ local fzf = function(opts)
       return prev_state.sink
     end
     prev_state.sink = opts.sink
+    return opts.sink
   end)()
 
   local sinklist = (function()
@@ -48,6 +49,7 @@ local fzf = function(opts)
       return prev_state.sinklist
     end
     prev_state.sinklist = opts.sinklist
+    return opts.sinklist
   end)()
 
   local term_bufnr = vim.api.nvim_create_buf(false, true)
