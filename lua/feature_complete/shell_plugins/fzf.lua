@@ -131,13 +131,17 @@ local default_opts = {
   [[--preview-window='up:40%']],
   [[--bind='ctrl-d:preview-page-down']],
   [[--bind='ctrl-u:preview-page-up']],
+  [[--bind='ctrl-h:backward-char']],
+  [[--bind='ctrl-l:forward-char']],
+  [[--bind='ctrl-w:forward-word']],
+  [[--bind='ctrl-b:backward-word']],
   [[--preview-border='sharp']],
   [[--header-border='sharp']],
 }
 
 local multi_select_opts = {
   "--multi",
-  [[--bind='ctrl-a:toggle-all']],
+  [[--bind='ctrl-s:toggle-all']],
   [[--bind='tab:select+up']],
   [[--bind='shift-tab:down+deselect']],
 }
