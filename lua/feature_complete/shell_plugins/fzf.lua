@@ -325,18 +325,18 @@ local function ripgrep_sinklist(list)
 end
 
 -- https://github.com/junegunn/fzf/blob/master/ADVANCED.md#switching-between-ripgrep-mode-and-fzf-mode
-local function rg_with_globs(default_query)
+local function rg(default_query)
   local base_header =
   [['<C-r> (ripgrep) | <C-f> (fzf) | -i --ignore-case | -s --case-sensitive | -S --smart-case | -w --word-regexp | -F --fixed-strings | -g --glob= | -t --type= | -. --hidden']]
 
-  local rg_with_globs_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "rg-with-globs.sh")
+  local rg_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "rg.sh")
 
   local rg_options = {
     "--disabled",
     "--header", base_header,
-    ([[--bind="start:reload(%s {q} || true)+unbind(ctrl-r)"]]):format(rg_with_globs_script),
+    ([[--bind="start:reload(%s {q} || true)+unbind(ctrl-r)"]]):format(rg_script),
     ([[--bind="change:reload(%s {q} || true)+transform-header(echo %s\\\n'rg --hidden {q}')"]]):format(
-      rg_with_globs_script,
+      rg_script,
       base_header
     ),
     [[--bind="ctrl-f:unbind(change,ctrl-f)+change-prompt(fzf> )+enable-search+rebind(ctrl-r)+transform-query(echo {q} > /tmp/rg-fzf-r; cat /tmp/rg-fzf-f)"]],
@@ -357,7 +357,7 @@ local function rg_with_globs(default_query)
 end
 
 vim.keymap.set("n", "<leader>a", function()
-  rg_with_globs()
+  rg()
 end, { desc = "fzf rg with globs", })
 
 vim.keymap.set("n", "<leader>zf", function()
@@ -436,12 +436,12 @@ end, { desc = "fzf replay", })
 vim.keymap.set("v", "<leader>o", function()
   local region = vim.fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".")
   if #region > 0 then
-    rg_with_globs(region[1])
+    rg(region[1])
   end
 end, { desc = "fzf rg with globs", })
 
 vim.keymap.set("n", "<leader>o", function()
-  rg_with_globs(vim.fn.expand "<cword>")
+  rg(vim.fn.expand "<cword>")
 end, { desc = "fzf rg with globs", })
 
 local function get_stripped_filename()
@@ -465,7 +465,7 @@ vim.keymap.set("n", "<leader>zw", function()
   local stripped_filename = get_stripped_filename()
   if stripped_filename == nil then return end
 
-  rg_with_globs(stripped_filename)
+  rg(stripped_filename)
 end, { desc = "fzf rg with globs starting with `wf_modules`", })
 
 vim.keymap.set("n", "<leader>yw", function()
