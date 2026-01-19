@@ -6,7 +6,7 @@ local prev_state = {
   sinklist = nil,
 }
 
-local prev_query_file = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "prev_query")
+local prev_query_file = "/tmp/fzf-prev"
 vim.fn.writefile({ "", }, prev_query_file)
 
 --- @class FzfResumeOpts
@@ -133,7 +133,7 @@ local default_opts = {
   [[--bind='ctrl-u:preview-page-up']],
   [[--bind='ctrl-h:backward-char']],
   [[--bind='ctrl-l:forward-char']],
-  [[--bind='ctrl-w:forward-word']],
+  [[--bind='ctrl-w:forward-word+forward-char']],
   [[--bind='ctrl-b:backward-word']],
   [[--preview-border='sharp']],
   [[--header-border='sharp']],
@@ -324,23 +324,24 @@ local function ripgrep_sinklist(list)
   vim.cmd.copen()
 end
 
--- https://junegunn.github.io/fzf/tips/ripgrep-integration/
+-- https://github.com/junegunn/fzf/blob/master/ADVANCED.md#switching-between-ripgrep-mode-and-fzf-mode
 local function rg_with_globs(default_query)
   local base_header =
-  [['-i --ignore-case | -s --case-sensitive | -S --smart-case | -w --word-regexp | -F --fixed-strings | -g --glob= | -t --type= | -. --hidden']]
+  [['<C-r> (ripgrep) | <C-f> (fzf) | -i --ignore-case | -s --case-sensitive | -S --smart-case | -w --word-regexp | -F --fixed-strings | -g --glob= | -t --type= | -. --hidden']]
 
   local rg_with_globs_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "rg-with-globs.sh")
 
   local rg_options = {
     "--disabled",
-    "--ghost", "Rg",
     "--header", base_header,
-    ([[--bind="change:reload(%s {q} || true)+transform-header(echo %s\\\n%s)"]]):format(
+    ([[--bind="start:reload(%s {q} || true)+unbind(ctrl-r)"]]):format(rg_with_globs_script),
+    ([[--bind="change:reload(%s {q} || true)+transform-header(echo %s\\\n'rg --hidden {q}')"]]):format(
       rg_with_globs_script,
-      base_header,
-      "rg --hidden {q}"
+      base_header
     ),
-    ([[--bind="start:reload(%s {q} || true)"]]):format(rg_with_globs_script),
+    [[--bind="ctrl-f:unbind(change,ctrl-f)+change-prompt(fzf> )+enable-search+rebind(ctrl-r)+transform-query(echo {q} > /tmp/rg-fzf-r; cat /tmp/rg-fzf-f)"]],
+    [[--bind="ctrl-r:unbind(ctrl-r)+change-prompt(ripgrep> )+disable-search+reload($RG_PREFIX {q} || true)+rebind(change,ctrl-f)+transform-query(echo {q} > /tmp/rg-fzf-f; cat /tmp/rg-fzf-r)"]],
+    [[--prompt='ripgrep> ']],
   }
   if default_query then
     table.insert(rg_options, "-q")
