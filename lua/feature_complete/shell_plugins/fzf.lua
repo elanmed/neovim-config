@@ -335,7 +335,7 @@ local function rg(default_query)
     "--disabled",
     "--header", base_header,
     ([[--bind="start:reload(%s {q} || true)+unbind(ctrl-r)"]]):format(rg_script),
-    ([[--bind="change:reload(%s {q} || true)+transform-header(echo %s\\\n'rg --hidden {q}')"]]):format(
+    ([[--bind="change:reload(sleep 0.1; %s {q} || true)+transform-header(echo %s\\\n'rg --hidden {q}')"]]):format(
       rg_script,
       base_header
     ),
