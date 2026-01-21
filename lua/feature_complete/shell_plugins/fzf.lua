@@ -334,10 +334,11 @@ local function rg(default_query)
     "--disabled",
     "--header", base_header,
     ([[--bind="start:reload(%s {q} || true)+unbind(ctrl-r)"]]):format(rg_script),
-    ([[--bind="change:reload(sleep 0.1; %s {q} || true)+transform-header(echo %s\\\n'rg --hidden {q}')"]]):format(
-      rg_script,
-      base_header
-    ),
+    ([[--bind="change:reload(sleep 0.1; %s {q} || true)+transform-header(echo %s\\\n'rg --hidden --ignore-case {q}')"]])
+        :format(
+          rg_script,
+          base_header
+        ),
     [[--bind="ctrl-f:unbind(change,ctrl-f)+change-prompt(fzf> )+enable-search+rebind(ctrl-r)+transform-query(echo {q} > /tmp/rg-fzf-r; cat /tmp/rg-fzf-f)"]],
     [[--bind="ctrl-r:unbind(ctrl-r)+change-prompt(ripgrep> )+disable-search+reload($RG_PREFIX {q} || true)+rebind(change,ctrl-f)+transform-query(echo {q} > /tmp/rg-fzf-f; cat /tmp/rg-fzf-r)"]],
     [[--prompt='ripgrep> ']],
