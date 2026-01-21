@@ -101,7 +101,6 @@ local fzf = function(opts)
   }, " ")
 
   local cmd_with_sink = cmd_with_record_prev_query .. " > " .. sink_temp
-  vim.fn.setreg("+", cmd_with_sink)
 
   vim.fn.jobstart(cmd_with_sink, {
     term = true,
