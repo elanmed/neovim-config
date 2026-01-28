@@ -11,6 +11,18 @@ vim.api.nvim_create_user_command("Res", function()
   vim.cmd "mksession! Session.vim | restart source Session.vim"
 end, {})
 
+vim.api.nvim_create_user_command("Format", function()
+  if vim.bo.readonly or vim.bo.buftype ~= "" then
+    return require "helpers".notify.error "Aborting"
+  end
+
+  local view = vim.fn.winsaveview()
+  vim.cmd "keepjumps normal! gg=G"
+  vim.fn.winrestview(view)
+  require "helpers".notify.doing "Formatting with gg=G, writing"
+  vim.cmd.write { mods = { silent = true, }, }
+end, {})
+
 vim.api.nvim_create_user_command("Snippet", function(opts)
   local snippet_trigger_to_file_mapping = {
     bef = { file = "before.ts", movement = "ji\t", },

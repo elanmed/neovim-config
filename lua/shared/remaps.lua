@@ -1,18 +1,6 @@
 vim.keymap.set("i", "<C-n>", "<C-o>:Snippet<space>", { desc = "Insert a snippet", })
 vim.keymap.set("n", "<leader>h", ":help<space>", { desc = ":help", })
 
-vim.keymap.set("n", "<leader>w", function()
-  if vim.bo.readonly or vim.bo.buftype ~= "" then
-    return require "helpers".notify.error "Aborting"
-  end
-
-  local view = vim.fn.winsaveview()
-  vim.cmd "keepjumps normal! gg=G"
-  vim.fn.winrestview(view)
-  require "helpers".notify.doing "Formatting with gg=G, writing"
-  vim.cmd.write { mods = { silent = true, }, }
-end)
-
 vim.keymap.set("n", "<leader>q", vim.cmd.quit, { desc = "Quit", })
 vim.keymap.set("n", "J", "gJ", { desc = "J without whitespace", })
 vim.keymap.set("n", "<leader>c", vim.cmd.copen, { desc = ":copen", })
@@ -211,6 +199,13 @@ vim.keymap.set("n", "<leader>t",
     vim.cmd.source()
     require "helpers".notify.doing(":source " .. vim.api.nvim_buf_get_name(0))
   end, { desc = ":source", })
+
+vim.keymap.set("n", "<leader>w", function()
+  local winnr = vim.api.nvim_open_win(0, false, { split = "below", win = 0, })
+  vim.api.nvim_win_set_height(0, 1)
+  vim.api.nvim_set_current_win(winnr)
+  require "helpers".notify.doing "Duplicated buf and split win"
+end)
 
 vim.keymap.set("n", "<leader>mD", function()
   vim.cmd.delmarks "A-Za-z"
