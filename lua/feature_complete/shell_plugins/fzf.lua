@@ -345,7 +345,7 @@ local function rg(default_query)
   }
   if default_query then
     table.insert(rg_options, "-q")
-    table.insert(rg_options, default_query)
+    table.insert(rg_options, vim.fn.shellescape(default_query))
   end
 
   fzf {
@@ -358,7 +358,7 @@ end
 
 vim.keymap.set("n", "<leader>a", function()
   rg()
-end, { desc = "fzf rg with globs", })
+end, { desc = "fzf rg", })
 
 vim.keymap.set("n", "<leader>zf", function()
   vim.cmd.cclose()
@@ -433,16 +433,9 @@ vim.keymap.set("n", "<leader>zr", function()
   fzf { is_replay = true, }
 end, { desc = "fzf replay", })
 
-vim.keymap.set("v", "<leader>o", function()
-  local region = vim.fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".")
-  if #region > 0 then
-    rg(region[1])
-  end
-end, { desc = "fzf rg with globs", })
-
 vim.keymap.set("n", "<leader>o", function()
-  rg(vim.fn.expand "<cword>")
-end, { desc = "fzf rg with globs", })
+  rg [[-g '!*test*' -g '!*spec*' -g '!*.json' ]]
+end, { desc = "fzf rg excluding common files", })
 
 local function get_stripped_filename()
   local abs_path = vim.api.nvim_buf_get_name(0)
@@ -466,7 +459,7 @@ vim.keymap.set("n", "<leader>zw", function()
   if stripped_filename == nil then return end
 
   rg(stripped_filename)
-end, { desc = "fzf rg with globs starting with `wf_modules`", })
+end, { desc = "fzf rg starting with `wf_modules`", })
 
 vim.keymap.set("n", "<leader>yw", function()
   local stripped_filename = get_stripped_filename()
