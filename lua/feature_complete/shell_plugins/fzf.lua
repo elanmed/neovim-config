@@ -92,7 +92,7 @@ local fzf = function(opts)
 
   if opts.is_replay then
     local prev_query = vim.fn.readfile(prev_query_file)[1]
-    bare_cmd = table.concat({ bare_cmd, ("--query %s"):format(prev_query), }, " ")
+    bare_cmd = table.concat({ bare_cmd, ("--query %s"):format(vim.fn.shellescape(prev_query)), }, " ")
   end
 
   local cmd_with_record_prev_query = table.concat({
