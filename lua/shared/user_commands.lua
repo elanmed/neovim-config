@@ -40,6 +40,8 @@ vim.api.nvim_create_user_command("AutoTag", function()
   local end_tag_idx_subbed_1i = line:sub(col_1i):find ">"
   if end_tag_idx_subbed_1i == nil then return h.notify.error "No `>`" end
 
+  -- TODO: support finding reversed >
+
   local end_tag_idx_subbed_0i = end_tag_idx_subbed_1i - 1
   local end_tag_idx_1i = end_tag_idx_subbed_0i + col_1i
 
@@ -58,7 +60,7 @@ vim.api.nvim_create_user_command("AutoTag", function()
   vim.api.nvim_buf_set_lines(0, row_0i, row_0i + 1, true, {
     line:sub(1, idx_to_insert_1i - 1) .. closing_tag .. line:sub(idx_to_insert_1i),
   })
-  -- <hi><testing>
+  -- <hi><testing>hello
   -- 123456789
 end, {})
 
