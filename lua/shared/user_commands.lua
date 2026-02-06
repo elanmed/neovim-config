@@ -26,10 +26,10 @@ end, {})
 vim.api.nvim_create_user_command("AutoTag", function()
   local h = require "helpers"
 
-  local col_0i = vim.api.nvim_win_get_cursor(0)[2]
+  local row_1i, col_0i = unpack(vim.api.nvim_win_get_cursor(0))
+  local row_0i = row_1i - 1
   local col_1i = col_0i + 1
   local line = vim.api.nvim_get_current_line()
-  if line == "" then return h.notify.error "Empty line" end
 
   local start_tag_idx_reversed_1i = line:sub(1, col_1i):reverse():find "<"
   if start_tag_idx_reversed_1i == nil then return h.notify.error "No `<`" end
@@ -37,26 +37,29 @@ vim.api.nvim_create_user_command("AutoTag", function()
   local start_tag_idx_reversed_0i = start_tag_idx_reversed_1i - 1
   local start_tag_idx_1i = col_1i - start_tag_idx_reversed_0i
 
-
   local end_tag_idx_subbed_1i = line:sub(col_1i):find ">"
   if end_tag_idx_subbed_1i == nil then return h.notify.error "No `>`" end
 
   local end_tag_idx_subbed_0i = end_tag_idx_subbed_1i - 1
   local end_tag_idx_1i = end_tag_idx_subbed_0i + col_1i
-  -- 123456789
-  -- <><asd>
-  --     1234
 
   local start_tag_name_idx_1i = start_tag_idx_1i + 1
   local end_tag_name_idx_1i = end_tag_idx_1i - 1
 
   local tag_name = line:sub(start_tag_name_idx_1i, end_tag_name_idx_1i)
-  print(tag_name)
 
-  -- if char right is >
+  local idx_to_insert_1i = (function()
+    local next_start_tag_idx_subbed_1i = line:sub(col_1i):find "<"
+    if next_start_tag_idx_subbed_1i == nil then return #line + 1 end
+    local next_start_tag_idx_subbed_0i = next_start_tag_idx_subbed_1i - 1
+    return next_start_tag_idx_subbed_0i + col_1i
+  end)()
+  local closing_tag = "</" .. tag_name .. ">"
+  vim.api.nvim_buf_set_lines(0, row_0i, row_0i + 1, true, {
+    line:sub(1, idx_to_insert_1i - 1) .. closing_tag .. line:sub(idx_to_insert_1i),
+  })
   -- <hi><testing>
   -- 123456789
-  -- et<
 end, {})
 
 vim.api.nvim_create_user_command("Snippet", function(opts)
