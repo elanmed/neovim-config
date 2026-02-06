@@ -48,7 +48,8 @@ vim.api.nvim_create_user_command("AutoTag", function()
   local start_tag_name_idx_1i = start_tag_idx_1i + 1
   local end_tag_name_idx_1i = end_tag_idx_1i - 1
 
-  local tag_name = line:sub(start_tag_name_idx_1i, end_tag_name_idx_1i)
+  local tag_content = line:sub(start_tag_name_idx_1i, end_tag_name_idx_1i)
+  local tag_name = tag_content:match "^%S+" or tag_content
 
   local idx_to_insert_1i = (function()
     local next_start_tag_idx_subbed_1i = line:sub(col_1i):find "<"
@@ -60,7 +61,7 @@ vim.api.nvim_create_user_command("AutoTag", function()
   vim.api.nvim_buf_set_lines(0, row_0i, row_0i + 1, true, {
     line:sub(1, idx_to_insert_1i - 1) .. closing_tag .. line:sub(idx_to_insert_1i),
   })
-  -- <hi><testing>hello
+  -- <hi><testing data-testid='hi'>hello</hi>
   -- 123456789
 end, {})
 
