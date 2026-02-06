@@ -61,7 +61,9 @@ vim.api.nvim_create_user_command("AutoTag", function()
   vim.api.nvim_buf_set_lines(0, row_0i, row_0i + 1, true, {
     line:sub(1, idx_to_insert_1i - 1) .. closing_tag .. line:sub(idx_to_insert_1i),
   })
-  -- <hi><testing data-testid='hi'>hello</hi>
+  local idx_to_insert_0i = idx_to_insert_1i - 1
+  vim.api.nvim_win_set_cursor(0, { row_1i, idx_to_insert_0i, })
+  -- <hi><testing data-testid='hi'></hi>
   -- 123456789
 end, {})
 
