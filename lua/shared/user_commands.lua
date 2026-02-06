@@ -23,6 +23,42 @@ vim.api.nvim_create_user_command("Format", function()
   vim.cmd.write { mods = { silent = true, }, }
 end, {})
 
+vim.api.nvim_create_user_command("AutoTag", function()
+  local h = require "helpers"
+
+  local col_0i = vim.api.nvim_win_get_cursor(0)[2]
+  local col_1i = col_0i + 1
+  local line = vim.api.nvim_get_current_line()
+  if line == "" then return h.notify.error "Empty line" end
+
+  local start_tag_idx_reversed_1i = line:sub(1, col_1i):reverse():find "<"
+  if start_tag_idx_reversed_1i == nil then return h.notify.error "No `<`" end
+
+  local start_tag_idx_reversed_0i = start_tag_idx_reversed_1i - 1
+  local start_tag_idx_1i = col_1i - start_tag_idx_reversed_0i
+
+
+  local end_tag_idx_subbed_1i = line:sub(col_1i):find ">"
+  if end_tag_idx_subbed_1i == nil then return h.notify.error "No `>`" end
+
+  local end_tag_idx_subbed_0i = end_tag_idx_subbed_1i - 1
+  local end_tag_idx_1i = end_tag_idx_subbed_0i + col_1i
+  -- 123456789
+  -- <><asd>
+  --     1234
+
+  local start_tag_name_idx_1i = start_tag_idx_1i + 1
+  local end_tag_name_idx_1i = end_tag_idx_1i - 1
+
+  local tag_name = line:sub(start_tag_name_idx_1i, end_tag_name_idx_1i)
+  print(tag_name)
+
+  -- if char right is >
+  -- <hi><testing>
+  -- 123456789
+  -- et<
+end, {})
+
 vim.api.nvim_create_user_command("Snippet", function(opts)
   local snippet_trigger_to_file_mapping = {
     bef = { file = "before.ts", movement = "ji\t", },
