@@ -224,7 +224,7 @@ vim.keymap.set({ "i", "c", }, "<C-b>", "<C-o>b")
 vim.keymap.set({ "i", "c", }, "<C-a>", "<C-o>0")
 vim.keymap.set({ "i", "c", }, "<C-e>", "<C-o>$")
 
-vim.keymap.set("i", "<C-p>", function()
+vim.keymap.set("i", "<C-t>", function()
   local row_1i, col_0i = unpack(vim.api.nvim_win_get_cursor(0))
   local row_0i = row_1i - 1
   local col_1i = col_0i + 1
