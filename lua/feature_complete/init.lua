@@ -3,8 +3,6 @@ vim.pack.add {
   { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main", },
   { src = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects", version = "main", },
   "https://github.com/nvim-treesitter/nvim-treesitter-context",
-  "https://github.com/tpope/vim-surround",
-  "https://github.com/windwp/nvim-ts-autotag",
 
   "https://github.com/mfussenegger/nvim-jdtls",
   "https://github.com/nvim-mini/mini.nvim",
@@ -13,7 +11,6 @@ vim.pack.add {
   "https://github.com/elanmed/fzf-lua-frecency.nvim",
   "https://github.com/elanmed/rg-far.nvim",
   "https://github.com/elanmed/tree.nvim",
-  -- "https://github.com/elanmed/rg-glob-builder.nvim",
   "https://github.com/elanmed/ff.nvim",
   "https://github.com/elanmed/seek.nvim",
   "https://github.com/elanmed/ft-highlight.nvim",
