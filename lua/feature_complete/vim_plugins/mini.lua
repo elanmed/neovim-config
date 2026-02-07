@@ -1,22 +1,5 @@
 local h = require "helpers"
 
-require "mini.surround".setup {
-  mappings = {
-    add = "ys",
-    delete = "ds",
-    find = "",
-    find_left = "",
-    highlight = "",
-    replace = "cs",
-    suffix_last = "",
-    suffix_next = "",
-  },
-  search_method = "cover_or_next",
-}
-vim.keymap.set("n", "yss", "ys_", { remap = true, })
--- ys forces to wait
-vim.keymap.set("v", "y", "y", { nowait = true, })
-
 h.utils.lazy_setup(function() require "mini.icons".setup() end)
 h.utils.lazy_setup(function() require "mini.splitjoin".setup() end)
 
