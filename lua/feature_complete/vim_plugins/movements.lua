@@ -13,4 +13,18 @@ vim.keymap.set("n", "<leader>me", marks.refresh_signs)
 vim.keymap.set("n", "<leader>md", marks.delete_buffer_marks)
 vim.keymap.set("n", "<leader>mf", marks.global_marks_to_qf_list)
 
+vim.keymap.set("n", "<leader>mt", function()
+  local cursor_first = vim.api.nvim_win_get_cursor(0)
+  vim.api.nvim_buf_set_mark(0, "y", cursor_first[1], cursor_first[2], {})
+
+  vim.cmd 'execute "normal \\<Plug>(MatchitNormalForward)"'
+
+  local cursor_second = vim.api.nvim_win_get_cursor(0)
+  vim.api.nvim_buf_set_mark(0, "z", cursor_second[1], cursor_second[2], {})
+
+  vim.cmd 'execute "normal \\<Plug>(MatchitNormalForward)"'
+
+  require "marks".refresh_signs()
+end)
+
 vim.keymap.set("n", "<leader>s", function() require "seek".seek() end)
