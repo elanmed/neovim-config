@@ -23,6 +23,20 @@ vim.api.nvim_create_user_command("Format", function()
   vim.cmd.write { mods = { silent = true, }, }
 end, {})
 
+vim.api.nvim_create_user_command("Ren", function()
+  local cursor_first = vim.api.nvim_win_get_cursor(0)
+  vim.api.nvim_buf_set_mark(0, "y", cursor_first[1], cursor_first[2], {})
+
+  vim.cmd 'execute "normal \\<Plug>(MatchitNormalForward)"'
+
+  local cursor_second = vim.api.nvim_win_get_cursor(0)
+  vim.api.nvim_buf_set_mark(0, "z", cursor_second[1], cursor_second[2], {})
+
+  vim.cmd 'execute "normal \\<Plug>(MatchitNormalForward)"'
+
+  require "marks".refresh_signs()
+end, {})
+
 vim.api.nvim_create_user_command("Snippet", function(opts)
   local snippet_trigger_to_file_mapping = {
     bef = { file = "before.ts", movement = "ji\t", },

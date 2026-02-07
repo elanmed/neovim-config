@@ -224,7 +224,7 @@ vim.keymap.set({ "i", "c", }, "<C-b>", "<C-o>b")
 vim.keymap.set({ "i", "c", }, "<C-a>", "<C-o>0")
 vim.keymap.set({ "i", "c", }, "<C-e>", "<C-o>$")
 
-vim.keymap.set("i", "<C-g>", function()
+vim.keymap.set("i", "<C-p>", function()
   local row_1i, col_0i = unpack(vim.api.nvim_win_get_cursor(0))
   local row_0i = row_1i - 1
   local col_1i = col_0i + 1
@@ -233,8 +233,12 @@ vim.keymap.set("i", "<C-g>", function()
   local col_1i_excl = col_1i - 1
   -- \- makes it non-greedy
   -- () is a capture group, returns what's inside
-  local tag_name = line:sub(1, col_1i_excl):match ".*<(.-)>.*$"
-  if tag_name == nil then return require "helpers".notify.error "No matching tag" end
+  local tag_content = line:sub(1, col_1i_excl):match ".*<(.-)>.*$"
+  if tag_content == nil then return require "helpers".notify.error "No matching tag" end
+
+  -- match non-whitespace characters from the start
+  local tag_name = tag_content:match "^%S+"
+  if tag_name == nil then return require "helpers".notify.error "Invalid tag name" end
 
   local closing_tag = "</" .. tag_name .. ">"
   vim.api.nvim_buf_set_lines(0, row_0i, row_0i + 1, true, {
