@@ -1,4 +1,4 @@
-vim.keymap.set("i", "<C-n>", "<C-o>:Snippet<space>", { desc = "Insert a snippet", })
+vim.keymap.set("i", "<C-s>", "<C-o>:Snippet<space>", { desc = "Insert a snippet", })
 vim.keymap.set("n", "<leader>h", ":help<space>", { desc = ":help", })
 
 vim.keymap.set("n", "<leader>q", vim.cmd.quit, { desc = "Quit", })
@@ -157,8 +157,6 @@ vim.keymap.set("n", "<leader>'", function()
   end)
 end, { desc = "Execute a terminal command and output the result to a buffer", })
 
-vim.keymap.set("n", "<leader>,", vim.cmd.file, { desc = "Show the current file", })
-
 vim.keymap.set("c", "<C-e>", "<C-e><C-z>", { desc = "<C-e> and retrigger wildtrigger", })
 vim.keymap.set("c", "<Left>", function()
   if vim.fn.wildmenumode() == require "helpers".vimscript_true then
@@ -259,10 +257,10 @@ end)
 -- cfnpsty
 
 -- normal mode actions:
--- toggle git diff
--- toggle virtual lines
--- close floating popup
--- toggle file tree
--- trigger snippet
--- next qfix item
--- prev qfix item
+-- toggle git diff (y?)
+-- toggle virtual lines (t?)
+-- close floating popup (c)
+-- toggle file tree (f)
+-- trigger snippet (s)
+-- next qfix item (n)
+-- prev qfix item (p)

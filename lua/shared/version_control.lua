@@ -1,4 +1,4 @@
-vim.keymap.set("n", "<C-b>", function()
+vim.keymap.set("n", "<C-y>", function()
   if vim.bo.buftype ~= "" then
     return require "helpers".notify.error "buftype is not normal"
   end
