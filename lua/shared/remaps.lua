@@ -245,3 +245,24 @@ vim.keymap.set("i", "<C-t>", function()
     line:sub(1, col_1i_excl) .. closing_tag .. line:sub(col_1i),
   })
 end)
+
+-- ctrl keymaps:
+-- abcdefghijklmnopqrstuvwxyz
+
+-- available:
+-- bcefhjklnpstwy
+
+-- insert mode actions:
+-- abehjklnw
+
+-- available when keeping same insert mode actions:
+-- cfnpsty
+
+-- normal mode actions:
+-- toggle git diff
+-- toggle virtual lines
+-- close floating popup
+-- toggle file tree
+-- trigger snippet
+-- next qfix item
+-- prev qfix item
