@@ -10,20 +10,8 @@ local get_tab_section = function()
   return table.concat({ "%#Search#", curr_tab, "%#TabLine#", }, " ")
 end
 
---- @param buf_type "curr"|"alt"
-local get_buf_section = function(buf_type)
-  local h = require "helpers"
-
-  local buf_symbol = buf_type == "alt" and "#" or "%"
-  local formatted_buf_symbol = buf_type == "alt" and "# " or "%% "
-  local bufnr = vim.fn.bufnr(buf_symbol)
-  if not vim.api.nvim_buf_is_valid(bufnr) then
-    if buf_type == "alt" then
-      return ""
-    elseif buf_type == "curr" then
-      return h.str.pad { max_len = max_len, side = "right", val = formatted_buf_symbol, }
-    end
-  end
+local get_buf_section = function()
+  local bufnr = vim.fn.bufnr "#"
 
   local name = (function()
     if vim.bo[bufnr].buftype == "terminal" then return "[terminal]" end
@@ -35,13 +23,7 @@ local get_buf_section = function(buf_type)
     local basename = vim.fs.basename(bufname)
     return vim.fs.joinpath(dirname, basename)
   end)()
-  local buf_section = "%#TabLineTitle#" .. formatted_buf_symbol .. "%#TabLineSel#" .. name
-
-  if buf_type == "alt" then
-    return buf_section
-  elseif buf_type == "curr" then
-    return h.str.pad { max_len = max_len, side = "right", val = buf_section, }
-  end
+  return "%#TabLineTitle#ALT %#TabLineSel#" .. name
 end
 
 _G.Tabline = function()
@@ -49,8 +31,8 @@ _G.Tabline = function()
     if vim.fn.bufnr "#" == vim.fn.bufnr "%" then
       return ""
     end
-    return get_buf_section "alt"
+    return get_buf_section()
   end)()
 
-  return table.concat({ get_tab_section(), get_buf_section "curr", alt_section, }, " ")
+  return table.concat({ get_tab_section(), alt_section, }, " ")
 end
