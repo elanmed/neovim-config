@@ -1,8 +1,6 @@
 vim.o.showtabline = 2
 vim.o.tabline = "%!v:lua.Tabline()"
 
-local max_len = math.floor(vim.o.columns * 3 / 4)
-
 local get_tab_section = function()
   local tabs = vim.api.nvim_list_tabpages()
   if #tabs == 1 then return "" end
@@ -12,6 +10,7 @@ end
 
 local get_buf_section = function()
   local bufnr = vim.fn.bufnr "#"
+  if not vim.api.nvim_buf_is_valid(bufnr) then return "" end
 
   local name = (function()
     if vim.bo[bufnr].buftype == "terminal" then return "[terminal]" end
