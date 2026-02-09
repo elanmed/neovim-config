@@ -191,8 +191,8 @@ vim.keymap.set("n", "<leader>j", function()
   return "j" .. [["zyy]] .. vim.v.count .. "k" .. [["zp]]
 end, { desc = "Yank the file vim.v.count below and put it on the current line", expr = true, })
 
-vim.keymap.set("n", "<C-y>", "<C-]>", { desc = "<C-]>", })
-vim.keymap.set("n", "<C-w><C-y>", "<C-w><C-]>", { desc = "<C-w><C-]>", })
+vim.keymap.set("n", "<C-j>", "<C-]>", { desc = "<C-]>", })
+vim.keymap.set("n", "<C-w><C-j>", "<C-w><C-]>", { desc = "<C-w><C-]>", })
 
 vim.keymap.set("n", "<leader>t",
   function()
@@ -214,25 +214,14 @@ vim.keymap.set("n", "<leader>mD", function()
 end)
 vim.keymap.set({ "i", "c", }, "<C-r><C-;>", "<C-r>+")
 vim.keymap.set({ "i", "c", }, "<C-r>;", "<C-r>+")
-
 vim.keymap.set({ "i", "c", }, "<C-h>", "<left>")
 vim.keymap.set({ "i", "c", }, "<C-l>", "<right>")
-
 vim.keymap.set("i", "<C-j>", "<down>")
-vim.keymap.set("n", "<C-j>", "<nop>")
-
 vim.keymap.set("i", "<C-k>", "<up>")
-vim.keymap.set("n", "<C-k>", "<nop>")
-
 vim.keymap.set({ "i", "c", }, "<C-w>", "<C-o>w")
-
 vim.keymap.set({ "i", "c", }, "<C-b>", "<C-o>b")
-vim.keymap.set("n", "<C-b>", "<nop>")
-
 vim.keymap.set({ "i", "c", }, "<C-a>", "<C-o>0")
-
 vim.keymap.set({ "i", "c", }, "<C-e>", "<C-o>$")
-vim.keymap.set("n", "<C-e>", "<nop>")
 
 vim.keymap.set("i", "<C-t>", function()
   local row_1i, col_0i = unpack(vim.api.nvim_win_get_cursor(0))
