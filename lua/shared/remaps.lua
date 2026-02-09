@@ -1,4 +1,4 @@
-vim.keymap.set("i", "<C-s>", "<C-o>:Snippet<space>", { desc = "Insert a snippet", })
+vim.keymap.set("i", "<C-n>", "<C-o>:Snippet<space>", { desc = "Insert a snippet", })
 vim.keymap.set("n", "<leader>h", ":help<space>", { desc = ":help", })
 
 vim.keymap.set("n", "<leader>q", vim.cmd.quit, { desc = "Quit", })
@@ -191,7 +191,9 @@ vim.keymap.set("n", "<leader>j", function()
   return "j" .. [["zyy]] .. vim.v.count .. "k" .. [["zp]]
 end, { desc = "Yank the file vim.v.count below and put it on the current line", expr = true, })
 
-vim.keymap.set("n", "<C-j>", "<C-]>", { desc = "<C-]>", })
+vim.keymap.set("n", "<C-y>", "<C-]>", { desc = "<C-]>", })
+vim.keymap.set("n", "<C-w><C-y>", "<C-w><C-]>", { desc = "<C-w><C-]>", })
+
 vim.keymap.set("n", "<leader>t",
   function()
     vim.cmd.source()
@@ -212,15 +214,25 @@ vim.keymap.set("n", "<leader>mD", function()
 end)
 vim.keymap.set({ "i", "c", }, "<C-r><C-;>", "<C-r>+")
 vim.keymap.set({ "i", "c", }, "<C-r>;", "<C-r>+")
+
 vim.keymap.set({ "i", "c", }, "<C-h>", "<left>")
 vim.keymap.set({ "i", "c", }, "<C-l>", "<right>")
+
 vim.keymap.set("i", "<C-j>", "<down>")
+vim.keymap.set("n", "<C-j>", "<nop>")
+
 vim.keymap.set("i", "<C-k>", "<up>")
+vim.keymap.set("n", "<C-k>", "<nop>")
+
 vim.keymap.set({ "i", "c", }, "<C-w>", "<C-o>w")
+
 vim.keymap.set({ "i", "c", }, "<C-b>", "<C-o>b")
+vim.keymap.set("n", "<C-b>", "<nop>")
 
 vim.keymap.set({ "i", "c", }, "<C-a>", "<C-o>0")
+
 vim.keymap.set({ "i", "c", }, "<C-e>", "<C-o>$")
+vim.keymap.set("n", "<C-e>", "<nop>")
 
 vim.keymap.set("i", "<C-t>", function()
   local row_1i, col_0i = unpack(vim.api.nvim_win_get_cursor(0))
@@ -244,23 +256,19 @@ vim.keymap.set("i", "<C-t>", function()
   })
 end)
 
--- ctrl keymaps:
 -- abcdefghijklmnopqrstuvwxyz
+-- ------------m--------v---z used by the os
+-- a--d--g-i-----o--r--u-w--- used in normal mode
+-- -bc-ef-h-jkl-n-pq-st---xy- available in normal
+-- ab--e-------------s---w--- used in insert mode
+-- --cd-fghijkl-nopqr-tu--xy- available in insert
 
--- available:
--- bcefhjklnpstwy
-
--- insert mode actions:
--- abehjklnw
-
--- available when keeping same insert mode actions:
--- cfnpsty
+-- --c--f-h-jkl-n-pq--t---xy- available in both
 
 -- normal mode actions:
--- toggle git diff (y?)
--- toggle virtual lines (t?)
--- close floating popup (c)
--- toggle file tree (f)
--- trigger snippet (s)
--- next qfix item (n)
--- prev qfix item (p)
+-- toggle virtual lines ()
+-- close floating popup ()
+-- toggle file tree ()
+-- trigger snippet ()
+-- next qf item (n)
+-- prev qf item (p)
