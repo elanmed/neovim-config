@@ -215,7 +215,7 @@ tree = function(opts)
     require "helpers".notify.doing "Refreshed tree"
   end, { buffer = opts._tree_bufnr, })
 
-  vim.keymap.set("n", "<C-f>", function()
+  vim.keymap.set("n", "<C-k>", function()
     vim.api.nvim_win_close(opts._tree_winnr, true)
   end, { buffer = opts._tree_bufnr, })
 
