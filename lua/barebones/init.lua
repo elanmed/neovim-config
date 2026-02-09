@@ -224,7 +224,7 @@ tree = function(opts)
   vim.keymap.set("n", "<C-i>", "<nop>", { buffer = opts._tree_bufnr, })
 end
 
-vim.keymap.set("n", "<C-f>", function()
+vim.keymap.set("n", "<C-k>", function()
   tree {
     _dir = vim.fs.dirname(vim.api.nvim_buf_get_name(0)),
     _tree_bufnr = -1,

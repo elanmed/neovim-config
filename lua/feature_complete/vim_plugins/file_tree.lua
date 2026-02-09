@@ -1,4 +1,4 @@
-vim.keymap.set("n", "<C-f>", function()
+vim.keymap.set("n", "<C-k>", function()
   require "tree".tree {
     tree_win_config = {
       border = "single",

@@ -1,4 +1,4 @@
-vim.keymap.set("i", "<C-n>", "<C-o>:Snippet<space>", { desc = "Insert a snippet", })
+vim.keymap.set("i", "<C-p>", "<C-o>:Snippet<space>", { desc = "Insert a snippet", })
 vim.keymap.set("n", "<leader>h", ":help<space>", { desc = ":help", })
 
 vim.keymap.set("n", "<leader>q", vim.cmd.quit, { desc = "Quit", })
@@ -254,21 +254,30 @@ vim.keymap.set("i", "<C-t>", function()
   vim.api.nvim_buf_set_lines(0, row_0i, row_0i + 1, true, {
     line:sub(1, col_1i_excl) .. closing_tag .. line:sub(col_1i),
   })
-end)
+end, { desc = "Close the html tag to left of the cursor", })
 
 -- abcdefghijklmnopqrstuvwxyz
 -- ------------m--------v---z used by the os
 -- a--d--g-i-----o--r--u-w--- used in normal mode
 -- -bc-ef-h-jkl-n-pq-st---xy- available in normal
--- ab--e-------------s---w--- used in insert mode
--- --cd-fghijkl-nopqr-tu--xy- available in insert
 
--- --c--f-h-jkl-n-pq--t---xy- available in both
+-- ab--e--h-jkl------s---w-y- used in insert mode
+-- --cd-fg-i----nopqr-tu--x-- available in insert
+
+-- --c--f-------n-pq--t---x-- available in both
 
 -- normal mode actions:
--- toggle virtual lines ()
--- close floating popup ()
--- toggle file tree ()
--- trigger snippet ()
+-- toggle virtual lines (f)
+-- close floating popup (c)
+
+-- toggle file tree (k)
+-- jump to tag (j)
 -- next qf item (n)
 -- prev qf item (p)
+
+-- insert mode actions:
+-- toggle virtual lines (f)
+-- close floating popup (c)
+
+-- trigger snippet (p)
+-- trigger html closing tag (t)
