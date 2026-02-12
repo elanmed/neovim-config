@@ -186,6 +186,11 @@ local prettier_ft = {
   "mdx",
 }
 
+local lsp_ft = {
+  "lua",
+  "sh",
+}
+
 vim.keymap.set("n", "<bs>", function() h.notify.error "Use s instead!" end)
 vim.keymap.set("n", "s", function()
   if vim.bo.readonly or vim.bo.buftype ~= "" then
@@ -202,7 +207,7 @@ vim.keymap.set("n", "s", function()
     vim.cmd.write { mods = { silent = true, }, }
   elseif vim.list_contains(prettier_ft, vim.bo.filetype) then
     format_with_prettier()
-  elseif vim.bo.filetype == "lua" then
+  elseif vim.list_contains(lsp_ft, vim.bo.filetype) then
     format_with_lsp()
   else
     vim.cmd.write()
