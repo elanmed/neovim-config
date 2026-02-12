@@ -189,6 +189,7 @@ local prettier_ft = {
 local lsp_ft = {
   "lua",
   "sh",
+  "zsh",
 }
 
 vim.keymap.set("n", "<bs>", function() h.notify.error "Use s instead!" end)
@@ -309,6 +310,9 @@ else
   vim.lsp.enable "eslint"
 end
 
+vim.lsp.config("bashls", {
+  filetypes = { "bash", "sh", "zsh", },
+})
 vim.lsp.enable {
   "ruby_lsp",
   "bashls",
