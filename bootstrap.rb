@@ -18,11 +18,11 @@ def bootstrap_nvim(server:, package_manager:)
   install_package(package_manager, 'cargo')
 
   puts 'installing bob'.doing
-  `bash -c 'source ~/.cargo/env && cargo install bob-nvim'`
-
+  cargo_env = 'export PATH="$HOME/.cargo/bin:$PATH"'
+  `bash -c '#{cargo_env} && cargo install bob-nvim'`
   puts 'installing nightly'.doing
-  `bob install nightly`
-  `bob use nightly`
+  `bash -c '#{cargo_env} && bob install nightly'`
+  `bash -c '#{cargo_env} && bob use nightly'`
 
   puts 'installing language servers from package.json'.doing
   `bash -c 'source ~/.nvm/nvm.sh && npm install --prefix ~/.dotfiles/neovim/.config/nvim/language_servers/'`
