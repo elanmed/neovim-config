@@ -186,6 +186,12 @@ local prettier_ft = {
   "mdx",
 }
 
+local lsp_ft = {
+  "lua",
+  "sh",
+  "zsh",
+}
+
 vim.keymap.set("n", "<bs>", function() h.notify.error "Use s instead!" end)
 vim.keymap.set("n", "s", function()
   if vim.bo.readonly or vim.bo.buftype ~= "" then
@@ -202,7 +208,7 @@ vim.keymap.set("n", "s", function()
     vim.cmd.write { mods = { silent = true, }, }
   elseif vim.list_contains(prettier_ft, vim.bo.filetype) then
     format_with_prettier()
-  elseif vim.bo.filetype == "lua" then
+  elseif vim.list_contains(lsp_ft, vim.bo.filetype) then
     format_with_lsp()
   else
     vim.cmd.write()
@@ -304,6 +310,10 @@ else
   vim.lsp.enable "eslint"
 end
 
+-- TODO: why doesn't this work in bashls.lua
+vim.lsp.config("bashls", {
+  filetypes = { "bash", "sh", "zsh", },
+})
 vim.lsp.enable {
   "ruby_lsp",
   "bashls",
