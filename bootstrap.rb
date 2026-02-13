@@ -18,14 +18,14 @@ def bootstrap_nvim(server:, package_manager:)
   install_package(package_manager, 'cargo')
 
   puts 'installing bob'.doing
-  `cargo install bob-nvim`
+  `bash -c 'source ~/.cargo/env && cargo install bob-nvim'`
 
   puts 'installing nightly'.doing
   `bob install nightly`
   `bob use nightly`
 
   puts 'installing language servers from package.json'.doing
-  `npm install --prefix ~/.dotfiles/neovim/.config/nvim/language_servers/`
+  `bash -c 'source ~/.nvm/nvm.sh && npm install --prefix ~/.dotfiles/neovim/.config/nvim/language_servers/'`
 
   puts 'installing the lua language server binary'.doing
   url = URI('https://api.github.com/repos/LuaLS/lua-language-server/releases/latest')
