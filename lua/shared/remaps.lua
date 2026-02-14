@@ -192,7 +192,8 @@ vim.keymap.set("n", "<leader>j", function()
 end, { desc = "Yank the file vim.v.count below and put it on the current line", expr = true, })
 
 vim.keymap.set("n", "<C-j>", "<C-]>", { desc = "<C-]>", })
-vim.keymap.set("n", "<C-w><C-j>", "<C-w><C-]>", { desc = "<C-w><C-]>", })
+-- TODO: C-k?
+-- vim.keymap.set("n", "<C-w><C-j>", "<C-w><C-]>", { desc = "<C-w><C-]>", })
 
 vim.keymap.set("n", "<leader>t",
   function()
