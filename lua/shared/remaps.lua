@@ -192,8 +192,7 @@ vim.keymap.set("n", "<leader>j", function()
 end, { desc = "Yank the file vim.v.count below and put it on the current line", expr = true, })
 
 vim.keymap.set("n", "<C-j>", "<C-]>", { desc = "<C-]>", })
--- TODO: C-k?
--- vim.keymap.set("n", "<C-w><C-j>", "<C-w><C-]>", { desc = "<C-w><C-]>", })
+vim.keymap.set("n", "<C-k>", "<C-w><C-]>", { desc = "<C-w><C-]>", })
 
 vim.keymap.set("n", "<leader>t",
   function()
@@ -224,7 +223,7 @@ vim.keymap.set({ "i", "c", }, "<C-b>", "<C-o>b")
 vim.keymap.set({ "i", "c", }, "<C-a>", "<C-o>0")
 vim.keymap.set({ "i", "c", }, "<C-e>", "<C-o>$")
 
-vim.keymap.set("i", "<C-t>", function()
+vim.keymap.set("i", "<C-g>", function()
   local row_1i, col_0i = unpack(vim.api.nvim_win_get_cursor(0))
   local row_0i = row_1i - 1
   local col_1i = col_0i + 1
@@ -257,17 +256,22 @@ end, { desc = "Close the html tag to left of the cursor", })
 -- --c--f-------n-pq--t---x-- available in both
 
 -- normal mode actions:
--- toggle virtual lines (f)
+-- (both)
+-- toggle virtual lines (t)
 -- close floating popup (c)
 
--- toggle file tree (k)
+-- (only normal)
+-- toggle file tree (f)
 -- jump to tag (j)
+-- jump to tag in a split (k)
 -- next qf item (n)
 -- prev qf item (p)
 
 -- insert mode actions:
--- toggle virtual lines (f)
+-- (both)
+-- toggle virtual lines (t)
 -- close floating popup (c)
 
+-- (only insert)
 -- trigger snippet (p)
--- trigger html closing tag (t)
+-- trigger html closing tag ()

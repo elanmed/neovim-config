@@ -248,7 +248,7 @@ local function toggle_virtual_lines()
   end
 end
 
-vim.keymap.set({ "i", "n", }, "<C-f>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
+vim.keymap.set({ "i", "n", }, "<C-t>", toggle_virtual_lines, { desc = "Toggle virtual lines", })
 vim.keymap.set("i", "<C-s>", function() vim.lsp.buf.signature_help { border = "single", } end,
   { desc = "LSP signature help", }
 )
