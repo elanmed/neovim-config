@@ -2,20 +2,15 @@
 source ~/.dotfiles/helpers.sh
 
 package_manager=""
-server=false
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --server)
-      server=true
-      shift
-      ;;
     --package-manager)
       package_manager="$2"
       shift 2
       ;;
     *)
-      h_echo error "usage: ./bootstrap.sh --package-manager <pm> [--server]"
+      h_echo error "usage: ./bootstrap.sh --package-manager <pm>"
       exit 1
       ;;
   esac
