@@ -40,6 +40,7 @@ bob use nightly
 
 h_echo doing "installing language servers from package.json"
 source ~/.nvm/nvm.sh
+nvm install --lts
 npm install --prefix ~/.dotfiles/neovim/.config/nvim/language_servers/
 
 h_echo doing "installing the lua language server binary"
