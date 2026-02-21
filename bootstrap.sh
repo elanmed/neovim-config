@@ -35,6 +35,7 @@ export PATH="$HOME/.cargo/bin:$PATH"
 cargo install bob-nvim
 
 h_echo doing "installing nightly"
+export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
 bob install nightly
 bob use nightly
 
