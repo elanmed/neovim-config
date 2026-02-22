@@ -5,7 +5,6 @@ vim.pack.add {
   "https://github.com/neovim/nvim-lspconfig",
   { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main", },
   { src = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects", version = "main", },
-  "https://github.com/nvim-treesitter/nvim-treesitter-context",
 
   "https://github.com/tpope/vim-surround",
   "https://github.com/tpope/vim-repeat",
