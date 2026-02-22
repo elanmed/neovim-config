@@ -1,3 +1,6 @@
+-- needs to be set before sourcing the plugin
+vim.g.surround_no_insert_mappings = 1
+
 vim.pack.add {
   "https://github.com/neovim/nvim-lspconfig",
   { src = "https://github.com/nvim-treesitter/nvim-treesitter", version = "main", },
