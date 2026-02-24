@@ -274,4 +274,4 @@ end, { desc = "Close the html tag to left of the cursor", })
 
 -- (only insert)
 -- trigger snippet (p)
--- trigger html closing tag ()
+-- trigger html closing tag (g)

@@ -65,7 +65,7 @@ mkdir -p "$lua_ls_dir"
 
 curl --location --output "$lua_ls_tar" "$download_url"
 
-actual_sha="sha256:$(sha256sum "$lua_ls_tar" | cut --delimiter ' ' --field 1)"
+actual_sha="sha256:$(sha256sum "$lua_ls_tar" | cut -d ' ' -f 1)"
 
 if [[ $actual_sha == "$expected_sha" ]]; then
   h_echo doing "downloaded lua_ls sha matches the expected sha"
