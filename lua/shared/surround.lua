@@ -25,7 +25,8 @@ local function find_surrounding_pair_0i(char)
   vim.api.nvim_buf_del_mark(0, ">")
 
   vim.api.nvim_set_hl(0, "Visual", { link = "Normal", })
-  vim.cmd("normal! vi" .. char .. "\x1b")
+  vim.cmd("normal! va" .. char)
+  vim.cmd "normal! \x1b"
   vim.api.nvim_set_hl(0, "Visual", saved_visual_hl)
   vim.api.nvim_win_set_cursor(0, saved_cursor)
 
@@ -35,14 +36,15 @@ local function find_surrounding_pair_0i(char)
   local close_pos = vim.api.nvim_buf_get_mark(0, ">")
   if close_pos[1] == 0 and close_pos[2] == 0 then return nil end
 
+  if open_pos[1] == close_pos[1] and open_pos[2] == close_pos[2] then return nil end
+
   local one_idx_offset = 1
-  local inner_offset = 1
 
   return {
     open_row = open_pos[1] - one_idx_offset,
-    open_col = open_pos[2] - inner_offset,
+    open_col = open_pos[2],
     close_row = close_pos[1] - one_idx_offset,
-    close_col = close_pos[2] + inner_offset,
+    close_col = close_pos[2],
   }
 end
 
