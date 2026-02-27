@@ -16,25 +16,40 @@ local function get_pair(char)
   return char, char
 end
 
---- @param open string
---- @param close string
-local function find_surrounding_pair_0i(open, close)
-  local open_row_1i, open_col_1i = unpack(vim.fn.searchpairpos(open, "", close, "bnW"))
-  local close_row_1i, close_col_1i = unpack(vim.fn.searchpairpos(open, "", close, "nW"))
-  if open_row_1i == 0 or close_row_1i == 0 or open_row_1i == -1 or close_row_1i == -1 then
-    return nil
-  end
+--- @param char string
+local function find_surrounding_pair_0i(char)
+  local saved_visual_hl = vim.api.nvim_get_hl(0, { name = "Visual", })
+  local saved_cursor = vim.api.nvim_win_get_cursor(0)
+
+  vim.api.nvim_buf_del_mark(0, "<")
+  vim.api.nvim_buf_del_mark(0, ">")
+
+  vim.api.nvim_set_hl(0, "Visual", { link = "Normal", })
+  vim.cmd("normal! vi" .. char .. "\x1b")
+  vim.api.nvim_set_hl(0, "Visual", saved_visual_hl)
+  vim.api.nvim_win_set_cursor(0, saved_cursor)
+
+  local open_pos = vim.api.nvim_buf_get_mark(0, "<")
+  if open_pos[1] == 0 and open_pos[2] == 0 then return nil end
+
+  local close_pos = vim.api.nvim_buf_get_mark(0, ">")
+  if close_pos[1] == 0 and close_pos[2] == 0 then return nil end
+
+  local one_idx_offset = 1
+  local inner_offset = 1
+
   return {
-    open_row = open_row_1i - 1,
-    open_col = open_col_1i - 1,
-    close_row = close_row_1i - 1,
-    close_col = close_col_1i - 1,
+    open_row = open_pos[1] - one_idx_offset,
+    open_col = open_pos[2] - inner_offset,
+    close_row = close_pos[1] - one_idx_offset,
+    close_col = close_pos[2] + inner_offset,
   }
 end
 
 vim.keymap.set("n", "ds", function()
   local char = vim.fn.nr2char(vim.fn.getchar())
-  local pair_pos = find_surrounding_pair_0i(get_pair(char))
+
+  local pair_pos = find_surrounding_pair_0i(char)
   if pair_pos == nil then
     require "helpers".notify.error "No matching pair"
     return
@@ -54,7 +69,7 @@ vim.keymap.set("n", "cs", function()
   local old_char = vim.fn.nr2char(vim.fn.getchar())
   local new_char = vim.fn.nr2char(vim.fn.getchar())
 
-  local old_pair_pos = find_surrounding_pair_0i(get_pair(old_char))
+  local old_pair_pos = find_surrounding_pair_0i(old_char)
   if old_pair_pos == nil then
     require "helpers".notify.error "No matching pair"
     return
