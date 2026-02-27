@@ -21,9 +21,6 @@ local function find_surrounding_pair_0i(char)
   local saved_visual_hl = vim.api.nvim_get_hl(0, { name = "Visual", })
   local saved_cursor = vim.api.nvim_win_get_cursor(0)
 
-  vim.api.nvim_buf_del_mark(0, "<")
-  vim.api.nvim_buf_del_mark(0, ">")
-
   vim.api.nvim_set_hl(0, "Visual", { link = "Normal", })
   vim.cmd("normal! va" .. char)
   vim.cmd "normal! \x1b"
