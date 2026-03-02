@@ -1,3 +1,32 @@
+local curr_indices = nil
+vim.api.nvim_create_autocmd("BufWritePost", {
+  group = vim.api.nvim_create_augroup("DiffTracker", { clear = true, }),
+  callback = require "helpers".async(function(ev)
+    local curr_bufnr = vim.api.nvim_get_current_buf()
+    if ev.buf ~= curr_bufnr then return end
+
+    local worktree_lines = vim.api.nvim_buf_get_lines(curr_bufnr, 0, -1, false)
+    local worktree_str = table.concat(worktree_lines, "\n")
+
+    local curr_bufname = vim.fs.relpath(vim.fn.getcwd(), vim.api.nvim_buf_get_name(curr_bufnr))
+    --- @type vim.SystemCompleted
+    local out = require "helpers".await(function(resolve)
+      vim.system({ "git", "show", "HEAD:" .. curr_bufname, }, resolve)
+    end)
+
+    local head_str = (function()
+      if out.code ~= 0 then return "" end
+      if out.stdout == nil then return "" end
+      return out.stdout
+    end)()
+
+    head_str = head_str:gsub("\n$", "") .. "\n"
+    worktree_str = worktree_str:gsub("\n$", "") .. "\n"
+    curr_indices = vim.text.diff(head_str, worktree_str, { result_type = "indices", })
+  end),
+})
+
+
 vim.keymap.set("n", "<C-b>", function()
   if vim.bo.buftype ~= "" then
     return require "helpers".notify.error "buftype is not normal"
