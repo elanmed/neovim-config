@@ -14,11 +14,10 @@ vim.api.nvim_create_autocmd("BufWritePost", {
       vim.system({ "git", "show", "HEAD:" .. curr_bufname, }, resolve)
     end)
 
-    local head_str = (function()
-      if out.code ~= 0 then return "" end
-      if out.stdout == nil then return "" end
-      return out.stdout
-    end)()
+    if out.code ~= 0 then return end
+    if out.stdout == nil then return end
+    local head_str = out.stdout
+    assert(head_str ~= nil)
 
     head_str = head_str:gsub("\n$", "") .. "\n"
     worktree_str = worktree_str:gsub("\n$", "") .. "\n"
@@ -26,6 +25,40 @@ vim.api.nvim_create_autocmd("BufWritePost", {
   end),
 })
 
+--- @param type 'next' | 'prev'
+local function navigate_hunk(type)
+  if curr_indices == nil then
+    return require "helpers".notify.error "`curr_indices` is nil"
+  end
+  local row_1i = vim.api.nvim_win_get_cursor(0)[1]
+
+  local next_hunk_row_1i = nil
+  local indices = (function()
+    if type == "next" then return curr_indices end
+    return require "helpers".tbl.reverse(curr_indices)
+  end)()
+
+  for _, hunk in ipairs(indices) do
+    local _start_head_1i, _count_head, start_worktree_1i, _count_worktree = unpack(hunk)
+    if type == "next" then
+      if start_worktree_1i > row_1i then
+        next_hunk_row_1i = start_worktree_1i
+        break
+      end
+    else
+      if start_worktree_1i < row_1i then
+        next_hunk_row_1i = start_worktree_1i
+        break
+      end
+    end
+  end
+
+  if next_hunk_row_1i == nil then
+    return require "helpers".notify.error(("No %s hunk"):format(type))
+  end
+
+  vim.api.nvim_win_set_cursor(0, { next_hunk_row_1i, 0, })
+end
 
 vim.keymap.set("n", "<C-b>", function()
   if vim.bo.buftype ~= "" then

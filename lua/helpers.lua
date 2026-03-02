@@ -28,6 +28,15 @@ tbl.extend = function(...)
   return result
 end
 
+--- @param input table
+tbl.reverse = function(input)
+  local reversed = {}
+  for index = #input, 1, -1 do
+    table.insert(reversed, input[index])
+  end
+  return reversed
+end
+
 _os.is_linux = function()
   return vim.fn.has "macunix" == vimscript_false
 end
