@@ -1,6 +1,6 @@
 local curr_indices = nil
 local head_lines = nil
-local namespace_id = vim.api.nvim_create_namespace "my_line_highlight"
+local ns_id = vim.api.nvim_create_namespace "GitDiff"
 
 vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", }, {
   group = vim.api.nvim_create_augroup("DiffTracker", { clear = true, }),
@@ -51,8 +51,9 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", }, {
     end
 
     vim.schedule(function()
+      vim.api.nvim_buf_clear_namespace(curr_bufnr, ns_id, 0, -1)
       for _, row_to_hl in ipairs(rows_to_hl) do
-        vim.api.nvim_buf_set_extmark(0, namespace_id, row_to_hl.row_0i, 0, {
+        vim.api.nvim_buf_set_extmark(curr_bufnr, ns_id, row_to_hl.row_0i, 0, {
           number_hl_group = row_to_hl.hl,
         })
       end
@@ -60,8 +61,8 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", }, {
   end),
 })
 
---- @param type 'next' | 'prev'
-local function navigate_hunk(type)
+--- @param direction 'next' | 'prev'
+local function navigate_hunk(direction)
   if curr_indices == nil then
     return require "helpers".notify.error "`curr_indices` is nil"
   end
@@ -69,13 +70,13 @@ local function navigate_hunk(type)
 
   local next_hunk_row_1i = nil
   local indices = (function()
-    if type == "next" then return curr_indices end
+    if direction == "next" then return curr_indices end
     return require "helpers".tbl.reverse(curr_indices)
   end)()
 
   for _, hunk in ipairs(indices) do
     local _, _, start_worktree_1i, _ = unpack(hunk)
-    if type == "next" then
+    if direction == "next" then
       if start_worktree_1i > row_1i then
         next_hunk_row_1i = start_worktree_1i
         break
@@ -89,7 +90,7 @@ local function navigate_hunk(type)
   end
 
   if next_hunk_row_1i == nil then
-    return require "helpers".notify.error(("No %s hunk"):format(type))
+    return require "helpers".notify.error(("No %s hunk"):format(direction))
   end
 
   vim.api.nvim_win_set_cursor(0, { next_hunk_row_1i, 0, })
