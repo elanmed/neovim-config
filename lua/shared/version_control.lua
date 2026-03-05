@@ -79,11 +79,6 @@ vim.keymap.set("n", "gh", function()
 
     local end_head_1i_excl = start_head_1i + count_head
     local end_head_1i_incl = end_head_1i_excl - 1
-    vim.print { start_head_1i = start_head_1i, count_head = count_head, start_worktree_1i = start_worktree_1i, count_worktree = count_worktree, }
-
-    -- for deletions/replacement, start_x is `starting from and including`
-    -- for insertions, start_x is `after`
-
     local is_deletion = count_worktree == 0
 
     local head_chunk = vim.list_slice(head_lines, start_head_1i, end_head_1i_incl)
