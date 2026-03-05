@@ -1,5 +1,5 @@
-local curr_indices = nil
-local head_lines = nil
+local buffer_state = {}
+
 local ns_id = vim.api.nvim_create_namespace "GitDiff"
 
 vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", }, {
@@ -23,13 +23,17 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", }, {
     assert(head_str ~= nil)
 
     head_str = head_str:gsub("\n$", "") .. "\n"
-    head_lines = vim.split(head_str, "\n", { trimempty = true, })
+    local head_lines = vim.split(head_str, "\n", { trimempty = true, })
     worktree_str = worktree_str:gsub("\n$", "") .. "\n"
 
-    curr_indices = vim.text.diff(head_str, worktree_str, { result_type = "indices", })
+    local indices = vim.text.diff(head_str, worktree_str, { result_type = "indices", })
+    buffer_state[curr_bufnr] = {
+      indices = indices,
+      head_lines = head_lines,
+    }
 
     local rows_to_hl = {}
-    for _, hunk in ipairs(curr_indices) do
+    for _, hunk in ipairs(indices) do
       local _, count_head, start_worktree_1i, count_worktree = unpack(hunk)
 
       local end_worktree_1i_excl = start_worktree_1i + count_worktree
@@ -61,17 +65,27 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", }, {
   end),
 })
 
+vim.api.nvim_create_autocmd("BufDelete", {
+  group = vim.api.nvim_create_augroup("DiffTrackerCleanup", { clear = true, }),
+  callback = function(ev)
+    buffer_state[ev.buf] = nil
+  end,
+})
+
 --- @param direction 'next' | 'prev'
 local function navigate_hunk(direction)
-  if curr_indices == nil then
-    return require "helpers".notify.error "`curr_indices` is nil"
+  local curr_bufnr = vim.api.nvim_get_current_buf()
+  local state = buffer_state[curr_bufnr]
+
+  if state == nil then
+    return require "helpers".notify.error "Missing diff state for this buffer"
   end
   local row_1i = vim.api.nvim_win_get_cursor(0)[1]
 
   local next_hunk_row_1i = nil
   local indices = (function()
-    if direction == "next" then return curr_indices end
-    return require "helpers".tbl.reverse(curr_indices)
+    if direction == "next" then return state.indices end
+    return require "helpers".tbl.reverse(state.indices)
   end)()
 
   for _, hunk in ipairs(indices) do
@@ -100,8 +114,14 @@ vim.keymap.set("n", "]c", function() navigate_hunk "next" end, { desc = "Navigat
 vim.keymap.set("n", "[c", function() navigate_hunk "prev" end, { desc = "Navigate to the prev hunk", })
 
 vim.keymap.set("n", "gh", function()
+  local curr_bufnr = vim.api.nvim_get_current_buf()
+  local state = buffer_state[curr_bufnr]
+  if state == nil then
+    return require "helpers".notify.error "Missing diff state for this buffer"
+  end
+
   local row_1i = vim.api.nvim_win_get_cursor(0)[1]
-  for _, hunk in ipairs(curr_indices) do
+  for _, hunk in ipairs(state.indices) do
     local start_head_1i, count_head, start_worktree_1i, count_worktree = unpack(hunk)
 
     local start_worktree_0i = start_worktree_1i - 1
@@ -113,16 +133,16 @@ vim.keymap.set("n", "gh", function()
     local end_head_1i_incl = end_head_1i_excl - 1
     local is_deletion = count_worktree == 0
 
-    local head_chunk = vim.list_slice(head_lines, start_head_1i, end_head_1i_incl)
+    local head_chunk = vim.list_slice(state.head_lines, start_head_1i, end_head_1i_incl)
     if is_deletion then
       if row_1i == start_worktree_1i then
         local after_start_worktree_0i = start_worktree_0i + 1
         -- when the start and end are the same, inserts after
-        vim.api.nvim_buf_set_lines(0, after_start_worktree_0i, after_start_worktree_0i, true, head_chunk)
+        vim.api.nvim_buf_set_lines(curr_bufnr, after_start_worktree_0i, after_start_worktree_0i, true, head_chunk)
         return require "helpers".notify.doing(("Inserting at line %s"):format(after_start_worktree_0i))
       end
     elseif row_1i >= start_worktree_1i and row_1i <= end_worktree_1i_incl then
-      vim.api.nvim_buf_set_lines(0, start_worktree_0i, end_worktree_0i_excl, true, head_chunk)
+      vim.api.nvim_buf_set_lines(curr_bufnr, start_worktree_0i, end_worktree_0i_excl, true, head_chunk)
       return require "helpers".notify.doing(("Resetting lines %s to %s"):format(start_worktree_1i, end_worktree_1i_incl))
     end
   end
@@ -159,7 +179,7 @@ vim.keymap.set("n", "<C-b>", function()
     if out.stdout == nil then return "" end
     return out.stdout
   end)()
-  head_lines = vim.split(stdout, "\n", { trimempty = true, })
+  local head_lines = vim.split(stdout, "\n", { trimempty = true, })
 
   vim.api.nvim_buf_set_lines(head_bufnr, 0, -1, false, head_lines)
   vim.api.nvim_buf_set_lines(worktree_bufnr, 0, -1, false, worktree_lines)
