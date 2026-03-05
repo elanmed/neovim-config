@@ -196,8 +196,10 @@ vim.keymap.set("n", "<C-b>", function()
     vim.keymap.set("n", "<C-b>", function()
       local cursor = vim.api.nvim_win_get_cursor(0)
       vim.cmd.tabclose()
+      vim.api.nvim_set_current_buf(curr_bufnr)
       vim.api.nvim_win_set_cursor(0, cursor)
     end, { buffer = bufnr, })
+
     vim.keymap.set("n", "<C-^>", "<Nop>", { buffer = bufnr, })
     vim.keymap.set("n", "<C-o>", "<Nop>", { buffer = bufnr, })
     vim.keymap.set("n", "<C-i>", "<Nop>", { buffer = bufnr, })
@@ -211,6 +213,9 @@ vim.keymap.set("n", "<C-b>", function()
 
   vim.bo[worktree_bufnr].modifiable = false
   vim.bo[head_bufnr].modifiable = false
+
+  vim.bo[head_bufnr].bufhidden = "wipe"
+  vim.bo[worktree_bufnr].bufhidden = "wipe"
 
   vim.wo[worktree_winnr].winbar = "Worktree"
   vim.wo[head_winnr].winbar = "HEAD"
