@@ -14,7 +14,6 @@ vim.pack.add {
   "https://github.com/nvim-mini/mini.splitjoin",
   "https://github.com/nvim-mini/mini.hipatterns",
   "https://github.com/nvim-mini/mini.keymap",
-  "https://github.com/nvim-mini/mini.diff",
 
   "https://github.com/elanmed/fzf-lua-frecency.nvim",
   "https://github.com/elanmed/surround.nvim",

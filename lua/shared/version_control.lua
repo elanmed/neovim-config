@@ -1,5 +1,7 @@
 local curr_indices = nil
-vim.api.nvim_create_autocmd("BufWritePost", {
+local head_lines = nil
+
+vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", }, {
   group = vim.api.nvim_create_augroup("DiffTracker", { clear = true, }),
   callback = require "helpers".async(function(ev)
     local curr_bufnr = vim.api.nvim_get_current_buf()
@@ -20,7 +22,9 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     assert(head_str ~= nil)
 
     head_str = head_str:gsub("\n$", "") .. "\n"
+    head_lines = vim.split(head_str, "\n", { trimempty = true, })
     worktree_str = worktree_str:gsub("\n$", "") .. "\n"
+
     curr_indices = vim.text.diff(head_str, worktree_str, { result_type = "indices", })
   end),
 })
@@ -39,7 +43,7 @@ local function navigate_hunk(type)
   end)()
 
   for _, hunk in ipairs(indices) do
-    local _start_head_1i, _count_head, start_worktree_1i, _count_worktree = unpack(hunk)
+    local _, _, start_worktree_1i, _ = unpack(hunk)
     if type == "next" then
       if start_worktree_1i > row_1i then
         next_hunk_row_1i = start_worktree_1i
@@ -59,6 +63,33 @@ local function navigate_hunk(type)
 
   vim.api.nvim_win_set_cursor(0, { next_hunk_row_1i, 0, })
 end
+
+vim.keymap.set("n", "]c", function() navigate_hunk "next" end, { desc = "Navigate to the next hunk", })
+vim.keymap.set("n", "[c", function() navigate_hunk "prev" end, { desc = "Navigate to the prev hunk", })
+
+vim.keymap.set("n", "gh", function()
+  local row_1i = vim.api.nvim_win_get_cursor(0)[1]
+  for _, hunk in ipairs(curr_indices) do
+    local start_head_1i, count_head, start_worktree_1i, count_worktree = unpack(hunk)
+
+    local start_worktree_0i = start_worktree_1i - 1
+    local end_worktree_1i_excl = start_worktree_1i + count_worktree
+    local end_worktree_0i_excl = end_worktree_1i_excl - 1
+    local end_worktree_1i_incl = end_worktree_1i_excl - 1
+
+    local end_head_1i_excl = start_head_1i + count_head
+    local end_head_1i_incl = end_head_1i_excl - 1
+
+    -- doesn't work for delete
+    if row_1i >= start_worktree_1i and row_1i <= end_worktree_1i_incl then
+      local head_chunk = vim.list_slice(head_lines, start_head_1i, end_head_1i_incl)
+      vim.api.nvim_buf_set_lines(0, start_worktree_0i, end_worktree_0i_excl, true, head_chunk)
+      return
+    end
+  end
+
+  return require "helpers".notify.error "No hunk"
+end, { desc = "Reset the hunk on the current line", })
 
 vim.keymap.set("n", "<C-b>", function()
   if vim.bo.buftype ~= "" then
@@ -89,7 +120,7 @@ vim.keymap.set("n", "<C-b>", function()
     if out.stdout == nil then return "" end
     return out.stdout
   end)()
-  local head_lines = vim.split(stdout, "\n", { trimempty = true, })
+  head_lines = vim.split(stdout, "\n", { trimempty = true, })
 
   vim.api.nvim_buf_set_lines(head_bufnr, 0, -1, false, head_lines)
   vim.api.nvim_buf_set_lines(worktree_bufnr, 0, -1, false, worktree_lines)

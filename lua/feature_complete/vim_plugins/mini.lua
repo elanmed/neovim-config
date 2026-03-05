@@ -15,21 +15,6 @@ h.utils.lazy_setup(function()
 end)
 
 h.utils.lazy_setup(function()
-  local mini_diff = require "mini.diff"
-  mini_diff.setup {
-    view = { style = "number", },
-    mappings = {
-      apply = "",
-      reset = "gh",
-      goto_first = "",
-      goto_next = "]c",
-      goto_prev = "[c",
-      goto_last = "",
-    },
-  }
-end)
-
-h.utils.lazy_setup(function()
   local input_wasted_keys = function(key)
     local action = function()
       if vim.bo.buftype ~= "" then return end
