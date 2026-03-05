@@ -30,15 +30,10 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", }, {
 
     local rows_to_hl = {}
     for _, hunk in ipairs(curr_indices) do
-      local start_head_1i, count_head, start_worktree_1i, count_worktree = unpack(hunk)
+      local _, count_head, start_worktree_1i, count_worktree = unpack(hunk)
 
-      local start_worktree_0i = start_worktree_1i - 1
       local end_worktree_1i_excl = start_worktree_1i + count_worktree
-      local end_worktree_0i_excl = end_worktree_1i_excl - 1
       local end_worktree_1i_incl = end_worktree_1i_excl - 1
-
-      local end_head_1i_excl = start_head_1i + count_head
-      local end_head_1i_incl = end_head_1i_excl - 1
 
       local is_deletion = count_worktree == 0
       local is_insertion = count_head == 0
