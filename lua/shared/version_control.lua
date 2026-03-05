@@ -2,6 +2,46 @@ local buffer_state = {}
 
 local ns_id = vim.api.nvim_create_namespace "GitDiff"
 
+local function unpack_hunk(hunk)
+  local start_old_1i, count_old, start_new_1i, count_new = unpack(hunk)
+
+  local start_old_0i = start_old_1i - 1
+  local end_old_1i_excl = start_old_1i + count_old
+  local end_old_1i_incl = end_old_1i_excl - 1
+  local end_old_0i_excl = end_old_1i_excl - 1
+  local end_old_0i_incl = end_old_1i_incl - 1
+
+  local start_new_0i = start_new_1i - 1
+  local end_new_1i_excl = start_new_1i + count_new
+  local end_new_1i_incl = end_new_1i_excl - 1
+  local end_new_0i_excl = end_new_1i_excl - 1
+  local end_new_0i_incl = end_new_1i_incl - 1
+
+  local is_deletion = count_new == 0
+  local is_insertion = count_old == 0
+
+  return {
+    start_old_1i = start_old_1i,
+    start_old_0i = start_old_0i,
+    count_old = count_old,
+    end_old_1i_excl = end_old_1i_excl,
+    end_old_1i_incl = end_old_1i_incl,
+    end_old_0i_excl = end_old_0i_excl,
+    end_old_0i_incl = end_old_0i_incl,
+
+    start_new_1i = start_new_1i,
+    start_new_0i = start_new_0i,
+    count_new = count_new,
+    end_new_1i_excl = end_new_1i_excl,
+    end_new_1i_incl = end_new_1i_incl,
+    end_new_0i_excl = end_new_0i_excl,
+    end_new_0i_incl = end_new_0i_incl,
+
+    is_deletion = is_deletion,
+    is_insertion = is_insertion,
+  }
+end
+
 local timer = nil
 vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", "TextChanged", "TextChangedI", }, {
   group = vim.api.nvim_create_augroup("DiffTracker", { clear = true, }),
@@ -39,22 +79,16 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", "TextChanged", "Tex
       }
 
       local rows_to_hl = {}
-      for _, hunk in ipairs(indices) do
-        local _, count_head, start_worktree_1i, count_worktree = unpack(hunk)
-
-        local end_worktree_1i_excl = start_worktree_1i + count_worktree
-        local end_worktree_1i_incl = end_worktree_1i_excl - 1
-
-        local is_deletion = count_worktree == 0
-        local is_insertion = count_head == 0
+      for _, raw_hunk in ipairs(indices) do
+        local hunk = unpack_hunk(raw_hunk)
 
         local hunk_hl_group = (function()
-          if is_deletion then return "DiffSignDelete" end
-          if is_insertion then return "DiffSignAdd" end
+          if hunk.is_deletion then return "DiffSignDelete" end
+          if hunk.is_insertion then return "DiffSignAdd" end
           return "DiffSignChange"
         end)()
 
-        for row_1i = start_worktree_1i, math.max(end_worktree_1i_incl, start_worktree_1i) do
+        for row_1i = hunk.start_new_1i, math.max(hunk.end_new_1i_incl, hunk.start_new_1i) do
           local row_0i = row_1i - 1
           table.insert(rows_to_hl, { row_0i = row_0i, hl = hunk_hl_group, })
         end
@@ -95,16 +129,16 @@ local function navigate_hunk(direction)
     return require "helpers".tbl.reverse(state.indices)
   end)()
 
-  for _, hunk in ipairs(indices) do
-    local _, _, start_worktree_1i, _ = unpack(hunk)
+  for _, raw_hunk in ipairs(indices) do
+    local hunk = unpack_hunk(raw_hunk)
     if direction == "next" then
-      if start_worktree_1i > row_1i then
-        next_hunk_row_1i = start_worktree_1i
+      if hunk.start_new_1i > row_1i then
+        next_hunk_row_1i = hunk.start_new_1i
         break
       end
     else
-      if start_worktree_1i < row_1i then
-        next_hunk_row_1i = start_worktree_1i
+      if hunk.start_new_1i < row_1i then
+        next_hunk_row_1i = hunk.start_new_1i
         break
       end
     end
@@ -128,29 +162,19 @@ vim.keymap.set("n", "gh", function()
   end
 
   local row_1i = vim.api.nvim_win_get_cursor(0)[1]
-  for _, hunk in ipairs(state.indices) do
-    local start_head_1i, count_head, start_worktree_1i, count_worktree = unpack(hunk)
+  for _, raw_hunk in ipairs(state.indices) do
+    local hunk = unpack_hunk(raw_hunk)
 
-    local start_worktree_0i = start_worktree_1i - 1
-    local end_worktree_1i_excl = start_worktree_1i + count_worktree
-    local end_worktree_0i_excl = end_worktree_1i_excl - 1
-    local end_worktree_1i_incl = end_worktree_1i_excl - 1
-
-    local end_head_1i_excl = start_head_1i + count_head
-    local end_head_1i_incl = end_head_1i_excl - 1
-    local is_deletion = count_worktree == 0
-
-    local head_chunk = vim.list_slice(state.head_lines, start_head_1i, end_head_1i_incl)
-    if is_deletion then
-      if row_1i == start_worktree_1i then
-        local after_start_worktree_0i = start_worktree_0i + 1
-        -- when the start and end are the same, inserts after
-        vim.api.nvim_buf_set_lines(curr_bufnr, after_start_worktree_0i, after_start_worktree_0i, true, head_chunk)
-        return require "helpers".notify.doing(("Inserting at line %s"):format(after_start_worktree_0i))
+    local head_chunk = vim.list_slice(state.head_lines, hunk.start_old_1i, hunk.end_old_1i_incl)
+    if hunk.is_deletion then
+      if row_1i == hunk.start_new_1i then
+        local insert_after_0i = hunk.start_new_0i + 1
+        vim.api.nvim_buf_set_lines(curr_bufnr, insert_after_0i, insert_after_0i, true, head_chunk)
+        return require "helpers".notify.doing(("Inserting at line %s"):format(insert_after_0i))
       end
-    elseif row_1i >= start_worktree_1i and row_1i <= end_worktree_1i_incl then
-      vim.api.nvim_buf_set_lines(curr_bufnr, start_worktree_0i, end_worktree_0i_excl, true, head_chunk)
-      return require "helpers".notify.doing(("Resetting lines %s to %s"):format(start_worktree_1i, end_worktree_1i_incl))
+    elseif row_1i >= hunk.start_new_1i and row_1i <= hunk.end_new_1i_incl then
+      vim.api.nvim_buf_set_lines(curr_bufnr, hunk.start_new_0i, hunk.end_new_0i_excl, true, head_chunk)
+      return require "helpers".notify.doing(("Resetting lines %s to %s"):format(hunk.start_new_1i, hunk.end_new_1i_incl))
     end
   end
 
