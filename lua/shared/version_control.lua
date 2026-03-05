@@ -58,7 +58,9 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", }, {
       vim.api.nvim_buf_clear_namespace(curr_bufnr, ns_id, 0, -1)
       for _, row_to_hl in ipairs(rows_to_hl) do
         vim.api.nvim_buf_set_extmark(curr_bufnr, ns_id, row_to_hl.row_0i, 0, {
-          number_hl_group = row_to_hl.hl,
+          sign_text = "│",
+          sign_hl_group = row_to_hl.hl,
+          priority = 9999,
         })
       end
     end)
