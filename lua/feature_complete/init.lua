@@ -7,8 +7,14 @@ vim.pack.add {
   { src = "https://github.com/nvim-treesitter/nvim-treesitter-textobjects", version = "main", },
 
   "https://github.com/mfussenegger/nvim-jdtls",
-  "https://github.com/nvim-mini/mini.nvim",
   "https://github.com/ibhagwan/fzf-lua",
+
+  "https://github.com/nvim-mini/mini.base16",
+  "https://github.com/nvim-mini/mini.icons",
+  "https://github.com/nvim-mini/mini.splitjoin",
+  "https://github.com/nvim-mini/mini.hipatterns",
+  "https://github.com/nvim-mini/mini.keymap",
+  "https://github.com/nvim-mini/mini.diff",
 
   "https://github.com/elanmed/fzf-lua-frecency.nvim",
   "https://github.com/elanmed/surround.nvim",
