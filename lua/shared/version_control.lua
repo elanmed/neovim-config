@@ -79,17 +79,24 @@ vim.keymap.set("n", "gh", function()
 
     local end_head_1i_excl = start_head_1i + count_head
     local end_head_1i_incl = end_head_1i_excl - 1
-
     vim.print { start_head_1i = start_head_1i, count_head = count_head, start_worktree_1i = start_worktree_1i, count_worktree = count_worktree, }
 
-    local is_deletion = count_worktree == 0
-    local in_deletion_range = is_deletion and row_1i == start_worktree_1i
-    local in_insertion_change_range = not is_deletion and row_1i >= start_worktree_1i and row_1i <= end_worktree_1i_incl
+    -- for deletions/replacement, start_x is `starting from and including`
+    -- for insertions, start_x is `after`
 
-    if in_deletion_range or in_insertion_change_range then
-      local head_chunk = vim.list_slice(head_lines, start_head_1i, end_head_1i_incl)
+    local is_deletion = count_worktree == 0
+
+    local head_chunk = vim.list_slice(head_lines, start_head_1i, end_head_1i_incl)
+    if is_deletion then
+      if row_1i == start_worktree_1i then
+        local after_start_worktree_0i = start_worktree_0i + 1
+        -- when the start and end are the same, inserts after
+        vim.api.nvim_buf_set_lines(0, after_start_worktree_0i, after_start_worktree_0i, true, head_chunk)
+        return require "helpers".notify.doing(("Inserting at line %s"):format(after_start_worktree_0i))
+      end
+    elseif row_1i >= start_worktree_1i and row_1i <= end_worktree_1i_incl then
       vim.api.nvim_buf_set_lines(0, start_worktree_0i, end_worktree_0i_excl, true, head_chunk)
-      return
+      return require "helpers".notify.doing(("Resetting lines %s to %s"):format(start_worktree_1i, end_worktree_1i_incl))
     end
   end
 
