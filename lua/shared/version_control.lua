@@ -83,18 +83,13 @@ vim.keymap.set("n", "gh", function()
     vim.print { start_head_1i = start_head_1i, count_head = count_head, start_worktree_1i = start_worktree_1i, count_worktree = count_worktree, }
 
     local is_deletion = count_worktree == 0
+    local in_deletion_range = is_deletion and row_1i == start_worktree_1i
+    local in_insertion_change_range = not is_deletion and row_1i >= start_worktree_1i and row_1i <= end_worktree_1i_incl
 
-    local head_chunk = vim.list_slice(head_lines, start_head_1i, end_head_1i_incl)
-    if is_deletion then
-      if row_1i >= start_head_1i and row_1i <= end_head_1i_incl then
-        vim.api.nvim_buf_set_lines(0, start_worktree_0i, end_worktree_0i_excl, true, head_chunk)
-        return
-      end
-    else
-      if row_1i >= start_worktree_1i and row_1i <= end_worktree_1i_incl then
-        vim.api.nvim_buf_set_lines(0, start_worktree_0i, end_worktree_0i_excl, true, head_chunk)
-        return
-      end
+    if in_deletion_range or in_insertion_change_range then
+      local head_chunk = vim.list_slice(head_lines, start_head_1i, end_head_1i_incl)
+      vim.api.nvim_buf_set_lines(0, start_worktree_0i, end_worktree_0i_excl, true, head_chunk)
+      return
     end
   end
 
