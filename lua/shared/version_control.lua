@@ -2,68 +2,75 @@ local buffer_state = {}
 
 local ns_id = vim.api.nvim_create_namespace "GitDiff"
 
-vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", }, {
+local timer = nil
+vim.api.nvim_create_autocmd({ "BufWinEnter", "TextChanged", "TextChangedI", }, {
   group = vim.api.nvim_create_augroup("DiffTracker", { clear = true, }),
-  callback = require "helpers".async(function(ev)
-    local curr_bufnr = vim.api.nvim_get_current_buf()
-    if ev.buf ~= curr_bufnr then return end
+  callback = (function(ev)
+    if timer then vim.fn.timer_stop(timer) end
 
-    local worktree_lines = vim.api.nvim_buf_get_lines(curr_bufnr, 0, -1, false)
-    local worktree_str = table.concat(worktree_lines, "\n")
+    timer = vim.fn.timer_start(300, require "helpers".async(function()
+      local curr_bufnr = vim.api.nvim_get_current_buf()
+      if ev.buf ~= curr_bufnr then return end
 
-    local curr_bufname = vim.fs.relpath(vim.fn.getcwd(), vim.api.nvim_buf_get_name(curr_bufnr))
-    --- @type vim.SystemCompleted
-    local out = require "helpers".await(function(resolve)
-      vim.system({ "git", "show", "HEAD:" .. curr_bufname, }, resolve)
-    end)
+      local worktree_lines = vim.api.nvim_buf_get_lines(curr_bufnr, 0, -1, false)
+      local worktree_str = table.concat(worktree_lines, "\n")
 
-    if out.code ~= 0 then return end
-    if out.stdout == nil then return end
-    local head_str = out.stdout
-    assert(head_str ~= nil)
+      local curr_bufname = vim.fs.relpath(vim.fn.getcwd(), vim.api.nvim_buf_get_name(curr_bufnr))
+      if curr_bufname == nil then return end
 
-    head_str = head_str:gsub("\n$", "") .. "\n"
-    local head_lines = vim.split(head_str, "\n", { trimempty = true, })
-    worktree_str = worktree_str:gsub("\n$", "") .. "\n"
+      --- @type vim.SystemCompleted
+      local out = require "helpers".await(function(resolve)
+        vim.system({ "git", "show", "HEAD:" .. curr_bufname, }, resolve)
+      end)
 
-    local indices = vim.text.diff(head_str, worktree_str, { result_type = "indices", })
-    buffer_state[curr_bufnr] = {
-      indices = indices,
-      head_lines = head_lines,
-    }
+      if out.code ~= 0 then return end
+      if out.stdout == nil then return end
+      local head_str = out.stdout
+      assert(head_str ~= nil)
 
-    local rows_to_hl = {}
-    for _, hunk in ipairs(indices) do
-      local _, count_head, start_worktree_1i, count_worktree = unpack(hunk)
+      head_str = head_str:gsub("\n$", "") .. "\n"
+      local head_lines = vim.split(head_str, "\n", { trimempty = true, })
+      worktree_str = worktree_str:gsub("\n$", "") .. "\n"
 
-      local end_worktree_1i_excl = start_worktree_1i + count_worktree
-      local end_worktree_1i_incl = end_worktree_1i_excl - 1
+      local indices = vim.text.diff(head_str, worktree_str, { result_type = "indices", })
+      buffer_state[curr_bufnr] = {
+        indices = indices,
+        head_lines = head_lines,
+      }
 
-      local is_deletion = count_worktree == 0
-      local is_insertion = count_head == 0
+      local rows_to_hl = {}
+      for _, hunk in ipairs(indices) do
+        local _, count_head, start_worktree_1i, count_worktree = unpack(hunk)
 
-      local hunk_hl_group = (function()
-        if is_deletion then return "DiffDelete" end
-        if is_insertion then return "DiffAdd" end
-        return "DiffChange"
-      end)()
+        local end_worktree_1i_excl = start_worktree_1i + count_worktree
+        local end_worktree_1i_incl = end_worktree_1i_excl - 1
 
-      for row_1i = start_worktree_1i, math.max(end_worktree_1i_incl, start_worktree_1i) do
-        local row_0i = row_1i - 1
-        table.insert(rows_to_hl, { row_0i = row_0i, hl = hunk_hl_group, })
+        local is_deletion = count_worktree == 0
+        local is_insertion = count_head == 0
+
+        local hunk_hl_group = (function()
+          if is_deletion then return "DiffDelete" end
+          if is_insertion then return "DiffAdd" end
+          return "DiffChange"
+        end)()
+
+        for row_1i = start_worktree_1i, math.max(end_worktree_1i_incl, start_worktree_1i) do
+          local row_0i = row_1i - 1
+          table.insert(rows_to_hl, { row_0i = row_0i, hl = hunk_hl_group, })
+        end
       end
-    end
 
-    vim.schedule(function()
-      vim.api.nvim_buf_clear_namespace(curr_bufnr, ns_id, 0, -1)
-      for _, row_to_hl in ipairs(rows_to_hl) do
-        vim.api.nvim_buf_set_extmark(curr_bufnr, ns_id, row_to_hl.row_0i, 0, {
-          sign_text = "│",
-          sign_hl_group = row_to_hl.hl,
-          priority = 9999,
-        })
-      end
-    end)
+      vim.schedule(function()
+        vim.api.nvim_buf_clear_namespace(curr_bufnr, ns_id, 0, -1)
+        for _, row_to_hl in ipairs(rows_to_hl) do
+          vim.api.nvim_buf_set_extmark(curr_bufnr, ns_id, row_to_hl.row_0i, 0, {
+            sign_text = "│",
+            sign_hl_group = row_to_hl.hl,
+            priority = 9999,
+          })
+        end
+      end)
+    end))
   end),
 })
 
