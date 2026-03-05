@@ -1,5 +1,6 @@
 local curr_indices = nil
 local head_lines = nil
+local namespace_id = vim.api.nvim_create_namespace "my_line_highlight"
 
 vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", }, {
   group = vim.api.nvim_create_augroup("DiffTracker", { clear = true, }),
@@ -26,6 +27,41 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", }, {
     worktree_str = worktree_str:gsub("\n$", "") .. "\n"
 
     curr_indices = vim.text.diff(head_str, worktree_str, { result_type = "indices", })
+
+    local rows_to_hl = {}
+    for _, hunk in ipairs(curr_indices) do
+      local start_head_1i, count_head, start_worktree_1i, count_worktree = unpack(hunk)
+
+      local start_worktree_0i = start_worktree_1i - 1
+      local end_worktree_1i_excl = start_worktree_1i + count_worktree
+      local end_worktree_0i_excl = end_worktree_1i_excl - 1
+      local end_worktree_1i_incl = end_worktree_1i_excl - 1
+
+      local end_head_1i_excl = start_head_1i + count_head
+      local end_head_1i_incl = end_head_1i_excl - 1
+
+      local is_deletion = count_worktree == 0
+      local is_insertion = count_head == 0
+
+      local hunk_hl_group = (function()
+        if is_deletion then return "DiffDelete" end
+        if is_insertion then return "DiffAdd" end
+        return "DiffChange"
+      end)()
+
+      for row_1i = start_worktree_1i, math.max(end_worktree_1i_incl, start_worktree_1i) do
+        local row_0i = row_1i - 1
+        table.insert(rows_to_hl, { row_0i = row_0i, hl = hunk_hl_group, })
+      end
+    end
+
+    vim.schedule(function()
+      for _, row_to_hl in ipairs(rows_to_hl) do
+        vim.api.nvim_buf_set_extmark(0, namespace_id, row_to_hl.row_0i, 0, {
+          number_hl_group = row_to_hl.hl,
+        })
+      end
+    end)
   end),
 })
 
