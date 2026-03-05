@@ -39,8 +39,12 @@ local apply_minimal_changes = function(opts)
 
     local new_text = (function()
       if hunk.is_deletion then return "" end
+      -- lsp expects that every line in newText will end with a newline
       return table.concat(new_text_lines, "\n") .. "\n"
     end)()
+
+    -- for deletions/replacement, line_x is starting from and including
+    -- for insertions, line_x is after
 
     local start_line = (function()
       if hunk.is_insertion then return hunk.start_old_0i + 1 end
