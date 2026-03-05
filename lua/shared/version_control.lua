@@ -3,7 +3,7 @@ local buffer_state = {}
 local ns_id = vim.api.nvim_create_namespace "GitDiff"
 
 local timer = nil
-vim.api.nvim_create_autocmd({ "BufWinEnter", "TextChanged", "TextChangedI", }, {
+vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", "TextChanged", "TextChangedI", }, {
   group = vim.api.nvim_create_augroup("DiffTracker", { clear = true, }),
   callback = (function(ev)
     if timer then vim.fn.timer_stop(timer) end
@@ -49,9 +49,9 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "TextChanged", "TextChangedI", }, {
         local is_insertion = count_head == 0
 
         local hunk_hl_group = (function()
-          if is_deletion then return "DiffDelete" end
-          if is_insertion then return "DiffAdd" end
-          return "DiffChange"
+          if is_deletion then return "DiffSignDelete" end
+          if is_insertion then return "DiffSignAdd" end
+          return "DiffSignChange"
         end)()
 
         for row_1i = start_worktree_1i, math.max(end_worktree_1i_incl, start_worktree_1i) do
@@ -64,9 +64,7 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "TextChanged", "TextChangedI", }, {
         vim.api.nvim_buf_clear_namespace(curr_bufnr, ns_id, 0, -1)
         for _, row_to_hl in ipairs(rows_to_hl) do
           vim.api.nvim_buf_set_extmark(curr_bufnr, ns_id, row_to_hl.row_0i, 0, {
-            sign_text = "│",
-            sign_hl_group = row_to_hl.hl,
-            priority = 9999,
+            number_hl_group = row_to_hl.hl,
           })
         end
       end)

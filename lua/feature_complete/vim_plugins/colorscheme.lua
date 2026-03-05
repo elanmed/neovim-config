@@ -70,6 +70,10 @@ vim.api.nvim_set_hl(0, "NotifyDoing", { fg = M.orange, })
 vim.api.nvim_set_hl(0, "NotifyToggleOn", { fg = M.green, })
 vim.api.nvim_set_hl(0, "NotifyToggleOff", { fg = M.purple, })
 
+vim.api.nvim_set_hl(0, "DiffSignAdd", { fg = M.green, bg = M.dark_grey, bold = true, })
+vim.api.nvim_set_hl(0, "DiffSignChange", { fg = M.yellow, bg = M.dark_grey, bold = true, })
+vim.api.nvim_set_hl(0, "DiffSignDelete", { fg = M.red, bg = M.dark_grey, bold = true, })
+
 vim.api.nvim_create_autocmd("TextYankPost", {
   group = vim.api.nvim_create_augroup("HighlightOnYank", { clear = true, }),
   callback = function() vim.highlight.on_yank() end,
