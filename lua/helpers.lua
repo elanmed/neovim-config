@@ -52,9 +52,13 @@ dev.log = function(content)
   file:close()
 end
 
+local timer = nil
+
 --- @param message string
 --- @param level "error" | "warn" | "doing" | "info" | "toggle_on" | "toggle_off"
 local function _notify(message, level)
+  if timer then vim.fn.timer_stop(timer) end
+
   local level_to_hl_group = {
     error = "NotifyError",
     info = "NotifyDoing",
@@ -65,7 +69,7 @@ local function _notify(message, level)
 
   local add_to_history = true
   vim.api.nvim_echo({ { message, hl_group, }, }, add_to_history, {})
-  vim.fn.timer_start(1500, function()
+  timer = vim.fn.timer_start(2000, function()
     if vim.fn.mode() == "n" then vim.cmd [[normal! :<Esc>]] end
   end)
 end
