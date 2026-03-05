@@ -2,46 +2,6 @@ local buffer_state = {}
 
 local ns_id = vim.api.nvim_create_namespace "GitDiff"
 
-local function unpack_hunk(hunk)
-  local start_old_1i, count_old, start_new_1i, count_new = unpack(hunk)
-
-  local start_old_0i = start_old_1i - 1
-  local end_old_1i_excl = start_old_1i + count_old
-  local end_old_1i_incl = end_old_1i_excl - 1
-  local end_old_0i_excl = end_old_1i_excl - 1
-  local end_old_0i_incl = end_old_1i_incl - 1
-
-  local start_new_0i = start_new_1i - 1
-  local end_new_1i_excl = start_new_1i + count_new
-  local end_new_1i_incl = end_new_1i_excl - 1
-  local end_new_0i_excl = end_new_1i_excl - 1
-  local end_new_0i_incl = end_new_1i_incl - 1
-
-  local is_deletion = count_new == 0
-  local is_insertion = count_old == 0
-
-  return {
-    start_old_1i = start_old_1i,
-    start_old_0i = start_old_0i,
-    count_old = count_old,
-    end_old_1i_excl = end_old_1i_excl,
-    end_old_1i_incl = end_old_1i_incl,
-    end_old_0i_excl = end_old_0i_excl,
-    end_old_0i_incl = end_old_0i_incl,
-
-    start_new_1i = start_new_1i,
-    start_new_0i = start_new_0i,
-    count_new = count_new,
-    end_new_1i_excl = end_new_1i_excl,
-    end_new_1i_incl = end_new_1i_incl,
-    end_new_0i_excl = end_new_0i_excl,
-    end_new_0i_incl = end_new_0i_incl,
-
-    is_deletion = is_deletion,
-    is_insertion = is_insertion,
-  }
-end
-
 local timer = nil
 vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", "TextChanged", "TextChangedI", }, {
   group = vim.api.nvim_create_augroup("DiffTracker", { clear = true, }),
@@ -80,7 +40,7 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", "TextChanged", "Tex
 
       local rows_to_hl = {}
       for _, raw_hunk in ipairs(indices) do
-        local hunk = unpack_hunk(raw_hunk)
+        local hunk = require "helpers".diff.unpack_hunk(raw_hunk)
 
         local hunk_hl_group = (function()
           if hunk.is_deletion then return "DiffSignDelete" end
@@ -130,7 +90,7 @@ local function navigate_hunk(direction)
   end)()
 
   for _, raw_hunk in ipairs(indices) do
-    local hunk = unpack_hunk(raw_hunk)
+    local hunk = require "helpers".diff.unpack_hunk(raw_hunk)
     if direction == "next" then
       if hunk.start_new_1i > row_1i then
         next_hunk_row_1i = hunk.start_new_1i
@@ -163,7 +123,7 @@ vim.keymap.set("n", "gh", function()
 
   local row_1i = vim.api.nvim_win_get_cursor(0)[1]
   for _, raw_hunk in ipairs(state.indices) do
-    local hunk = unpack_hunk(raw_hunk)
+    local hunk = require "helpers".diff.unpack_hunk(raw_hunk)
 
     local head_chunk = vim.list_slice(state.head_lines, hunk.start_old_1i, hunk.end_old_1i_incl)
     if hunk.is_deletion then

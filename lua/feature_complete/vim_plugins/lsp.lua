@@ -27,42 +27,29 @@ end
 local apply_minimal_changes = function(opts)
   opts.formatted = opts.formatted:gsub("\n$", "") .. "\n"
   opts.unformatted = opts.unformatted:gsub("\n$", "") .. "\n"
-
-  --- @type integer[][]
+  --- @type DiffHunk[]
   local indices = vim.text.diff(opts.unformatted, opts.formatted, { result_type = "indices", })
   local edits = {}
-  local tbl_formatted = vim.split(opts.formatted, "\n")
-  table.remove(tbl_formatted)
+  local formatted_lines = vim.split(opts.formatted, "\n")
+  table.remove(formatted_lines)
 
-  for _, hunk in ipairs(indices) do
-    local start_unformatted_1i, count_unformatted, start_formatted_1i, count_formatted = unpack(hunk)
-    local end_formatted_1i_excl = start_formatted_1i + count_formatted
-    local end_formatted_1i_incl = end_formatted_1i_excl - 1
+  for _, raw_hunk in ipairs(indices) do
+    local hunk = require "helpers".diff.unpack_hunk(raw_hunk)
+    local new_text_lines = vim.list_slice(formatted_lines, hunk.start_new_1i, hunk.end_new_1i_incl)
 
-    local start_unformatted_0i = start_unformatted_1i - 1
-    local end_unformatted_0i_excl = start_unformatted_0i + count_unformatted
-
-    local new_text_lines = vim.list_slice(tbl_formatted, start_formatted_1i, end_formatted_1i_incl)
-
-    local is_deletion = count_formatted == 0
     local new_text = (function()
-      if is_deletion then return "" end
-      -- lsp expects that every line in `newText` will end with a newline
+      if hunk.is_deletion then return "" end
       return table.concat(new_text_lines, "\n") .. "\n"
     end)()
 
-    -- for deletions/replacement, line_x is `starting from and including`
-    -- for insertions, line_x is `after`
-    local is_insertion = count_unformatted == 0
-
     local start_line = (function()
-      if is_insertion then return start_unformatted_0i + 1 end
-      return start_unformatted_0i
+      if hunk.is_insertion then return hunk.start_old_0i + 1 end
+      return hunk.start_old_0i
     end)()
 
     local end_line = (function()
-      if is_insertion then return start_unformatted_0i + 1 end
-      return end_unformatted_0i_excl
+      if hunk.is_insertion then return hunk.start_old_0i + 1 end
+      return hunk.end_old_0i_excl
     end)()
 
     table.insert(edits, {
@@ -73,7 +60,6 @@ local apply_minimal_changes = function(opts)
       newText = new_text,
     })
   end
-
   local view = vim.fn.winsaveview()
   vim.lsp.util.apply_text_edits(edits, opts.bufnr, "utf-8")
   call_write { bufnr = opts.bufnr, winnr = opts.winnr, view = view, }
