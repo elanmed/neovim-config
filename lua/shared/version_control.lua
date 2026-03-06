@@ -50,7 +50,9 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", "TextChanged", "Tex
 
         for row_1i = hunk.start_new_1i, math.max(hunk.end_new_1i_incl, hunk.start_new_1i) do
           local row_0i = row_1i - 1
-          table.insert(rows_to_hl, { row_0i = row_0i, hl = hunk_hl_group, })
+          if row_0i >= 0 then
+            table.insert(rows_to_hl, { row_0i = row_0i, hl = hunk_hl_group, })
+          end
         end
       end
 
