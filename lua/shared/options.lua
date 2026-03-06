@@ -21,6 +21,7 @@ vim.o.shiftwidth = 2 -- number of spaces to insert/delete when in insert mode
 vim.o.swapfile = false
 vim.o.backup = false
 vim.o.writebackup = false
+vim.o.laststatus = 0
 vim.o.ruler = false
 vim.o.showcmd = false
 vim.opt.suffixesadd = {

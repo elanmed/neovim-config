@@ -1,5 +1,4 @@
 vim.o.showtabline = 2
-vim.o.laststatus = 2
 vim.o.tabline = "%!v:lua.Tabline()"
 vim.o.statusline = "%!v:lua.Statusline()"
 
@@ -22,23 +21,22 @@ local get_tab_section = function()
   return table.concat({ "%#Search#", curr_tab, "%#TabLine#", }, " ")
 end
 
---- @param buf_symbol "%" | "#"
-local get_buf_section = function(buf_symbol)
-  local bufnr = vim.fn.bufnr(buf_symbol)
+local get_curr_buf_section = function()
+  local bufnr = vim.fn.bufnr "%"
   if not vim.api.nvim_buf_is_valid(bufnr) then return "" end
 
-  if buf_symbol == "%" then
-    return "%#TabLineTitle#EDIT: %#TabLineSel#" .. get_name(bufnr)
-  elseif buf_symbol == "#" then
-    return "ALT: " .. get_name(bufnr)
-  end
+  return "%#TabLineTitle#EDIT %#TabLineSel#" .. get_name(bufnr)
+end
+
+local get_alt_buf_section = function()
+  local bufnr = vim.fn.bufnr "#"
+  if bufnr == vim.fn.bufnr "%" then return "" end
+  if not vim.api.nvim_buf_is_valid(bufnr) then return "" end
+
+  return " %#TabLine#|  %#TabLineTitle#ALT %#TabLine#" .. get_name(bufnr)
 end
 
 _G.Tabline = function()
-  return table.concat({ get_tab_section(), get_buf_section "%", }, " ")
+  return table.concat({ get_tab_section(), get_curr_buf_section(), get_alt_buf_section(), }, " ")
 end
 
-_G.Statusline = function()
-  if vim.fn.bufnr "#" == vim.fn.bufnr "%" then return "" end
-  return get_buf_section "#"
-end
