@@ -261,6 +261,17 @@ vim.api.nvim_set_hl(0, "@string.special.vimdoc", { link = "SpecialChar", })
 vim.api.nvim_set_hl(0, "@variable.parameter.vimdoc", { fg = M.orange, })
 vim.api.nvim_set_hl(0, "@markup.heading.4.vimdoc", { link = "Title", })
 
+-- mini.icons
+vim.api.nvim_set_hl(0, "MiniIconsAzure", { fg = M.blue, })
+vim.api.nvim_set_hl(0, "MiniIconsBlue", { fg = M.brown, })
+vim.api.nvim_set_hl(0, "MiniIconsCyan", { fg = M.cyan, })
+vim.api.nvim_set_hl(0, "MiniIconsGreen", { fg = M.green, })
+vim.api.nvim_set_hl(0, "MiniIconsGrey", { fg = M.white, })
+vim.api.nvim_set_hl(0, "MiniIconsOrange", { fg = M.orange, })
+vim.api.nvim_set_hl(0, "MiniIconsPurple", { fg = M.purple, })
+vim.api.nvim_set_hl(0, "MiniIconsRed", { fg = M.red, })
+vim.api.nvim_set_hl(0, "MiniIconsYellow", { fg = M.yellow, })
+
 vim.api.nvim_set_hl(0, "FlashLabel", { link = "IncSearch", })
 vim.api.nvim_set_hl(0, "FFPickerCursorLine", { link = "Visual", })
 vim.api.nvim_set_hl(0, "FFPickerFuzzyHighlightChar", { fg = M.yellow, bold = true, })
@@ -289,10 +300,5 @@ vim.g.terminal_color_12 = M.blue
 vim.g.terminal_color_13 = M.purple
 vim.g.terminal_color_14 = M.cyan
 vim.g.terminal_color_15 = M.white
-
-vim.api.nvim_create_autocmd("TextYankPost", {
-  group = vim.api.nvim_create_augroup("HighlightOnYank", { clear = true, }),
-  callback = function() vim.highlight.on_yank() end,
-})
 
 return M
