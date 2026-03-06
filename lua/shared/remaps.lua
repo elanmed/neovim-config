@@ -213,9 +213,13 @@ local function setup_wasted_key_detection(key, threshold)
   local timer = nil
 
   vim.keymap.set("n", key, function()
+    local count = (function()
+      if vim.v.count == 0 then return 1 end
+      return vim.v.count
+    end)()
     if vim.bo.buftype ~= "" then
       press_count = 0
-      return vim.api.nvim_feedkeys(vim.v.count .. key, "n", false)
+      return vim.api.nvim_feedkeys(count .. key, "n", false)
     end
 
     press_count = press_count + 1
@@ -231,7 +235,7 @@ local function setup_wasted_key_detection(key, threshold)
       press_count = 0
     end)
 
-    vim.api.nvim_feedkeys(vim.v.count .. key, "n", false)
+    vim.api.nvim_feedkeys(count .. key, "n", false)
   end)
 end
 
