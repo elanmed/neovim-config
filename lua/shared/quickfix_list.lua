@@ -37,9 +37,9 @@ function _G.GetQuickfixTextFunc()
         bufname ..
         string.rep(" ", buffer_padding_right) ..
         " | " ..
-        h.str.pad { val = item.lnum, max_len = longest_row_len, side = "left", } ..
+        h.str.pad(item.lnum, { min_len = longest_row_len, side = "left", }) ..
         ":" ..
-        h.str.pad { val = item.col, max_len = longest_col_len, side = "right", } ..
+        h.str.pad(item.col, { min_len = longest_col_len, side = "right", }) ..
         " | " .. vim.fn.trim(item.text)
 
     local misc_padding = 10

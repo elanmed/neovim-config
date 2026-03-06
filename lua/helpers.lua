@@ -193,20 +193,20 @@ utils.set_and_rotate = function(val)
 end
 
 --- @class PadOpts
---- @field val string | number
---- @field max_len number
+--- @field min_len number
 --- @field side 'left' | 'right'
+--- @param val string | number
 --- @param opts PadOpts
-str.pad = function(opts)
-  if #tostring(opts.val) >= opts.max_len then
-    return tostring(opts.val)
+str.pad = function(val, opts)
+  if #tostring(val) >= opts.min_len then
+    return tostring(val)
   end
 
-  local num_spaces = opts.max_len - #tostring(opts.val)
+  local num_spaces = opts.min_len - #tostring(val)
   if opts.side == "left" then
-    return string.rep(" ", num_spaces) .. tostring(opts.val)
+    return string.rep(" ", num_spaces) .. tostring(val)
   end
-  return tostring(opts.val) .. string.rep(" ", num_spaces)
+  return tostring(val) .. string.rep(" ", num_spaces)
 end
 
 local function safe_resume(...)
