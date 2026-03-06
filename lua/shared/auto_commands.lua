@@ -42,6 +42,64 @@ vim.api.nvim_create_autocmd("TextYankPost", {
   end,
 })
 
+vim.api.nvim_create_autocmd("TextYankPost", {
+  group = vim.api.nvim_create_augroup("HighlightOnYank", { clear = true, }),
+  callback = function() vim.highlight.on_yank() end,
+})
+
+vim.api.nvim_create_autocmd("BufWinEnter", {
+  callback = function()
+    vim.fn.matchadd("Todo", [[\<\(TODO\|FIXME\|HACK\|XXX\)\>]])
+  end,
+})
+
+local function foreground_for_hex(hex_color)
+  local red = tonumber(hex_color:sub(2, 3), 16)
+  local green = tonumber(hex_color:sub(4, 5), 16)
+  local blue = tonumber(hex_color:sub(6, 7), 16)
+  local luminance = (0.299 * red + 0.587 * green + 0.114 * blue) / 255
+  if luminance > 0.5 then
+    return "#000000"
+  else
+    return "#ffffff"
+  end
+end
+
+local hex_ns_id = vim.api.nvim_create_namespace "HexColors"
+local function highlight_hex_colors(buffer)
+  vim.api.nvim_buf_clear_namespace(buffer, hex_ns_id, 0, -1)
+  local lines = vim.api.nvim_buf_get_lines(buffer, 0, -1, false)
+  for row_1i, line in ipairs(lines) do
+    local row_0i = row_1i - 1
+
+    local start_pos = 1
+    while true do
+      local match_start_1i, match_end_1i = line:find("#%x%x%x%x%x%x", start_pos)
+      if not match_start_1i then break end
+      local match_start_0i = match_start_1i - 1
+
+      local hex_color = line:sub(match_start_1i, match_end_1i)
+      local group_name = "HexColor_" .. hex_color:sub(2)
+      vim.api.nvim_set_hl(0, group_name, { bg = hex_color, fg = foreground_for_hex(hex_color), })
+      vim.api.nvim_buf_set_extmark(buffer, hex_ns_id, row_0i, match_start_0i, {
+        end_col = match_end_1i,
+        hl_group = group_name,
+      })
+      start_pos = match_end_1i + 1
+    end
+  end
+end
+
+local timer = nil
+vim.api.nvim_create_autocmd({ "BufWinEnter", "TextChanged", "TextChangedI", }, {
+  callback = function(event)
+    if timer then vim.fn.timer_stop(timer) end
+    timer = vim.fn.timer_start(500, function()
+      highlight_hex_colors(event.buf)
+    end)
+  end,
+})
+
 -- TODO convert to lua
 -- https://github.com/mrjones2014/smart-splits.nvim/blob/6c7c64b6e1be6eb95fd9583c0969e0df625c6cd6/autoload/smart_splits.vim#L51-L62
 vim.cmd [[
