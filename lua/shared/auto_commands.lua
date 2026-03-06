@@ -72,9 +72,9 @@ local function highlight_hex_colors(buffer)
   for row_1i, line in ipairs(lines) do
     local row_0i = row_1i - 1
 
-    local start_pos = 1
+    local start_pos_1i = 1
     while true do
-      local match_start_1i, match_end_1i = line:find("#%x%x%x%x%x%x", start_pos)
+      local match_start_1i, match_end_1i = line:find("#%x%x%x%x%x%x", start_pos_1i)
       if not match_start_1i then break end
       local match_start_0i = match_start_1i - 1
 
@@ -85,7 +85,7 @@ local function highlight_hex_colors(buffer)
         end_col = match_end_1i,
         hl_group = group_name,
       })
-      start_pos = match_end_1i + 1
+      start_pos_1i = match_end_1i + 1
     end
   end
 end
