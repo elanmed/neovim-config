@@ -33,7 +33,7 @@ local get_alt_buf_section = function()
   if bufnr == vim.fn.bufnr "%" then return "" end
   if not vim.api.nvim_buf_is_valid(bufnr) then return "" end
 
-  return "%#TabLineTitle#ALT %#TabLine#" .. get_name(bufnr)
+  return "ALT " .. get_name(bufnr)
 end
 
 _G.Tabline = function()
