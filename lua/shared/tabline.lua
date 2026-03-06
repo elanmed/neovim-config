@@ -2,12 +2,15 @@ local h = require "helpers"
 vim.o.showtabline = 2
 vim.o.tabline = "%!v:lua.Tabline()"
 
+local unnamed_buf_name = "[unnamed]"
+local terminal_buf_name = "[terminal]"
+
 --- @param bufnr number
 local get_name = function(bufnr)
-  if vim.bo[bufnr].buftype == "terminal" then return "[terminal]" end
+  if vim.bo[bufnr].buftype == "terminal" then return terminal_buf_name end
 
   local bufname = vim.api.nvim_buf_get_name(bufnr)
-  if bufname == "" then return "[unnamed]" end
+  if bufname == "" then return unnamed_buf_name end
 
   local dirname = vim.fs.basename(vim.fs.dirname(bufname))
   local basename = vim.fs.basename(bufname)
@@ -30,8 +33,11 @@ end
 
 local get_alt_buf_section = function()
   local bufnr = vim.fn.bufnr "#"
-  if bufnr == vim.fn.bufnr "%" then return "" end
   if not vim.api.nvim_buf_is_valid(bufnr) then return "" end
+
+  if get_name(vim.fn.bufnr "%") == unnamed_buf_name then return "" end
+  if get_name(vim.fn.bufnr "%") == terminal_buf_name then return "" end
+  if get_name(bufnr) == get_name(vim.fn.bufnr "%") then return "" end
 
   return "%#TabLine#ALT " .. get_name(bufnr)
 end
