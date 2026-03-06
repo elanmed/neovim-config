@@ -41,20 +41,7 @@ _G.Tabline = function()
     get_tab_section(),
     h.str.pad(get_curr_buf_section(), { min_len = 60, side = "right", }),
     " %#TabLine#| ",
-    get_curr_buf_section(),
-  }, " ")
-end
-  if not vim.api.nvim_buf_is_valid(bufnr) then return "" end
-
-  return "%#TabLineTitle#ALT %#TabLine#" .. get_name(bufnr)
-end
-
-_G.Tabline = function()
-  return table.concat({
-    get_tab_section(),
-    h.str.pad(get_curr_buf_section(), { min_len = 60, side = "right", }),
-    " %#TabLine#| ",
-    get_curr_buf_section(),
+    get_alt_buf_section(),
   }, " ")
 end
 
