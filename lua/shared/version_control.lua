@@ -83,13 +83,18 @@ local function navigate_hunk(direction)
   if state == nil then
     return require "helpers".notify.error "Missing diff state for this buffer"
   end
-  local row_1i = vim.api.nvim_win_get_cursor(0)[1]
 
-  local next_hunk_row_1i = nil
   local indices = (function()
     if direction == "next" then return state.indices end
     return require "helpers".tbl.reverse(state.indices)
   end)()
+
+  if #indices == 0 then
+    return require "helpers".notify.error "No hunks"
+  end
+
+  local row_1i = vim.api.nvim_win_get_cursor(0)[1]
+  local next_hunk_row_1i = nil
 
   for _, raw_hunk in ipairs(indices) do
     local hunk = require "helpers".diff.unpack_hunk(raw_hunk)
@@ -107,7 +112,15 @@ local function navigate_hunk(direction)
   end
 
   if next_hunk_row_1i == nil then
-    return require "helpers".notify.error(("No %s hunk"):format(direction))
+    if direction == "next" then
+      local hunk = require "helpers".diff.unpack_hunk(indices[1])
+      vim.api.nvim_win_set_cursor(0, { hunk.start_new_1i, 0, })
+      return require "helpers".notify.error "Wrapping to the first hunk"
+    else
+      local hunk = require "helpers".diff.unpack_hunk(indices[#indices])
+      vim.api.nvim_win_set_cursor(0, { hunk.start_new_1i, 0, })
+      return require "helpers".notify.error "Wrapping to the last hunk"
+    end
   end
 
   vim.api.nvim_win_set_cursor(0, { next_hunk_row_1i, 0, })
