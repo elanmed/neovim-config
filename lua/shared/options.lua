@@ -34,7 +34,6 @@ vim.o.wildmode = "noselect"
 vim.o.wildoptions = "pum,fuzzy"
 vim.o.list = true
 vim.o.listchars = "leadmultispace:| ,trail:·,nbsp:◇"
-vim.o.pummaxwidth = 30
 vim.o.foldlevelstart = 99
 vim.o.foldcolumn = "1"
 vim.opt.fillchars = {

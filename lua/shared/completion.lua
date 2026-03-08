@@ -1,3 +1,36 @@
+local symbol_map = {
+  Text = "󰉿",
+  Method = "󰆧",
+  Function = "󰊕",
+  Constructor = "",
+  Field = "󰜢",
+  Variable = "󰀫",
+  Class = "󰠱",
+  Interface = "",
+  Module = "",
+  Property = "󰜢",
+  Unit = "󰑭",
+  Value = "󰎠",
+  Enum = "",
+  Keyword = "󰌋",
+  Snippet = "",
+  Color = "󰏘",
+  File = "󰈙",
+  Reference = "󰈇",
+  Folder = "󰉋",
+  EnumMember = "",
+  Constant = "󰏿",
+  Struct = "󰙅",
+  Event = "",
+  Operator = "󰆕",
+  TypeParameter = "",
+}
+
+for i, kind in ipairs(vim.lsp.protocol.CompletionItemKind) do
+  assert(symbol_map[kind], "symbol_map missing entry for: " .. kind)
+  vim.lsp.protocol.CompletionItemKind[i] = symbol_map[kind]
+end
+
 vim.api.nvim_create_autocmd("CompleteChanged", {
   group = vim.api.nvim_create_augroup("LspCompletionPopup", { clear = true, }),
   callback = function()
