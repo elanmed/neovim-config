@@ -75,7 +75,7 @@ local format_with_prettier = function()
   local bufnr = vim.api.nvim_get_current_buf()
 
   vim.system(
-    { "oxfmt", "--stdin-filepath", vim.api.nvim_buf_get_name(0), },
+    { "prettier", "--stdin-filepath", vim.api.nvim_buf_get_name(0), },
     {
       stdin = unformatted,
       text = true,
@@ -83,7 +83,7 @@ local format_with_prettier = function()
     function(result)
       if result.code ~= 0 then
         return vim.schedule(function()
-          h.notify.doing "[oxfmt] non-zero exit code, writing"
+          h.notify.doing "[prettier] non-zero exit code, writing"
           call_write { bufnr = bufnr, winnr = winnr, }
         end)
       end
@@ -91,13 +91,13 @@ local format_with_prettier = function()
       local formatted = result.stdout
       if formatted == nil then
         return vim.schedule(function()
-          h.notify.doing "[oxfmt] no stdout, writing"
+          h.notify.doing "[prettier] no stdout, writing"
           call_write { bufnr = bufnr, winnr = winnr, }
         end)
       end
 
       vim.schedule(function()
-        h.notify.doing "[oxfmt] applying minimal diff, writing"
+        h.notify.doing "[prettier] applying minimal diff, writing"
         apply_minimal_changes { unformatted = unformatted, formatted = formatted, winnr = winnr, bufnr = bufnr, }
       end)
     end)
