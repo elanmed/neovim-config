@@ -34,13 +34,14 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
 vim.keymap.set("n", "<leader>f", require "ff".find)
 
 vim.api.nvim_create_autocmd("User", {
-  group = vim.api.nvim_create_augroup("TreeUserEvents", { clear = true, }),
+  group = vim.api.nvim_create_augroup("FFRefreshUserEvents", { clear = true, }),
   pattern = {
     "TreeCreate",
     "TreeDelete",
     "TreeRename",
     "TreeMove",
     "TreeCopy",
+    "GitHeadChanged",
   },
   callback = function() require "ff".refresh_files_cache() end,
 })

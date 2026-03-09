@@ -221,12 +221,14 @@ local async = function(fn)
   end
 end
 
---- @param promise fun(resolve: fun():nil):nil
+--- @alias Resolve fun():nil
+--- @alias Promise fun(resolve: Resolve):nil
+
+--- @param promise Promise
 local await = function(promise)
   local thread = coroutine.running()
   assert(thread ~= nil, "`await` can only be called in a coroutine")
   local scheduled_promise = vim.schedule_wrap(promise)
-  -- updated to use `safe_resolve`
   local resolve = function(...) safe_resume(thread, ...) end
   scheduled_promise(resolve)
   return coroutine.yield()
