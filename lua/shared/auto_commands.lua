@@ -95,6 +95,8 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "TextChanged", "TextChangedI", }, {
   callback = function(event)
     if timer then vim.fn.timer_stop(timer) end
     timer = vim.fn.timer_start(500, function()
+      if not vim.api.nvim_buf_is_valid(event.buf) then return end
+      if vim.api.nvim_get_current_buf() ~= event.buf then return end
       highlight_hex_colors(event.buf)
     end)
   end,
