@@ -3,25 +3,18 @@ local buffer_state = {}
 
 local ns_id = vim.api.nvim_create_namespace "GitDiff"
 
+--- @param bufnr number
 --- @param resolve Resolve
-local function update_buffer_state(resolve)
-  --- @param event_bufnr number
-  return h.async(function(event_bufnr)
-    local curr_bufnr = vim.api.nvim_get_current_buf()
-    if event_bufnr ~= curr_bufnr then
-      return resolve()
-    end
+local function update_state_for_buf(bufnr, resolve)
+  h.async(function()
+    local bufname = vim.fs.relpath(vim.fn.getcwd(), vim.api.nvim_buf_get_name(bufnr))
+    if bufname == nil then return resolve() end
 
-    local worktree_lines = vim.api.nvim_buf_get_lines(curr_bufnr, 0, -1, false)
+    local worktree_lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
     local worktree_str = table.concat(worktree_lines, "\n")
 
-    local curr_bufname = vim.fs.relpath(vim.fn.getcwd(), vim.api.nvim_buf_get_name(curr_bufnr))
-    if curr_bufname == nil then
-      return resolve()
-    end
-
     local out = h.await(function(inner_resolve)
-      vim.system({ "git", "show", "HEAD:" .. curr_bufname, }, inner_resolve)
+      vim.system({ "git", "show", ":" .. bufname, }, inner_resolve)
     end)
     if out.code ~= 0 then return resolve() end
     local head_str = out.stdout
@@ -32,12 +25,12 @@ local function update_buffer_state(resolve)
     local wt_str = worktree_str:gsub("\n$", "") .. "\n"
 
     local indices = vim.text.diff(head_str, wt_str, { result_type = "indices", })
-    buffer_state[curr_bufnr] = {
+    buffer_state[bufnr] = {
       indices = indices,
       head_lines = head_lines,
     }
     resolve()
-  end)
+  end)()
 end
 
 local update_signs = vim.schedule_wrap(function()
@@ -45,7 +38,6 @@ local update_signs = vim.schedule_wrap(function()
   local state = buffer_state[curr_bufnr]
 
   if state == nil then
-    -- return require "helpers".notify.error "Missing diff state for this buffer"
     return
   end
 
@@ -78,39 +70,48 @@ end)
 local timer = nil
 vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI", }, {
   group = vim.api.nvim_create_augroup("DiffTrackerTextEvents", { clear = true, }),
-  callback = (function(ev)
+  callback = function(event)
     if timer then vim.fn.timer_stop(timer) end
 
     timer = vim.fn.timer_start(300, h.async(function()
-      h.await(function(resolve) update_buffer_state(resolve)(ev.buf) end)
+      if event.buf ~= vim.api.nvim_get_current_buf() then return end
+      h.await(function(resolve) update_state_for_buf(event.buf, resolve) end)
       update_signs()
     end))
-  end),
+  end,
 })
 
-vim.api.nvim_create_autocmd({ "BufWinEnter", "BufWritePost", }, {
+vim.api.nvim_create_autocmd({ "BufWinEnter", "BufEnter", "BufWritePost", }, {
   group = vim.api.nvim_create_augroup("DiffTrackerBufEvents", { clear = true, }),
-  callback = h.async(function(ev)
-    h.await(function(resolve) update_buffer_state(resolve)(ev.buf) end)
+  callback = h.async(function(event)
+    if event.buf ~= vim.api.nvim_get_current_buf() then return end
+    h.await(function(resolve) update_state_for_buf(event.buf, resolve) end)
     update_signs()
   end),
 })
 
 vim.api.nvim_create_autocmd("User", {
   group = vim.api.nvim_create_augroup("DiffTrackerIndexEvents", { clear = true, }),
-  pattern = {
-    "GitIndexChanged",
-  },
-  callback = h.async(function(ev)
-    h.await(function(resolve) update_buffer_state(resolve)(ev.buf) end)
+  pattern = { "GitIndexChanged", },
+  callback = h.async(function()
+    local bufs = {}
+    for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+      if vim.bo[bufnr].buftype == "" and vim.api.nvim_buf_is_loaded(bufnr) then
+        table.insert(bufs, bufnr)
+      end
+    end
+
+    for _, bufnr in ipairs(bufs) do
+      h.await(function(resolve) update_state_for_buf(bufnr, resolve) end)
+    end
     update_signs()
   end),
 })
 
 vim.api.nvim_create_autocmd("BufDelete", {
   group = vim.api.nvim_create_augroup("DiffTrackerCleanup", { clear = true, }),
-  callback = function(ev)
-    buffer_state[ev.buf] = nil
+  callback = function(event)
+    buffer_state[event.buf] = nil
   end,
 })
 
@@ -218,7 +219,7 @@ vim.keymap.set("n", "<C-b>", function()
     win = 0,
   })
 
-  local out = vim.system { "git", "show", "HEAD:" .. curr_bufname, }:wait()
+  local out = vim.system { "git", "show", ":" .. curr_bufname, }:wait()
   local stdout = (function()
     if out.code ~= 0 then return "" end
     if out.stdout == nil then return "" end
@@ -281,10 +282,8 @@ h.utils.lazy_setup(function()
   index_watch:start(git_dir, {}, function(_, filename)
     vim.schedule(function()
       if filename == "index" then
-        vim.print "Index changed"
         vim.api.nvim_exec_autocmds("User", { pattern = "GitIndexChanged", })
       elseif filename == "HEAD" then
-        vim.print "Head changed"
         vim.api.nvim_exec_autocmds("User", { pattern = "GitHeadChanged", })
       end
     end)
