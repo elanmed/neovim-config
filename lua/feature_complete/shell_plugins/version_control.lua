@@ -3,10 +3,15 @@ local lazygit_term_bufnr = -1
 
 vim.keymap.set("n", "<leader>g", function()
   local open_term = function()
+    local editor_height = vim.o.lines - 1
+    local border_height = 2
     lazygit_term_winnr = vim.api.nvim_open_win(lazygit_term_bufnr, true, {
-      split = "right",
-      win = 0,
-      width = math.floor(vim.o.columns * 3 / 4),
+      relative = "editor",
+      row = editor_height,
+      col = 0,
+      width = vim.o.columns,
+      height = editor_height - border_height,
+      border = "single",
     })
   end
 
