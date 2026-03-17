@@ -290,11 +290,12 @@ vim.keymap.set("n", "<leader>i", function()
     [[--with-nth='{2}']],
     [[--accept-nth='{2}']],
     [[--bind='ctrl-x:execute-silent(git restore --staged --worktree {2}; git clean -f {2})+reload(git status --short --untracked-files)']],
+    [[--preview-window='up:80%']],
   }
 
   fzf {
     source = "git status --short --untracked-files",
-    options = h.tbl.extend(diff_opts_tbl, default_opts, multi_select_opts),
+    options = h.tbl.extend(default_opts, multi_select_opts, diff_opts_tbl),
     height = "full",
     sinklist = build_sinklist {
       get_filename = function(entry) return entry end,
