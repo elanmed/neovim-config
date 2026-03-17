@@ -33,10 +33,12 @@
 │   │   └── init.lua
 │   ├── feature_complete
 │   │   ├── init.lua
-│   │   └── plugins
+│   │   ├── vim_plugins
+│   │   │   └── [plugin_name].lua
+│   │   └── shell_plugins
 │   │       └── [plugin_name].lua
-│   ├── shared
-│   │   └── ...
+│   └── shared
+│       └── ...
 ```
 
 To run the feature-complete config, use `nvim`
