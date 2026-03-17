@@ -10,13 +10,13 @@ vim.pack.add {
   "https://github.com/nvim-mini/mini.splitjoin",
 
   "https://github.com/elanmed/fzf-lua-frecency.nvim",
-  "https://github.com/elanmed/surround.nvim",
+  "https://github.com/elanmed/ff.nvim",
   "https://github.com/elanmed/rg-far.nvim",
   "https://github.com/elanmed/tree.nvim",
-  "https://github.com/elanmed/ff.nvim",
+  "https://github.com/elanmed/surround.nvim",
   "https://github.com/elanmed/seek.nvim",
-  "https://github.com/elanmed/ft-highlight.nvim",
   "https://github.com/elanmed/marks.nvim",
+  "https://github.com/elanmed/ft-highlight.nvim",
   "https://github.com/elanmed/quickfix-preview.nvim",
 }
 
