@@ -14,6 +14,7 @@ vim.g.ff = {
     number = true,
     scrolloff = 0,
   },
+  auto_setup = false,
 }
 
 vim.api.nvim_create_autocmd({ "FileType", }, {
@@ -31,7 +32,10 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
   end,
 })
 
-vim.keymap.set("n", "<leader>f", require "ff".find)
+vim.keymap.set("n", "<leader>f", function()
+  local ff = require "ff"
+  ff.setup(function() ff.find() end)
+end)
 
 vim.api.nvim_create_autocmd("User", {
   group = vim.api.nvim_create_augroup("FFRefreshUserEvents", { clear = true, }),
