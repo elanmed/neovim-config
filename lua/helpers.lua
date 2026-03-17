@@ -150,14 +150,6 @@ utils.require_dir = function(dir)
 end
 
 
---- @param callback function
-utils.lazy_setup = function(callback)
-  vim.api.nvim_create_autocmd({ "BufReadPre", "BufNewFile", }, {
-    callback = callback,
-    once = true,
-  })
-end
-
 --- @generic T
 --- @param val T | nil
 --- @param fallback T
