@@ -221,9 +221,14 @@ local base_diagnostic_config = {
   update_in_insert = false,
 }
 
-vim.diagnostic.config(
-  vim.tbl_extend("error", base_diagnostic_config, { virtual_lines = false, })
-)
+vim.api.nvim_create_autocmd("VimEnter", {
+  once = true,
+  callback = function()
+    vim.diagnostic.config(
+      vim.tbl_extend("error", base_diagnostic_config, { virtual_lines = false, })
+    )
+  end,
+})
 
 local function toggle_virtual_lines()
   local current_virtual_lines = vim.diagnostic.config().virtual_lines
@@ -242,10 +247,10 @@ vim.keymap.set({ "i", "n", }, "<C-t>", toggle_virtual_lines, { desc = "Toggle vi
 vim.keymap.set("i", "<C-s>", function() vim.lsp.buf.signature_help { border = "single", } end,
   { desc = "LSP signature help", }
 )
-vim.keymap.set("n", "glr", vim.lsp.buf.references, { desc = "LSP go to references", })
-vim.keymap.set("n", "gli", vim.lsp.buf.definition, { desc = "LSP go to definition", })
-vim.keymap.set("n", "gla", vim.lsp.buf.code_action, { desc = "LSP code action", })
-vim.keymap.set("n", "gly", vim.lsp.buf.type_definition, { desc = "LSP go to type definition", })
+vim.keymap.set("n", "glr", function() vim.lsp.buf.references() end, { desc = "LSP go to references", })
+vim.keymap.set("n", "gli", function() vim.lsp.buf.definition() end, { desc = "LSP go to definition", })
+vim.keymap.set("n", "gla", function() vim.lsp.buf.code_action() end, { desc = "LSP code action", })
+vim.keymap.set("n", "gly", function() vim.lsp.buf.type_definition() end, { desc = "LSP go to type definition", })
 vim.keymap.set("n", "K", function() vim.lsp.buf.hover { border = "single", } end, { desc = "LSP hover", })
 vim.keymap.set({ "n", "i", }, "<C-c>", function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do

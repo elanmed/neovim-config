@@ -1,3 +1,5 @@
+vim.loader.enable()
+
 -- remap leader before importing remaps that use it
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
