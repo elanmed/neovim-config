@@ -1,6 +1,7 @@
 local h = require "helpers"
 vim.o.showtabline = 2
 vim.o.tabline = "%!v:lua.Tabline()"
+vim.o.statusline = "%!v:lua.Statusline()"
 
 local unnamed_buf_name = "[unnamed]"
 local terminal_buf_name = "[terminal]"
@@ -50,3 +51,16 @@ _G.Tabline = function()
   }, " ")
 end
 
+_G.Statusline = function()
+  local out = vim.system { "git", "rev-parse", "--absolute-git-dir", }:wait()
+  if out.code ~= 0 then return "" end
+  if out.stdout == nil then return "" end
+
+  local git_dir = vim.trim(out.stdout)
+  local head = vim.fn.readfile(git_dir .. "/HEAD")
+  if #head == 0 then return "%#TabLineTitle#BRANCH %#TabLineSel# [no branch]" end
+
+  local ref = head[1]:match "ref: refs/heads/(.+)"
+  if not ref then return "" end
+  return "%#TabLineTitle#BRANCH %#TabLineSel#" .. ref
+end
