@@ -58,9 +58,9 @@ _G.Statusline = function()
 
   local git_dir = vim.trim(out.stdout)
   local head = vim.fn.readfile(git_dir .. "/HEAD")
-  if #head == 0 then return "%#TabLineTitle#BRANCH %#TabLineSel# [no branch]" end
+  if #head == 0 then return "%#TabLine#BRANCH [no branch]" end
 
   local ref = head[1]:match "ref: refs/heads/(.+)"
   if not ref then return "" end
-  return "%#TabLineTitle#BRANCH %#TabLineSel#" .. ref
+  return "%#TabLine#BRANCH " .. ref
 end
