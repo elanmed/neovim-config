@@ -47,7 +47,10 @@ vim.api.nvim_create_autocmd("User", {
     "TreeCopy",
     "GitHeadChanged",
   },
-  callback = function() require "ff".refresh_files_cache() end,
+  callback = function()
+    local ff = require "ff"
+    ff.setup(function() ff.refresh_files_cache() end)
+  end,
 })
 
 vim.keymap.set("n", "<leader>zl", function()
