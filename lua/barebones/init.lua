@@ -77,9 +77,9 @@ end)
 local tree
 --- @class TreeOpts
 --- @field _dir string
+--- @field _editor_winnr number
 --- @field _tree_bufnr number
 --- @field _tree_winnr number
---- @field _editor_winnr number
 --- @param opts TreeOpts
 tree = function(opts)
   assert(opts._dir ~= nil)
@@ -90,6 +90,7 @@ tree = function(opts)
   --- @class Line
   --- @field abs_path string
   --- @field rel_path string
+  --- @field basename string
   --- @field type "file"|"directory"
 
   local cwd = vim.fn.getcwd()
@@ -103,6 +104,7 @@ tree = function(opts)
     local line = {
       abs_path = abs_path,
       rel_path = vim.fs.relpath(cwd, abs_path) or "",
+      basename = vim.fs.basename(abs_path),
       type = type,
     }
     table.insert(lines, line)
@@ -129,15 +131,15 @@ tree = function(opts)
     local winnr = vim.api.nvim_open_win(opts._tree_bufnr, true, { split = "left", win = 0, })
     return winnr
   end)()
-  vim.api.nvim_win_set_width(opts._tree_winnr, math.min(vim.o.columns, max_len))
+  vim.api.nvim_win_set_width(opts._tree_winnr, math.min(vim.o.columns, max_len + 10))
 
   local formatted_lines =
       vim.iter(lines)
       :map(function(line)
         if line.type == "directory" then
-          return vim.fs.joinpath(line.rel_path, "/")
+          return vim.fs.joinpath(line.basename, "/")
         end
-        return line.rel_path
+        return line.basename
       end)
       :totable()
 
@@ -202,7 +204,7 @@ tree = function(opts)
   vim.keymap.set("n", "yb", function()
     local line = lines[vim.fn.line "."]
     if not line then return end
-    require "helpers".utils.set_and_rotate(vim.fs.basename(line.abs_path))
+    require "helpers".utils.set_and_rotate(line.basename)
   end, { buffer = opts._tree_bufnr, })
 
   vim.keymap.set("n", "e", function()
