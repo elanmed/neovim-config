@@ -32,7 +32,7 @@ vim.api.nvim_create_autocmd("PackChanged", {
   group = vim.api.nvim_create_augroup("TreesitterUpdate", { clear = true, }),
   pattern = "nvim-treesitter",
   callback = function()
-    require "helpers".notify.doing "Updating treesitter parsers"
+    vim.notify("Updating treesitter parsers", vim.log.levels.INFO)
     require "nvim-treesitter".update(nil, { summary = true, })
   end,
 })

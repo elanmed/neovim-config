@@ -13,13 +13,13 @@ end, {})
 
 vim.api.nvim_create_user_command("Format", function()
   if vim.bo.readonly or vim.bo.buftype ~= "" then
-    return require "helpers".notify.error "Aborting"
+    return vim.notify("Aborting", vim.log.levels.ERROR)
   end
 
   local view = vim.fn.winsaveview()
   vim.cmd "keepjumps normal! gg=G"
   vim.fn.winrestview(view)
-  require "helpers".notify.doing "Formatting with gg=G, writing"
+  vim.notify("Formatting with gg=G, writing", vim.log.levels.INFO)
   vim.cmd.write { mods = { silent = true, }, }
 end, {})
 
@@ -76,7 +76,7 @@ vim.api.nvim_create_user_command("PackClean", function()
   end
 
   if #unused_plugins == 0 then
-    require "helpers".notify.doing "No unused plugins"
+    vim.notify("No unused plugins", vim.log.levels.INFO)
     return
   end
 

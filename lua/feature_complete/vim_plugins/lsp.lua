@@ -83,7 +83,7 @@ local format_with_prettier = function()
     function(result)
       if result.code ~= 0 then
         return vim.schedule(function()
-          h.notify.doing "[prettier] non-zero exit code, writing"
+          vim.notify("[prettier] non-zero exit code, writing", vim.log.levels.INFO)
           call_write { bufnr = bufnr, winnr = winnr, }
         end)
       end
@@ -91,13 +91,13 @@ local format_with_prettier = function()
       local formatted = result.stdout
       if formatted == nil then
         return vim.schedule(function()
-          h.notify.doing "[prettier] no stdout, writing"
+          vim.notify("[prettier] no stdout, writing", vim.log.levels.INFO)
           call_write { bufnr = bufnr, winnr = winnr, }
         end)
       end
 
       vim.schedule(function()
-        h.notify.doing "[prettier] applying minimal diff, writing"
+        vim.notify("[prettier] applying minimal diff, writing", vim.log.levels.INFO)
         apply_minimal_changes { unformatted = unformatted, formatted = formatted, winnr = winnr, bufnr = bufnr, }
       end)
     end)
@@ -110,7 +110,7 @@ local format_with_lsp = function()
   }
 
   if #clients == 0 then
-    h.notify.doing "No LSP client, writing"
+    vim.notify("No LSP client, writing", vim.log.levels.INFO)
     return vim.cmd.write { mods = { silent = true, }, }
   end
 
@@ -121,14 +121,14 @@ local format_with_lsp = function()
   client:request("textDocument/formatting", vim.lsp.util.make_formatting_params(), function(err, result)
     if err then
       return vim.schedule(function()
-        h.notify.doing "[textDocument/formatting] error, writing"
+        vim.notify("[textDocument/formatting] error, writing", vim.log.levels.INFO)
         call_write { bufnr = bufnr, winnr = winnr, }
       end)
     end
 
     if not result or #result == 0 then
       return vim.schedule(function()
-        h.notify.doing "[textDocument/formatting] no result, writing"
+        vim.notify("[textDocument/formatting] no result, writing", vim.log.levels.INFO)
         call_write { bufnr = bufnr, winnr = winnr, }
       end)
     end
@@ -147,12 +147,12 @@ local format_with_lsp = function()
       local formatted = result[1].newText
 
       vim.schedule(function()
-        h.notify.doing "[textDocument/formatting] applying minimal diff, writing"
+        vim.notify("[textDocument/formatting] applying minimal diff, writing", vim.log.levels.INFO)
         apply_minimal_changes { unformatted = unformatted, formatted = formatted, winnr = winnr, bufnr = bufnr, }
       end)
     else
       vim.schedule(function()
-        h.notify.doing "[textDocument/formatting] applying LSP edits directly, writing"
+        vim.notify("[textDocument/formatting] applying LSP edits directly, writing", vim.log.levels.INFO)
         vim.lsp.util.apply_text_edits(result, bufnr, "utf-8")
         call_write { bufnr = bufnr, winnr = winnr, }
       end)
@@ -182,10 +182,10 @@ local lsp_ft = {
   "zsh",
 }
 
-vim.keymap.set("n", "<bs>", function() h.notify.error "Use s instead!" end)
+vim.keymap.set("n", "<bs>", function() vim.notify("Use s instead!", vim.log.levels.ERROR) end)
 vim.keymap.set("n", "s", function()
   if vim.bo.readonly or vim.bo.buftype ~= "" then
-    return h.notify.error "Aborting"
+    return vim.notify("Aborting", vim.log.levels.ERROR)
   end
 
   local bufnr = vim.api.nvim_get_current_buf()
@@ -194,7 +194,7 @@ vim.keymap.set("n", "s", function()
 
   local one_pt_five_mb = 1.5 * 1024 * 1024
   if vim.fn.getfsize(bufname) > one_pt_five_mb or line_count > 5000 then
-    h.notify.doing "Bigfile, writing"
+    vim.notify("Bigfile, writing", vim.log.levels.INFO)
     vim.cmd.write { mods = { silent = true, }, }
   elseif vim.list_contains(prettier_ft, vim.bo.filetype) then
     format_with_prettier()
@@ -237,9 +237,9 @@ local function toggle_virtual_lines()
   )
 
   if not current_virtual_lines then
-    h.notify.toggle_on "Virtual lines enabled"
+    vim.notify("Virtual lines enabled", vim.log.levels.TRACE)
   else
-    h.notify.toggle_off "Virtual lines disabled"
+    vim.notify("Virtual lines disabled", vim.log.levels.OFF)
   end
 end
 
@@ -265,7 +265,7 @@ local function next_prev_diagnostic(direction, severity)
   local diagnostics = vim.diagnostic.get(0, severity and { severity = severity, } or nil)
 
   if vim.tbl_count(diagnostics) == 0 then
-    h.notify.error(string.format("No %s diagnostics", vim.diagnostic.severity[severity] or "ANY"))
+    vim.notify(string.format("No %s diagnostics", vim.diagnostic.severity[severity] or "ANY"), vim.log.levels.ERROR)
     return
   end
 

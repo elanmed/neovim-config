@@ -2,7 +2,6 @@ local tbl = {}
 local str = {}
 local _os = {}
 local dev = {}
-local notify = {}
 local utils = {}
 local diff = {}
 
@@ -88,53 +87,11 @@ end
 dev.log = function(content)
   local file = io.open("log.txt", "a")
   if not file then
-    notify.error "Error opening file!"
+    vim.notify("Error opening file!", vim.log.levels.ERROR)
     return
   end
   file:write(vim.inspect(content) .. "\n")
   file:close()
-end
-
-local timer = nil
-
---- @param message string
---- @param level "error" | "warn" | "doing" | "info" | "toggle_on" | "toggle_off"
-local function _notify(message, level)
-  if timer then vim.fn.timer_stop(timer) end
-
-  local level_to_hl_group = {
-    error = "NotifyError",
-    info = "NotifyDoing",
-    toggle_on = "NotifyToggleOn",
-    toggle_off = "NotifyToggleOff",
-  }
-  local hl_group = level_to_hl_group[level]
-
-  local add_to_history = true
-  vim.api.nvim_echo({ { message, hl_group, }, }, add_to_history, {})
-  timer = vim.fn.timer_start(2000, function()
-    if vim.fn.mode() == "n" then vim.cmd [[normal! :<Esc>]] end
-  end)
-end
-
---- @param message string
-notify.doing = function(message)
-  _notify(message, "info")
-end
-
---- @param message string
-notify.error = function(message)
-  _notify(message, "error")
-end
-
---- @param message string
-notify.toggle_on = function(message)
-  _notify(message, "toggle_on")
-end
-
---- @param message string
-notify.toggle_off = function(message)
-  _notify(message, "toggle_off")
 end
 
 --- @param dir string i.e. "/feature_complete/plugins/"
@@ -148,7 +105,6 @@ utils.require_dir = function(dir)
     require(relfilename)
   end
 end
-
 
 --- @generic T
 --- @param val T | nil
@@ -180,7 +136,7 @@ end
 utils.set_and_rotate = function(val)
   vim.fn.setreg("", val)
   vim.fn.setreg("+", val)
-  notify.doing("Setting the unnamed and + registers to: `" .. val .. "`")
+  vim.notify("Setting the unnamed and + registers to: `" .. val .. "`", vim.log.levels.INFO)
   utils.rotate_registers()
 end
 
@@ -230,7 +186,6 @@ return {
   tbl = tbl,
   os = _os,
   dev = dev,
-  notify = notify,
   vimscript_true = vimscript_true,
   vimscript_false = vimscript_false,
   fd_cmd = "fd --absolute-path --hidden --type f --exclude .git --exclude node_modules --exclude dist",

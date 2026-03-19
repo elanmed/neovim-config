@@ -276,10 +276,12 @@ vim.api.nvim_set_hl(0, "FFPickerCursorLine", { link = "Visual", })
 vim.api.nvim_set_hl(0, "FFPickerFuzzyHighlightChar", { fg = M.yellow, bold = true, })
 vim.api.nvim_set_hl(0, "MarkCol", { fg = M.yellow, bold = true, })
 vim.api.nvim_set_hl(0, "MarkRow", { fg = M.yellow, })
-vim.api.nvim_set_hl(0, "NotifyDoing", { fg = M.orange, })
+vim.api.nvim_set_hl(0, "NotifyDebug", { fg = M.orange, })
 vim.api.nvim_set_hl(0, "NotifyError", { fg = M.red, })
-vim.api.nvim_set_hl(0, "NotifyToggleOff", { fg = M.purple, })
-vim.api.nvim_set_hl(0, "NotifyToggleOn", { fg = M.green, })
+vim.api.nvim_set_hl(0, "NotifyInfo", { fg = M.blue, })
+vim.api.nvim_set_hl(0, "NotifyOff", { fg = M.purple, })
+vim.api.nvim_set_hl(0, "NotifyTrace", { fg = M.green, })
+vim.api.nvim_set_hl(0, "NotifyWarn", { fg = M.yellow, })
 
 -- Terminal colors
 vim.g.terminal_color_0 = M.black

@@ -24,7 +24,7 @@ vim.keymap.set("n", "<leader>g", function()
     vim.keymap.set("t", "<c-c>", function()
       vim.api.nvim_win_close(lazygit_term_winnr, true)
       vim.schedule(function()
-        require "helpers".notify.doing "Closing the lazygit window, buffer saved"
+        vim.notify("Closing the lazygit window, buffer saved", vim.log.levels.INFO)
       end)
     end, { buffer = lazygit_term_bufnr, })
 

@@ -95,7 +95,7 @@ end, { desc = "Yank the relative path of the current buffer", })
 
 vim.keymap.set("n", "<leader>yf", function()
   vim.fn.setqflist(vim.fn.getqflist())
-  require "helpers".notify.doing "Duplicated the current quickfix list"
+  vim.notify("Duplicated the current quickfix list", vim.log.levels.INFO)
 end, { desc = "Duplicate the current quickfix list", })
 
 -- https://stackoverflow.com/a/9407015
@@ -122,7 +122,7 @@ vim.keymap.set("n", "zk", function() next_closed_fold "k" end, { desc = "Navigat
 vim.keymap.set("n", "zt", "za", { desc = "Toggle fold", })
 vim.keymap.set("n", "zT", "zA", { desc = "Toggle fold", })
 vim.keymap.set("n", "z?", function()
-  require "helpers".notify.doing "common fold commands: z{t,T,c,C,o,O,R(open all folds),M(close all folds)}"
+  vim.notify("common fold commands: z{t,T,c,C,o,O,R(open all folds),M(close all folds)}", vim.log.levels.INFO)
 end, { desc = "Toggle fold", })
 vim.keymap.set("n", "ze", "z=", { desc = "z=", })
 
@@ -192,20 +192,20 @@ vim.keymap.set("n", "<C-k>", "<C-w><C-]>", { desc = "<C-w><C-]>", })
 vim.keymap.set("n", "<leader>t",
   function()
     vim.cmd.source()
-    require "helpers".notify.doing(":source " .. vim.api.nvim_buf_get_name(0))
+    vim.notify(":source " .. vim.api.nvim_buf_get_name(0), vim.log.levels.INFO)
   end, { desc = ":source", })
 
 vim.keymap.set("n", "<leader>w", function()
   local winnr = vim.api.nvim_open_win(0, false, { split = "below", win = 0, })
   vim.api.nvim_win_set_height(0, 1)
   vim.api.nvim_set_current_win(winnr)
-  require "helpers".notify.doing "Duplicated buf and split win"
+  vim.notify("Duplicated buf and split win", vim.log.levels.INFO)
 end)
 
 vim.keymap.set("n", "<leader>mD", function()
   vim.cmd.delmarks "A-Za-z"
   pcall(require "marks".refresh_signs)
-  require "helpers".notify.doing "Deleted all marks"
+  vim.notify("Deleted all marks", vim.log.levels.INFO)
 end)
 
 local function setup_wasted_key_detection(key, threshold)
@@ -265,11 +265,11 @@ vim.keymap.set("i", "<C-g>", function()
   -- \- makes it non-greedy
   -- () is a capture group, returns what's inside
   local tag_content = line:sub(1, col_1i_excl):match ".*<(.-)>.*$"
-  if tag_content == nil then return require "helpers".notify.error "No matching tag" end
+  if tag_content == nil then return vim.notify("No matching tag", vim.log.levels.ERROR) end
 
   -- match non-whitespace characters from the start
   local tag_name = tag_content:match "^%S+"
-  if tag_name == nil then return require "helpers".notify.error "Invalid tag name" end
+  if tag_name == nil then return vim.notify("Invalid tag name", vim.log.levels.ERROR) end
 
   local closing_tag = "</" .. tag_name .. ">"
   vim.api.nvim_buf_set_lines(0, row_0i, row_0i + 1, true, {

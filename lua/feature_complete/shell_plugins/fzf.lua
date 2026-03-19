@@ -429,7 +429,7 @@ end, { desc = "fzf lines in the buf", })
 
 vim.keymap.set("n", "<leader>zr", function()
   if prev_state.bare_cmd == nil then
-    return h.notify.error "No previous fzf terminal buffer"
+    return vim.notify("No previous fzf terminal buffer", vim.log.levels.ERROR)
   end
   fzf { is_replay = true, }
 end, { desc = "fzf replay", })
@@ -443,7 +443,7 @@ local function get_stripped_filename()
 
   local start_idx = abs_path:find "wf_modules"
   if not start_idx then
-    h.notify.error "`wf_modules` not found in the filepath!"
+    vim.notify("`wf_modules` not found in the filepath!", vim.log.levels.ERROR)
     return nil
   end
   local stripped_start = abs_path:sub(start_idx)

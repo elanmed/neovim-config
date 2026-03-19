@@ -69,7 +69,7 @@ end)
 
 vim.keymap.set("n", "s", function()
   if vim.bo.readonly or vim.bo.buftype ~= "" then
-    return require "helpers".notify.error "Aborting"
+    return vim.notify("Aborting", vim.log.levels.ERROR)
   end
   vim.cmd.write()
 end)
@@ -214,7 +214,7 @@ tree = function(opts)
       _editor_winnr = opts._editor_winnr,
       _tree_winnr = opts._tree_winnr,
     }
-    require "helpers".notify.doing "Refreshed tree"
+    vim.notify("Refreshed tree", vim.log.levels.INFO)
   end, { buffer = opts._tree_bufnr, })
 
   vim.keymap.set("n", "<C-f>", function()

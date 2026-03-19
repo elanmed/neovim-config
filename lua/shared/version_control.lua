@@ -121,7 +121,7 @@ local function navigate_hunk(direction)
   local state = buffer_state[curr_bufnr]
 
   if state == nil then
-    return require "helpers".notify.error "Missing diff state for this buffer"
+    return vim.notify("Missing diff state for this buffer", vim.log.levels.ERROR)
   end
 
   local indices = (function()
@@ -130,7 +130,7 @@ local function navigate_hunk(direction)
   end)()
 
   if #indices == 0 then
-    return require "helpers".notify.error "No hunks"
+    return vim.notify("No hunks", vim.log.levels.ERROR)
   end
 
   local row_1i = vim.api.nvim_win_get_cursor(0)[1]
@@ -155,11 +155,11 @@ local function navigate_hunk(direction)
     if direction == "next" then
       local hunk = require "helpers".diff.unpack_hunk(indices[1])
       vim.api.nvim_win_set_cursor(0, { hunk.start_new_1i, 0, })
-      return require "helpers".notify.error "Wrapping to the first hunk"
+      return vim.notify("Wrapping to the first hunk", vim.log.levels.ERROR)
     else
       local hunk = require "helpers".diff.unpack_hunk(indices[#indices])
       vim.api.nvim_win_set_cursor(0, { hunk.start_new_1i, 0, })
-      return require "helpers".notify.error "Wrapping to the last hunk"
+      return vim.notify("Wrapping to the last hunk", vim.log.levels.ERROR)
     end
   end
 
@@ -173,7 +173,7 @@ vim.keymap.set("n", "gh", function()
   local curr_bufnr = vim.api.nvim_get_current_buf()
   local state = buffer_state[curr_bufnr]
   if state == nil then
-    return require "helpers".notify.error "Missing diff state for this buffer"
+    return vim.notify("Missing diff state for this buffer", vim.log.levels.ERROR)
   end
 
   local row_1i = vim.api.nvim_win_get_cursor(0)[1]
@@ -185,20 +185,20 @@ vim.keymap.set("n", "gh", function()
       if row_1i == hunk.start_new_1i then
         local insert_after_0i = hunk.start_new_0i + 1
         vim.api.nvim_buf_set_lines(curr_bufnr, insert_after_0i, insert_after_0i, true, head_chunk)
-        return require "helpers".notify.doing(("Inserting at line %s"):format(insert_after_0i))
+        return vim.notify(("Inserting at line %s"):format(insert_after_0i), vim.log.levels.INFO)
       end
     elseif row_1i >= hunk.start_new_1i and row_1i <= hunk.end_new_1i_incl then
       vim.api.nvim_buf_set_lines(curr_bufnr, hunk.start_new_0i, hunk.end_new_0i_excl, true, head_chunk)
-      return require "helpers".notify.doing(("Resetting lines %s to %s"):format(hunk.start_new_1i, hunk.end_new_1i_incl))
+      return vim.notify(("Resetting lines %s to %s"):format(hunk.start_new_1i, hunk.end_new_1i_incl), vim.log.levels.INFO)
     end
   end
 
-  return require "helpers".notify.error "No hunk"
+  return vim.notify("No hunk", vim.log.levels.ERROR)
 end, { desc = "Reset the hunk on the current line", })
 
 vim.keymap.set("n", "<C-b>", function()
   if vim.bo.buftype ~= "" then
-    return require "helpers".notify.error "buftype is not normal"
+    return vim.notify("buftype is not normal", vim.log.levels.ERROR)
   end
 
   local curr_cursor = vim.api.nvim_win_get_cursor(0)
