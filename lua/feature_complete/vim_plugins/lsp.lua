@@ -1,5 +1,9 @@
 local h = require "helpers"
 
+local function enable_deno_lsp()
+  return vim.fn.filereadable(vim.fs.joinpath(vim.fn.getcwd(), ".deno-enable-lsp")) == h.vimscript_true
+end
+
 --- @class CallWriteOpts
 --- @field winnr number
 --- @field bufnr number
@@ -69,13 +73,14 @@ local apply_minimal_changes = function(opts)
   call_write { bufnr = opts.bufnr, winnr = opts.winnr, view = view, }
 end
 
-local format_with_prettier = function()
+--- @param cmd table
+local format_with_cli = function(cmd)
   local unformatted = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
   local winnr = vim.api.nvim_get_current_win()
   local bufnr = vim.api.nvim_get_current_buf()
 
   vim.system(
-    { "prettier", "--stdin-filepath", vim.api.nvim_buf_get_name(0), },
+    cmd,
     {
       stdin = unformatted,
       text = true,
@@ -83,7 +88,7 @@ local format_with_prettier = function()
     function(result)
       if result.code ~= 0 then
         return vim.schedule(function()
-          vim.notify("[prettier] non-zero exit code, writing", vim.log.levels.INFO)
+          vim.notify(("[%s] non-zero exit code, writing"):format(cmd[1]), vim.log.levels.INFO)
           call_write { bufnr = bufnr, winnr = winnr, }
         end)
       end
@@ -91,13 +96,13 @@ local format_with_prettier = function()
       local formatted = result.stdout
       if formatted == nil then
         return vim.schedule(function()
-          vim.notify("[prettier] no stdout, writing", vim.log.levels.INFO)
+          vim.notify(("[%s] no stdout, writing"):format(cmd[1]), vim.log.levels.INFO)
           call_write { bufnr = bufnr, winnr = winnr, }
         end)
       end
 
       vim.schedule(function()
-        vim.notify("[prettier] applying minimal diff, writing", vim.log.levels.INFO)
+        vim.notify(("[%s] applying minimal diff, writing"):format(cmd[1]), vim.log.levels.INFO)
         apply_minimal_changes { unformatted = unformatted, formatted = formatted, winnr = winnr, bufnr = bufnr, }
       end)
     end)
@@ -197,7 +202,11 @@ vim.keymap.set("n", "s", function()
     vim.notify("Bigfile, writing", vim.log.levels.INFO)
     vim.cmd.write { mods = { silent = true, }, }
   elseif vim.list_contains(prettier_ft, vim.bo.filetype) then
-    format_with_prettier()
+    if enable_deno_lsp() then
+      format_with_cli { "deno", "fmt", "--", "-", }
+    else
+      format_with_cli { "prettier", "--stdin-filepath", vim.api.nvim_buf_get_name(0), }
+    end
   elseif vim.list_contains(lsp_ft, vim.bo.filetype) then
     format_with_lsp()
   else
@@ -293,10 +302,6 @@ vim.keymap.set("n", "[e",
   function() next_prev_diagnostic("prev", vim.diagnostic.severity.ERROR) end,
   { desc = "Next error diagnostic", }
 )
-
-local function enable_deno_lsp()
-  return vim.fn.filereadable(vim.fs.joinpath(vim.fn.getcwd(), ".deno-enable-lsp")) == h.vimscript_true
-end
 
 if enable_deno_lsp() then
   vim.lsp.enable "denols"
