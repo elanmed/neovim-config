@@ -49,3 +49,5 @@ vim.o.cursorlineopt = "screenline,number" -- show cursor line per screen line
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+-- disable the intro screen
+vim.opt.shortmess:append "I"
