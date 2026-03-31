@@ -12,9 +12,7 @@ vim.keymap.set("n", "<leader>/s", ":%s/\\<\\>\\C/<left><left><left><left><left>"
   { desc = "%s in the current buffer, case and word sensitive", })
 vim.keymap.set("n", "<leader>n", vim.cmd.nohlsearch, { desc = "Turn off highlighting", })
 vim.keymap.set("n", "<leader>x", vim.cmd.tabclose, { desc = "Close the current tab", })
-
--- vim.keymap.set("n", "<leader>d", "<nop>", { desc = "Close the current buffer", })
-
+vim.keymap.set("n", "<leader>d", "<nop>", { desc = "Close the current buffer", })
 vim.keymap.set("n", "<leader>;", ":", { desc = ":", })
 vim.keymap.set("n", "x", [["_x]], { desc = "x to the black hole buffer", })
 vim.keymap.set("n", "X", [["_X]], { desc = "X to the black hole buffer", })
