@@ -155,11 +155,11 @@ local function navigate_hunk(direction)
     if direction == "next" then
       local hunk = require "helpers".diff.unpack_hunk(indices[1])
       vim.api.nvim_win_set_cursor(0, { hunk.start_new_1i, 0, })
-      return vim.notify("Wrapping to the first hunk", vim.log.levels.ERROR)
+      return vim.notify("Wrapping to the first hunk", vim.log.levels.INFO)
     else
       local hunk = require "helpers".diff.unpack_hunk(indices[#indices])
       vim.api.nvim_win_set_cursor(0, { hunk.start_new_1i, 0, })
-      return vim.notify("Wrapping to the last hunk", vim.log.levels.ERROR)
+      return vim.notify("Wrapping to the last hunk", vim.log.levels.INFO)
     end
   end
 
@@ -189,7 +189,8 @@ vim.keymap.set("n", "gh", function()
       end
     elseif row_1i >= hunk.start_new_1i and row_1i <= hunk.end_new_1i_incl then
       vim.api.nvim_buf_set_lines(curr_bufnr, hunk.start_new_0i, hunk.end_new_0i_excl, true, head_chunk)
-      return vim.notify(("Resetting lines %s to %s"):format(hunk.start_new_1i, hunk.end_new_1i_incl), vim.log.levels.INFO)
+      return vim.notify(("Resetting lines %s to %s"):format(hunk.start_new_1i, hunk.end_new_1i_incl), vim.log.levels
+        .INFO)
     end
   end
 
