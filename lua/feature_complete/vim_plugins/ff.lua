@@ -37,6 +37,14 @@ vim.keymap.set("n", "<leader>f", function()
   ff.setup(function() ff.find() end)
 end)
 
+vim.api.nvim_create_autocmd("VimEnter", {
+  group = vim.api.nvim_create_augroup("FFVimEnter", { clear = true, }),
+  callback = function()
+    local ff = require "ff"
+    ff.setup(function() ff.find() end)
+  end,
+})
+
 vim.api.nvim_create_autocmd("User", {
   group = vim.api.nvim_create_augroup("FFRefreshUserEvents", { clear = true, }),
   pattern = {
