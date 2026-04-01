@@ -41,8 +41,10 @@ end)
 vim.api.nvim_create_autocmd("VimEnter", {
   group = vim.api.nvim_create_augroup("FFVimEnter", { clear = true, }),
   callback = function()
-    local ff = require "ff"
-    ff.setup(function() ff.find() end)
+    if vim.fn.argc() == 0 or vim.fn.isdirectory(vim.fn.argv(0)) == 1 then
+      local ff = require "ff"
+      ff.setup(function() ff.find() end)
+    end
   end,
 })
 
