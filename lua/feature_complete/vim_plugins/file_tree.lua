@@ -18,6 +18,7 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.keymap.set("n", "<C-f>", "<Plug>TreeCloseTree", { buffer = args.buf, })
     vim.keymap.set("n", "h", "<Plug>TreeOutDir", { buffer = args.buf, })
     vim.keymap.set("n", "l", "<Plug>TreeInDir", { buffer = args.buf, })
+    vim.keymap.set("n", "p", "<Plug>TreePreviewToggle", { buffer = args.buf, })
     vim.keymap.set("n", "yr", "<Plug>TreeYankRelativePath", { buffer = args.buf, })
     vim.keymap.set("n", "ya", "<Plug>TreeYankAbsolutePath", { buffer = args.buf, })
     vim.keymap.set("n", "yd", "<Plug>TreeYankDirectory", { buffer = args.buf, })
