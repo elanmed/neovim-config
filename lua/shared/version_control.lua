@@ -231,13 +231,8 @@ vim.keymap.set("n", "<C-b>", function()
   vim.api.nvim_buf_set_lines(head_bufnr, 0, -1, false, head_lines)
   vim.api.nvim_buf_set_lines(worktree_bufnr, 0, -1, false, worktree_lines)
 
-  local apply_syntax_highlighting = function()
-    local lang = vim.treesitter.language.get_lang(curr_filetype)
-    vim.treesitter.start(0, lang)
-  end
-
-  vim.api.nvim_buf_call(head_bufnr, apply_syntax_highlighting)
-  vim.api.nvim_buf_call(worktree_bufnr, apply_syntax_highlighting)
+  vim.bo[head_bufnr].filetype = curr_filetype
+  vim.bo[worktree_bufnr].filetype = curr_filetype
 
   for _, bufnr in ipairs { worktree_bufnr, head_bufnr, } do
     vim.keymap.set("n", "<C-b>", function()
