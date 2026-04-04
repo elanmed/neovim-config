@@ -42,12 +42,8 @@ vim.opt.fillchars = {
   foldinner = " ",
 }
 vim.o.foldmethod = "indent"
--- mini max
 vim.o.cursorlineopt = "screenline,number" -- show cursor line per screen line
 
 -- :h netrw-noload
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
-
--- disable the intro screen
-vim.opt.shortmess:append "I"

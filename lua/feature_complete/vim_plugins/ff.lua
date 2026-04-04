@@ -26,7 +26,6 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
     vim.keymap.set("i", "<c-p>", "<Plug>FFResultPrev", { buffer = true, })
     vim.keymap.set("i", "<c-x>", "<Plug>FFResultDeleteFrecencyScore", { buffer = true, nowait = true, })
     vim.keymap.set("i", "<esc>", "<Plug>FFClose", { buffer = true, })
-    vim.keymap.set("i", "<c-f>", "<Plug>FFClose", { buffer = true, })
     vim.keymap.set("i", "<tab>", "<Plug>FFPreviewToggle", { buffer = true, })
     vim.keymap.set("i", "<c-d>", "<Plug>FFPreviewScrollDown", { buffer = true, })
     vim.keymap.set("i", "<c-u>", "<Plug>FFPreviewScrollUp", { buffer = true, })
@@ -37,16 +36,6 @@ vim.keymap.set("n", "<leader>f", function()
   local ff = require "ff"
   ff.setup(function() ff.find() end)
 end)
-
-vim.api.nvim_create_autocmd("VimEnter", {
-  group = vim.api.nvim_create_augroup("FFVimEnter", { clear = true, }),
-  callback = function()
-    if vim.fn.argc() == 0 or vim.fn.isdirectory(vim.fn.argv(0)) == 1 then
-      local ff = require "ff"
-      ff.setup(function() ff.find() end)
-    end
-  end,
-})
 
 vim.api.nvim_create_autocmd("User", {
   group = vim.api.nvim_create_augroup("FFRefreshUserEvents", { clear = true, }),
