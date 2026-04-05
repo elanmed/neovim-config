@@ -287,13 +287,12 @@ vim.api.nvim_set_hl(0, "NotifyTrace", { fg = M.green, })
 vim.api.nvim_set_hl(0, "NotifyWarn", { fg = M.yellow, })
 
 -- HTML syntax
-vim.api.nvim_set_hl(0, "htmlTag", { fg = M.orange, })
-vim.api.nvim_set_hl(0, "htmlTagName", { fg = M.orange, })
-vim.api.nvim_set_hl(0, "tsxTag", { fg = M.orange, })
-vim.api.nvim_set_hl(0, "tsxTagName", { fg = M.orange, })
-vim.api.nvim_set_hl(0, "jsxTagName", { fg = M.orange, })
-vim.api.nvim_set_hl(0, "jsxTag", { fg = M.orange, })
-
+vim.api.nvim_set_hl(0, "htmlTag", { link = "Tag", })
+vim.api.nvim_set_hl(0, "htmlTagName", { link = "Tag", })
+vim.api.nvim_set_hl(0, "tsxTag", { link = "Tag", })
+vim.api.nvim_set_hl(0, "tsxTagName", { link = "Tag", })
+vim.api.nvim_set_hl(0, "jsxTagName", { link = "Tag", })
+vim.api.nvim_set_hl(0, "jsxTag", { link = "Tag", })
 vim.api.nvim_set_hl(0, "tsxComponentName", { link = "Tag", })
 vim.api.nvim_set_hl(0, "jsxComponentName", { link = "Tag", })
 
