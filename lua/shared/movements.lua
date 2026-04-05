@@ -17,30 +17,3 @@ end
 
 vim.keymap.set({ "n", "v", }, "<C-d>", smooth_scroll_cb "j", { desc = "Smooth-scroll a half-page down", })
 vim.keymap.set({ "n", "v", }, "<C-u>", smooth_scroll_cb "k", { desc = "Smooth-scroll a half-page up", })
-
-local function wezterm_cli_move(direction)
-  local cmd = "wezterm cli activate-pane-direction " .. direction
-  if require "helpers".os.is_linux() then
-    cmd = "flatpak-spawn --host " .. cmd
-  end
-
-  vim.fn.system(cmd)
-end
-
-vim.keymap.set({ "n", "t", }, "<C-Space><C-l>", function()
-  local prev_win = vim.api.nvim_get_current_win()
-  vim.cmd.wincmd "l"
-  local curr_win = vim.api.nvim_get_current_win()
-  if prev_win == curr_win then
-    wezterm_cli_move "Right"
-  end
-end)
-
-vim.keymap.set({ "n", "t", }, "<C-Space><C-h>", function()
-  local prev_win = vim.api.nvim_get_current_win()
-  vim.cmd.wincmd "h"
-  local curr_win = vim.api.nvim_get_current_win()
-  if prev_win == curr_win then
-    wezterm_cli_move "Left"
-  end
-end)
