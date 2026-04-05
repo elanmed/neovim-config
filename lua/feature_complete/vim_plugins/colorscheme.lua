@@ -116,8 +116,8 @@ vim.api.nvim_set_hl(0, "Delimiter", { fg = M.brown, })
 vim.api.nvim_set_hl(0, "Error", { fg = M.black, bg = M.red, })
 vim.api.nvim_set_hl(0, "Exception", { fg = M.red, })
 vim.api.nvim_set_hl(0, "Float", { fg = M.orange, })
-vim.api.nvim_set_hl(0, "Function", { fg = M.blue, })
-vim.api.nvim_set_hl(0, "Identifier", { fg = M.red, })
+vim.api.nvim_set_hl(0, "Function", { fg = M.extra_light_grey, })
+vim.api.nvim_set_hl(0, "Identifier", { fg = M.extra_light_grey, })
 vim.api.nvim_set_hl(0, "Ignore", { fg = M.cyan, })
 vim.api.nvim_set_hl(0, "Include", { fg = M.blue, })
 vim.api.nvim_set_hl(0, "Keyword", { fg = M.purple, })
@@ -272,16 +272,30 @@ vim.api.nvim_set_hl(0, "MiniIconsPurple", { fg = M.purple, })
 vim.api.nvim_set_hl(0, "MiniIconsRed", { fg = M.red, })
 vim.api.nvim_set_hl(0, "MiniIconsYellow", { fg = M.yellow, })
 
+-- plugins
 vim.api.nvim_set_hl(0, "FFPickerCursorLine", { link = "Visual", })
 vim.api.nvim_set_hl(0, "FFPickerFuzzyHighlightChar", { fg = M.yellow, bold = true, })
 vim.api.nvim_set_hl(0, "MarkCol", { fg = M.yellow, bold = true, })
 vim.api.nvim_set_hl(0, "MarkRow", { fg = M.yellow, })
+
+-- custom overrides
 vim.api.nvim_set_hl(0, "NotifyDebug", { fg = M.orange, })
 vim.api.nvim_set_hl(0, "NotifyError", { fg = M.red, })
 vim.api.nvim_set_hl(0, "NotifyInfo", { fg = M.blue, })
 vim.api.nvim_set_hl(0, "NotifyOff", { fg = M.purple, })
 vim.api.nvim_set_hl(0, "NotifyTrace", { fg = M.green, })
 vim.api.nvim_set_hl(0, "NotifyWarn", { fg = M.yellow, })
+
+-- HTML syntax
+vim.api.nvim_set_hl(0, "htmlTag", { fg = M.orange, })
+vim.api.nvim_set_hl(0, "htmlTagName", { fg = M.orange, })
+vim.api.nvim_set_hl(0, "tsxTag", { fg = M.orange, })
+vim.api.nvim_set_hl(0, "tsxTagName", { fg = M.orange, })
+vim.api.nvim_set_hl(0, "jsxTagName", { fg = M.orange, })
+vim.api.nvim_set_hl(0, "jsxTag", { fg = M.orange, })
+
+vim.api.nvim_set_hl(0, "tsxComponentName", { link = "Tag", })
+vim.api.nvim_set_hl(0, "jsxComponentName", { link = "Tag", })
 
 -- Terminal colors
 vim.g.terminal_color_0 = M.black
