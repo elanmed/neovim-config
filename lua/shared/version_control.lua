@@ -7,6 +7,7 @@ local ns_id = vim.api.nvim_create_namespace "GitDiff"
 --- @param resolve Resolve
 local function update_state_for_buf(bufnr, resolve)
   h.async(function()
+    if not vim.api.nvim_buf_is_valid(bufnr) then return resolve() end
     local bufname = vim.fs.relpath(vim.fn.getcwd(), vim.api.nvim_buf_get_name(bufnr))
     if bufname == nil then return resolve() end
 
