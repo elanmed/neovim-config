@@ -1,3 +1,33 @@
+vim.g.markdown_fenced_languages = {
+  "bash",
+  "css",
+  "html",
+  "javascript",
+  "javascriptreact",
+  "json",
+  "lua",
+  "ruby",
+  "typescript",
+  "typescriptreact",
+}
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function(args)
+    vim.schedule(function()
+      vim.treesitter.stop(args.buf)
+      vim.bo[args.buf].syntax = vim.bo[args.buf].filetype
+
+      local win = vim.fn.bufwinid(args.buf)
+      if win == -1 then return end
+
+      vim.wo[win].conceallevel = 0
+      local line_count = vim.api.nvim_buf_line_count(args.buf)
+      vim.api.nvim_win_set_height(win, line_count)
+    end)
+  end,
+})
+
 local h = require "helpers"
 
 local function enable_deno_lsp()
@@ -260,7 +290,7 @@ vim.keymap.set("n", "glr", function() vim.lsp.buf.references() end, { desc = "LS
 vim.keymap.set("n", "gli", function() vim.lsp.buf.definition() end, { desc = "LSP go to definition", })
 vim.keymap.set("n", "gla", function() vim.lsp.buf.code_action() end, { desc = "LSP code action", })
 vim.keymap.set("n", "gly", function() vim.lsp.buf.type_definition() end, { desc = "LSP go to type definition", })
-vim.keymap.set("n", "K", function() vim.lsp.buf.hover { border = "single", } end, { desc = "LSP hover", })
+vim.keymap.set("n", "K", function() vim.lsp.buf.hover { border = "single", max_width = 60, } end, { desc = "LSP hover", })
 vim.keymap.set({ "n", "i", }, "<C-c>", function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     local is_floating = vim.api.nvim_win_get_config(win).relative == "win"

@@ -101,15 +101,3 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "TextChanged", "TextChangedI", }, {
     end)
   end,
 })
-
-vim.api.nvim_create_autocmd("FileType", {
-  callback = function(event)
-    local filetype = vim.filetype.match { buf = event.buf, }
-    if filetype == nil then return end
-
-    local lang_ok, lang = pcall(vim.treesitter.language.get_lang, filetype)
-    if not lang_ok then return end
-
-    pcall(vim.treesitter.start, event.buf, lang)
-  end,
-})
