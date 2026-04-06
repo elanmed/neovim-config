@@ -1,4 +1,10 @@
 local h = require "helpers"
+
+--- @class DiffState
+--- @field indices integer[][]
+--- @field head_lines string[]
+
+--- @type table<number, DiffState>
 local buffer_state = {}
 
 local ns_id = vim.api.nvim_create_namespace "GitDiff"
@@ -170,6 +176,45 @@ end
 vim.keymap.set("n", "]c", function() navigate_hunk "next" end, { desc = "Navigate to the next hunk", })
 vim.keymap.set("n", "[c", function() navigate_hunk "prev" end, { desc = "Navigate to the prev hunk", })
 
+--- @class ResetHunkOpts
+--- @field state DiffState
+--- @field start_line_1i number
+--- @field end_line_1i_incl number
+--- @field curr_bufnr number
+--- @param opts ResetHunkOpts
+local function reset_hunk(opts)
+  local matching_hunks = {}
+  for _, raw_hunk in ipairs(opts.state.indices) do
+    local hunk = require "helpers".diff.unpack_hunk(raw_hunk)
+
+    local hunk_overlaps_range = false
+    if hunk.is_deletion then
+      hunk_overlaps_range =
+          hunk.start_new_1i >= opts.start_line_1i and
+          hunk.start_new_1i <= opts.end_line_1i_incl
+    else
+      hunk_overlaps_range =
+          hunk.end_new_1i_incl >= opts.start_line_1i and
+          hunk.start_new_1i <= opts.end_line_1i_incl
+    end
+
+    if hunk_overlaps_range then
+      table.insert(matching_hunks, hunk)
+    end
+  end
+
+  for _, hunk in ipairs(require "helpers".tbl.reverse(matching_hunks)) do
+    local head_chunk = vim.list_slice(opts.state.head_lines, hunk.start_old_1i, hunk.end_old_1i_incl)
+
+    if hunk.is_deletion then
+      local insert_after_0i = hunk.start_new_0i + 1
+      vim.api.nvim_buf_set_lines(opts.curr_bufnr, insert_after_0i, insert_after_0i, true, head_chunk)
+    else
+      vim.api.nvim_buf_set_lines(opts.curr_bufnr, hunk.start_new_0i, hunk.end_new_0i_excl, true, head_chunk)
+    end
+  end
+end
+
 vim.keymap.set("n", "gh", function()
   local curr_bufnr = vim.api.nvim_get_current_buf()
   local state = buffer_state[curr_bufnr]
@@ -178,24 +223,22 @@ vim.keymap.set("n", "gh", function()
   end
 
   local row_1i = vim.api.nvim_win_get_cursor(0)[1]
-  for _, raw_hunk in ipairs(state.indices) do
-    local hunk = require "helpers".diff.unpack_hunk(raw_hunk)
+  reset_hunk { state = state, curr_bufnr = curr_bufnr, start_line_1i = row_1i, end_line_1i_incl = row_1i, }
+end, { desc = "Reset the hunk on the current line", })
 
-    local head_chunk = vim.list_slice(state.head_lines, hunk.start_old_1i, hunk.end_old_1i_incl)
-    if hunk.is_deletion then
-      if row_1i == hunk.start_new_1i then
-        local insert_after_0i = hunk.start_new_0i + 1
-        vim.api.nvim_buf_set_lines(curr_bufnr, insert_after_0i, insert_after_0i, true, head_chunk)
-        return vim.notify(("Inserting at line %s"):format(insert_after_0i), vim.log.levels.INFO)
-      end
-    elseif row_1i >= hunk.start_new_1i and row_1i <= hunk.end_new_1i_incl then
-      vim.api.nvim_buf_set_lines(curr_bufnr, hunk.start_new_0i, hunk.end_new_0i_excl, true, head_chunk)
-      return vim.notify(("Resetting lines %s to %s"):format(hunk.start_new_1i, hunk.end_new_1i_incl), vim.log.levels
-        .INFO)
-    end
+vim.keymap.set("v", "gh", function()
+  local curr_bufnr = vim.api.nvim_get_current_buf()
+  local state = buffer_state[curr_bufnr]
+  if state == nil then
+    return vim.notify("Missing diff state for this buffer", vim.log.levels.ERROR)
   end
 
-  return vim.notify("No hunk", vim.log.levels.ERROR)
+  local start_visual_1i = vim.fn.line "v"
+  local end_visual_1i = vim.fn.line "."
+  local start_selection_1i = math.min(start_visual_1i, end_visual_1i)
+  local end_selection_1i = math.max(start_visual_1i, end_visual_1i)
+
+  reset_hunk { state = state, curr_bufnr = curr_bufnr, start_line_1i = start_selection_1i, end_line_1i_incl = end_selection_1i, }
 end, { desc = "Reset the hunk on the current line", })
 
 vim.keymap.set("n", "<C-b>", function()

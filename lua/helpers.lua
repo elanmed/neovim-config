@@ -5,8 +5,27 @@ local dev = {}
 local utils = {}
 local diff = {}
 
+--- @class UnpackedHunk
+--- @field start_old_1i number
+--- @field start_old_0i number
+--- @field count_old number
+--- @field end_old_1i_excl number
+--- @field end_old_1i_incl number
+--- @field end_old_0i_excl number
+--- @field end_old_0i_incl number
+--- @field start_new_1i number
+--- @field start_new_0i number
+--- @field count_new number
+--- @field end_new_1i_excl number
+--- @field end_new_1i_incl number
+--- @field end_new_0i_excl number
+--- @field end_new_0i_incl number
+--- @field is_deletion boolean
+--- @field is_insertion boolean
+
 --- @alias DiffHunk { [1]: integer, [2]: integer, [3]: integer, [4]: integer }
 --- @param hunk DiffHunk
+--- @return UnpackedHunk
 diff.unpack_hunk = function(hunk)
   local start_old_1i, count_old, start_new_1i, count_new = unpack(hunk)
 
