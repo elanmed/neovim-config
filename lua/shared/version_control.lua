@@ -239,7 +239,22 @@ vim.keymap.set("v", "gh", function()
   local end_selection_1i = math.max(start_visual_1i, end_visual_1i)
 
   reset_hunk { state = state, curr_bufnr = curr_bufnr, start_line_1i = start_selection_1i, end_line_1i_incl = end_selection_1i, }
-end, { desc = "Reset the hunk on the current line", })
+end, { desc = "Reset the visually selected hunk", })
+
+vim.keymap.set("n", "gH", function()
+  local curr_bufnr = vim.api.nvim_get_current_buf()
+  local state = buffer_state[curr_bufnr]
+  if state == nil then
+    return vim.notify("Missing diff state for this buffer", vim.log.levels.ERROR)
+  end
+
+  reset_hunk {
+    state = state,
+    curr_bufnr = curr_bufnr,
+    start_line_1i = 1,
+    end_line_1i_incl = vim.api.nvim_buf_line_count(curr_bufnr),
+  }
+end, { desc = "Reset the entire file", })
 
 vim.keymap.set("n", "<C-b>", function()
   if vim.bo.buftype ~= "" then
