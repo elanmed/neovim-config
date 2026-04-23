@@ -30,14 +30,9 @@ h_install_package "$package_manager" cargo
 h_install_package "$package_manager" curl
 h_install_package "$package_manager" jq
 
-h_echo doing "installing bob"
-export PATH="$HOME/.cargo/bin:$PATH"
-cargo install bob-nvim
-
 h_echo doing "installing nightly"
-export PATH="$HOME/.local/share/bob/nvim-bin:$PATH"
-bob install nightly
-bob use nightly
+export PATH="$HOME/.local/bin:$PATH"
+nvvm update
 
 h_echo doing "installing language servers from package.json"
 source ~/.nvm/nvm.sh
