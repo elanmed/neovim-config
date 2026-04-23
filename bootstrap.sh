@@ -26,7 +26,6 @@ h_install_package "$package_manager" bat
 h_install_package "$package_manager" fzf
 h_install_package "$package_manager" ripgrep
 h_install_package "$package_manager" fd
-h_install_package "$package_manager" cargo
 h_install_package "$package_manager" curl
 h_install_package "$package_manager" jq
 
