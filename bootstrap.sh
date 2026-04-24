@@ -57,12 +57,11 @@ lua_ls_tar="$HOME/.dotfiles/neovim/.config/nvim/language_servers/$asset_name"
 rm -rf "$lua_ls_dir"
 mkdir -p "$lua_ls_dir"
 
-curl --location --output "$lua_ls_tar" "$download_url"
+curl --silent --location --output "$lua_ls_tar" "$download_url"
 
 actual_sha="sha256:$(sha256sum "$lua_ls_tar" | cut -d ' ' -f 1)"
 
 if [[ $actual_sha == "$expected_sha" ]]; then
-  h_echo doing "downloaded lua_ls sha matches the expected sha"
   tar --extract --gzip --file "$lua_ls_tar" --directory "$lua_ls_dir"
 else
   h_echo error "downloaded lua_ls sha _does not_ match the expected sha"
