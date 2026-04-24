@@ -1,13 +1,3 @@
-vim.api.nvim_create_autocmd("CursorMoved", {
-  group = vim.api.nvim_create_augroup("CenterScreen", { clear = true, }),
-  callback = function(args)
-    local excluded_fts = { "tree", "nvim-undotree", "rg-far", }
-    if vim.list_contains(excluded_fts, vim.bo[args.buf].filetype) then return end
-    vim.cmd.normal { "zz", bang = true, }
-  end,
-  desc = "Center the screen on movement",
-})
-
 vim.o.pumheight = 10
 vim.api.nvim_create_autocmd("CmdlineEnter", { callback = function() vim.o.pumheight = 5 end, })
 vim.api.nvim_create_autocmd("CmdlineLeave", { callback = function() vim.o.pumheight = 10 end, })
