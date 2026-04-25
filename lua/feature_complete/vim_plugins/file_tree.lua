@@ -1,16 +1,21 @@
 vim.keymap.set("n", "<C-f>", function()
-  require "tree".tree {
-    tree_win_config = {
-      border = "single",
-    },
-    tree_win_opts = {
-      relativenumber = true,
-      signcolumn = "no",
-      scrolloffpad = -1,
-      scrolloff = 0,
-    },
-  }
+  require "tree".tree()
 end, { desc = "Toggle tree", })
+
+vim.api.nvim_create_autocmd("User", {
+  group = vim.api.nvim_create_augroup("TreeWinOpts", { clear = true, }),
+  pattern = "TreeOpen",
+  callback = function(ev)
+    local winnr = ev.data.winnr
+    vim.api.nvim_win_set_config(winnr, {
+      border = "single",
+    })
+    vim.wo[winnr].relativenumber = true
+    vim.wo[winnr].signcolumn = "no"
+    vim.wo[winnr].scrolloffpad = -1
+    vim.wo[winnr].scrolloff = 0
+  end,
+})
 
 vim.api.nvim_create_autocmd("FileType", {
   group = vim.api.nvim_create_augroup("TreeRemaps", { clear = true, }),
