@@ -19,7 +19,6 @@ vim.api.nvim_create_user_command("Format", function()
   local view = vim.fn.winsaveview()
   vim.cmd "keepjumps normal! gg=G"
   vim.fn.winrestview(view)
-  vim.notify("Formatting with gg=G, writing", vim.log.levels.INFO)
   vim.cmd.write { mods = { silent = true, }, }
 end, {})
 
