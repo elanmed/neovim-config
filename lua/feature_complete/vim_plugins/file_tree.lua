@@ -6,6 +6,8 @@ vim.keymap.set("n", "<C-f>", function()
     tree_win_opts = {
       relativenumber = true,
       signcolumn = "no",
+      scrolloffpad = -1,
+      scrolloff = 0,
     },
   }
 end, { desc = "Toggle tree", })
