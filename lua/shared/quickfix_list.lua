@@ -56,10 +56,10 @@ function _G.GetQuickfixTextFunc()
 end
 
 vim.keymap.set("n", "<C-n>", function()
-  require "helpers".utils.try_catch("cnext", "cfirst")
+  require "helpers".utils.vim_cmd_try_catch("cnext", "cfirst")
 end, { desc = ":cnext", })
 vim.keymap.set("n", "<C-p>", function()
-  require "helpers".utils.try_catch("cprev", "clast")
+  require "helpers".utils.vim_cmd_try_catch("cprev", "clast")
 end, { desc = ":cprev", })
 
 vim.api.nvim_create_autocmd("FileType", {

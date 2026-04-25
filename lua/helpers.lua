@@ -138,7 +138,7 @@ end
 
 --- @param try string
 --- @param catch string
-utils.try_catch = function(try, catch)
+utils.vim_cmd_try_catch = function(try, catch)
   local success, _ = pcall(vim.cmd, try)
   if not success then
     pcall(vim.cmd, catch)
