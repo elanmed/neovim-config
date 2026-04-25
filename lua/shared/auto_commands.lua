@@ -39,7 +39,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 vim.api.nvim_create_autocmd("BufWinEnter", {
   callback = function()
-    vim.fn.matchadd("Todo", [[\<\(TODO\|FIXME\|HACK\|XXX\)\>]])
+    vim.fn.matchadd("Todo", [[\<\(TODO\|FIXME\)\>]])
   end,
 })
 
@@ -56,9 +56,10 @@ local function foreground_for_hex(hex_color)
 end
 
 local hex_ns_id = vim.api.nvim_create_namespace "HexColors"
-local function highlight_hex_colors(buffer)
-  vim.api.nvim_buf_clear_namespace(buffer, hex_ns_id, 0, -1)
-  local lines = vim.api.nvim_buf_get_lines(buffer, 0, -1, false)
+--- @param bufnr number
+local function highlight_hex_colors(bufnr)
+  vim.api.nvim_buf_clear_namespace(bufnr, hex_ns_id, 0, -1)
+  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
   for row_1i, line in ipairs(lines) do
     local row_0i = row_1i - 1
 
@@ -71,7 +72,7 @@ local function highlight_hex_colors(buffer)
       local hex_color = line:sub(match_start_1i, match_end_1i)
       local group_name = "HexColor_" .. hex_color:sub(2)
       vim.api.nvim_set_hl(0, group_name, { bg = hex_color, fg = foreground_for_hex(hex_color), })
-      vim.api.nvim_buf_set_extmark(buffer, hex_ns_id, row_0i, match_start_0i, {
+      vim.api.nvim_buf_set_extmark(bufnr, hex_ns_id, row_0i, match_start_0i, {
         end_col = match_end_1i,
         hl_group = group_name,
       })

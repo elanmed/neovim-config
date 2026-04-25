@@ -228,8 +228,7 @@ vim.keymap.set("n", "s", function()
   local bufname = vim.api.nvim_buf_get_name(bufnr)
   local line_count = vim.api.nvim_buf_line_count(bufnr)
 
-  local one_pt_five_mb = 1.5 * 1024 * 1024
-  if vim.fn.getfsize(bufname) > one_pt_five_mb or line_count > 5000 then
+  if h.utils.is_big_file { bname = bufname, line_count = line_count, } then
     vim.notify("Bigfile, writing", vim.log.levels.INFO)
     vim.cmd.write { mods = { silent = true, }, }
   elseif vim.list_contains(prettier_ft, vim.bo.filetype) then

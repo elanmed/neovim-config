@@ -159,6 +159,15 @@ utils.set_and_rotate = function(val)
   utils.rotate_registers()
 end
 
+--- @class IsBigFileOpts
+--- @field bname string
+--- @field line_count number
+--- @param opts IsBigFileOpts
+utils.is_big_file = function(opts)
+  local one_pt_five_mb = 1.5 * 1024 * 1024
+  return vim.fn.getfsize(opts.bname) > one_pt_five_mb or opts.line_count > 5000
+end
+
 --- @class PadOpts
 --- @field min_len number
 --- @field side 'left' | 'right'

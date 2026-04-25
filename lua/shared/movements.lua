@@ -15,5 +15,19 @@ local function smooth_scroll_cb(direction)
   return function() smooth_scroll(direction) end
 end
 
-vim.keymap.set({ "n", "v", }, "<C-d>", smooth_scroll_cb "j", { desc = "Smooth-scroll a half-page down", })
-vim.keymap.set({ "n", "v", }, "<C-u>", smooth_scroll_cb "k", { desc = "Smooth-scroll a half-page up", })
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("SmoothScroll", { clear = true, }),
+  callback = function(ev)
+    if ev.match == "java" then return end
+
+    local bname = vim.api.nvim_buf_get_name(ev.buf)
+    local line_count = vim.api.nvim_buf_line_count(ev.buf)
+    if require "helpers".utils.is_big_file { bname = bname, line_count = line_count, } then return end
+
+    vim.keymap.set({ "n", "v", }, "<C-d>", smooth_scroll_cb "j",
+      { desc = "Smooth-scroll a half-page down", buf = ev.buf, })
+    vim.keymap.set({ "n", "v", }, "<C-u>", smooth_scroll_cb "k",
+      { desc = "Smooth-scroll a half-page up", buf = ev.buf, }
+    )
+  end,
+})
