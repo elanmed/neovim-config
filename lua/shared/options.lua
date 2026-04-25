@@ -43,10 +43,9 @@ vim.opt.fillchars = {
 }
 vim.o.foldmethod = "indent"
 vim.o.cursorlineopt = "screenline,number" -- show cursor line per screen line
+vim.o.scrolloffpad = 1
+vim.o.scrolloff = 999
 
 -- :h netrw-noload
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
-
-vim.o.scrolloffpad = 1
-vim.o.scrolloff = 999
