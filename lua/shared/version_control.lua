@@ -67,22 +67,3 @@ vim.keymap.set("n", "<C-b>", function()
   vim.api.nvim_win_call(head_winnr, vim.cmd.diffthis)
   vim.api.nvim_win_call(worktree_winnr, vim.cmd.diffthis)
 end)
-
-vim.system({ "git", "rev-parse", "--absolute-git-dir", }, {}, function(result)
-  if result.code ~= 0 then return end
-  local git_dir = vim.trim(result.stdout)
-
-  local index_watch = vim.uv.new_fs_event()
-  if index_watch == nil then return end
-
-  index_watch:start(git_dir, {}, function(_, filename)
-    vim.schedule(function()
-      if filename == "index" then
-        vim.api.nvim_exec_autocmds("User", { pattern = "GitIndexChanged", })
-      elseif filename == "HEAD" then
-        vim.api.nvim_exec_autocmds("User", { pattern = "GitHeadChanged", })
-      end
-    end)
-  end)
-end)
-
