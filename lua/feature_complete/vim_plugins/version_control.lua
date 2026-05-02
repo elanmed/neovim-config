@@ -1,5 +1,5 @@
-vim.keymap.set("n", "]h", "<Plug>GitDiffNextHunk")
-vim.keymap.set("n", "[h", "<Plug>GitDiffPrevHunk")
+vim.keymap.set("n", "]c", "<Plug>GitDiffNextHunk")
+vim.keymap.set("n", "[c", "<Plug>GitDiffPrevHunk")
 vim.keymap.set("n", "gh", "<Plug>GitDiffResetHunk")
 vim.keymap.set("v", "gh", "<Plug>GitDiffResetHunk")
 vim.keymap.set("n", "gH", "<Plug>GitDiffResetFile")
