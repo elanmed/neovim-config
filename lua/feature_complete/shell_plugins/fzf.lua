@@ -358,7 +358,7 @@ local function rg(default_query)
 end
 
 vim.keymap.set("n", "<leader>a", function()
-  rg()
+  rg "'"
 end, { desc = "fzf rg", })
 
 vim.keymap.set("n", "<leader>zf", function()
