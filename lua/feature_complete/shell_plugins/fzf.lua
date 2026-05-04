@@ -435,8 +435,17 @@ vim.keymap.set("n", "<leader>zr", function()
 end, { desc = "fzf replay", })
 
 vim.keymap.set("n", "<leader>o", function()
-  rg [[-g '!*test*' -g '!*spec*' -g '!*.json' ]]
+  local cword = vim.fn.expand "<cword>"
+  rg(([[-g '!*test*' -g '!*spec*' -g '!*.json' -F '%s' ]]):format(cword))
 end, { desc = "fzf rg excluding common files", })
+
+vim.keymap.set("v", "<leader>o", function()
+  local region = vim.fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".")
+  if #region > 0 then
+    rg(([[-g '!*test*' -g '!*spec*' -g '!*.json' -F '%s' ]]):format(region[1]))
+  end
+end, { desc = "fzf rg excluding common files", })
+
 
 local function get_stripped_filename()
   local abs_path = vim.api.nvim_buf_get_name(0)
