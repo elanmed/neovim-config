@@ -206,42 +206,6 @@ vim.keymap.set("n", "<leader>mD", function()
   vim.notify("Deleted all marks", vim.log.levels.INFO)
 end)
 
-local function setup_wasted_key_detection(key, threshold)
-  local press_count = 0
-  local timer = nil
-
-  vim.keymap.set("n", key, function()
-    local count = (function()
-      if vim.v.count == 0 then return 1 end
-      return vim.v.count
-    end)()
-    if vim.bo.buftype ~= "" then
-      press_count = 0
-      return vim.api.nvim_feedkeys(count .. key, "n", false)
-    end
-
-    press_count = press_count + 1
-    if timer then vim.fn.timer_stop(timer) end
-
-    if press_count >= threshold then
-      press_count = 0
-      vim.fn.input "Wasted keys: "
-      return
-    end
-
-    timer = vim.fn.timer_start(200, function()
-      press_count = 0
-    end)
-
-    vim.api.nvim_feedkeys(count .. key, "n", false)
-  end)
-end
-
-local wasted_keys = { "h", "j", "k", "l", "w", "b", }
-for _, key in ipairs(wasted_keys) do
-  setup_wasted_key_detection(key, 5)
-end
-
 vim.keymap.set({ "i", "c", }, "<C-r><C-;>", "<C-r>+")
 vim.keymap.set({ "i", "c", }, "<C-r>;", "<C-r>+")
 vim.keymap.set({ "i", "c", }, "<C-h>", "<left>")
