@@ -1,26 +1,38 @@
 #!/bin/bash
 source ~/.dotfiles/helpers.sh
 
+usage="usage: ./bootstrap.sh --package-manager brew|dnf|apt --desktop-env mate|gnome|macos|server"
+
 package_manager=""
+desktop_env=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --package-manager)
+      if [[ -z ${2:-} ]]; then
+        h_echo error "$usage"
+        exit 1
+      fi
       package_manager="$2"
       shift 2
       ;;
+    --desktop-env)
+      if [[ -z ${2:-} ]]; then
+        h_echo error "$usage"
+        exit 1
+      fi
+      desktop_env="$2"
+      shift 2
+      ;;
     *)
-      h_echo error "usage: ./bootstrap.sh --package-manager <pm>"
+      h_echo error "$usage"
       exit 1
       ;;
   esac
 done
 
-if [[ -z $package_manager ]]; then
-  h_echo error "missing required argument: --package-manager"
-  exit 1
-fi
 h_validate_package_manager "$package_manager"
+h_validate_desktop_env "$desktop_env"
 
 h_install_package "$package_manager" bat
 h_install_package "$package_manager" fzf
@@ -33,10 +45,14 @@ h_echo doing "installing nightly"
 export PATH="$HOME/.local/bin:$PATH"
 nvvm update
 
+if [[ $desktop_env == "server" ]]; then
+  exit 0
+fi
+
 h_echo doing "installing language servers from package.json"
 source ~/.nvm/nvm.sh
 nvm install --lts
-npm install --prefix ~/.dotfiles/neovim/.config/nvim/language_servers/
+pnpm install --prefix ~/.dotfiles/neovim/.config/nvim/language_servers/
 
 h_echo doing "installing the lua language server binary"
 latest_release=$(curl -s https://api.github.com/repos/LuaLS/lua-language-server/releases/latest)
