@@ -389,7 +389,7 @@ vim.keymap.set("n", "<leader>zs", function()
   }
 end, { desc = "fzf quickfix stack", })
 
-vim.keymap.set("n", "<leader>/z", function()
+vim.keymap.set("n", "/", function()
   local slash_opts = {
     [[--ghost='/']],
     [[--delimiter='|']],
