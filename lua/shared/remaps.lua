@@ -22,11 +22,15 @@ vim.keymap.set("n", "<leader>P", function() vim.cmd.pu { bang = true, } end, { d
 vim.keymap.set("n", "<leader>p", vim.cmd.pu, { desc = "Put on the line below", })
 vim.keymap.set("n", "<leader>e", vim.cmd.edit)
 vim.keymap.set("n", "j", function()
-  if vim.v.count > 0 then return "j" end
+  if vim.v.count > 0 then
+    return [[m']] .. vim.v.count .. "j"
+  end
   return "gj"
 end, { desc = "j with display lines", expr = true, })
 vim.keymap.set("n", "k", function()
-  if vim.v.count > 0 then return "k" end
+  if vim.v.count > 0 then
+    return [[m']] .. vim.v.count .. "k"
+  end
   return "gk"
 end, { desc = "k with display lines", expr = true, })
 vim.keymap.set("n", "$", "g$", { desc = "$ with display lines", })
