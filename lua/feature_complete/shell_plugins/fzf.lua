@@ -357,10 +357,6 @@ local function rg(default_query)
   }
 end
 
-vim.keymap.set("n", "<leader>a", function()
-  rg "'"
-end, { desc = "fzf rg", })
-
 vim.keymap.set("n", "<leader>zf", function()
   vim.cmd.cclose()
   local source = get_fzf_script "get_qf_list"
@@ -443,6 +439,11 @@ local exclude_flags = table.concat({
   "-g",
   "'!*.json'",
 }, " ")
+
+vim.keymap.set("n", "<leader>a", function()
+  rg [[-S -F -w ']]
+end, { desc = "fzf rg", })
+
 
 vim.keymap.set("n", "<leader>o", function()
   local cword = vim.fn.expand "<cword>"
