@@ -51,4 +51,4 @@ nvim -u ~/.config/nvim/barebones.lua
 
 ### TODO
 
-- Add f, count j, k to jump list
+- Add f, t to jump list
