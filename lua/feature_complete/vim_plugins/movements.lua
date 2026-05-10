@@ -28,3 +28,15 @@ vim.keymap.set("n", "<leader>mt", function()
 end)
 
 vim.keymap.set("n", "<leader>s", function() require "seek".seek() end)
+
+vim.keymap.set({ "n", "v", }, "f", "m`<Plug>FtHighlight_f", { remap = true, })
+vim.keymap.set("o", "f", "<Plug>FtHighlight_f", { remap = true, })
+
+vim.keymap.set({ "n", "v", }, "F", "m`<Plug>FtHighlight_F", { remap = true, })
+vim.keymap.set("o", "F", "<Plug>FtHighlight_F", { remap = true, })
+
+vim.keymap.set({ "n", "v", }, "t", "m`<Plug>FtHighlight_t", { remap = true, })
+vim.keymap.set("o", "t", "<Plug>FtHighlight_t", { remap = true, })
+
+vim.keymap.set({ "n", "v", }, "T", "m`<Plug>FtHighlight_T", { remap = true, })
+vim.keymap.set("o", "T", "<Plug>FtHighlight_T", { remap = true, })
