@@ -117,9 +117,10 @@ vim.api.nvim_create_user_command("Eslint", require "helpers".async(function()
   local h = require "helpers"
   --- @type vim.SystemCompleted
   local out = h.await(vim_system { "npx", "eslint", "--format", "json", vim.api.nvim_buf_get_name(0), })
-  if out.code == 0 then
-    scheduled_notify(("[tsc] non-zero exit code: %s\nstdout: %s\nstderr: %s"):format(out.code, out.stdout, out.stderr),
+  if out.stderr ~= nil or out.stderr ~= "" then
+    scheduled_notify(("[eslint] zero exit code: %s\nstdout: %s\nstderr: %s"):format(out.code, out.stdout, out.stderr),
       vim.log.levels.WARN)
+    return
   end
   local stdout = vim.json.decode(out.stdout)
 
@@ -166,7 +167,7 @@ vim.api.nvim_create_user_command("Tsc", require "helpers".async(function()
   local h = require "helpers"
   --- @type vim.SystemCompleted
   local out = h.await(vim_system { "npx", "tsc", "--noEmit", "--pretty", "false", vim.api.nvim_buf_get_name(0), })
-  if out.code ~= 0 then
+  if out.stderr ~= nil or out.stderr ~= "" then
     scheduled_notify(("[tsc] non-zero exit code: %s\nstdout: %s\nstderr: %s"):format(out.code, out.stdout, out.stderr),
       vim.log.levels.WARN)
     return
