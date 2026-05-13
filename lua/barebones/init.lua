@@ -8,6 +8,7 @@ if vim.fn.executable "fd" == 1 then
 
   vim.o.findfunc = "v:lua.FdFindFiles"
 end
+vim.keymap.set("n", "K", "<C-x><C-]>", { desc = "Tags hover", })
 vim.keymap.set("n", "<leader>f", ":find ", { desc = ":find", })
 vim.keymap.set("n", "<leader>b", function()
   local buffers =
