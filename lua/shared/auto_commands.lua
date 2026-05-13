@@ -92,3 +92,11 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "TextChanged", "TextChangedI", }, {
     end)
   end,
 })
+
+vim.api.nvim_create_autocmd("BufWritePost", {
+  callback = function()
+    local git_root = vim.fs.root(0, ".git")
+    if git_root == nil then return end
+    vim.fn.jobstart({ "ctags", "--recurse", git_root, }, { detach = true, })
+  end,
+})
