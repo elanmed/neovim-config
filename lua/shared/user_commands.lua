@@ -84,3 +84,64 @@ vim.api.nvim_create_user_command("PackClean", function()
     vim.pack.del(unused_plugins)
   end
 end, {})
+
+vim.api.nvim_create_user_command("Eslint", require "helpers".async(function()
+  --- @param cmd string[]
+  --- @return Promise
+  local vim_system = function(cmd)
+    return function(resolve)
+      vim.system(cmd, function(out) resolve(out) end)
+    end
+  end
+
+  local h = require "helpers"
+  --- @type vim.SystemCompleted
+  local out = h.await(vim_system { "npx", "eslint", "--format", "json", vim.api.nvim_buf_get_name(0), })
+  if out.code == 0 then return end
+  local stdout = vim.json.decode(out.stdout)
+
+  --- @class QfItem
+  --- @field bufnr number
+  --- @field lnum number
+  --- @field col number
+  --- @field text string
+  --- @field user_data { eslint: boolean }
+
+  --- @type QfItem[]
+  local qf_items = {}
+
+  for _, entry in ipairs(stdout) do
+    local filePath = entry.filePath
+    for _, message in ipairs(entry.messages) do
+      --- @type QfItem
+      local item = {
+        bufnr = 0,
+        filename = filePath,
+        col = message.column,
+        lnum = message.line,
+        text = message.message,
+        user_data = { eslint = true, },
+      }
+      table.insert(qf_items, item)
+    end
+  end
+
+  if #qf_items == 0 then
+    vim.notify("No Eslint errors reported", vim.log.levels.INFO)
+    return
+  end
+
+  vim.schedule(function()
+    local curr_qf_items = vim.fn.getqflist()
+    local filtered_qf_items = vim.iter(curr_qf_items):filter(
+    --- @param qf_item QfItem
+      function(qf_item)
+        return vim.tbl_get(qf_item, "user_data", "eslint") ~= true
+      end):totable()
+    vim.print(filtered_qf_items)
+    vim.fn.setqflist(filtered_qf_items, "r")
+    vim.fn.setqflist(qf_items, "a")
+    vim.cmd.copen()
+  end)
+end), {})
+

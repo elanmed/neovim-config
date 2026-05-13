@@ -186,7 +186,7 @@ local async = function(fn)
   end
 end
 
---- @alias Resolve fun():nil
+--- @alias Resolve fun(...: any):nil
 --- @alias Promise fun(resolve: Resolve):nil
 
 --- @param promise Promise
