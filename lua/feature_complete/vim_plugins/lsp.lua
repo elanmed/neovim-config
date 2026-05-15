@@ -60,8 +60,8 @@ end
 
 --- @param opts ApplyMinimalChangesOpts
 local apply_minimal_changes = function(opts)
-  opts.formatted = opts.formatted:gsub("\n$", "") .. "\n"
-  opts.unformatted = opts.unformatted:gsub("\n$", "") .. "\n"
+  opts.formatted = opts.formatted:gsub("\n+$", "") .. "\n"
+
   --- @type DiffHunk[]
   local indices = vim.text.diff(opts.unformatted, opts.formatted, { result_type = "indices", })
   local edits = {}
@@ -106,7 +106,7 @@ end
 
 --- @param cmd table
 local format_with_cli = function(cmd)
-  local unformatted = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
+  local unformatted = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n") .. "\n"
   local winnr = vim.api.nvim_get_current_win()
   local bufnr = vim.api.nvim_get_current_buf()
 
@@ -179,7 +179,7 @@ local format_with_lsp = function()
     end)()
 
     if is_full_replace then
-      local unformatted = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
+      local unformatted = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n") .. "\n"
       local formatted = result[1].newText
 
       vim.schedule(function()
