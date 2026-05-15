@@ -84,3 +84,131 @@ vim.api.nvim_create_user_command("PackClean", function()
     vim.pack.del(unused_plugins)
   end
 end, {})
+
+--- @class QfItem
+--- @field bufnr number
+--- @field lnum number
+--- @field col number
+--- @field text string
+--- @field user_data { eslint: boolean }
+
+--- @param user_data any
+local filter_user_data = function(user_data)
+  local curr_qf_items = vim.fn.getqflist()
+  local filtered_qf_items = vim.iter(curr_qf_items):filter(
+  --- @param qf_item QfItem
+    function(qf_item)
+      return vim.tbl_get(qf_item, "user_data", user_data) ~= true
+    end):totable()
+  vim.fn.setqflist(filtered_qf_items, "r")
+end
+
+local scheduled_notify = vim.schedule_wrap(vim.notify)
+
+vim.api.nvim_create_user_command("Eslint", require "helpers".async(function()
+  --- @param cmd string[]
+  --- @return Promise
+  local vim_system = function(cmd)
+    return function(resolve)
+      vim.system(cmd, function(out) resolve(out) end)
+    end
+  end
+
+  local h = require "helpers"
+  --- @type vim.SystemCompleted
+  local out = h.await(vim_system { "npx", "eslint", "--format", "json", vim.api.nvim_buf_get_name(0), })
+  if out.stderr ~= nil or out.stderr ~= "" then
+    scheduled_notify(("[eslint] zero exit code: %s\nstdout: %s\nstderr: %s"):format(out.code, out.stdout, out.stderr),
+      vim.log.levels.WARN)
+    return
+  end
+  local stdout = vim.json.decode(out.stdout)
+
+  --- @type QfItem[]
+  local qf_items = {}
+
+  for _, entry in ipairs(stdout) do
+    local filePath = entry.filePath
+    for _, message in ipairs(entry.messages) do
+      --- @type QfItem
+      local item = {
+        bufnr = 0,
+        filename = filePath,
+        col = message.column,
+        lnum = message.line,
+        text = message.message,
+        user_data = { eslint = true, },
+      }
+      table.insert(qf_items, item)
+    end
+  end
+
+  if #qf_items == 0 then
+    vim.notify("No Eslint errors reported", vim.log.levels.INFO)
+    return
+  end
+
+  vim.schedule(function()
+    filter_user_data "eslint"
+    vim.fn.setqflist(qf_items, "a")
+    vim.cmd.copen()
+  end)
+end), {})
+
+vim.api.nvim_create_user_command("Tsc", require "helpers".async(function()
+  --- @param cmd string[]
+  --- @return Promise
+  local vim_system = function(cmd)
+    return function(resolve)
+      vim.system(cmd, function(out) resolve(out) end)
+    end
+  end
+
+  local h = require "helpers"
+  --- @type vim.SystemCompleted
+  local out = h.await(vim_system { "npx", "tsc", "--noEmit", "--pretty", "false", vim.api.nvim_buf_get_name(0), })
+  if out.stderr ~= nil or out.stderr ~= "" then
+    scheduled_notify(("[tsc] non-zero exit code: %s\nstdout: %s\nstderr: %s"):format(out.code, out.stdout, out.stderr),
+      vim.log.levels.WARN)
+    return
+  end
+  local stdout = vim.split(out.stdout, "\n", { trimempty = true, })
+
+  --- @type QfItem[]
+  local qf_items = {}
+
+  for _, line in ipairs(stdout) do
+    -- index.ts(2,7): error TS2322: Type 'number' is not assignable to type 'string'.
+    --
+    -- ^([^(]+)   capture filename (everything up to but not including '(')
+    -- %((%d+)    capture row number after literal '('
+    -- ,(%d+)     capture column number after literal ','
+    -- %)         literal ')'
+    -- :%s*       literal ':' followed by optional whitespace
+    -- (.*)$      capture the rest of the line as the error message
+    local filename, lnum, col, text = line:match "^([^(]+)%((%d+),(%d+)%):%s*(.*)$"
+
+    --- @type QfItem
+    local item = {
+      bufnr = 0,
+      filename = filename,
+      col = col,
+      lnum = lnum,
+      text = text,
+      user_data = { tsc = true, },
+    }
+    table.insert(qf_items, item)
+  end
+
+  if #qf_items == 0 then
+    vim.notify("No Tsc errors reported", vim.log.levels.INFO)
+    return
+  end
+
+  vim.schedule(function()
+    filter_user_data "tsc"
+    vim.fn.setqflist(qf_items, "a")
+    vim.cmd.copen()
+  end)
+end), {})
+

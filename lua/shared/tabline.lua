@@ -46,7 +46,7 @@ end
 _G.Tabline = function()
   return table.concat({
     get_tab_section(),
-    h.str.pad(get_curr_buf_section(), { min_len = 100, side = "right", }),
+    h.str.pad(get_curr_buf_section(), { min_len = math.min(100, vim.o.columns), side = "right", }),
     get_alt_buf_section(),
   }, " ")
 end

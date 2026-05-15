@@ -290,7 +290,18 @@ vim.keymap.set("n", "glr", function() vim.lsp.buf.references() end, { desc = "LS
 vim.keymap.set("n", "gli", function() vim.lsp.buf.definition() end, { desc = "LSP go to definition", })
 vim.keymap.set("n", "gla", function() vim.lsp.buf.code_action() end, { desc = "LSP code action", })
 vim.keymap.set("n", "gly", function() vim.lsp.buf.type_definition() end, { desc = "LSP go to type definition", })
-vim.keymap.set("n", "K", function() vim.lsp.buf.hover { border = "single", max_width = 60, } end, { desc = "LSP hover", })
+vim.keymap.set("n", "K",
+  function()
+    for _, client in ipairs(vim.lsp.get_clients { bufnr = 0, }) do
+      if client.supports_method "textDocument/hover" then
+        return vim.lsp.buf.hover { border = "single", max_width = 60, }
+      end
+    end
+    vim.notify(("No LSP, falling back to ctags"), vim.log.levels.INFO)
+    vim.cmd.wincmd "]"
+  end,
+  { desc = "LSP hover", }
+)
 vim.keymap.set({ "n", "i", }, "<C-c>", function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
     local is_floating = vim.api.nvim_win_get_config(win).relative == "win"

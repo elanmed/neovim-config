@@ -125,17 +125,6 @@ utils.require_dir = function(dir)
   end
 end
 
---- @generic T
---- @param val T | nil
---- @param fallback T
---- @return T
-utils.if_nil = function(val, fallback)
-  if val == nil then
-    return fallback
-  end
-  return val
-end
-
 --- @param try string
 --- @param catch string
 utils.vim_cmd_try_catch = function(try, catch)
@@ -197,7 +186,7 @@ local async = function(fn)
   end
 end
 
---- @alias Resolve fun():nil
+--- @alias Resolve fun(...: any):nil
 --- @alias Promise fun(resolve: Resolve):nil
 
 --- @param promise Promise
