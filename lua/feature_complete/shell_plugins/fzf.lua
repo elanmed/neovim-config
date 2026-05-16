@@ -325,7 +325,11 @@ local function ripgrep_sinklist(list)
 end
 
 -- https://github.com/junegunn/fzf/blob/master/ADVANCED.md#switching-between-ripgrep-mode-and-fzf-mode
-local function rg(default_query)
+--- @param default_query? string
+--- @param override_rg_options? string[]
+local function rg(default_query, override_rg_options)
+  override_rg_options = vim.nonnil(override_rg_options, {})
+
   local base_header =
   [['<C-r> (ripgrep) | <C-f> (fzf) | -i --ignore-case | -s --case-sensitive | -S --smart-case | -w --word-regexp | -F --fixed-strings | -g --glob= | -t --type= | -. --hidden']]
 
@@ -351,7 +355,7 @@ local function rg(default_query)
 
   fzf {
     source = nil,
-    options = h.tbl.extend(rg_options, default_opts, multi_select_opts, qf_preview_opts),
+    options = h.tbl.extend(rg_options, override_rg_options, default_opts, multi_select_opts, qf_preview_opts),
     height = "full",
     sinklist = ripgrep_sinklist,
   }
@@ -441,34 +445,46 @@ local exclude_flags = table.concat({
 }, " ")
 
 vim.keymap.set("n", "<leader>a", function()
-  rg [[-S -F -w ']]
+  rg([[-S -F '']], { [[--bind="start:backward-char"]], })
 end, { desc = "fzf rg", })
 
+local start_beginning_line_opts = { [[--bind="start:beginning-of-line"]], }
 
 vim.keymap.set("n", "<leader>o", function()
   local cword = vim.fn.expand "<cword>"
-  rg(([[%s '%s']]):format(exact_search_flags, cword))
+  rg(
+    ([[ %s '%s']]):format(exact_search_flags, cword),
+    start_beginning_line_opts
+  )
 end, { desc = "fzf rg with exact search flags", })
 
 vim.keymap.set("n", "<leader>zo", function()
   local cword = vim.fn.expand "<cword>"
-  rg(([[%s %s '%s']]):format(exact_search_flags, exclude_flags, cword))
+  rg(
+    ([[ %s %s '%s']]):format(exact_search_flags, exclude_flags, cword),
+    start_beginning_line_opts
+  )
 end, { desc = "fzf rg with exact search, exclude flags", })
 
 vim.keymap.set("v", "<leader>o", function()
   local region = vim.fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".")
   if #region > 0 then
-    rg(([[%s '%s']]):format(exact_search_flags, region[1]))
+    rg(
+      ([[ %s '%s']]):format(exact_search_flags, region[1]),
+      start_beginning_line_opts
+    )
   end
 end, { desc = "fzf rg with exact search flags", })
 
 vim.keymap.set("v", "<leader>zo", function()
   local region = vim.fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".")
   if #region > 0 then
-    rg(([[%s %s '%s']]):format(exact_search_flags, exclude_flags, region[1]))
+    rg(
+      ([[ %s %s '%s']]):format(exact_search_flags, exclude_flags, region[1]),
+      start_beginning_line_opts
+    )
   end
 end, { desc = "fzf rg with exact search, exclude flags", })
-
 
 local function get_stripped_filename()
   local abs_path = vim.api.nvim_buf_get_name(0)
