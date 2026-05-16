@@ -293,7 +293,7 @@ vim.keymap.set("n", "gly", function() vim.lsp.buf.type_definition() end, { desc 
 vim.keymap.set("n", "K",
   function()
     for _, client in ipairs(vim.lsp.get_clients { bufnr = 0, }) do
-      if client.supports_method "textDocument/hover" then
+      if client:supports_method "textDocument/hover" then
         return vim.lsp.buf.hover { border = "single", max_width = 60, }
       end
     end
