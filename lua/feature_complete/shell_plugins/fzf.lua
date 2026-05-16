@@ -326,9 +326,16 @@ end
 
 -- https://github.com/junegunn/fzf/blob/master/ADVANCED.md#switching-between-ripgrep-mode-and-fzf-mode
 --- @param default_query? string
---- @param override_rg_options? string[]
-local function rg(default_query, override_rg_options)
-  override_rg_options = vim.nonnil(override_rg_options, {})
+--- @param opts? {start?: string}
+local function rg(default_query, opts)
+  opts = vim.nonnil(opts, {})
+  opts.start = (function()
+    assert(opts ~= nil)
+    if opts.start == nil then
+      return ""
+    end
+    return "+" .. opts.start
+  end)()
 
   local base_header =
   [['<C-r> (ripgrep) | <C-f> (fzf) | -i --ignore-case | -s --case-sensitive | -S --smart-case | -w --word-regexp | -F --fixed-strings | -g --glob= | -t --type= | -. --hidden']]
@@ -338,7 +345,7 @@ local function rg(default_query, override_rg_options)
   local rg_options = {
     "--disabled",
     "--header", base_header,
-    ([[--bind="start:reload(%s {q} || true)+unbind(ctrl-r)"]]):format(rg_script),
+    ([[--bind="start:reload(%s {q} || true)+unbind(ctrl-r)%s"]]):format(rg_script, opts.start),
     ([[--bind="change:reload(sleep 0.1; %s {q} || true)+transform-header(echo %s\\\nrg\ --hidden\ --ignore-case\ {q})"]])
         :format(
           rg_script,
@@ -445,16 +452,15 @@ local exclude_flags = table.concat({
 }, " ")
 
 vim.keymap.set("n", "<leader>a", function()
-  rg([[-S -F '']], { [[--bind="start:backward-char"]], })
+  rg([[-S -F '']], { start = "backward-char", })
 end, { desc = "fzf rg", })
 
-local start_beginning_line_opts = { [[--bind="start:beginning-of-line"]], }
 
 vim.keymap.set("n", "<leader>o", function()
   local cword = vim.fn.expand "<cword>"
   rg(
     ([[ %s '%s']]):format(exact_search_flags, cword),
-    start_beginning_line_opts
+    { start = "beginning-of-line", }
   )
 end, { desc = "fzf rg with exact search flags", })
 
@@ -462,7 +468,7 @@ vim.keymap.set("n", "<leader>zo", function()
   local cword = vim.fn.expand "<cword>"
   rg(
     ([[ %s %s '%s']]):format(exact_search_flags, exclude_flags, cword),
-    start_beginning_line_opts
+    { start = "beginning-of-line", }
   )
 end, { desc = "fzf rg with exact search, exclude flags", })
 
@@ -471,7 +477,7 @@ vim.keymap.set("v", "<leader>o", function()
   if #region > 0 then
     rg(
       ([[ %s '%s']]):format(exact_search_flags, region[1]),
-      start_beginning_line_opts
+      { start = "beginning-of-line", }
     )
   end
 end, { desc = "fzf rg with exact search flags", })
@@ -481,7 +487,7 @@ vim.keymap.set("v", "<leader>zo", function()
   if #region > 0 then
     rg(
       ([[ %s %s '%s']]):format(exact_search_flags, exclude_flags, region[1]),
-      start_beginning_line_opts
+      { start = "beginning-of-line", }
     )
   end
 end, { desc = "fzf rg with exact search, exclude flags", })
