@@ -120,6 +120,7 @@ local function next_closed_fold(direction)
   end
 end
 
+vim.keymap.set("n", "zv", "zcjVkk", { desc = "Visually select the current fold", })
 vim.keymap.set("n", "zj", function() next_closed_fold "j" end, { desc = "Navigate to the next closed fold", })
 vim.keymap.set("n", "zk", function() next_closed_fold "k" end, { desc = "Navigate to the prev closed fold", })
 vim.keymap.set("n", "zt", "za", { desc = "Toggle fold", })
