@@ -213,6 +213,8 @@ local prettier_ft = {
 }
 
 local lsp_ft = {
+  "c",
+  "cpp",
   "lua",
   "sh",
   "zsh",
@@ -360,4 +362,5 @@ vim.lsp.enable {
   "bashls",
   "lua_ls",
   "vimls",
+  "clangd",
 }
