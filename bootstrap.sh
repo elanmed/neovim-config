@@ -63,8 +63,6 @@ if [[ $desktop_env == "server" ]]; then
 fi
 
 h_echo doing "installing language servers from package.json"
-source ~/.nvm/nvm.sh
-nvm install --lts
 pnpm install --prefix ~/.dotfiles/neovim/.config/nvim/language_servers/
 
 h_echo doing "installing the lua language server binary"
@@ -72,8 +70,10 @@ latest_release=$(curl -s https://api.github.com/repos/LuaLS/lua-language-server/
 
 if [[ "$(uname -s)" == "Linux" ]]; then
   os_pattern="lua-language-server-.*-linux-x64.tar.gz"
-else
+elif [[ "$(uname -m)" == "arm64" ]]; then
   os_pattern="lua-language-server-.*-darwin-arm64.tar.gz"
+else
+  os_pattern="lua-language-server-.*-darwin-x64.tar.gz"
 fi
 
 asset_name=$(echo "$latest_release" | jq --raw-output ".assets[] | select(.name | test(\"$os_pattern\")) | .name")
@@ -88,7 +88,7 @@ mkdir -p "$lua_ls_dir"
 
 curl --silent --location --output "$lua_ls_tar" "$download_url"
 
-actual_sha="sha256:$(sha256sum "$lua_ls_tar" | cut -d ' ' -f 1)"
+actual_sha="sha256:$(shasum -a 256 "$lua_ls_tar" | cut -d ' ' -f 1)"
 
 if [[ $actual_sha == "$expected_sha" ]]; then
   tar --extract --gzip --file "$lua_ls_tar" --directory "$lua_ls_dir"
