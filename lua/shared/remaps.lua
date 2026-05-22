@@ -156,14 +156,14 @@ vim.keymap.set("n", "<leader>'", function()
   end)
 end, { desc = "Execute a terminal command and output the result to a buffer", })
 
-vim.keymap.set("c", "<C-e>", "<C-e><C-z>", { desc = "<C-e> and retrigger wildtrigger", })
-vim.keymap.set("c", "<Left>", function()
+vim.keymap.set("c", "<C-c>", "<C-e><C-z>", { desc = "<C-e> and retrigger wildtrigger", })
+vim.keymap.set("c", "<C-h>", function()
   if vim.fn.wildmenumode() == require "helpers".vimscript_true then
     return "<C-e><Left><C-z>"
   end
   return "<Left>"
 end, { expr = true, desc = "<Left> and retrigger wildtrigger", })
-vim.keymap.set("c", "<Right>", function()
+vim.keymap.set("c", "<C-l>", function()
   if vim.fn.wildmenumode() == require "helpers".vimscript_true then
     return "<C-e><Right><C-z>"
   end
@@ -214,14 +214,20 @@ end)
 
 vim.keymap.set({ "i", "c", }, "<C-r><C-;>", "<C-r>+")
 vim.keymap.set({ "i", "c", }, "<C-r>;", "<C-r>+")
-vim.keymap.set({ "i", "c", }, "<C-h>", "<left>")
-vim.keymap.set({ "i", "c", }, "<C-l>", "<right>")
+vim.keymap.set("i", "<C-h>", "<left>")
+vim.keymap.set("i", "<C-l>", "<right>")
+
+vim.keymap.set("i", "<C-a>", "<C-o>0")
+vim.keymap.set("c", "<C-a>", "<Home><C-z>")
+vim.keymap.set("i", "<C-e>", "<C-o>$")
+vim.keymap.set("c", "<C-e>", "<End><C-z>")
+vim.keymap.set("i", "<C-w>", "<C-o>w")
+vim.keymap.set("c", "<C-w>", "<S-Right><C-z>")
+vim.keymap.set("i", "<C-b>", "<C-o>b")
+vim.keymap.set("c", "<C-b>", "<S-Left><C-z>")
+
 vim.keymap.set("i", "<C-j>", "<down>")
 vim.keymap.set("i", "<C-k>", "<up>")
-vim.keymap.set({ "i", "c", }, "<C-w>", "<C-o>w")
-vim.keymap.set({ "i", "c", }, "<C-b>", "<C-o>b")
-vim.keymap.set({ "i", "c", }, "<C-a>", "<C-o>0")
-vim.keymap.set({ "i", "c", }, "<C-e>", "<C-o>$")
 
 vim.keymap.set("i", "<C-g>", function()
   local row_1i, col_0i = unpack(vim.api.nvim_win_get_cursor(0))
