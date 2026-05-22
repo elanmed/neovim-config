@@ -34,7 +34,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 vim.api.nvim_create_autocmd("TextYankPost", {
   group = vim.api.nvim_create_augroup("HighlightOnYank", { clear = true, }),
-  callback = function() vim.hl.hi_op() end,
+  callback = function() vim.hl.hl_op() end,
 })
 
 vim.api.nvim_create_autocmd("BufWinEnter", {
