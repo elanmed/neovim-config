@@ -362,7 +362,7 @@ local function rg(default_query, opts)
 
   fzf {
     source = nil,
-    options = h.tbl.extend(rg_options, override_rg_options, default_opts, multi_select_opts, qf_preview_opts),
+    options = h.tbl.extend(rg_options, default_opts, multi_select_opts, qf_preview_opts),
     height = "full",
     sinklist = ripgrep_sinklist,
   }
