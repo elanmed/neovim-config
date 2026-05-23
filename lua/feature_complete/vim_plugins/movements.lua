@@ -17,12 +17,12 @@ vim.keymap.set("n", "<leader>mt", function()
   local cursor_first = vim.api.nvim_win_get_cursor(0)
   vim.api.nvim_buf_set_mark(0, "y", cursor_first[1], cursor_first[2], {})
 
-  vim.cmd 'execute "normal \\<Plug>(MatchitNormalForward)"'
+  vim.cmd [[execute "normal \<Plug>(MatchitNormalForward)"]]
 
   local cursor_second = vim.api.nvim_win_get_cursor(0)
   vim.api.nvim_buf_set_mark(0, "z", cursor_second[1], cursor_second[2], {})
 
-  vim.cmd 'execute "normal \\<Plug>(MatchitNormalForward)"'
+  vim.cmd [[execute "normal \<Plug>(MatchitNormalForward)"]]
 
   require "marks".refresh_signs()
 end)
