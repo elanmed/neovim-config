@@ -51,16 +51,37 @@ _G.Tabline = function()
   }, " ")
 end
 
-_G.Statusline = function()
+
+local get_branch = function()
   local out = vim.system { "git", "rev-parse", "--absolute-git-dir", }:wait()
-  if out.code ~= 0 then return "" end
-  if out.stdout == nil then return "" end
+  if out.code ~= 0 then return nil end
+  if out.stdout == nil then return nil end
 
   local git_dir = vim.trim(out.stdout)
   local head = vim.fn.readfile(git_dir .. "/HEAD")
-  if #head == 0 then return "%#TabLine#BRANCH [no branch]" end
+  if #head == 0 then return nil end
 
   local ref = head[1]:match "ref: refs/heads/(.+)"
-  if ref == nil then return "" end
-  return "%#TabLine#BRANCH " .. ref
+  if ref == nil then return nil end
+
+  return ref
+end
+
+local branch_cache = get_branch()
+
+vim.api.nvim_create_autocmd("User", {
+  group = vim.api.nvim_create_augroup("InvalidateBranchCache", { clear = true, }),
+  pattern = "GitHeadChanged",
+  callback = function()
+    branch_cache = get_branch()
+  end,
+})
+
+_G.Statusline = function()
+  local branch = "[no branch]"
+  if branch_cache ~= nil then
+    branch = branch_cache
+  end
+
+  return "%#TabLine#BRANCH: " .. branch
 end
