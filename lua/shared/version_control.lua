@@ -5,7 +5,9 @@ vim.keymap.set("n", "<C-b>", function()
 
   local curr_cursor = vim.api.nvim_win_get_cursor(0)
   local curr_bufnr = vim.api.nvim_get_current_buf()
-  local curr_bufname = vim.fs.relpath(vim.fn.getcwd(), vim.api.nvim_buf_get_name(curr_bufnr))
+  local cwd = vim.uv.cwd()
+  assert(cwd ~= nil)
+  local curr_bufname = vim.fs.relpath(cwd, vim.api.nvim_buf_get_name(curr_bufnr))
 
   local curr_filetype = vim.bo.filetype
   local worktree_lines = vim.api.nvim_buf_get_lines(curr_bufnr, 0, -1, false)

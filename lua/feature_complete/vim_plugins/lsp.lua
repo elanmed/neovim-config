@@ -32,7 +32,10 @@ vim.api.nvim_create_autocmd("FileType", {
 local h = require "helpers"
 
 local function enable_deno_lsp()
-  return vim.fn.filereadable(vim.fs.joinpath(vim.fn.getcwd(), ".deno-enable-lsp")) == h.vimscript_true
+  local cwd = vim.uv.cwd()
+  assert(cwd ~= nil)
+
+  return vim.fn.filereadable(vim.fs.joinpath(cwd, ".deno-enable-lsp")) == h.vimscript_true
 end
 
 --- @class CallWriteOpts

@@ -31,7 +31,16 @@ vim.keymap.set("n", "<leader>b", function()
 
   vim.ui.select(buffers, {
     format_item = function(bufnr)
-      return vim.fs.relpath(vim.fn.getcwd(), vim.api.nvim_buf_get_name(bufnr))
+      local cwd = vim.uv.cwd()
+      assert(cwd ~= nil)
+
+      local rel_path = vim.fs.relpath(cwd, vim.api.nvim_buf_get_name(bufnr))
+      if rel_path == nil then
+        vim.notify("relpath is nil", vim.log.levels.WARN)
+        return ""
+      end
+
+      return rel_path
     end,
   }, function(bufnr)
     if bufnr == nil then return end
@@ -52,7 +61,9 @@ vim.keymap.set("n", "<leader>l", function()
         local normalized = vim.fs.normalize(mark.file)
         if not normalized then return false end
 
-        if not vim.startswith(normalized, vim.fn.getcwd()) then return false end
+        local cwd = vim.uv.cwd()
+        assert(cwd ~= nil)
+        if not vim.startswith(normalized, cwd) then return false end
 
         return true
       end)
@@ -60,7 +71,9 @@ vim.keymap.set("n", "<leader>l", function()
 
   vim.ui.select(marks, {
     format_item = function(mark)
-      return mark.name .. "|" .. vim.fs.relpath(vim.fn.getcwd(), mark.file)
+      local cwd = vim.uv.cwd()
+      assert(cwd ~= nil)
+      return mark.name .. "|" .. vim.fs.relpath(cwd, mark.file)
     end,
   }, function(mark)
     if mark == nil then return end
@@ -95,7 +108,8 @@ tree = function(opts)
   --- @field basename string
   --- @field type "file"|"directory"
 
-  local cwd = vim.fn.getcwd()
+  local cwd = vim.uv.cwd()
+  assert(cwd ~= nil)
 
   local max_len = -math.huge
   --- @type Line[]
