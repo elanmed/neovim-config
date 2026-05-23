@@ -168,6 +168,7 @@ end
 --- @field get_filename fun(entry:string):string
 --- @field get_qf_entry fun(entry:string):{ filename:string, lnum:number, col:number, text:string, }
 --- @field get_cursor_pos? fun(entry:string):[integer, integer]
+--- @field after_edit? fun():nil
 --- @param opts QfSinklistOpts
 local build_sinklist = function(opts)
   return function(entries)
@@ -175,6 +176,9 @@ local build_sinklist = function(opts)
       vim.cmd.edit(opts.get_filename(entries[1]))
       if opts.get_cursor_pos then
         vim.api.nvim_win_set_cursor(0, opts.get_cursor_pos(entries[1]))
+      end
+      if opts.after_edit then
+        opts.after_edit()
       end
       return
     end
@@ -284,9 +288,10 @@ vim.keymap.set("n", "<leader>z;", function()
   }
 end, { desc = "fzf command history", })
 
+local git_preview_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "git_preview.sh")
 vim.keymap.set("n", "<leader>i", function()
   local diff_opts_tbl = {
-    [[--preview='if git diff --color=always HEAD {2} 2>/dev/null | grep -q .; then git diff --color=always HEAD {2} | tail -n +5; else bat --style=numbers --color=always {2}; fi']],
+    ([[--preview='%s {2}']]):format(git_preview_script),
     [[--with-nth='{2}']],
     [[--accept-nth='{2}']],
     [[--bind='ctrl-x:execute-silent(git restore --staged --worktree {2}; git clean -f {2})+reload(git status --short --untracked-files)']],
@@ -300,6 +305,11 @@ vim.keymap.set("n", "<leader>i", function()
     sinklist = build_sinklist {
       get_filename = function(entry) return entry end,
       get_qf_entry = function(entry) return { lnum = 1, col = 0, filename = entry, } end,
+      after_edit = function()
+        vim.schedule(function()
+          vim.cmd [[execute "normal \<Plug>GitDiffNextHunk"]]
+        end)
+      end,
     },
   }
 end, { desc = "fzf git diff", })

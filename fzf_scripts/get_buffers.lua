@@ -3,7 +3,6 @@ local servername = arg[1]
 
 local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
 
-
 --- @type number[] | nil
 local buf_list = vim.rpcrequest(chan, "nvim_list_bufs")
 if buf_list == nil then return end
