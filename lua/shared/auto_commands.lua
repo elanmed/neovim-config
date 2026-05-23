@@ -39,8 +39,11 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 vim.api.nvim_create_autocmd("BufWinEnter", {
   callback = function()
-    -- TODO: delete?
-    vim.fn.matchadd("Todo", [[\<\(TODO\|FIXME\)\>]])
+    local existing_match_id = vim.w.todo_match_id
+    if existing_match_id then
+      pcall(vim.fn.matchdelete, existing_match_id)
+    end
+    vim.w.todo_match_id = vim.fn.matchadd("Todo", [[\<\(TODO\|FIXME\)\>]])
   end,
 })
 
@@ -55,6 +58,7 @@ local function foreground_for_hex(hex_color)
     return "#ffffff"
   end
 end
+
 
 local hex_ns_id = vim.api.nvim_create_namespace "HexColors"
 --- @param bufnr number
@@ -98,7 +102,6 @@ local ctags_timer = nil
 vim.api.nvim_create_autocmd("BufWritePost", {
   callback = (function()
     if ctags_timer then vim.fn.timer_stop(ctags_timer) end
-
     ctags_timer = vim.fn.timer_start(5000, require "helpers".async(function()
       local h = require "helpers"
       --- @type vim.SystemCompleted
