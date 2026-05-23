@@ -20,7 +20,6 @@ vim.keymap.set("n", "<C-b>", function()
   end
 
   local worktree_bufnr = vim.api.nvim_get_current_buf()
-  local worktree_winnr = vim.api.nvim_get_current_win()
 
   local curr_cursor = vim.api.nvim_win_get_cursor(0)
   local cwd = vim.uv.cwd()
@@ -32,13 +31,16 @@ vim.keymap.set("n", "<C-b>", function()
 
   local curr_filetype = vim.bo.filetype
   vim.cmd.tabnew()
+  local tab_worktree_winnr = vim.api.nvim_get_current_win()
+  vim.api.nvim_win_set_buf(tab_worktree_winnr, worktree_bufnr)
+
   vim.t.diff_view = true
   vim.t.worktree_bufnr = worktree_bufnr
 
   local head_bufnr = vim.api.nvim_create_buf(false, true)
   local head_winnr = vim.api.nvim_open_win(head_bufnr, true, {
     split = "left",
-    win = worktree_winnr,
+    win = tab_worktree_winnr,
   })
 
   local out = vim.system { "git", "show", ":" .. curr_bufname, }:wait()
@@ -60,14 +62,14 @@ vim.keymap.set("n", "<C-b>", function()
   end
 
   pcall(vim.api.nvim_win_set_cursor, head_winnr, curr_cursor)
-  vim.api.nvim_win_set_cursor(worktree_winnr, curr_cursor)
+  vim.api.nvim_win_set_cursor(tab_worktree_winnr, curr_cursor)
 
   vim.bo[head_bufnr].modifiable = false
   vim.bo[head_bufnr].bufhidden = "wipe"
 
-  vim.wo[worktree_winnr].winbar = "Worktree"
   vim.wo[head_winnr].winbar = "HEAD"
+  vim.wo[tab_worktree_winnr].winbar = "Worktree"
 
   vim.api.nvim_win_call(head_winnr, vim.cmd.diffthis)
-  vim.api.nvim_win_call(worktree_winnr, vim.cmd.diffthis)
+  vim.api.nvim_win_call(tab_worktree_winnr, vim.cmd.diffthis)
 end)
