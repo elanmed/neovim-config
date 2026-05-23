@@ -1,9 +1,11 @@
+local noop_keymaps = { "<C-^>", "<C-o>", "<C-i>", "<leader>d", "<leader>q", "<leader>e", }
+
 vim.keymap.set("n", "<C-b>", function()
   if vim.t.diff_view then
     local worktree_bufnr = vim.t.worktree_bufnr
     local cursor = vim.api.nvim_win_get_cursor(0)
-    for _, key in ipairs { "<C-^>", "<C-o>", "<C-i>", "<leader>d", "<leader>q", "<leader>e", } do
-      pcall(vim.api.nvim_buf_del_keymap, worktree_bufnr, "n", key)
+    for _, keymap in ipairs(noop_keymaps) do
+      pcall(vim.api.nvim_buf_del_keymap, worktree_bufnr, "n", keymap)
     end
     vim.cmd.tabclose()
     vim.api.nvim_set_current_buf(worktree_bufnr)
@@ -52,12 +54,9 @@ vim.keymap.set("n", "<C-b>", function()
   vim.bo[head_bufnr].filetype = curr_filetype
 
   for _, bufnr in ipairs { worktree_bufnr, head_bufnr, } do
-    vim.keymap.set("n", "<C-^>", "<Nop>", { buffer = bufnr, })
-    vim.keymap.set("n", "<C-o>", "<Nop>", { buffer = bufnr, })
-    vim.keymap.set("n", "<C-i>", "<Nop>", { buffer = bufnr, })
-    vim.keymap.set("n", "<leader>d", "<Nop>", { buffer = bufnr, })
-    vim.keymap.set("n", "<leader>q", "<Nop>", { buffer = bufnr, })
-    vim.keymap.set("n", "<leader>e", "<Nop>", { buffer = bufnr, })
+    for _, keymap in ipairs(noop_keymaps) do
+      vim.keymap.set("n", keymap, "<Nop>", { buffer = bufnr, })
+    end
   end
 
   pcall(vim.api.nvim_win_set_cursor, head_winnr, curr_cursor)
