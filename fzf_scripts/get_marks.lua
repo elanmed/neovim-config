@@ -29,6 +29,7 @@ for _, mark_entry in pairs(mark_list) do
   if not vim.startswith(normalized, cwd) then goto continue end
 
   local rel_file = vim.fs.relpath(cwd, mark_entry.file)
+  if rel_file == nil then goto continue end
 
   io.write(("%s|%s|%s"):format(name, lnum, rel_file) .. "\n")
   ::continue::

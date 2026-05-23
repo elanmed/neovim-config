@@ -16,10 +16,8 @@ for _, entry in pairs(qf_list.items) do
   if filename == nil then goto continue end
 
   --- @type string|nil
-  local formatted_filename = filename
-  if vim.startswith(filename, cwd) then
-    formatted_filename = vim.fs.relpath(cwd, filename)
-  end
+  local formatted_filename = vim.fs.relpath(cwd, filename)
+  if formatted_filename == nil then goto continue end
 
   local source_entry = ("%s|%s|%s|%s"):format(formatted_filename, entry.lnum, entry.col, entry.text)
   io.write(source_entry .. "\n")

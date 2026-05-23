@@ -120,8 +120,14 @@ utils.require_dir = function(dir)
   local paths_str = vim.fn.glob(glob_path)
   local paths_tbl = vim.split(paths_str, "\n")
   for _, path in pairs(paths_tbl) do
-    local relfilename = vim.fs.relpath(base_lua_path, path):gsub(".lua", "")
+    local relfilename = vim.fs.relpath(base_lua_path, path)
+    if relfilename == nil then
+      goto continue
+    end
+
+    relfilename = relfilename:gsub(".lua", "")
     require(relfilename)
+    ::continue::
   end
 end
 

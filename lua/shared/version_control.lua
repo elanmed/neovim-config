@@ -8,6 +8,9 @@ vim.keymap.set("n", "<C-b>", function()
   local cwd = vim.uv.cwd()
   assert(cwd ~= nil)
   local curr_bufname = vim.fs.relpath(cwd, vim.api.nvim_buf_get_name(curr_bufnr))
+  if curr_bufname == nil then
+    return vim.notify("relpath is nil", vim.log.levels.WARN)
+  end
 
   local curr_filetype = vim.bo.filetype
   local worktree_lines = vim.api.nvim_buf_get_lines(curr_bufnr, 0, -1, false)

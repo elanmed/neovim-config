@@ -27,6 +27,7 @@ for _, bufnr in ipairs(buf_list) do
   if not listed then goto continue end
 
   local rel_path = vim.fs.relpath(cwd, bufname)
+  if rel_path == nil then goto continue end
 
   io.write(("%s|%s\n"):format(bufnr, rel_path))
   ::continue::

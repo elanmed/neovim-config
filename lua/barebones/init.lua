@@ -73,7 +73,12 @@ vim.keymap.set("n", "<leader>l", function()
     format_item = function(mark)
       local cwd = vim.uv.cwd()
       assert(cwd ~= nil)
-      return mark.name .. "|" .. vim.fs.relpath(cwd, mark.file)
+      local rel_path = vim.fs.relpath(cwd, mark.file)
+      if rel_path == nil then
+        return ""
+      end
+
+      return mark.name .. "|" .. rel_path
     end,
   }, function(mark)
     if mark == nil then return end
@@ -116,15 +121,21 @@ tree = function(opts)
   local lines = {}
   for name, type in vim.fs.dir(opts._dir) do
     local abs_path = vim.fs.normalize(vim.fs.joinpath(opts._dir, name))
+    local rel_path = vim.fs.relpath(cwd, abs_path)
+    if rel_path == nil then
+      vim.notify("relpath is nil", vim.log.levels.WARN)
+      goto continue
+    end
     --- @type Line
     local line = {
       abs_path = abs_path,
-      rel_path = vim.fs.relpath(cwd, abs_path) or "",
+      rel_path = rel_path,
       basename = vim.fs.basename(abs_path),
       type = type,
     }
     table.insert(lines, line)
     max_len = math.max(#vim.fs.basename(abs_path), max_len)
+    ::continue::
   end
   local padding = 10
   max_len = max_len + padding
