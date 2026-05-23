@@ -224,7 +224,12 @@ vim.keymap.set("i", "<C-l>", "<right>")
 
 vim.keymap.set("i", "<C-a>", "<C-o>0")
 vim.keymap.set("c", "<C-a>", "<Home><C-z>")
-vim.keymap.set("i", "<C-e>", "<C-o>$")
+vim.keymap.set("i", "<C-e>", function()
+  if vim.fn.pumvisible() then
+    return "<C-e>"
+  end
+  return "<C-o>$"
+end, { expr = true, })
 vim.keymap.set("c", "<C-e>", "<End><C-z>")
 vim.keymap.set("i", "<C-w>", "<C-o>w")
 vim.keymap.set("c", "<C-w>", "<S-Right><C-z>")
