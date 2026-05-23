@@ -48,7 +48,3 @@ To run the barebones config:
 ```bash
 nvim -u ~/.config/nvim/barebones.lua
 ```
-
-### TODO
-
-- Add f, t to jump list
