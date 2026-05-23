@@ -52,28 +52,43 @@ _G.Tabline = function()
 end
 
 
-local get_branch = function()
-  local out = vim.system { "git", "rev-parse", "--absolute-git-dir", }:wait()
-  if out.code ~= 0 then return nil end
-  if out.stdout == nil then return nil end
+local branch_cache = nil
+local revalidate_branch_cache = h.async(function()
+  local out = h.await(h.utils.vim_system { "git", "rev-parse", "--absolute-git-dir", })
+  if out.code ~= 0 then
+    branch_cache = nil
+    return
+  end
+
+  if out.stdout == nil then
+    branch_cache = nil
+    return
+  end
 
   local git_dir = vim.trim(out.stdout)
-  local head = vim.fn.readfile(git_dir .. "/HEAD")
-  if #head == 0 then return nil end
+  vim.schedule(function()
+    local head = vim.fn.readfile(git_dir .. "/HEAD")
+    if #head == 0 then
+      branch_cache = nil
+      return
+    end
 
-  local ref = head[1]:match "ref: refs/heads/(.+)"
-  if ref == nil then return nil end
+    local ref = head[1]:match "ref: refs/heads/(.+)"
+    if ref == nil then
+      branch_cache = nil
+      return
+    end
 
-  return ref
-end
-
-local branch_cache = get_branch()
+    branch_cache = ref
+  end)
+end)
+revalidate_branch_cache()
 
 vim.api.nvim_create_autocmd("User", {
   group = vim.api.nvim_create_augroup("InvalidateBranchCache", { clear = true, }),
   pattern = "GitHeadChanged",
   callback = function()
-    branch_cache = get_branch()
+    revalidate_branch_cache()
   end,
 })
 

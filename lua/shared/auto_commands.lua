@@ -100,17 +100,9 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     if ctags_timer then vim.fn.timer_stop(ctags_timer) end
 
     ctags_timer = vim.fn.timer_start(5000, require "helpers".async(function()
-      --- @param cmd string[]
-      --- @return Promise
-      local vim_system = function(cmd)
-        return function(resolve)
-          vim.system(cmd, function(out) resolve(out) end)
-        end
-      end
-
       local h = require "helpers"
       --- @type vim.SystemCompleted
-      local out = h.await(vim_system { "git", "rev-parse", "--show-toplevel", })
+      local out = h.await(h.utils.vim_system { "git", "rev-parse", "--show-toplevel", })
       if out.code ~= 0 then return end
       if out.stdout == nil then return end
 

@@ -163,6 +163,14 @@ utils.is_big_file = function(opts)
   return vim.fn.getfsize(opts.bname) > one_pt_five_mb or opts.line_count > 5000
 end
 
+--- @param cmd string[]
+--- @return Promise
+utils.vim_system = function(cmd)
+  return function(resolve)
+    vim.system(cmd, function(out) resolve(out) end)
+  end
+end
+
 --- @class PadOpts
 --- @field min_len number
 --- @field side 'left' | 'right'
