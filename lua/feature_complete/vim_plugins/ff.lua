@@ -29,12 +29,18 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
     vim.keymap.set("i", "<tab>", "<Plug>FFPreviewToggle", { buffer = true, })
     vim.keymap.set("i", "<c-d>", "<Plug>FFPreviewScrollDown", { buffer = true, })
     vim.keymap.set("i", "<c-u>", "<Plug>FFPreviewScrollUp", { buffer = true, })
+    vim.keymap.set("i", "<c-c>", "<Plug>FFInputClear", { buffer = true, })
   end,
 })
 
-vim.keymap.set("n", "<leader>f", function()
+vim.keymap.set("n", "<leader>ff", function()
   local ff = require "ff"
   ff.setup(function() ff.find() end)
+end)
+
+vim.keymap.set("n", "<leader>fe", function()
+  local ff = require "ff"
+  ff.setup(function() ff.find { resume = true, } end)
 end)
 
 vim.api.nvim_create_autocmd("User", {
