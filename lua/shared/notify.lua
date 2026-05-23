@@ -1,5 +1,6 @@
 local timer = nil
 
+-- TODO: investigate vim ui2
 --- @param message string
 --- @param level vim.log.levels|nil
 --- @param _opts table|nil
