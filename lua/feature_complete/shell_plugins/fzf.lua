@@ -425,7 +425,7 @@ vim.keymap.set("n", "/", function()
     options = h.tbl.extend(slash_opts, default_opts),
     sinklist = function(entry)
       local query = entry[1]
-      if not entry[2] then
+      if entry[2] == nil then
         return
       end
       local line_nr, filename = unpack(vim.split(entry[2], "|"))
@@ -506,7 +506,7 @@ local function get_stripped_filename()
   local abs_path = vim.api.nvim_buf_get_name(0)
 
   local start_idx = abs_path:find "wf_modules"
-  if not start_idx then
+  if start_idx == nil then
     vim.notify("`wf_modules` not found in the filepath!", vim.log.levels.ERROR)
     return nil
   end

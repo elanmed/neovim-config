@@ -66,7 +66,7 @@ local function highlight_hex_colors(bufnr)
     local start_pos_1i = 1
     while true do
       local match_start_1i, match_end_1i = line:find("#%x%x%x%x%x%x", start_pos_1i)
-      if not match_start_1i then break end
+      if match_start_1i == nil then break end
       local match_start_0i = match_start_1i - 1
 
       local hex_color = line:sub(match_start_1i, match_end_1i)

@@ -61,6 +61,6 @@ _G.Statusline = function()
   if #head == 0 then return "%#TabLine#BRANCH [no branch]" end
 
   local ref = head[1]:match "ref: refs/heads/(.+)"
-  if not ref then return "" end
+  if ref == nil then return "" end
   return "%#TabLine#BRANCH " .. ref
 end

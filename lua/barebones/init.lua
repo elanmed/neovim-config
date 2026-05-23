@@ -56,10 +56,10 @@ vim.keymap.set("n", "<leader>l", function()
         return { name = name, lnum = lnum, file = mark_entry.file, }
       end)
       :filter(function(mark)
-        if not mark.name:match "[A-Z]" then return false end
+        if mark.name:match "[A-Z]" == nil then return false end
 
         local normalized = vim.fs.normalize(mark.file)
-        if not normalized then return false end
+        if normalized == nil then return false end
 
         local cwd = vim.uv.cwd()
         assert(cwd ~= nil)
@@ -176,7 +176,7 @@ tree = function(opts)
 
   vim.keymap.set("n", "<cr>", function()
     local line = lines[vim.fn.line "."]
-    if not line then return end
+    if line == nil then return end
 
     if line.type == "file" then
       vim.api.nvim_win_call(opts._editor_winnr, function() vim.cmd.edit(line.abs_path) end)
@@ -194,7 +194,7 @@ tree = function(opts)
 
   vim.keymap.set("n", "l", function()
     local line = lines[vim.fn.line "."]
-    if not line then return end
+    if line == nil then return end
 
     if line.type ~= "directory" then return end
     tree {
@@ -207,7 +207,7 @@ tree = function(opts)
 
   vim.keymap.set("n", "h", function()
     local line = lines[vim.fn.line "."]
-    if not line then return end
+    if line == nil then return end
     tree {
       _dir = vim.fs.dirname(opts._dir),
       _tree_bufnr = opts._tree_bufnr,
@@ -218,19 +218,19 @@ tree = function(opts)
 
   vim.keymap.set("n", "yr", function()
     local line = lines[vim.fn.line "."]
-    if not line then return end
+    if line == nil then return end
     require "helpers".utils.set_and_rotate(line.rel_path)
   end, { buffer = opts._tree_bufnr, })
 
   vim.keymap.set("n", "ya", function()
     local line = lines[vim.fn.line "."]
-    if not line then return end
+    if line == nil then return end
     require "helpers".utils.set_and_rotate(line.abs_path)
   end, { buffer = opts._tree_bufnr, })
 
   vim.keymap.set("n", "yb", function()
     local line = lines[vim.fn.line "."]
-    if not line then return end
+    if line == nil then return end
     require "helpers".utils.set_and_rotate(line.basename)
   end, { buffer = opts._tree_bufnr, })
 

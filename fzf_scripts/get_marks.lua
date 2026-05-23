@@ -20,10 +20,10 @@ if mark_list == nil then return end
 for _, mark_entry in pairs(mark_list) do
   local name = mark_entry.mark:sub(2, 2)
   local lnum = mark_entry.pos[2]
-  if not name:match "[A-Z]" then goto continue end
+  if name:match "[A-Z]" == nil then goto continue end
 
   local normalized = vim.fs.normalize(mark_entry.file)
-  if not normalized then goto continue end
+  if normalized == nil then goto continue end
 
   if not vim.startswith(normalized, cwd) then goto continue end
 

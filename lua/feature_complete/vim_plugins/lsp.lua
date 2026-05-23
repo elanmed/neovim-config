@@ -165,7 +165,7 @@ local format_with_lsp = function()
       end)
     end
 
-    if not result or #result == 0 then
+    if result == nil or #result == 0 then
       return vim.schedule(function()
         vim.notify("[textDocument/formatting] no result, writing", vim.log.levels.INFO)
         call_write { bufnr = bufnr, winnr = winnr, }
@@ -280,7 +280,7 @@ local function toggle_virtual_lines()
     vim.tbl_extend("error", base_diagnostic_config, { virtual_lines = not current_virtual_lines, })
   )
 
-  if not current_virtual_lines then
+  if current_virtual_lines == nil then
     vim.notify("Virtual lines enabled", vim.log.levels.TRACE)
   else
     vim.notify("Virtual lines disabled", vim.log.levels.OFF)

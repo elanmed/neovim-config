@@ -105,7 +105,7 @@ end
 --- @param content any
 dev.log = function(content)
   local file = io.open("log.txt", "a")
-  if not file then
+  if file == nil then
     vim.notify("Error opening file!", vim.log.levels.ERROR)
     return
   end
