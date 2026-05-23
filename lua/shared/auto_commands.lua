@@ -94,9 +94,24 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "TextChanged", "TextChangedI", }, {
 })
 
 vim.api.nvim_create_autocmd("BufWritePost", {
-  callback = function()
-    local git_root = vim.fs.root(0, ".git")
+  callback = require "helpers".async(function()
+    --- @param cmd string[]
+    --- @return Promise
+    local vim_system = function(cmd)
+      return function(resolve)
+        vim.system(cmd, function(out) resolve(out) end)
+      end
+    end
+
+    local h = require "helpers"
+    --- @type vim.SystemCompleted
+    local out = h.await(vim_system { "git", "rev-parse", "--show-toplevel", })
+    if out.code ~= 0 then return end
+    if out.stdout == nil then return end
+
+    local git_root = vim.trim(out.stdout)
     if git_root == nil then return end
-    vim.fn.jobstart({ "ctags", "--recurse", git_root, }, { detach = true, })
-  end,
+
+    vim.system { "ctags", "-R", git_root, }
+  end),
 })
