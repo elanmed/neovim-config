@@ -1,29 +1,42 @@
 vim.keymap.set("n", "<C-b>", function()
+  if vim.t.diff_view then
+    local worktree_bufnr = vim.t.worktree_bufnr
+    local cursor = vim.api.nvim_win_get_cursor(0)
+    for _, key in ipairs { "<C-^>", "<C-o>", "<C-i>", "<leader>d", "<leader>q", "<leader>e", } do
+      pcall(vim.api.nvim_buf_del_keymap, worktree_bufnr, "n", key)
+    end
+    vim.cmd.tabclose()
+    vim.api.nvim_set_current_buf(worktree_bufnr)
+    local line_count = vim.api.nvim_buf_line_count(worktree_bufnr)
+    local clamped = math.min(cursor[1], line_count)
+    vim.api.nvim_win_set_cursor(0, { clamped, cursor[2], })
+    return
+  end
+
   if vim.bo.buftype ~= "" then
     return vim.notify("buftype is not normal", vim.log.levels.ERROR)
   end
 
+  local worktree_bufnr = vim.api.nvim_get_current_buf()
+  local worktree_winnr = vim.api.nvim_get_current_win()
+
   local curr_cursor = vim.api.nvim_win_get_cursor(0)
-  local curr_bufnr = vim.api.nvim_get_current_buf()
   local cwd = vim.uv.cwd()
   assert(cwd ~= nil)
-  local curr_bufname = vim.fs.relpath(cwd, vim.api.nvim_buf_get_name(curr_bufnr))
+  local curr_bufname = vim.fs.relpath(cwd, vim.api.nvim_buf_get_name(worktree_bufnr))
   if curr_bufname == nil then
     return vim.notify("relpath is nil", vim.log.levels.WARN)
   end
 
   local curr_filetype = vim.bo.filetype
-  local worktree_lines = vim.api.nvim_buf_get_lines(curr_bufnr, 0, -1, false)
-
   vim.cmd.tabnew()
-  local head_winnr = vim.api.nvim_tabpage_get_win(0)
-  local head_bufnr = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_set_current_buf(head_bufnr)
+  vim.t.diff_view = true
+  vim.t.worktree_bufnr = worktree_bufnr
 
-  local worktree_bufnr = vim.api.nvim_create_buf(false, true)
-  local worktree_winnr = vim.api.nvim_open_win(worktree_bufnr, true, {
-    split = "right",
-    win = 0,
+  local head_bufnr = vim.api.nvim_create_buf(false, true)
+  local head_winnr = vim.api.nvim_open_win(head_bufnr, true, {
+    split = "left",
+    win = worktree_winnr,
   })
 
   local out = vim.system { "git", "show", ":" .. curr_bufname, }:wait()
@@ -35,20 +48,10 @@ vim.keymap.set("n", "<C-b>", function()
   local head_lines = vim.split(stdout, "\n", { trimempty = true, })
 
   vim.api.nvim_buf_set_lines(head_bufnr, 0, -1, false, head_lines)
-  vim.api.nvim_buf_set_lines(worktree_bufnr, 0, -1, false, worktree_lines)
 
   vim.bo[head_bufnr].filetype = curr_filetype
-  vim.bo[worktree_bufnr].filetype = curr_filetype
 
   for _, bufnr in ipairs { worktree_bufnr, head_bufnr, } do
-    vim.keymap.set("n", "<C-b>", function()
-      local cursor = vim.api.nvim_win_get_cursor(0)
-      vim.cmd.tabclose()
-      vim.api.nvim_set_current_buf(curr_bufnr)
-      local clamped = math.min(cursor[1], #worktree_lines)
-      vim.api.nvim_win_set_cursor(0, { clamped, cursor[2], })
-    end, { buffer = bufnr, })
-
     vim.keymap.set("n", "<C-^>", "<Nop>", { buffer = bufnr, })
     vim.keymap.set("n", "<C-o>", "<Nop>", { buffer = bufnr, })
     vim.keymap.set("n", "<C-i>", "<Nop>", { buffer = bufnr, })
@@ -60,11 +63,8 @@ vim.keymap.set("n", "<C-b>", function()
   pcall(vim.api.nvim_win_set_cursor, head_winnr, curr_cursor)
   vim.api.nvim_win_set_cursor(worktree_winnr, curr_cursor)
 
-  vim.bo[worktree_bufnr].modifiable = false
   vim.bo[head_bufnr].modifiable = false
-
   vim.bo[head_bufnr].bufhidden = "wipe"
-  vim.bo[worktree_bufnr].bufhidden = "wipe"
 
   vim.wo[worktree_winnr].winbar = "Worktree"
   vim.wo[head_winnr].winbar = "HEAD"
