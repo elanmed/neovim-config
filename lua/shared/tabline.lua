@@ -53,15 +53,15 @@ end
 
 
 local branch_cache = nil
-local revalidate_branch_cache = h.async(function()
+local get_branch = h.async(function(resolve)
   local out = h.await(h.utils.vim_system { "git", "rev-parse", "--absolute-git-dir", })
   if out.code ~= 0 then
-    branch_cache = nil
+    resolve(nil)
     return
   end
 
   if out.stdout == nil then
-    branch_cache = nil
+    resolve(nil)
     return
   end
 
@@ -69,27 +69,30 @@ local revalidate_branch_cache = h.async(function()
   vim.schedule(function()
     local head = vim.fn.readfile(git_dir .. "/HEAD")
     if #head == 0 then
-      branch_cache = nil
+      resolve(nil)
       return
     end
 
     local ref = head[1]:match "ref: refs/heads/(.+)"
     if ref == nil then
-      branch_cache = nil
+      resolve(nil)
       return
     end
 
-    branch_cache = ref
+    resolve(ref)
   end)
 end)
-revalidate_branch_cache()
+
+h.async(function()
+  branch_cache = h.await(get_branch)
+end)()
 
 vim.api.nvim_create_autocmd("User", {
   group = vim.api.nvim_create_augroup("InvalidateBranchCache", { clear = true, }),
   pattern = "GitHeadChanged",
-  callback = function()
-    revalidate_branch_cache()
-  end,
+  callback = h.async(function()
+    branch_cache = h.await(get_branch)
+  end),
 })
 
 _G.Statusline = function()
