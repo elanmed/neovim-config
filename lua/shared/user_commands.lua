@@ -33,6 +33,7 @@ vim.api.nvim_create_user_command("Snippet", function(opts)
     eff = { file = "useEffect.ts", movement = "ji\t", },
     mem = { file = "useMemo.ts", movement = "ji\t", },
     wai = { file = "waitFor.ts", movement = "f>f)", },
+    af = { file = "arrowFn.ts", movement = "ji\t", },
   }
 
   local snippet_trigger = opts.fargs[1]
@@ -53,7 +54,18 @@ vim.api.nvim_create_user_command("Snippet", function(opts)
 
   local snippets_path = vim.fs.joinpath(vim.fn.stdpath "config", "snippets")
   local snippet_file = vim.fs.joinpath(snippets_path, snippet_trigger_to_file_mapping[snippet_trigger].file)
-  vim.cmd("keepalt -1read " .. snippet_file)
+
+  local line_content = vim.api.nvim_get_current_line()
+  local row_1i, col_0i = unpack(vim.api.nvim_win_get_cursor(0))
+  local row_0i = row_1i - 1
+  local col_1i = col_0i + 1
+  local col_1i_incl = col_1i + 1
+  local curr_content = line_content:sub(1, col_1i_incl)
+  local snippet_content = vim.fn.readfile(snippet_file)
+  snippet_content[1] = curr_content .. snippet_content[1]
+
+  vim.api.nvim_buf_set_lines(0, row_0i, row_0i + 1, false, snippet_content)
+
   vim.cmd.normal { snippet_trigger_to_file_mapping[snippet_trigger].movement, bang = true, }
 end, { nargs = "*", })
 
