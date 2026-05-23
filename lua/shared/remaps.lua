@@ -92,7 +92,12 @@ vim.keymap.set("n", "<leader>ya", function()
 end, { desc = "Yank the absolute path of the current buffer", })
 
 vim.keymap.set("n", "<leader>yr", function()
-  local rel_path = assert(vim.fs.relpath(vim.fn.getcwd(), vim.api.nvim_buf_get_name(0)))
+  local cwd = vim.uv.cwd()
+  if cwd == nil then return vim.notify("cwd is nil", vim.log.levels.WARN) end
+
+  local rel_path = vim.fs.relpath(cwd, vim.api.nvim_buf_get_name(0))
+  if rel_path == nil then return vim.notify("relpath is nil", vim.log.levels.WARN) end
+
   require "helpers".utils.set_and_rotate(rel_path)
 end, { desc = "Yank the relative path of the current buffer", })
 
