@@ -39,6 +39,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 vim.api.nvim_create_autocmd("BufWinEnter", {
   callback = function()
+    -- TODO: delete?
     vim.fn.matchadd("Todo", [[\<\(TODO\|FIXME\)\>]])
   end,
 })
@@ -81,11 +82,11 @@ local function highlight_hex_colors(bufnr)
   end
 end
 
-local timer = nil
+local hex_timer = nil
 vim.api.nvim_create_autocmd({ "BufWinEnter", "TextChanged", "TextChangedI", }, {
   callback = function(event)
-    if timer then vim.fn.timer_stop(timer) end
-    timer = vim.fn.timer_start(500, function()
+    if hex_timer then vim.fn.timer_stop(hex_timer) end
+    hex_timer = vim.fn.timer_start(500, function()
       if not vim.api.nvim_buf_is_valid(event.buf) then return end
       if vim.api.nvim_get_current_buf() ~= event.buf then return end
       highlight_hex_colors(event.buf)
@@ -93,25 +94,30 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "TextChanged", "TextChangedI", }, {
   end,
 })
 
+local ctags_timer = nil
 vim.api.nvim_create_autocmd("BufWritePost", {
-  callback = require "helpers".async(function()
-    --- @param cmd string[]
-    --- @return Promise
-    local vim_system = function(cmd)
-      return function(resolve)
-        vim.system(cmd, function(out) resolve(out) end)
+  callback = (function()
+    if ctags_timer then vim.fn.timer_stop(ctags_timer) end
+
+    ctags_timer = vim.fn.timer_start(5000, require "helpers".async(function()
+      --- @param cmd string[]
+      --- @return Promise
+      local vim_system = function(cmd)
+        return function(resolve)
+          vim.system(cmd, function(out) resolve(out) end)
+        end
       end
-    end
 
-    local h = require "helpers"
-    --- @type vim.SystemCompleted
-    local out = h.await(vim_system { "git", "rev-parse", "--show-toplevel", })
-    if out.code ~= 0 then return end
-    if out.stdout == nil then return end
+      local h = require "helpers"
+      --- @type vim.SystemCompleted
+      local out = h.await(vim_system { "git", "rev-parse", "--show-toplevel", })
+      if out.code ~= 0 then return end
+      if out.stdout == nil then return end
 
-    local git_root = vim.trim(out.stdout)
-    if git_root == nil then return end
+      local git_root = vim.trim(out.stdout)
+      if git_root == nil then return end
 
-    vim.system { "ctags", "-R", git_root, }
+      vim.system { "ctags", "-R", git_root, }
+    end))
   end),
 })
