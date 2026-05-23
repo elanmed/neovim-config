@@ -309,7 +309,7 @@ vim.keymap.set("n", "K",
 )
 vim.keymap.set({ "n", "i", }, "<C-c>", function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do
-    local is_floating = vim.api.nvim_win_get_config(win).relative == "win"
+    local is_floating = vim.api.nvim_win_get_config(win).relative ~= ""
     if is_floating then vim.api.nvim_win_close(win, false) end
   end
 end, { desc = "Close floating windows", })
