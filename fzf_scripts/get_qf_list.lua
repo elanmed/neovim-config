@@ -6,9 +6,8 @@ local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
 local qf_list = vim.rpcrequest(chan, "nvim_call_function", "getqflist", { { items = 0, }, })
 if qf_list == nil then return vim.fn.chanclose(chan) end
 
---- @type string | nil
-local cwd = vim.rpcrequest(chan, "nvim_call_function", "getcwd", {})
-if cwd == nil then return vim.fn.chanclose(chan) end
+local cwd = vim.uv.cwd()
+assert(cwd ~= nil)
 
 for _, entry in pairs(qf_list.items) do
   --- @type string | nil

@@ -8,9 +8,8 @@ local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
 local buf_list = vim.rpcrequest(chan, "nvim_list_bufs")
 if buf_list == nil then return end
 
---- @type string | nil
-local cwd = vim.rpcrequest(chan, "nvim_call_function", "getcwd", {})
-if cwd == nil then return end
+local cwd = vim.uv.cwd()
+assert(cwd ~= nil)
 
 for _, bufnr in ipairs(buf_list) do
   --- @type string | nil

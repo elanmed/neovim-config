@@ -11,11 +11,10 @@ local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
 --- @type MarkListEntry[] | nil
 local mark_list = vim.rpcrequest(chan, "nvim_call_function", "getmarklist", {})
 
---- @type string | nil
-local cwd = vim.rpcrequest(chan, "nvim_call_function", "getcwd", {})
+local cwd = vim.uv.cwd()
+assert(cwd ~= nil)
 
 vim.fn.chanclose(chan)
-if cwd == nil then return end
 if mark_list == nil then return end
 
 for _, mark_entry in pairs(mark_list) do
