@@ -251,7 +251,9 @@ vim.keymap.set("n", "<leader>zu", function()
     options = h.tbl.extend(registers_opts_tbl, default_opts),
     sink = function(entry)
       local reg = vim.split(entry, "|")[1]
-      h.utils.set_unnamed_and_plus(vim.fn.getreg(reg))
+      local reg_val = vim.fn.getreg(reg)
+      vim.fn.setreg("", reg_val)
+      vim.fn.setreg("+", reg_val)
     end,
   }
 end, { desc = "fzf register", })
