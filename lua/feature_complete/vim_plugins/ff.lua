@@ -33,7 +33,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
   end,
 })
 
-vim.keymap.set("n", "<leader>ff", function()
+vim.keymap.set("n", "<leader>fi", function()
   local ff = require "ff"
   ff.setup(function() ff.find() end)
 end)
