@@ -1,14 +1,14 @@
 #!/bin/bash
 source ~/.dotfiles/helpers.sh
 
-usage="usage: ./bootstrap.sh --package-manager brew|dnf|apt --desktop-env mate|gnome|macos|server"
+usage="usage: ./bootstrap.sh -p brew|dnf|apt -d mate|gnome|macos|server"
 
 package_manager=""
 desktop_env=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --package-manager)
+    -p)
       if [[ -z ${2:-} ]]; then
         h_echo error "$usage"
         exit 1
@@ -16,7 +16,7 @@ while [[ $# -gt 0 ]]; do
       package_manager="$2"
       shift 2
       ;;
-    --desktop-env)
+    -d)
       if [[ -z ${2:-} ]]; then
         h_echo error "$usage"
         exit 1
