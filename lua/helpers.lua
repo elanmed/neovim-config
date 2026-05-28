@@ -164,10 +164,11 @@ utils.is_big_file = function(opts)
 end
 
 --- @param cmd string[]
+--- @param opts vim.SystemOpts?
 --- @return Promise
-utils.vim_system = function(cmd)
+utils.vim_system = function(cmd, opts)
   return function(resolve)
-    vim.system(cmd, function(out) resolve(out) end)
+    vim.system(cmd, opts, function(out) resolve(out) end)
   end
 end
 
