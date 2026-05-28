@@ -202,11 +202,10 @@ str.truncate = function(val, opts)
     return val
   end
 
-  local side = vim.nonnil(opts.side, "right")
-  if side == "right" then
+  if opts.side == "right" then
     return val:sub(1, max_len) .. ellipsis
   end
-  return ellipsis .. val:sub(max_len)
+  return ellipsis .. val:sub(-max_len)
 end
 
 local function safe_resume(...)

@@ -25,13 +25,15 @@ local get_tab_section = function()
   return table.concat({ "%#Search#", curr_tab, "%#TabLine#", }, " ")
 end
 
+local curr_buf_prefix = "%#TabLineTitle#EDIT %#TabLineSel#"
 local get_curr_buf_section = function()
   local bufnr = vim.fn.bufnr "%"
   if not vim.api.nvim_buf_is_valid(bufnr) then return "" end
 
-  return "%#TabLineTitle#EDIT %#TabLineSel#" .. get_name(bufnr)
+  return get_name(bufnr)
 end
 
+local alt_buf_prefix = "%#TabLine#ALT "
 local get_alt_buf_section = function()
   local bufnr = vim.fn.bufnr "#"
   if not vim.api.nvim_buf_is_valid(bufnr) then return "" end
@@ -40,14 +42,35 @@ local get_alt_buf_section = function()
   if get_name(vim.fn.bufnr "%") == terminal_buf_name then return "" end
   if get_name(bufnr) == get_name(vim.fn.bufnr "%") then return "" end
 
-  return "%#TabLine#ALT " .. get_name(bufnr)
+  return get_name(bufnr)
 end
 
 _G.Tabline = function()
+  local section_len = math.min(40, math.floor(vim.o.columns / 3))
+
+  local truncated_buf_section = h.str.truncate(
+    get_curr_buf_section(),
+    { max_len = section_len, side = "left", }
+  )
+
+  local padded_buf_section = h.str.pad(
+    truncated_buf_section,
+    { min_len = section_len * 1.5, side = "right", }
+  )
+
+  vim.keymap.set("n", "<leader>fp", function()
+    vim.print { truncated_buf_section = vim.fn.strchars(truncated_buf_section), section_len = section_len, padded_buf_section = vim.fn.strchars(padded_buf_section), }
+  end)
+
+  local truncated_alt_section = h.str.truncate(
+    get_alt_buf_section(),
+    { max_len = section_len, side = "left", }
+  )
+
   return table.concat({
     get_tab_section(),
-    h.str.pad(get_curr_buf_section(), { min_len = math.min(100, vim.o.columns), side = "right", }),
-    get_alt_buf_section(),
+    curr_buf_prefix .. padded_buf_section,
+    alt_buf_prefix .. truncated_alt_section,
   }, " ")
 end
 
