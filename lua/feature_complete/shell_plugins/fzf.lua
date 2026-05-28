@@ -431,7 +431,7 @@ vim.keymap.set("n", "/", function()
         return
       end
       local line_nr, filename = unpack(vim.split(entry[2], "|"))
-      if #query == 0 then
+      if vim.fn.strchars(query) == 0 then
         vim.api.nvim_win_set_cursor(0, { tonumber(line_nr), 0, })
         return
       end

@@ -18,7 +18,7 @@ local function notify(message, level, _opts)
   local hl_group = level_to_hl_group[level]
 
   local max_len = vim.o.columns - 1
-  if #message > max_len then message = message:sub(1, max_len - 1) .. "…" end
+  if vim.fn.strchars(message) > max_len then message = message:sub(1, max_len - 1) .. "…" end
 
   local add_to_history = true
   vim.api.nvim_echo({ { message, hl_group, }, }, add_to_history, {})

@@ -134,7 +134,7 @@ tree = function(opts)
       type = type,
     }
     table.insert(lines, line)
-    max_len = math.max(#vim.fs.basename(abs_path), max_len)
+    max_len = math.max(vim.fn.strchars(vim.fs.basename(abs_path)), max_len)
     ::continue::
   end
   local padding = 10

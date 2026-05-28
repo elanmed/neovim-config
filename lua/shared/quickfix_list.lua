@@ -25,14 +25,14 @@ function _G.GetQuickfixTextFunc()
   local items = {}
   for _, item in pairs(qf_list) do
     local bufname = shorten_bufname(item.bufnr)
-    longest_bufname_len = math.max(#bufname, longest_bufname_len)
-    longest_row_len = math.max(#tostring(item.lnum), longest_row_len)
-    longest_col_len = math.max(#tostring(item.col), longest_col_len)
+    longest_bufname_len = math.max(vim.fn.strchars(bufname), longest_bufname_len)
+    longest_row_len = math.max(vim.fn.strchars(tostring(item.lnum)), longest_row_len)
+    longest_col_len = math.max(vim.fn.strchars(tostring(item.col)), longest_col_len)
   end
 
   for index, item in pairs(qf_list) do
     local bufname = shorten_bufname(item.bufnr)
-    local buffer_padding_right = longest_bufname_len - #bufname
+    local buffer_padding_right = longest_bufname_len - vim.fn.strchars(bufname)
     local formatted_item =
         bufname ..
         string.rep(" ", buffer_padding_right) ..
@@ -46,7 +46,7 @@ function _G.GetQuickfixTextFunc()
     local win_width = (
       vim.api.nvim_win_get_width(0) / (has_preview_win() and 1 or 2)
     ) - misc_padding
-    if #formatted_item > win_width then
+    if vim.fn.strchars(formatted_item) > win_width then
       formatted_item = formatted_item:sub(1, win_width)
     end
     items[index] = formatted_item

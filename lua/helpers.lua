@@ -178,15 +178,35 @@ end
 --- @param val string | number
 --- @param opts PadOpts
 str.pad = function(val, opts)
-  if #tostring(val) >= opts.min_len then
+  if vim.fn.strchars(tostring(val)) >= opts.min_len then
     return tostring(val)
   end
 
-  local num_spaces = opts.min_len - #tostring(val)
+  local num_spaces = opts.min_len - vim.fn.strchars(tostring(val))
   if opts.side == "left" then
     return string.rep(" ", num_spaces) .. tostring(val)
   end
   return tostring(val) .. string.rep(" ", num_spaces)
+end
+
+--- @class TruncateOpts
+--- @field max_len number
+--- @field side 'left' | 'right'
+--- @param val string
+--- @param opts TruncateOpts
+str.truncate = function(val, opts)
+  local ellipsis = "…"
+  local max_len = opts.max_len - vim.fn.strchars(ellipsis)
+
+  if vim.fn.strchars(val) <= max_len then
+    return val
+  end
+
+  local side = vim.nonnil(opts.side, "right")
+  if side == "right" then
+    return val:sub(1, max_len) .. ellipsis
+  end
+  return ellipsis .. val:sub(max_len)
 end
 
 local function safe_resume(...)
