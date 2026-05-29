@@ -23,7 +23,9 @@ local function notify(message, level, _opts)
   local add_to_history = true
   vim.api.nvim_echo({ { message, hl_group, }, }, add_to_history, {})
   timer = vim.fn.timer_start(2000, function()
-    if vim.fn.mode() == "n" then vim.cmd [[normal! :<Esc>]] end
+    if vim.fn.mode() == "n" then
+      vim.api.nvim_echo({ { "", }, }, not add_to_history, {})
+    end
   end)
 end
 
