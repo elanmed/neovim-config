@@ -1,7 +1,4 @@
 local h = require "helpers"
-vim.o.showtabline = 2
-vim.o.tabline = "%!v:lua.Tabline()"
-vim.o.statusline = "%!v:lua.Statusline()"
 
 local unnamed_buf_name = "[unnamed]"
 local terminal_buf_name = "[terminal]"
@@ -126,3 +123,7 @@ _G.Statusline = function()
 
   return "%#TabLine#BRANCH: " .. branch
 end
+
+vim.o.showtabline = 2
+vim.o.tabline = "%!v:lua.Tabline()"
+vim.o.statusline = "%!v:lua.Statusline()"
