@@ -1,6 +1,10 @@
 --- @param bufnr number
 local function shorten_bufname(bufnr)
-  return vim.fs.basename(vim.fn.bufname(bufnr))
+  local bufname = vim.fn.bufname(bufnr)
+  return vim.fs.joinpath(
+    vim.fs.basename(vim.fs.dirname(bufname)),
+    vim.fs.basename(bufname)
+  )
 end
 
 vim.o.quickfixtextfunc = "v:lua.GetQuickfixTextFunc"
