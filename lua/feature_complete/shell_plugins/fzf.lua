@@ -168,7 +168,7 @@ end
 --- @field get_filename fun(entry:string):string
 --- @field get_qf_entry fun(entry:string):{ filename:string, lnum:number, col:number, text:string, }
 --- @field get_cursor_pos? fun(entry:string):[integer, integer]
---- @field after_edit? fun():nil
+--- @field after_edit? fun(entry: string):nil
 --- @param opts QfSinklistOpts
 local build_sinklist = function(opts)
   return function(entries)
@@ -178,7 +178,7 @@ local build_sinklist = function(opts)
         vim.api.nvim_win_set_cursor(0, opts.get_cursor_pos(entries[1]))
       end
       if opts.after_edit then
-        opts.after_edit()
+        opts.after_edit(entries[1])
       end
       return
     end
@@ -307,10 +307,13 @@ vim.keymap.set("n", "<leader>i", function()
     sinklist = build_sinklist {
       get_filename = function(entry) return entry end,
       get_qf_entry = function(entry) return { lnum = 1, col = 0, filename = entry, } end,
-      after_edit = function()
-        vim.schedule(function()
-          vim.cmd [[execute "normal \<Plug>GitDiffNextHunk"]]
-        end)
+      after_edit = function(entry)
+        local bufnr = vim.fn.bufnr(entry)
+        if bufnr == -1 then
+          vim.defer_fn(function()
+            vim.cmd [[execute "normal \<Plug>GitDiffNextHunk"]]
+          end, 100)
+        end
       end,
     },
   }
