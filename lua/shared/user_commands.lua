@@ -6,7 +6,7 @@ vim.api.nvim_create_user_command("PrintRemaps", function()
   vim.cmd "redir! > remaps.txt | silent map | redir END"
 end, {})
 
-vim.api.nvim_create_user_command("Res", function()
+vim.api.nvim_create_user_command("Session", function()
   vim.cmd "mksession! Session.vim | restart source Session.vim"
 end, {})
 
