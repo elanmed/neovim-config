@@ -470,8 +470,12 @@ vim.keymap.set("n", "<leader>a", function()
   rg([[-S -F -- '']], { start = "backward-char", })
 end, { desc = "fzf rg", })
 
+vim.keymap.set("n", "<leader>zi", function()
+  rg(([[%s -S -F -- '']]):format(exclude_flags), { start = "backward-char", })
+end, { desc = "fzf rg", })
 
-vim.keymap.set("n", "<leader>o", function()
+
+vim.keymap.set("n", "<leader>zo", function()
   local cword = vim.fn.expand "<cword>"
   rg(
     ([[ %s -- '%s']]):format(exact_search_flags, cword),
@@ -479,7 +483,7 @@ vim.keymap.set("n", "<leader>o", function()
   )
 end, { desc = "fzf rg with exact search flags", })
 
-vim.keymap.set("n", "<leader>zo", function()
+vim.keymap.set("n", "<leader>o", function()
   local cword = vim.fn.expand "<cword>"
   rg(
     ([[ %s %s -- '%s']]):format(exact_search_flags, exclude_flags, cword),
@@ -487,7 +491,7 @@ vim.keymap.set("n", "<leader>zo", function()
   )
 end, { desc = "fzf rg with exact search, exclude flags", })
 
-vim.keymap.set("v", "<leader>o", function()
+vim.keymap.set("v", "<leader>zo", function()
   local region = vim.fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".")
   if #region > 0 then
     rg(
@@ -497,7 +501,7 @@ vim.keymap.set("v", "<leader>o", function()
   end
 end, { desc = "fzf rg with exact search flags", })
 
-vim.keymap.set("v", "<leader>zo", function()
+vim.keymap.set("v", "<leader>o", function()
   local region = vim.fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".")
   if #region > 0 then
     rg(
