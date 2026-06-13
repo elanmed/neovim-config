@@ -63,7 +63,7 @@ if [[ $desktop_env == "server" ]]; then
 fi
 
 h_echo doing "installing language servers from package.json"
-pnpm install --prefix ~/.dotfiles/neovim/.config/nvim/language_servers/
+pnpm install --yes --prefix ~/.dotfiles/neovim/.config/nvim/language_servers/
 
 h_echo doing "installing the lua language server binary"
 latest_release=$(curl -s https://api.github.com/repos/LuaLS/lua-language-server/releases/latest)
