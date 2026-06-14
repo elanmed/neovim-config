@@ -466,11 +466,11 @@ local exclude_flags = table.concat({
   "'!*.json'",
 }, " ")
 
-vim.keymap.set("n", "<leader>a", function()
+vim.keymap.set("n", "<leader>zi", function()
   rg([[-S -F -- '']], { start = "backward-char", })
 end, { desc = "fzf rg", })
 
-vim.keymap.set("n", "<leader>zi", function()
+vim.keymap.set("n", "<leader>a", function()
   rg(([[%s -S -F -- '']]):format(exclude_flags), { start = "backward-char", })
 end, { desc = "fzf rg", })
 
