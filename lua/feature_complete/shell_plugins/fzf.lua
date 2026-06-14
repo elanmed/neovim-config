@@ -310,6 +310,7 @@ vim.keymap.set("n", "<leader>i", function()
       after_edit = function(entry)
         local bufnr = vim.fn.bufnr(entry)
         if bufnr == -1 then
+          vim.api.nvim_win_set_cursor(0, { 1, 0, })
           vim.defer_fn(function()
             vim.cmd [[execute "normal \<Plug>GitDiffNextHunk"]]
           end, 100)
