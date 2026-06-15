@@ -192,7 +192,6 @@ local build_sinklist = function(opts)
   end
 end
 
-
 vim.keymap.set("n", "<leader>l", function()
   local source = get_fzf_script "get_marks"
   local delete_mark_source = get_fzf_script "delete_mark"
@@ -259,15 +258,8 @@ vim.keymap.set("n", "<leader>zu", function()
 end, { desc = "fzf register", })
 
 vim.keymap.set("n", "<leader>z;", function()
-  local ex_cmd_source = get_fzf_script "ex_cmd"
-
   local cmd_history_opts_tbl = {
     [[--ghost='Command history']],
-    ([[--bind='ctrl-e:execute(%s {1} %s %s)+close']]):format(
-      ex_cmd_source,
-      vim.api.nvim_get_current_win(),
-      vim.api.nvim_get_current_buf()
-    ),
   }
 
   local source = {}
@@ -285,7 +277,7 @@ vim.keymap.set("n", "<leader>z;", function()
     options = h.tbl.extend(cmd_history_opts_tbl, default_opts),
     height = "half",
     sink = function(selected)
-      vim.api.nvim_feedkeys(":" .. selected, "n", false)
+      vim.api.nvim_feedkeys(":" .. selected .. "\n", "n", false)
     end,
   }
 end, { desc = "fzf command history", })
