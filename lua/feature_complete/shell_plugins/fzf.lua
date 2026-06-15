@@ -308,13 +308,8 @@ vim.keymap.set("n", "<leader>i", function()
       get_filename = function(entry) return entry end,
       get_qf_entry = function(entry) return { lnum = 1, col = 0, filename = entry, } end,
       after_edit = function(entry)
-        local bufnr = vim.fn.bufnr(entry)
-        if bufnr == -1 then
-          vim.api.nvim_win_set_cursor(0, { 1, 0, })
-          vim.defer_fn(function()
-            vim.cmd [[execute "normal \<Plug>GitDiffNextHunk"]]
-          end, 100)
-        end
+        vim.api.nvim_win_set_cursor(0, { 1, 0, })
+        vim.cmd [[execute "normal \<Plug>GitDiffNextHunk"]]
       end,
     },
   }
