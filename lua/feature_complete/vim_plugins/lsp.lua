@@ -291,7 +291,46 @@ vim.keymap.set({ "i", "n", }, "<C-t>", toggle_virtual_lines, { desc = "Toggle vi
 vim.keymap.set("i", "<C-s>", function() vim.lsp.buf.signature_help { border = "single", } end,
   { desc = "LSP signature help", }
 )
-vim.keymap.set("n", "glr", function() vim.lsp.buf.references() end, { desc = "LSP go to references", })
+
+--- @param what vim.fn.setqflist.what
+local on_list = function(what)
+  local basename_regs = { "%.test%.", "%.spec%.", }
+  local text_regs = { "^import ", " = require%(*$", }
+
+  local filtered = vim.tbl_filter(function(entry)
+    if entry.filename == nil then return false end
+
+    local basename = vim.fs.basename(entry.filename)
+    if basename == nil then return false end
+
+    for _, reg in ipairs(basename_regs) do
+      if entry.text:match(reg) ~= nil then return false end
+    end
+
+    if entry.text == nil then return false end
+    for _, reg in ipairs(text_regs) do
+      if entry.text:match(reg) ~= nil then return false end
+    end
+
+    return true
+  end, what.items)
+  what.items = filtered
+
+  vim.fn.setqflist({}, " ", what)
+
+  if #what.items == 1 then
+    vim.cmd.cfirst()
+  else
+    vim.cmd.copen()
+  end
+end
+
+
+vim.keymap.set("n", "glr", function()
+  vim.lsp.buf.references(nil, { on_list = on_list, })
+end, { desc = "LSP go to filtered references", })
+vim.keymap.set("n", "gle", function() vim.lsp.buf.references() end, { desc = "LSP go to default references", })
+
 vim.keymap.set("n", "gli", function() vim.lsp.buf.definition() end, { desc = "LSP go to definition", })
 vim.keymap.set("n", "gla", function() vim.lsp.buf.code_action() end, { desc = "LSP code action", })
 vim.keymap.set("n", "gly", function() vim.lsp.buf.type_definition() end, { desc = "LSP go to type definition", })
