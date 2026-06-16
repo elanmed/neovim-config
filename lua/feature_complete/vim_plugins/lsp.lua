@@ -304,7 +304,7 @@ local on_list = function(what)
     if basename == nil then return false end
 
     for _, reg in ipairs(basename_regs) do
-      if entry.text:match(reg) ~= nil then return false end
+      if basename:match(reg) ~= nil then return false end
     end
 
     if entry.text == nil then return false end
@@ -317,12 +317,7 @@ local on_list = function(what)
   what.items = filtered
 
   vim.fn.setqflist({}, " ", what)
-
-  if #what.items == 1 then
-    vim.cmd.cfirst()
-  else
-    vim.cmd.copen()
-  end
+  vim.cmd.copen()
 end
 
 
