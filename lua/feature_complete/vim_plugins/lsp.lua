@@ -294,10 +294,20 @@ vim.keymap.set("i", "<C-s>", function() vim.lsp.buf.signature_help { border = "s
 
 --- @param what vim.fn.setqflist.what
 local on_list = function(what)
+  local row_1i = unpack(vim.api.nvim_win_get_cursor(0))
+
   local basename_regs = { "%.test%.", "%.spec%.", }
   local text_regs = { "^import ", " = require%(*$", }
 
   local filtered = vim.tbl_filter(function(entry)
+    -- ignore col, lsp references will include entries from the same line but shift the col
+    -- to the beginning of the fn
+    local start_row_1i = entry.lnum
+    local end_row_1i_incl = entry.end_lnum
+
+    if start_row_1i == nil or end_row_1i_incl == nil then return false end
+    if row_1i >= start_row_1i and row_1i <= end_row_1i_incl then return false end
+
     if entry.filename == nil then return false end
 
     local basename = vim.fs.basename(entry.filename)
