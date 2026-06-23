@@ -329,8 +329,8 @@ end
 
 --- @class RgOpts
 --- @field bind_start? string
---- @field exclude_rg_result_pattern? string
---- @field include_rg_result_pattern? string
+--- @field exclude_rg_result_patterns? string[]
+--- @field include_rg_result_patterns? string[]
 
 -- https://github.com/junegunn/fzf/blob/master/ADVANCED.md#switching-between-ripgrep-mode-and-fzf-mode
 --- @param default_query? string
@@ -347,14 +347,24 @@ local function rg(default_query, opts)
   end)()
   assert(opts.bind_start ~= nil)
 
+  local exclude_rg_result_patterns = (function()
+    if opts.exclude_rg_result_patterns == nil then return "" end
+    return table.concat(opts.exclude_rg_result_patterns, "|")
+  end)()
+
+  local include_rg_result_patterns = (function()
+    if opts.include_rg_result_patterns == nil then return "" end
+    return table.concat(opts.include_rg_result_patterns, "|")
+  end)()
+
   local include_rg_result_pipe = (function()
-    if opts.include_rg_result_pattern == nil then return "" end
-    return (" | rg --regexp %s"):format(vim.fn.shellescape(opts.include_rg_result_pattern))
+    if include_rg_result_patterns == nil then return "" end
+    return (" | rg --regexp %s"):format(vim.fn.shellescape(include_rg_result_patterns))
   end)()
 
   local exclude_rg_result_pipe = (function()
-    if opts.exclude_rg_result_pattern == nil then return "" end
-    return (" | rg --invert-match %s"):format(vim.fn.shellescape(opts.exclude_rg_result_pattern))
+    if exclude_rg_result_patterns == nil then return "" end
+    return (" | rg --invert-match %s"):format(vim.fn.shellescape(exclude_rg_result_patterns))
   end)()
 
   local base_header =
@@ -479,7 +489,7 @@ end, { desc = "fzf rg", })
 
 vim.keymap.set("n", "<leader>a", function()
   rg(([[%s -S -F -- '']]):format(exclude_flags),
-    { bind_start = "backward-char", exclude_rg_result_pattern = "^[^|]*[|][^|]*[|][^|]*[|]import ", })
+    { bind_start = "backward-char", exclude_rg_result_patterns = { "^[^|]*[|][^|]*[|][^|]*[|]import", }, })
 end, { desc = "fzf rg", })
 
 
@@ -495,7 +505,7 @@ vim.keymap.set("n", "<leader>o", function()
   local cword = vim.fn.expand "<cword>"
   rg(
     ([[ %s %s -- '%s']]):format(exact_search_flags, exclude_flags, cword),
-    { bind_start = "beginning-of-line", exclude_rg_result_pattern = "^[^|]*[|][^|]*[|][^|]*[|]import", }
+    { bind_start = "beginning-of-line", exclude_rg_result_patterns = { "^[^|]*[|][^|]*[|][^|]*[|]import", }, }
   )
 end, { desc = "fzf rg with exact search, exclude flags", })
 
