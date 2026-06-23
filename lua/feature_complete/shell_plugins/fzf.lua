@@ -327,17 +327,34 @@ local function ripgrep_sinklist(list)
   vim.cmd.copen()
 end
 
+--- @class RgOpts
+--- @field bind_start? string
+--- @field exclude_rg_result_pattern? string
+--- @field include_rg_result_pattern? string
+
 -- https://github.com/junegunn/fzf/blob/master/ADVANCED.md#switching-between-ripgrep-mode-and-fzf-mode
 --- @param default_query? string
---- @param opts? {start?: string}
+--- @param opts? RgOpts
 local function rg(default_query, opts)
   opts = vim.nonnil(opts, {})
-  opts.start = (function()
-    assert(opts ~= nil)
-    if opts.start == nil then
+  assert(opts ~= nil)
+
+  opts.bind_start = (function()
+    if opts.bind_start == nil then
       return ""
     end
-    return "+" .. opts.start
+    return "+" .. opts.bind_start
+  end)()
+  assert(opts.bind_start ~= nil)
+
+  local include_rg_result_pipe = (function()
+    if opts.include_rg_result_pattern == nil then return "" end
+    return (" | rg --regexp %s"):format(opts.include_rg_result_pattern)
+  end)()
+
+  local exclude_rg_result_pipe = (function()
+    if opts.exclude_rg_result_pattern == nil then return "" end
+    return (" | rg --invert-match %s"):format(opts.exclude_rg_result_pattern)
   end)()
 
   local base_header =
@@ -345,13 +362,15 @@ local function rg(default_query, opts)
 
   local rg_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "rg.sh")
 
+  local rg_cmd = ("%s {q}%s%s || true"):format(rg_script, include_rg_result_pipe, exclude_rg_result_pipe)
+
   local rg_options = {
     "--disabled",
     "--header", base_header,
-    ([[--bind="start:reload(%s {q} || true)+unbind(ctrl-r)%s"]]):format(rg_script, opts.start),
-    ([[--bind="change:reload(sleep 0.1; %s {q} || true)+transform-header(echo %s\\\nrg\ --hidden\ --ignore-case\ {q})"]])
+    ([[--bind="start:reload(%s)+unbind(ctrl-r)%s"]]):format(rg_cmd, opts.bind_start),
+    ([[--bind="change:reload(sleep 0.1; %s)+transform-header(echo %s\\\nrg\ --hidden\ --ignore-case\ {q})"]])
         :format(
-          rg_script,
+          rg_cmd,
           base_header
         ),
     [[--bind="ctrl-f:unbind(change,ctrl-f)+change-prompt(fzf> )+enable-search+rebind(ctrl-r)+transform-query(echo {q} > /tmp/rg-fzf-r; cat /tmp/rg-fzf-f)"]],
@@ -455,11 +474,12 @@ local exclude_flags = table.concat({
 }, " ")
 
 vim.keymap.set("n", "<leader>zi", function()
-  rg([[-S -F -- '']], { start = "backward-char", })
+  rg([[-S -F -- '']], { bind_start = "backward-char", })
 end, { desc = "fzf rg", })
 
 vim.keymap.set("n", "<leader>a", function()
-  rg(([[%s -S -F -- '']]):format(exclude_flags), { start = "backward-char", })
+  rg(([[%s -S -F -- '']]):format(exclude_flags),
+    { bind_start = "backward-char", exclude_rg_result_pattern = "^import ", })
 end, { desc = "fzf rg", })
 
 
@@ -467,7 +487,7 @@ vim.keymap.set("n", "<leader>zo", function()
   local cword = vim.fn.expand "<cword>"
   rg(
     ([[ %s -- '%s']]):format(exact_search_flags, cword),
-    { start = "beginning-of-line", }
+    { bind_start = "beginning-of-line", }
   )
 end, { desc = "fzf rg with exact search flags", })
 
@@ -475,7 +495,7 @@ vim.keymap.set("n", "<leader>o", function()
   local cword = vim.fn.expand "<cword>"
   rg(
     ([[ %s %s -- '%s']]):format(exact_search_flags, exclude_flags, cword),
-    { start = "beginning-of-line", }
+    { bind_start = "beginning-of-line", exclude_rg_result_pattern = "^import", }
   )
 end, { desc = "fzf rg with exact search, exclude flags", })
 
@@ -484,7 +504,7 @@ vim.keymap.set("v", "<leader>zo", function()
   if #region > 0 then
     rg(
       ([[ %s -- '%s']]):format(exact_search_flags, region[1]),
-      { start = "beginning-of-line", }
+      { bind_start = "beginning-of-line", }
     )
   end
 end, { desc = "fzf rg with exact search flags", })
@@ -494,7 +514,7 @@ vim.keymap.set("v", "<leader>o", function()
   if #region > 0 then
     rg(
       ([[ %s %s -- '%s']]):format(exact_search_flags, exclude_flags, region[1]),
-      { start = "beginning-of-line", }
+      { bind_start = "beginning-of-line", }
     )
   end
 end, { desc = "fzf rg with exact search, exclude flags", })
