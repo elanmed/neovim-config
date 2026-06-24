@@ -327,7 +327,7 @@ local on_list = function(what)
   what.items = filtered
 
   if #what.items == 0 then
-    return vim.notify("No (filtered) references found", vim.log.levels.INFO)
+    return vim.notify("No (filtered) references found", vim.log.levels.WARN)
   end
 
   vim.fn.setqflist({}, " ", what)
