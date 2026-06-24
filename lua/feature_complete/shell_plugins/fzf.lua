@@ -347,24 +347,14 @@ local function rg(default_query, opts)
   end)()
   assert(opts.bind_start ~= nil)
 
-  local exclude_rg_result_patterns = (function()
-    if opts.exclude_rg_result_patterns == nil then return nil end
-    return table.concat(opts.exclude_rg_result_patterns, "|")
-  end)()
-
-  local include_rg_result_patterns = (function()
-    if opts.include_rg_result_patterns == nil then return nil end
-    return table.concat(opts.include_rg_result_patterns, "|")
-  end)()
-
   local include_rg_result_pipe = (function()
-    if include_rg_result_patterns == nil then return "" end
-    return (" | rg --regexp %s"):format(include_rg_result_patterns)
+    if opts.include_rg_result_patterns == nil then return "" end
+    return (" | rg --regexp %s"):format(table.concat(opts.include_rg_result_patterns, "|"))
   end)()
 
   local exclude_rg_result_pipe = (function()
-    if exclude_rg_result_patterns == nil then return "" end
-    return (" | rg --invert-match %s"):format(exclude_rg_result_patterns)
+    if opts.exclude_rg_result_patterns == nil then return "" end
+    return (" | rg --invert-match %s"):format(table.concat(opts.exclude_rg_result_patterns, "|"))
   end)()
 
   local base_header =
