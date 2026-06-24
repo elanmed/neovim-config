@@ -359,12 +359,12 @@ local function rg(default_query, opts)
 
   local include_rg_result_pipe = (function()
     if include_rg_result_patterns == nil then return "" end
-    return (" | rg --regexp %s"):format(vim.fn.shellescape(include_rg_result_patterns))
+    return (" | rg --regexp %s"):format(include_rg_result_patterns)
   end)()
 
   local exclude_rg_result_pipe = (function()
     if exclude_rg_result_patterns == nil then return "" end
-    return (" | rg --invert-match %s"):format(vim.fn.shellescape(exclude_rg_result_patterns))
+    return (" | rg --invert-match %s"):format(exclude_rg_result_patterns)
   end)()
 
   local base_header =
