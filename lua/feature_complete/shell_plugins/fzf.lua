@@ -21,7 +21,7 @@ vim.fn.writefile({ "", }, prev_query_file)
 
 --- @param opts FzfNewOpts | FzfResumeOpts
 local fzf = function(opts)
-  local editor_height = vim.o.lines - 1
+  local curr_editor_height = vim.o.lines - 1
   local border_height = 2
 
   local sink_temp = vim.fn.tempname()
@@ -52,18 +52,32 @@ local fzf = function(opts)
     return opts.sinklist
   end)()
 
+  local get_height = function(editor_height)
+    if height == "full" then return editor_height - border_height end
+    return math.floor(editor_height * 0.5 - border_height)
+  end
+
   local term_bufnr = vim.api.nvim_create_buf(false, true)
   vim.bo[term_bufnr].bufhidden = "delete"
   local term_winnr = vim.api.nvim_open_win(term_bufnr, true, {
     relative = "editor",
-    row = editor_height,
+    row = curr_editor_height,
     col = 0,
     width = vim.o.columns,
-    height = height == "full"
-        and editor_height - border_height
-        or math.floor(editor_height * 0.5 - border_height),
+    height = get_height(curr_editor_height),
     border = "single",
     title = "FZF term",
+  })
+
+  vim.api.nvim_create_autocmd("VimResized", {
+    callback = function()
+      if not vim.api.nvim_win_is_valid(term_winnr) then return end
+      local new_editor_height = vim.o.lines - 1
+      vim.api.nvim_win_set_config(term_winnr, {
+        width = vim.o.columns,
+        height = get_height(new_editor_height),
+      })
+    end,
   })
 
   local bare_cmd = (function()
