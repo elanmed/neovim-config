@@ -2,7 +2,7 @@ local function run_cmd(cmd_parts)
   return vim.split(vim.system(cmd_parts):wait().stdout, "\n", { trimempty = true, })
 end
 
-local changed_files = run_cmd { "git", "diff", "HEAD", "--name-only", }
+local changed_files = run_cmd { "git", "diff", "--name-only", }
 
 for _, filepath in ipairs(changed_files) do
   if vim.uv.fs_stat(filepath) == nil then
@@ -10,7 +10,7 @@ for _, filepath in ipairs(changed_files) do
     return
   end
 
-  local head_lines = run_cmd { "git", "show", ("HEAD:%s"):format(filepath), }
+  local head_lines = run_cmd { "git", "show", (":%s"):format(filepath), }
   local working_lines = vim.fn.readfile(filepath)
 
   local head_string = table.concat(head_lines, "\n") .. "\n"
