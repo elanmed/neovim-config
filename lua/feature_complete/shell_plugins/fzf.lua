@@ -495,9 +495,20 @@ vim.keymap.set("n", "<leader>zi", function()
   rg([[-S -F -- '']], { bind_start = "backward-char", })
 end, { desc = "fzf rg", })
 
+local exclude_import_pattern = "^[^|]*[|][^|]*[|][^|]*[|]import"
+
+local get_exclude_cursor_pattern = function()
+  local row_1i = unpack(vim.api.nvim_win_get_cursor(0))
+  local cwd = vim.uv.cwd()
+  assert(cwd ~= nil)
+
+  local relative = vim.fs.relpath(cwd, vim.api.nvim_buf_get_name(0))
+  return ("^%s[|]%s[|][^|]*[|][^|]*"):format(relative, row_1i)
+end
+
 vim.keymap.set("n", "<leader>a", function()
   rg(([[%s -S -F -- '']]):format(exclude_flags),
-    { bind_start = "backward-char", exclude_rg_result_patterns = { "^[^|]*[|][^|]*[|][^|]*[|]import", }, })
+    { bind_start = "backward-char", exclude_rg_result_patterns = { exclude_import_pattern, get_exclude_cursor_pattern(), }, })
 end, { desc = "fzf rg", })
 
 
@@ -513,7 +524,7 @@ vim.keymap.set("n", "<leader>o", function()
   local cword = vim.fn.expand "<cword>"
   rg(
     ([[ %s %s -- '%s']]):format(exact_search_flags, exclude_flags, cword),
-    { bind_start = "beginning-of-line", exclude_rg_result_patterns = { "^[^|]*[|][^|]*[|][^|]*[|]import", }, }
+    { bind_start = "beginning-of-line", exclude_rg_result_patterns = { exclude_import_pattern, get_exclude_cursor_pattern(), }, }
   )
 end, { desc = "fzf rg with exact search, exclude flags", })
 
