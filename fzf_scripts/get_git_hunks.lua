@@ -5,6 +5,11 @@ end
 local changed_files = run_cmd { "git", "diff", "HEAD", "--name-only", }
 
 for _, filepath in ipairs(changed_files) do
+  if vim.uv.fs_stat(filepath) == nil then
+    io.write(("%s|1|1|[deleted]\n"):format(filepath))
+    return
+  end
+
   local head_lines = run_cmd { "git", "show", ("HEAD:%s"):format(filepath), }
   local working_lines = vim.fn.readfile(filepath)
 
