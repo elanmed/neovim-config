@@ -1,39 +1,24 @@
-local start = "^"
-local capture_rest = "(.+)"
-local skip_digits = "%d+"
-local optional_comma = ",?"
-local optional_digits = "%d*"
-local optional_count = "(" .. optional_comma .. optional_digits .. ")"
-local capture_digits = "(%d+)"
-local any_remaining = "(.*)"
-
-local file_header_pattern = start .. "%+%+%+ b/" .. capture_rest
-local hunk_header_pattern = start ..
-    "@@ %-" .. skip_digits .. optional_count .. " %+" .. capture_digits .. optional_count .. " @@ ?" .. any_remaining
-
-local function get_tracked_hunks()
-  local diff_output = vim.fn.systemlist "git diff HEAD --unified=0"
-  local current_file = nil
-  local hunks = {}
-  for _, line in ipairs(diff_output) do
-    local file = line:match(file_header_pattern)
-    if file ~= nil then
-      current_file = file
-    end
-    local lnum, context = line:match(hunk_header_pattern)
-    if lnum ~= nil and current_file ~= nil then
-      table.insert(hunks, ("%s|%s|1|%s"):format(current_file, lnum, context))
-    end
-  end
-  return hunks
+local function run_cmd(cmd_parts)
+  return vim.split(vim.system(cmd_parts):wait().stdout, "\n", { trimempty = true, })
 end
 
-local function get_untracked_entries()
-  return vim.tbl_map(function(untracked_file)
-    return ("%s|1|1|untracked"):format(untracked_file)
-  end, vim.fn.systemlist "git ls-files --others --exclude-standard")
+local changed_files = run_cmd { "git", "diff", "HEAD", "--name-only", }
+
+for _, filepath in ipairs(changed_files) do
+  local head_lines = run_cmd { "git", "show", ("HEAD:%s"):format(filepath), }
+  local working_lines = run_cmd { "git", "show", filepath, }
+
+  local head_string = table.concat(head_lines, "\n") .. "\n"
+  local working_string = table.concat(working_lines, "\n") .. "\n"
+
+  vim.text.diff(head_string, working_string, {
+    on_hunk = function(_, _, start_b, _)
+      io.write(("%s|%s|1|\n"):format(filepath, start_b))
+    end,
+  })
 end
 
-for _, entry in ipairs(vim.list_extend(get_tracked_hunks(), get_untracked_entries())) do
-  io.write(entry .. "\n")
+local untracked_files = run_cmd { "git", "ls-files", "--others", "--exclude-standard", }
+for _, untracked_file in ipairs(untracked_files) do
+  io.write(("%s|1|1|untracked\n"):format(untracked_file))
 end
