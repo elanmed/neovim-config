@@ -6,14 +6,16 @@ local changed_files = run_cmd { "git", "diff", "HEAD", "--name-only", }
 
 for _, filepath in ipairs(changed_files) do
   local head_lines = run_cmd { "git", "show", ("HEAD:%s"):format(filepath), }
-  local working_lines = run_cmd { "git", "show", filepath, }
+  local working_lines = vim.fn.readfile(filepath)
 
   local head_string = table.concat(head_lines, "\n") .. "\n"
   local working_string = table.concat(working_lines, "\n") .. "\n"
 
   vim.text.diff(head_string, working_string, {
     on_hunk = function(_, _, start_b, _)
-      io.write(("%s|%s|1|\n"):format(filepath, start_b))
+      if start_b == 0 then return end
+      local content = working_lines[start_b]
+      io.write(("%s|%s|1|%s\n"):format(filepath, start_b, content))
     end,
   })
 end
