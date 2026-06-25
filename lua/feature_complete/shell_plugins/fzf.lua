@@ -165,7 +165,7 @@ local qf_preview_opts = {
   [[--preview-window='+{2}/3']],
 }
 
---- @param script_name "get_marks"|"delete_mark"|"ex_cmd"|"get_qf_list"|"get_qf_stack"|"get_buffers"|"get_lines"|"delete_buffer"|'get_registers'
+--- @param script_name "get_marks"|"delete_mark"|"ex_cmd"|"get_qf_list"|"get_qf_stack"|"get_buffers"|"get_lines"|"delete_buffer"|"get_registers"|"get_git_hunks"
 local function get_fzf_script(script_name)
   local lua_script = vim.fs.joinpath(
     vim.fn.stdpath "config",
@@ -296,31 +296,6 @@ vim.keymap.set("n", "<leader>z;", function()
   }
 end, { desc = "fzf command history", })
 
-local git_preview_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "git_preview.sh")
-vim.keymap.set("n", "<leader>i", function()
-  local diff_opts_tbl = {
-    ([[--preview='%s {2}']]):format(git_preview_script),
-    [[--with-nth='{2}']],
-    [[--accept-nth='{2}']],
-    [[--bind='ctrl-x:execute-silent(git restore --staged --worktree {2}; git clean -f {2})+reload(git status --short --untracked-files)']],
-    [[--preview-window='up:80%']],
-  }
-
-  fzf {
-    source = "git status --short --untracked-files",
-    options = h.tbl.extend(default_opts, multi_select_opts, diff_opts_tbl),
-    height = "full",
-    sinklist = build_sinklist {
-      get_filename = function(entry) return entry end,
-      get_qf_entry = function(entry) return { lnum = 1, col = 0, filename = entry, } end,
-      after_edit = function()
-        vim.api.nvim_win_set_cursor(0, { 1, 0, })
-        vim.cmd [[execute "normal \<Plug>GitDiffNextHunk"]]
-      end,
-    },
-  }
-end, { desc = "fzf git diff", })
-
 local function ripgrep_sinklist(list)
   if vim.tbl_count(list) == 1 then
     local split_entry = vim.split(list[1], "|")
@@ -340,6 +315,19 @@ local function ripgrep_sinklist(list)
   vim.fn.setqflist(qf_list)
   vim.cmd.copen()
 end
+
+vim.keymap.set("n", "<leader>i", function()
+  local diff_opts_tbl = {
+    [[--preview-window='up:60%']],
+  }
+
+  fzf {
+    source = get_fzf_script "get_git_hunks",
+    options = h.tbl.extend(default_opts, multi_select_opts, qf_preview_opts, diff_opts_tbl),
+    height = "full",
+    sinklist = ripgrep_sinklist,
+  }
+end, { desc = "fzf git diff", })
 
 --- @class RgOpts
 --- @field bind_start? string
