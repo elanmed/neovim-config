@@ -1,5 +1,11 @@
 vim.keymap.set("i", "<C-x><C-j>", "<C-x><C-]>", { desc = "Tag completion", })
-vim.keymap.set("i", "<C-p>", "<C-o>:Snippet<space>", { desc = "Insert a snippet", })
+vim.keymap.set("i", "<C-p>", function()
+  if vim.fn.pumvisible() then
+    return "<C-p>"
+  else
+    return "<C-o>:Snippet<space>"
+  end
+end, { expr = true, desc = "Insert a snippet", })
 vim.keymap.set("n", "<leader>h", ":tab help<space>", { desc = ":help", })
 
 vim.keymap.set("n", "<leader>q", vim.cmd.quit, { desc = "Quit", })
