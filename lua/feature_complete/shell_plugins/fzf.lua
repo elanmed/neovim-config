@@ -320,7 +320,7 @@ local git_preview_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts
 vim.keymap.set("n", "<leader>i", function()
   local diff_opts_tbl = {
     [[--delimiter='|']],
-    ([[--preview='%s {1}']]):format(git_preview_script),
+    ([[--preview='%s {1} {2}']]):format(git_preview_script),
     [[--preview-window='up:60%']],
     ([[--bind='ctrl-x:execute-silent(git restore --staged --worktree {1}; git clean -f {1})+reload(%s)']]):format(
       get_fzf_script "get_git_hunks"),
