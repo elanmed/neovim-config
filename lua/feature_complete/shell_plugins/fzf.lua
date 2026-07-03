@@ -316,21 +316,83 @@ local function ripgrep_sinklist(list)
   vim.cmd.copen()
 end
 
+vim.keymap.set("n", "gli", function()
+  local function run_cmd(cmd_parts)
+    return vim.split(vim.system(cmd_parts):wait().stdout, "\n", { trimempty = true, })
+  end
+
+  local changed_files = run_cmd { "git", "diff", "--name-only", }
+
+  --- @type vim.quickfix.entry[]
+  local qf_entries = {}
+
+  for _, filepath in ipairs(changed_files) do
+    if vim.uv.fs_stat(filepath) == nil then goto continue end
+
+    local head_lines = run_cmd { "git", "show", (":%s"):format(filepath), }
+    local working_lines = vim.fn.readfile(filepath)
+
+    local head_string = table.concat(head_lines, "\n") .. "\n"
+    local working_string = table.concat(working_lines, "\n") .. "\n"
+
+    vim.text.diff(head_string, working_string, {
+      on_hunk = function(_, _, start_b, _)
+        if start_b == 0 then return end
+        local content = working_lines[start_b]
+
+        --- @type vim.quickfix.entry
+        local entry = {
+          filename = filepath,
+          lnum = start_b,
+          col = 1,
+          text = content,
+        }
+        table.insert(qf_entries, entry)
+      end,
+    })
+
+    ::continue::
+  end
+
+  local untracked_files = run_cmd { "git", "ls-files", "--others", "--exclude-standard", }
+  for _, untracked_file in ipairs(untracked_files) do
+    --- @type vim.quickfix.entry
+    local entry = {
+      filename = untracked_file,
+      lnum = 1,
+      col = 1,
+      text = "[untracked]",
+    }
+    table.insert(qf_entries, entry)
+  end
+
+  if #qf_entries == 1 then return vim.notify("No git hunks found", vim.log.levels.WARN) end
+  vim.fn.setqflist(qf_entries)
+  vim.cmd.copen()
+end)
+
 local git_preview_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "git_preview.sh")
 vim.keymap.set("n", "<leader>i", function()
   local diff_opts_tbl = {
-    [[--delimiter='|']],
-    ([[--preview='%s {1} {2}']]):format(git_preview_script),
+    [[--with-nth='{2}']],
+    [[--accept-nth='{2}']],
+    ([[--preview='%s {2}']]):format(git_preview_script),
     [[--preview-window='up:60%']],
-    ([[--bind='ctrl-x:execute-silent(git restore --staged --worktree {1}; git clean -f {1})+reload(%s)']]):format(
-      get_fzf_script "get_git_hunks"),
+    [[--bind='ctrl-x:execute-silent(git restore --staged --worktree {1}; git clean -f {1})+reload(git status --short --untracked-files)']],
   }
 
   fzf {
-    source = get_fzf_script "get_git_hunks",
+    source = "git status --short --untracked-files",
     options = h.tbl.extend(default_opts, multi_select_opts, diff_opts_tbl),
     height = "full",
-    sinklist = ripgrep_sinklist,
+    sinklist = build_sinklist {
+      get_filename = function(entry) return entry end,
+      get_qf_entry = function(entry) return { lnum = 1, col = 0, filename = entry, } end,
+      after_edit = function()
+        vim.api.nvim_win_set_cursor(0, { 1, 0, })
+        vim.cmd [[execute "normal \<Plug>GitDiffNextHunk"]]
+      end,
+    },
   }
 end, { desc = "fzf git diff", })
 

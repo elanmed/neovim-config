@@ -2,7 +2,6 @@
 set -euo pipefail
 
 file="$1"
-row="$2"
 
 # Deleted file, show the version from HEAD
 if [[ ! -e $file ]]; then
@@ -10,10 +9,10 @@ if [[ ! -e $file ]]; then
   exit 0
 fi
 
-# If there are changes against HEAD, show the file + line number
-diff_output=$(git diff HEAD "$file" 2>/dev/null || true)
+# If there are changes against HEAD, show the diff (skip the 4-line header)
+diff_output=$(git diff HEAD --color=always "$file" 2>/dev/null || true)
 if [[ -n $diff_output ]]; then
-  bat --style=numbers --color=always "$file" --highlight-line "$row"
+  printf '%s\n' "$diff_output" | tail -n +6
   exit 0
 fi
 
