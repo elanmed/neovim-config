@@ -378,7 +378,7 @@ vim.keymap.set("n", "<leader>i", function()
     [[--accept-nth='{2}']],
     ([[--preview='%s {2}']]):format(git_preview_script),
     [[--preview-window='up:60%']],
-    [[--bind='ctrl-x:execute-silent(git restore --staged --worktree {1}; git clean -f {1})+reload(git status --short --untracked-files)']],
+    [[--bind='ctrl-x:execute-silent(git restore --staged --worktree {2}; git clean -f {2})+reload(git status --short --untracked-files)']],
   }
 
   fzf {
