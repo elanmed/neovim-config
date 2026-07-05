@@ -366,7 +366,7 @@ vim.keymap.set("n", "gli", function()
     table.insert(qf_entries, entry)
   end
 
-  if #qf_entries == 1 then return vim.notify("No git hunks found", vim.log.levels.WARN) end
+  if #qf_entries == 0 then return vim.notify("No git hunks found", vim.log.levels.WARN) end
   vim.fn.setqflist(qf_entries)
   vim.cmd.copen()
 end)
