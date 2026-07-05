@@ -68,3 +68,9 @@ vim.api.nvim_create_user_command("Snippet", function(opts)
 
   vim.cmd.normal { snippet_trigger_to_file_mapping[snippet_trigger].movement, bang = true, }
 end, { nargs = "*", })
+
+vim.api.nvim_create_user_command("FFRefresh", function()
+  require "ff".refresh_files_cache(function()
+    vim.notify("Refreshed file cache", vim.log.levels.INFO)
+  end)
+end, {})
