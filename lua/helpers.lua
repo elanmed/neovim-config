@@ -98,10 +98,6 @@ tbl.reverse = function(input)
   return reversed
 end
 
-_os.is_linux = function()
-  return vim.fn.has "macunix" == vimscript_false
-end
-
 --- @param content any
 dev.log = function(content)
   local file = io.open("log.txt", "a")
