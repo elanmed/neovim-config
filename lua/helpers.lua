@@ -73,7 +73,7 @@ local vimscript_false = 0
 --- @param list table
 tbl.map = function(predicate, list)
   local mapped_list = {}
-  for index, val in pairs(list) do
+  for index, val in ipairs(list) do
     -- vim.tbl_map doesn't pass the index
     table.insert(mapped_list, predicate(val, index))
   end
