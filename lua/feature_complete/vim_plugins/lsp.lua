@@ -19,9 +19,6 @@ vim.api.nvim_create_autocmd("FileType", {
     local win = vim.fn.bufwinid(args.buf)
     if win == -1 then return end
 
-    local is_floating = vim.api.nvim_win_get_config(win).relative == ""
-    if is_floating then return end
-
     vim.bo[args.buf].syntax = vim.bo[args.buf].filetype
     vim.wo[win].conceallevel = 0
     local line_count = vim.api.nvim_buf_line_count(args.buf)
