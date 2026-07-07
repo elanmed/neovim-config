@@ -1,6 +1,6 @@
 vim.keymap.set("i", "<C-x><C-j>", "<C-x><C-]>", { desc = "Tag completion", })
 vim.keymap.set("i", "<C-p>", function()
-  if vim.fn.pumvisible() then
+  if vim.fn.pumvisible() ~= 0 then
     return "<C-p>"
   else
     return "<C-o>:Snippet<space>"
@@ -231,7 +231,7 @@ vim.keymap.set("i", "<C-l>", "<right>")
 vim.keymap.set("i", "<C-a>", "<C-o>0")
 vim.keymap.set("c", "<C-a>", "<Home><C-z>")
 vim.keymap.set("i", "<C-e>", function()
-  if vim.fn.pumvisible() then
+  if vim.fn.pumvisible() ~= 0 then
     return "<C-e>"
   end
   return "<C-o>$"
