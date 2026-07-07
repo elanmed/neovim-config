@@ -121,7 +121,7 @@ utils.require_dir = function(dir)
       goto continue
     end
 
-    relfilename = relfilename:gsub(".lua", "")
+    relfilename = relfilename:gsub("%.lua$", "")
     require(relfilename)
     ::continue::
   end
