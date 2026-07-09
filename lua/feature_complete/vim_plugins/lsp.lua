@@ -13,19 +13,6 @@ vim.g.markdown_fenced_languages = {
 
 vim.treesitter.start = function() end
 
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "markdown",
-  callback = function(args)
-    local win = vim.fn.bufwinid(args.buf)
-    if win == -1 then return end
-
-    vim.bo[args.buf].syntax = vim.bo[args.buf].filetype
-    vim.wo[win].conceallevel = 0
-    local line_count = vim.api.nvim_buf_line_count(args.buf)
-    vim.api.nvim_win_set_height(win, line_count)
-  end,
-})
-
 local h = require "helpers"
 
 local function enable_deno_lsp()
