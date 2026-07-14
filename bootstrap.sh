@@ -1,7 +1,7 @@
 #!/bin/bash
 source ~/.dotfiles/helpers.sh
 
-usage="usage: ./bootstrap.sh -p brew|dnf|apt -d mate|gnome|macos|server"
+usage="usage: ./bootstrap.sh -p brew|dnf|apt -d mate|gnome|macos|headless"
 
 package_manager=""
 desktop_env=""
@@ -58,7 +58,7 @@ h_echo doing "installing nightly"
 export PATH="$HOME/.local/bin:$PATH"
 nvvm update
 
-if [[ $desktop_env == "server" ]]; then
+if [[ $desktop_env == "headless" ]]; then
   exit 0
 fi
 
