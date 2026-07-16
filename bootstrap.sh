@@ -1,5 +1,6 @@
 #!/bin/bash
-source ~/.dotfiles/helpers.sh
+# set -euo pipefail
+source "$HOME/.dotfiles/_helpers.sh"
 
 usage="usage: ./bootstrap.sh -p brew|dnf|apt -d mate|gnome|macos|headless"
 
@@ -31,10 +32,6 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [[ $(uname -s) == "Linux" ]] && ! h_is_toolbox && ! h_is_podman; then
-  h_echo error "bootstrap.sh must be run in a container or macos"
-  exit 1
-fi
 if [[ -z $package_manager ]]; then
   h_echo error "$usage"
   exit 1
@@ -44,8 +41,14 @@ if [[ -z $desktop_env ]]; then
   exit 1
 fi
 
-h_validate_package_manager "$package_manager"
-h_validate_desktop_env "$desktop_env"
+if ! h_validate_package_manager "$package_manager"; then
+  h_echo error "invalid package manager: $package_manager (expected brew, dnf, or apt)"
+  exit 1
+fi
+if ! h_validate_desktop_env "$desktop_env"; then
+  h_echo error "invalid desktop env: $desktop_env (expected mate, gnome, macos, or headless)"
+  exit 1
+fi
 
 h_install_package "$package_manager" bat
 h_install_package "$package_manager" fzf
@@ -53,6 +56,7 @@ h_install_package "$package_manager" ripgrep
 h_install_package "$package_manager" fd
 h_install_package "$package_manager" curl
 h_install_package "$package_manager" jq
+h_install_package "$package_manager" universal-ctags
 
 h_echo doing "installing nightly"
 export PATH="$HOME/.local/bin:$PATH"
@@ -63,7 +67,7 @@ if [[ $desktop_env == "headless" ]]; then
 fi
 
 h_echo doing "installing language servers from package.json"
-pnpm install --yes --silent --prefix ~/.dotfiles/neovim/.config/nvim/language_servers/
+pnpm install --yes --silent --prefix "$HOME/.dotfiles/neovim/.config/nvim/language_servers/"
 
 h_echo doing "installing the lua language server binary"
 latest_release=$(curl -s https://api.github.com/repos/LuaLS/lua-language-server/releases/latest)
@@ -80,6 +84,11 @@ asset_name=$(echo "$latest_release" | jq --raw-output ".assets[] | select(.name 
 download_url=$(echo "$latest_release" | jq --raw-output ".assets[] | select(.name | test(\"$os_pattern\")) | .browser_download_url")
 expected_sha=$(echo "$latest_release" | jq --raw-output ".assets[] | select(.name | test(\"$os_pattern\")) | .digest")
 
+if [[ -z $asset_name || -z $download_url ]]; then
+  h_echo error "could not find lua-language-server asset for this platform"
+  exit 1
+fi
+
 lua_ls_dir="$HOME/.dotfiles/neovim/.config/nvim/language_servers/lua-language-server-release"
 lua_ls_tar="$HOME/.dotfiles/neovim/.config/nvim/language_servers/$asset_name"
 
@@ -88,10 +97,16 @@ mkdir -p "$lua_ls_dir"
 
 curl --silent --location --output "$lua_ls_tar" "$download_url"
 
-actual_sha="sha256:$(shasum -a 256 "$lua_ls_tar" | cut -d ' ' -f 1)"
+if command -v sha256sum >/dev/null 2>&1; then
+  actual_sha="sha256:$(sha256sum "$lua_ls_tar" | cut -d ' ' -f 1)"
+else
+  actual_sha="sha256:$(shasum -a 256 "$lua_ls_tar" | cut -d ' ' -f 1)"
+fi
 
 if [[ $actual_sha == "$expected_sha" ]]; then
   tar --extract --gzip --file "$lua_ls_tar" --directory "$lua_ls_dir"
 else
+  rm -f "$lua_ls_tar"
   h_echo error "downloaded lua_ls sha _does not_ match the expected sha"
+  exit 1
 fi
