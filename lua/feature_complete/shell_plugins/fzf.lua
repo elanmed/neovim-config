@@ -5,6 +5,8 @@ local prev_state = {
   sink = nil,
   sinklist = nil,
 }
+--- @type integer
+local term_winnr = nil
 
 local prev_query_file = "/tmp/fzf-prev"
 vim.fn.writefile({ "", }, prev_query_file)
@@ -59,7 +61,7 @@ local fzf = function(opts)
 
   local term_bufnr = vim.api.nvim_create_buf(false, true)
   vim.bo[term_bufnr].bufhidden = "delete"
-  local term_winnr = vim.api.nvim_open_win(term_bufnr, true, {
+  term_winnr = vim.api.nvim_open_win(term_bufnr, true, {
     relative = "editor",
     row = curr_editor_height,
     col = 0,
@@ -213,7 +215,6 @@ vim.keymap.set("n", "<leader>l", function()
   local marks_opts_tbl = {
     [[--delimiter='|']],
     ([[--bind='ctrl-x:execute(%s {1})+reload(%s)']]):format(delete_mark_source, source),
-    [[--ghost=Marks]],
   }
 
   fzf {
@@ -229,6 +230,7 @@ vim.keymap.set("n", "<leader>l", function()
       get_cursor_pos = function(entry) return { tonumber(vim.split(entry, "|")[2]), 0, } end,
     },
   }
+  vim.api.nvim_win_set_config(term_winnr, { title = "Marks", })
 end, { desc = "fzf global marks", })
 
 vim.keymap.set("n", "<leader>b", function()
@@ -236,7 +238,6 @@ vim.keymap.set("n", "<leader>b", function()
   local delete_buf_source = get_fzf_script "delete_buffer"
   local bufs_opts_tbl = {
     [[--delimiter='|']],
-    [[--ghost=Buffers]],
     ([[--bind='ctrl-x:execute(%s {1})+reload(%s)']]):format(delete_buf_source, source),
   }
 
@@ -252,16 +253,16 @@ vim.keymap.set("n", "<leader>b", function()
       end,
     },
   }
+  vim.api.nvim_win_set_config(term_winnr, { title = "Buffers", })
 end, { desc = "fzf buffers", })
 
 vim.keymap.set("n", "<leader>zu", function()
   local source = get_fzf_script "get_registers"
-  local registers_opts_tbl = { [[--ghost=Registers]], }
 
   fzf {
     height = "half",
     source = source,
-    options = h.tbl.extend(registers_opts_tbl, default_opts),
+    options = default_opts,
     sink = function(entry)
       local reg = vim.split(entry, "|")[1]
       local reg_val = vim.fn.getreg(reg)
@@ -269,13 +270,10 @@ vim.keymap.set("n", "<leader>zu", function()
       vim.fn.setreg("+", reg_val)
     end,
   }
+  vim.api.nvim_win_set_config(term_winnr, { title = "Registers", })
 end, { desc = "fzf register", })
 
 vim.keymap.set("n", "<leader>z;", function()
-  local cmd_history_opts_tbl = {
-    [[--ghost='Command history']],
-  }
-
   local source = {}
   local num_cmd_history = vim.fn.histnr "cmd"
   for i = 1, math.min(num_cmd_history, 15) do
@@ -288,12 +286,13 @@ vim.keymap.set("n", "<leader>z;", function()
 
   fzf {
     source = source,
-    options = h.tbl.extend(cmd_history_opts_tbl, default_opts),
+    options = default_opts,
     height = "half",
     sink = function(selected)
       vim.api.nvim_feedkeys(":" .. selected .. "\n", "n", false)
     end,
   }
+  vim.api.nvim_win_set_config(term_winnr, { title = "Command history", })
 end, { desc = "fzf command history", })
 
 local function ripgrep_sinklist(list)
@@ -463,27 +462,27 @@ local function rg(default_query, opts)
     height = "full",
     sinklist = ripgrep_sinklist,
   }
+  vim.api.nvim_win_set_config(term_winnr, { title = "rg", })
 end
 
 vim.keymap.set("n", "<leader>zf", function()
   vim.cmd.cclose()
   local source = get_fzf_script "get_qf_list"
-  local quickfix_list_opts = { [[--ghost='Qf list']], }
   fzf {
     source = source,
-    options = h.tbl.extend(quickfix_list_opts, default_opts, multi_select_opts, qf_preview_opts),
+    options = h.tbl.extend(default_opts, multi_select_opts, qf_preview_opts),
     height = "full",
     sinklist = ripgrep_sinklist,
   }
+  vim.api.nvim_win_set_config(term_winnr, { title = "Qf list", })
 end, { desc = "fzf current quickfix list", })
 
 vim.keymap.set("n", "<leader>zs", function()
   vim.cmd.cclose()
   local source = get_fzf_script "get_qf_stack"
-  local quickfix_list_opts = { [[--ghost='Qf stack']], }
   fzf {
     source = source,
-    options = h.tbl.extend(quickfix_list_opts, default_opts),
+    options = default_opts,
     height = "half",
     sink = function(entry)
       local qf_id = vim.split(entry, "|")[1]
@@ -491,11 +490,11 @@ vim.keymap.set("n", "<leader>zs", function()
       vim.cmd.copen()
     end,
   }
+  vim.api.nvim_win_set_config(term_winnr, { title = "Qf stack", })
 end, { desc = "fzf quickfix stack", })
 
 vim.keymap.set("n", "/", function()
   local slash_opts = {
-    [[--ghost='/']],
     [[--delimiter='|']],
     [[--print-query]],
   }
@@ -529,6 +528,7 @@ vim.keymap.set("n", "/", function()
       vim.api.nvim_win_set_cursor(0, { tonumber(line_nr), positions[1][1], })
     end,
   }
+  vim.api.nvim_win_set_config(term_winnr, { title = "/", })
 end, { desc = "fzf lines in the buf", })
 
 vim.keymap.set("n", "<leader>zr", function()
@@ -536,6 +536,7 @@ vim.keymap.set("n", "<leader>zr", function()
     return vim.notify("No previous fzf terminal buffer", vim.log.levels.ERROR)
   end
   fzf { is_replay = true, }
+  vim.api.nvim_win_set_config(term_winnr, { title = "Replay last search", })
 end, { desc = "fzf replay", })
 
 local exact_search_flags = table.concat({ "-w", "-s", "-F", }, " ")
@@ -644,7 +645,6 @@ local function fzf_ui_select(items, opts, on_choice)
   opts.prompt = vim.nonnil(opts.prompt, "")
   opts.format_item = vim.nonnil(opts.format_item, function(item) return item end)
   local select_opts = {
-    [[--ghost='Select']],
     [[--delimiter='|']],
     [[--with-nth='2']],
     ([[--header='%s']]):format(opts.prompt),
@@ -662,6 +662,7 @@ local function fzf_ui_select(items, opts, on_choice)
       on_choice(items[tonumber(index)], tonumber(index))
     end,
   }
+  vim.api.nvim_win_set_config(term_winnr, { title = "Select", })
 end
 
 vim.ui.select = fzf_ui_select
