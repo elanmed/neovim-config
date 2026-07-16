@@ -97,11 +97,7 @@ mkdir -p "$lua_ls_dir"
 
 curl --silent --location --output "$lua_ls_tar" "$download_url"
 
-if command -v sha256sum >/dev/null 2>&1; then
-  actual_sha="sha256:$(sha256sum "$lua_ls_tar" | cut -d ' ' -f 1)"
-else
-  actual_sha="sha256:$(shasum -a 256 "$lua_ls_tar" | cut -d ' ' -f 1)"
-fi
+actual_sha="sha256:$(openssl dgst -sha256 "$lua_ls_tar" | awk '{print $NF}')"
 
 if [[ $actual_sha == "$expected_sha" ]]; then
   tar --extract --gzip --file "$lua_ls_tar" --directory "$lua_ls_dir"
