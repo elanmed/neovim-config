@@ -102,7 +102,10 @@ actual_sha="sha256:$(openssl dgst -sha256 "$lua_ls_tar" | awk '{print $NF}')"
 if [[ $actual_sha == "$expected_sha" ]]; then
   tar --extract --gzip --file "$lua_ls_tar" --directory "$lua_ls_dir"
 else
+if [[ $actual_sha != "$expected_sha" ]]; then
   rm -f "$lua_ls_tar"
   h_echo error "downloaded lua_ls sha _does not_ match the expected sha"
   exit 1
 fi
+tar --extract --gzip --file "$lua_ls_tar" --directory "$lua_ls_dir"
+rm -f "$lua_ls_tar"
