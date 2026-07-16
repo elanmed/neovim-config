@@ -70,7 +70,7 @@ h_echo doing "installing language servers from package.json"
 pnpm install --yes --silent --prefix "$HOME/.dotfiles/neovim/.config/nvim/language_servers/"
 
 h_echo doing "installing the lua language server binary"
-latest_release=$(curl -s https://api.github.com/repos/LuaLS/lua-language-server/releases/latest)
+latest_release=$(curl --silent --fail https://api.github.com/repos/LuaLS/lua-language-server/releases/latest)
 
 if [[ "$(uname -s)" == "Linux" ]]; then
   os_pattern="lua-language-server-.*-linux-x64.tar.gz"
@@ -99,13 +99,11 @@ curl --silent --location --output "$lua_ls_tar" "$download_url"
 
 actual_sha="sha256:$(openssl dgst -sha256 "$lua_ls_tar" | awk '{print $NF}')"
 
-if [[ $actual_sha == "$expected_sha" ]]; then
-  tar --extract --gzip --file "$lua_ls_tar" --directory "$lua_ls_dir"
-else
 if [[ $actual_sha != "$expected_sha" ]]; then
   rm -f "$lua_ls_tar"
   h_echo error "downloaded lua_ls sha _does not_ match the expected sha"
   exit 1
 fi
+
 tar --extract --gzip --file "$lua_ls_tar" --directory "$lua_ls_dir"
 rm -f "$lua_ls_tar"
