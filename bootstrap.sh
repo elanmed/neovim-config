@@ -56,7 +56,6 @@ h_install_package "$package_manager" ripgrep
 h_install_package "$package_manager" fd
 h_install_package "$package_manager" curl
 h_install_package "$package_manager" jq
-h_install_package "$package_manager" universal-ctags
 
 h_echo doing "installing nightly"
 export PATH="$HOME/.local/bin:$PATH"
