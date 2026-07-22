@@ -55,10 +55,6 @@ _G.Tabline = function()
     { min_len = section_len * 1.5, side = "right", }
   )
 
-  vim.keymap.set("n", "<leader>fp", function()
-    vim.print { truncated_buf_section = vim.fn.strchars(truncated_buf_section), section_len = section_len, padded_buf_section = vim.fn.strchars(padded_buf_section), }
-  end)
-
   local truncated_alt_section = h.str.truncate(
     get_alt_buf_section(),
     { max_len = section_len, side = "left", }
