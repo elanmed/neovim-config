@@ -17,11 +17,6 @@ local M = {
   brown = "#a3685a",
 }
 
-if vim.g.colors_name then
-  vim.cmd "highlight clear"
-end
-vim.g.colors_name = nil
-
 -- Builtin highlighting groups
 vim.api.nvim_set_hl(0, "ColorColumn", { bg = M.extra_dark_grey, })
 vim.api.nvim_set_hl(0, "ComplMatchIns", {})
