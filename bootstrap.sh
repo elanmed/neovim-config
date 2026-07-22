@@ -4,6 +4,9 @@ source "$HOME/.dotfiles/_helpers.sh"
 
 usage="usage: ./bootstrap.sh -p brew|dnf|apt -d mate|gnome|macos|headless"
 
+desktop_envs=("gnome" "mate" "macos" "headless")
+package_managers=("brew" "dnf" "apt")
+
 package_manager=""
 desktop_env=""
 
@@ -36,17 +39,19 @@ if [[ -z $package_manager ]]; then
   h_echo error "$usage"
   exit 1
 fi
+
 if [[ -z $desktop_env ]]; then
   h_echo error "$usage"
   exit 1
 fi
 
-if ! h_validate_package_manager "$package_manager"; then
-  h_echo error "invalid package manager: $package_manager (expected brew, dnf, or apt)"
+if ! h_array_includes "$desktop_env" "${desktop_envs[@]}"; then
+  h_echo error "$usage"
   exit 1
 fi
-if ! h_validate_desktop_env "$desktop_env"; then
-  h_echo error "invalid desktop env: $desktop_env (expected mate, gnome, macos, or headless)"
+
+if ! h_array_includes "$package_manager" "${package_managers[@]}"; then
+  h_echo error "$usage"
   exit 1
 fi
 
