@@ -3,16 +3,16 @@ set -euo pipefail
 
 file="$1"
 
-# Deleted file, show the version from HEAD
+# Deleted file: show the deletion diff
 if [[ ! -e $file ]]; then
-  git show HEAD:"$file" 2>/dev/null | bat --file-name="$file" --style=numbers --color=always
+  git diff HEAD -- "$file" 2>/dev/null | delta --file-style=omit
   exit 0
 fi
 
-# If there are changes against HEAD, show the diff (skip the 4-line header)
-diff_output=$(git diff HEAD --color=always "$file" 2>/dev/null || true)
+# Modified file: show the diff
+diff_output=$(git diff HEAD -- "$file" 2>/dev/null || true)
 if [[ -n $diff_output ]]; then
-  printf '%s\n' "$diff_output" | tail -n +6
+  printf '%s\n' "$diff_output" | delta --file-style=omit
   exit 0
 fi
 
