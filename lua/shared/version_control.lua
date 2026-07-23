@@ -1,4 +1,4 @@
-local noop_keymaps = { "<C-^>", "<C-o>", "<C-i>", "<leader>d", "<leader>q", "<leader>e", }
+local noop_keymaps = { "<C-^>", "<C-o>", "<C-i>", "<leader>q", "<leader>e", }
 
 vim.keymap.set("n", "<C-b>", function()
   if vim.t.diff_view then
@@ -72,4 +72,22 @@ vim.keymap.set("n", "<C-b>", function()
 
   vim.api.nvim_win_call(head_winnr, vim.cmd.diffthis)
   vim.api.nvim_win_call(tab_worktree_winnr, vim.cmd.diffthis)
+end)
+
+vim.keymap.set("n", "<leader>d", function()
+  if vim.t.diff_three_dot_view then
+    for _, keymap in ipairs(noop_keymaps) do
+      pcall(vim.api.nvim_buf_del_keymap, worktree_bufnr, "n", keymap)
+    end
+    vim.cmd.tabclose()
+    return
+  end
+
+  vim.cmd.tabnew()
+  vim.t.diff_three_dot_view = true
+
+  vim.cmd.terminal "git diff master... | delta --paging=never"
+  for _, keymap in ipairs(noop_keymaps) do
+    vim.keymap.set("n", keymap, "<Nop>", { buffer = bufnr, })
+  end
 end)
