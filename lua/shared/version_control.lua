@@ -77,7 +77,7 @@ end)
 vim.keymap.set("n", "<leader>d", function()
   if vim.t.diff_three_dot_view then
     for _, keymap in ipairs(noop_keymaps) do
-      pcall(vim.api.nvim_buf_del_keymap, worktree_bufnr, "n", keymap)
+      pcall(vim.api.nvim_buf_del_keymap, vim.t.diff_bufnr, "n", keymap)
     end
     vim.cmd.tabclose()
     return
@@ -87,7 +87,8 @@ vim.keymap.set("n", "<leader>d", function()
   vim.t.diff_three_dot_view = true
 
   vim.cmd.terminal "git diff master... | delta --paging=never"
+  vim.t.diff_bunfr = vim.api.nvim_get_current_buf()
   for _, keymap in ipairs(noop_keymaps) do
-    vim.keymap.set("n", keymap, "<Nop>", { buffer = bufnr, })
+    vim.keymap.set("n", keymap, "<Nop>", { buffer = vim.t.diff_bufnr, })
   end
 end)
