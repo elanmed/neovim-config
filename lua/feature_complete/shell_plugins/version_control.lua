@@ -5,11 +5,16 @@ vim.keymap.set("n", "<leader>g", function()
   local tabline_height = 1
   local statusline_height = 1
   local cmdline_height = 1
+
+  local cover_statusline = 1
+  local cover_cmdline = 1
+
   local row_1i = 2
   local row_0i = row_1i - 1
 
   local get_avail_height = function()
-    return vim.o.lines - tabline_height - statusline_height - cmdline_height
+    local avail_height = vim.o.lines - tabline_height - row_0i - statusline_height - cmdline_height
+    return avail_height + cover_statusline + cover_cmdline
   end
 
   local open_term = function()
