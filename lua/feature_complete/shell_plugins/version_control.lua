@@ -2,27 +2,32 @@ local lazygit_term_winnr = -1
 local lazygit_term_bufnr = -1
 
 vim.keymap.set("n", "<leader>g", function()
-  local border_height = 2
+  local tabline_height = 1
+  local statusline_height = 1
+  local cmdline_height = 1
+  local row_1i = 2
+  local row_0i = row_1i - 1
+
+  local get_avail_height = function()
+    return vim.o.lines - tabline_height - statusline_height - cmdline_height
+  end
 
   local open_term = function()
-    local editor_height = vim.o.lines - 1
     lazygit_term_winnr = vim.api.nvim_open_win(lazygit_term_bufnr, true, {
       relative = "editor",
-      row = editor_height,
+      row = row_0i,
       col = 0,
       width = vim.o.columns,
-      height = editor_height - border_height,
-      border = "single",
+      height = get_avail_height(),
     })
   end
 
   vim.api.nvim_create_autocmd("VimResized", {
     callback = function()
       if not vim.api.nvim_win_is_valid(lazygit_term_winnr) then return end
-      local editor_height = vim.o.lines - 1
       vim.api.nvim_win_set_config(lazygit_term_winnr, {
         width = vim.o.columns,
-        height = editor_height - border_height,
+        height = get_avail_height(),
       })
     end,
   })

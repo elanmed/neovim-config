@@ -7,7 +7,7 @@ vim.keymap.set("i", "<C-p>", function()
   end
 end, { expr = true, desc = "Insert a snippet", })
 vim.keymap.set("n", "<leader>h", ":tab help<space>", { desc = ":help", })
-
+vim.keymap.set("n", "-", "<nop>", { desc = "Unmap dir map", })
 vim.keymap.set("n", "<leader>q", vim.cmd.quit, { desc = "Quit", })
 vim.keymap.set("n", "J", "gJ", { desc = "J without whitespace", })
 vim.keymap.set("n", "<leader>c", vim.cmd.copen, { desc = ":copen", })
