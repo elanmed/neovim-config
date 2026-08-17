@@ -37,8 +37,8 @@ vim.keymap.set("n", "<C-b>", function()
   vim.t.diff_view = true
   vim.t.worktree_bufnr = worktree_bufnr
 
-  local head_bufnr = vim.api.nvim_create_buf(false, true)
-  local head_winnr = vim.api.nvim_open_win(head_bufnr, true, {
+  local index_bufnr = vim.api.nvim_create_buf(false, true)
+  local index_winnr = vim.api.nvim_open_win(index_bufnr, true, {
     split = "left",
     win = tab_worktree_winnr,
   })
@@ -49,28 +49,28 @@ vim.keymap.set("n", "<C-b>", function()
     if out.stdout == nil then return "" end
     return out.stdout
   end)()
-  local head_lines = vim.split(stdout, "\n", { trimempty = true, })
+  local index_lines = vim.split(stdout, "\n", { trimempty = true, })
 
-  vim.api.nvim_buf_set_lines(head_bufnr, 0, -1, false, head_lines)
+  vim.api.nvim_buf_set_lines(index_bufnr, 0, -1, false, index_lines)
 
-  vim.bo[head_bufnr].filetype = curr_filetype
+  vim.bo[index_bufnr].filetype = curr_filetype
 
-  for _, bufnr in ipairs { worktree_bufnr, head_bufnr, } do
+  for _, bufnr in ipairs { worktree_bufnr, index_bufnr, } do
     for _, keymap in ipairs(noop_keymaps) do
       vim.keymap.set("n", keymap, "<Nop>", { buffer = bufnr, })
     end
   end
 
-  pcall(vim.api.nvim_win_set_cursor, head_winnr, curr_cursor)
+  pcall(vim.api.nvim_win_set_cursor, index_winnr, curr_cursor)
   vim.api.nvim_win_set_cursor(tab_worktree_winnr, curr_cursor)
 
-  vim.bo[head_bufnr].modifiable = false
-  vim.bo[head_bufnr].bufhidden = "wipe"
+  vim.bo[index_bufnr].modifiable = false
+  vim.bo[index_bufnr].bufhidden = "wipe"
 
-  vim.wo[head_winnr].winbar = "HEAD"
+  vim.wo[index_winnr].winbar = "HEAD"
   vim.wo[tab_worktree_winnr].winbar = "Worktree"
 
-  vim.api.nvim_win_call(head_winnr, vim.cmd.diffthis)
+  vim.api.nvim_win_call(index_winnr, vim.cmd.diffthis)
   vim.api.nvim_win_call(tab_worktree_winnr, vim.cmd.diffthis)
 end)
 
