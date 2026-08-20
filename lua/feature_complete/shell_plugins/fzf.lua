@@ -144,8 +144,8 @@ vim.opt.guicursor:append "a:blinkon0"
 local default_opts = {
   "--cycle",
   [[--preview-window='up:40%']],
-  [[--bind='ctrl-d:preview-page-down']],
-  [[--bind='ctrl-u:preview-page-up']],
+  [[--bind='ctrl-d:preview-half-page-down']],
+  [[--bind='ctrl-u:preview-half-page-up']],
   [[--bind='ctrl-h:backward-char']],
   [[--bind='ctrl-l:forward-char']],
   [[--bind='ctrl-w:forward-word+forward-char']],
