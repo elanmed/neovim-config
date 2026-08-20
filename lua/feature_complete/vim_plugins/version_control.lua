@@ -16,6 +16,7 @@ vim.api.nvim_create_autocmd({ "FileType", }, {
   callback = function()
     vim.keymap.set("n", "<c-d>", "<Plug>GitDiffViewScrollDown", { buffer = true, })
     vim.keymap.set("n", "<c-u>", "<Plug>GitDiffViewScrollUp", { buffer = true, })
+    vim.keymap.set("n", "<leader>e", "<Plug>GitDiffViewRefresh", { buffer = true, })
   end,
 })
 
