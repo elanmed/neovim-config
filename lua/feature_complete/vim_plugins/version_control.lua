@@ -7,7 +7,7 @@ vim.keymap.set("n", "<leader>d", function()
   require "git-diff".toggle_diff_view { diff_type = "worktree-index", }
 end)
 vim.keymap.set("n", "<leader>D", function()
-  require "git-diff".toggle_diff_view { diff_type = "head-upstream", }
+  require "git-diff".toggle_diff_view { diff_type = "head-mergebase", }
 end)
 
 vim.api.nvim_create_autocmd({ "FileType", }, {
