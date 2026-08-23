@@ -159,6 +159,9 @@ utils.is_big_file = function(opts)
   return vim.fn.getfsize(opts.bname) > one_pt_five_mb or opts.line_count > 5000
 end
 
+--- @alias Resolve fun(...: any):nil
+--- @alias Promise fun(resolve: Resolve):nil
+
 --- @param cmd string[]
 --- @param opts vim.SystemOpts?
 --- @return Promise
@@ -204,31 +207,6 @@ str.truncate = function(val, opts)
   return ellipsis .. val:sub(-max_len)
 end
 
-local function safe_resume(...)
-  local ok, err = coroutine.resume(...)
-  if not ok then error(err) end
-end
-
---- @param fn fun(...):nil
-local async = function(fn)
-  return function(...)
-    safe_resume(coroutine.create(fn), ...)
-  end
-end
-
---- @alias Resolve fun(...: any):nil
---- @alias Promise fun(resolve: Resolve):nil
-
---- @param promise Promise
-local await = function(promise)
-  local thread = coroutine.running()
-  assert(thread ~= nil, "`await` can only be called in a coroutine")
-  local scheduled_promise = vim.schedule_wrap(promise)
-  local resolve = function(...) safe_resume(thread, ...) end
-  scheduled_promise(resolve)
-  return coroutine.yield()
-end
-
 return {
   tbl = tbl,
   os = _os,
@@ -238,7 +216,5 @@ return {
   fd_cmd = "fd --absolute-path --hidden --type f --exclude .git --exclude node_modules --exclude dist",
   utils = utils,
   str = str,
-  async = async,
-  await = await,
   diff = diff,
 }

@@ -1,3 +1,4 @@
+local a = require "async"
 vim.o.pumheight = 10
 vim.api.nvim_create_autocmd("CmdlineEnter", { callback = function() vim.o.pumheight = 5 end, })
 vim.api.nvim_create_autocmd("CmdlineLeave", { callback = function() vim.o.pumheight = 10 end, })
@@ -102,10 +103,10 @@ local ctags_timer = nil
 vim.api.nvim_create_autocmd("BufWritePost", {
   callback = (function()
     if ctags_timer then vim.fn.timer_stop(ctags_timer) end
-    ctags_timer = vim.fn.timer_start(5000, require "helpers".async(function()
+    ctags_timer = vim.fn.timer_start(5000, a.make_spawn(function()
       local h = require "helpers"
       --- @type vim.SystemCompleted
-      local git_out = h.await(h.utils.vim_system { "git", "rev-parse", "--show-toplevel", })
+      local git_out = a.await(h.utils.vim_system { "git", "rev-parse", "--show-toplevel", })
       if git_out.code ~= 0 then return end
       if git_out.stdout == nil then return end
 
@@ -113,7 +114,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
       if git_root == nil then return end
 
       --- @type vim.SystemCompleted
-      local rg_out = h.await(h.utils.vim_system({ "rg", "--files", }, { cwd = git_root, }))
+      local rg_out = a.await(h.utils.vim_system({ "rg", "--files", }, { cwd = git_root, }))
       if rg_out.code ~= 0 then return end
       if rg_out.stdout == nil then return end
 

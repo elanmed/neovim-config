@@ -1,4 +1,5 @@
 local h = require "helpers"
+local a = require "async"
 
 local unnamed_buf_name = "[unnamed]"
 local terminal_buf_name = "[terminal]"
@@ -69,45 +70,32 @@ end
 
 
 local branch_cache = nil
-local get_branch = h.async(function(resolve)
-  local out = h.await(h.utils.vim_system { "git", "rev-parse", "--absolute-git-dir", })
-  if out.code ~= 0 then
-    resolve(nil)
-    return
-  end
+local get_branch = a.make_async(function()
+  local out = a.await(h.utils.vim_system { "git", "rev-parse", "--absolute-git-dir", })
+  if out.code ~= 0 then return nil end
 
-  if out.stdout == nil then
-    resolve(nil)
-    return
-  end
+  if out.stdout == nil then return nil end
 
   local git_dir = vim.trim(out.stdout)
-  vim.schedule(function()
-    local head = vim.fn.readfile(git_dir .. "/HEAD")
-    if #head == 0 then
-      resolve(nil)
-      return
-    end
+  local head = vim.fn.readfile(git_dir .. "/HEAD")
+  if #head == 0 then return nil end
 
-    local ref = head[1]:match "ref: refs/heads/(.+)"
-    if ref == nil then
-      resolve(nil)
-      return
-    end
+  local ref = head[1]:match "ref: refs/heads/(.+)"
+  if ref == nil then return nil end
 
-    resolve(ref)
-  end)
+  return ref
 end)
 
-h.async(function()
-  branch_cache = h.await(get_branch)
-end)()
+local spawn = a.make_spawn(function()
+  branch_cache = a.await(get_branch())
+end)
+spawn()
 
 vim.api.nvim_create_autocmd("User", {
   group = vim.api.nvim_create_augroup("InvalidateBranchCache", { clear = true, }),
   pattern = "GitHeadChanged",
-  callback = h.async(function()
-    branch_cache = h.await(get_branch)
+  callback = a.make_spawn(function()
+    branch_cache = a.await(get_branch())
   end),
 })
 
