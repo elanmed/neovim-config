@@ -58,10 +58,3 @@ vim.api.nvim_create_autocmd("User", {
     ff.setup(function() ff.refresh_files_cache() end)
   end,
 })
-
-vim.keymap.set("n", "<leader>zl", function()
-  require "fzf-lua-frecency".frecency {
-    hidden = true,
-    cwd_only = true,
-  }
-end)

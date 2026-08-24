@@ -1,13 +1,10 @@
 vim.pack.add {
   "https://github.com/neovim/nvim-lspconfig",
-
   "https://github.com/mfussenegger/nvim-jdtls",
-  "https://github.com/ibhagwan/fzf-lua",
 
   "https://github.com/nvim-mini/mini.icons",
   "https://github.com/nvim-mini/mini.splitjoin",
 
-  "https://github.com/elanmed/fzf-lua-frecency.nvim",
   "https://github.com/elanmed/ff.nvim",
   "https://github.com/elanmed/rg-far.nvim",
   "https://github.com/elanmed/tree.nvim",
