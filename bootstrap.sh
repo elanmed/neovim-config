@@ -65,6 +65,7 @@ h_install_package "$package_manager" jq
 h_echo doing "installing nightly"
 export PATH="$HOME/.local/bin:$PATH"
 nvvm update
+nvim --headless -c "packupdate\!" -c "qa"
 
 if [[ $desktop_env == "headless" ]]; then
   exit 0
