@@ -267,14 +267,17 @@ vim.keymap.set("i", "<C-g>", function()
 end, { desc = "Close the html tag to left of the cursor", })
 
 -- abcdefghijklmnopqrstuvwxyz
--- ------------m--------v---z used by the os
--- a--d--g-i-----o--r--u-w--- used in normal mode
--- -bc-ef-h-jkl-n-pq-st---xy- available in normal
+-- ------------m---q----v---z used by the os
+-- ---d--g-i-----o--r--u-w--- used in default normal mode keymaps
+-- -bc--f---jk--n-p---t------ used in custom normal mode keymaps
+-- -bcd-fg-ijk-mnopq--tuvw--z used
+-- a---e--h---l------s----xy- available in normal
 
--- ab--e--h-jkl------s---w-y- used in insert mode
--- --cd-fg-i----nopqr-tu--x-- available in insert
-
--- --c--f-------n-pq--t---x-- available in both
+-- ------------m---q----v---z used by the os
+-- -----------------r-----xy- used in default insert mode keymaps
+-- -bc-e-gh-jkl---p---------- used in custom insert mode keymaps
+-- -bc-e-gh-jklm--pqr---v-xyz used
+-- a--d-f--i----no---stu-w--- available in insert
 
 -- normal mode actions:
 -- (both)
@@ -282,11 +285,14 @@ end, { desc = "Close the html tag to left of the cursor", })
 -- close floating popup (c)
 
 -- (only normal)
+-- toggle git file diff (b)
+-- scroll down (d)
 -- toggle file tree (f)
 -- jump to tag (j)
 -- jump to tag in a split (k)
 -- next qf item (n)
 -- prev qf item (p)
+-- scroll up (u)
 
 -- insert mode actions:
 -- (both)
