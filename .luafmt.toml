@@ -1,5 +1,5 @@
 [syntax]
-level = "Lua51"
+level = "LuaJIT"
 
 [indent]
 # kind = "Space"
@@ -53,7 +53,7 @@ align_in_statements = true
 # line_comment_min_spaces_before = 1
 # line_comment_min_column = 0
 
-[emmy_doc]
+# [emmy_doc]
 # align_tag_columns = true
 # align_declaration_tags = true
 # align_reference_tags = true
@@ -61,6 +61,6 @@ align_in_statements = true
 # tag_spacing = 1
 # space_after_description_dash = true
 
-[align]
+# [align]
 # continuous_assign_statement = false
 # table_field = true
