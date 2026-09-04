@@ -279,10 +279,9 @@ end, { desc = "Close the html tag to left of the cursor", })
 -- -bc-e-gh-jklm--pqr---v-xyz used
 -- a--d-f--i----no---stu-w--- available in insert
 
--- normal mode actions:
--- (both)
--- toggle virtual lines (t)
+-- normal + insert mode actions:
 -- close floating popup (c)
+-- toggle virtual lines (t)
 
 -- (only normal)
 -- toggle git file diff (b)
@@ -294,11 +293,12 @@ end, { desc = "Close the html tag to left of the cursor", })
 -- prev qf item (p)
 -- scroll up (u)
 
--- insert mode actions:
--- (both)
--- toggle virtual lines (t)
--- close floating popup (c)
-
 -- (only insert)
--- trigger snippet (p)
+-- back a word (b)
+-- end of word (e)
 -- trigger html closing tag (g)
+-- move left (h)
+-- move down (j)
+-- move up (k)
+-- move right (l)
+-- trigger snippet (p)
