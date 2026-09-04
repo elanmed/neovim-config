@@ -74,41 +74,16 @@ fi
 h_echo doing "installing language servers from package.json"
 pnpm install --yes --silent --prefix "$HOME/.dotfiles/neovim/.config/nvim/language_servers/"
 
-h_echo doing "installing the lua language server binary"
-latest_release=$(curl --silent --fail https://api.github.com/repos/LuaLS/lua-language-server/releases/latest)
+h_echo doing "installing rustup"
+# https://rustup.rs/
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
-if [[ "$(uname -s)" == "Linux" ]]; then
-  os_pattern="lua-language-server-.*-linux-x64.tar.gz"
-elif [[ "$(uname -m)" == "arm64" ]]; then
-  os_pattern="lua-language-server-.*-darwin-arm64.tar.gz"
-else
-  os_pattern="lua-language-server-.*-darwin-x64.tar.gz"
-fi
+# https://github.com/EmmyLuaLs/emmylua-analyzer-rust
+h_echo doing "installing emmylua_ls"
+cargo install emmylua_ls
 
-asset_name=$(echo "$latest_release" | jq --raw-output ".assets[] | select(.name | test(\"$os_pattern\")) | .name")
-download_url=$(echo "$latest_release" | jq --raw-output ".assets[] | select(.name | test(\"$os_pattern\")) | .browser_download_url")
-expected_sha=$(echo "$latest_release" | jq --raw-output ".assets[] | select(.name | test(\"$os_pattern\")) | .digest")
+h_echo doing "installing emmylua_formatter"
+cargo install emmylua_formatter
 
-if [[ -z $asset_name || -z $download_url ]]; then
-  h_echo error "could not find lua-language-server asset for this platform"
-  exit 1
-fi
-
-lua_ls_dir="$HOME/.dotfiles/neovim/.config/nvim/language_servers/lua-language-server-release"
-lua_ls_tar="$HOME/.dotfiles/neovim/.config/nvim/language_servers/$asset_name"
-
-rm -rf "$lua_ls_dir"
-mkdir -p "$lua_ls_dir"
-
-curl --silent --location --output "$lua_ls_tar" "$download_url"
-
-actual_sha="sha256:$(openssl dgst -sha256 "$lua_ls_tar" | awk '{print $NF}')"
-
-if [[ $actual_sha != "$expected_sha" ]]; then
-  rm -f "$lua_ls_tar"
-  h_echo error "downloaded lua_ls sha _does not_ match the expected sha"
-  exit 1
-fi
-
-tar --extract --gzip --file "$lua_ls_tar" --directory "$lua_ls_dir"
-rm -f "$lua_ls_tar"
+h_echo doing "installing emmylua_check"
+cargo install emmylua_check
