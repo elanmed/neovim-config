@@ -11,22 +11,18 @@ width = 2
 max_line_width = 100
 # max_blank_lines = 1
 # table_expand = "Auto"
-table_expand = "Always"
 # call_args_expand = "Auto"
-call_args_expand = "Always"
 # func_params_expand = "Auto"
-func_params_expand = "Always"
 
 [output]
 # insert_final_newline = true
 # trailing_comma = "Never"
 trailing_comma = "Always"
 # trailing_table_separator = "Inherit"
-trailing_table_separator = "Inherit"
 # quote_style = "Preserve"
 quote_style = "Double"
 # single_arg_call_parens = "Preserve"
-single_arg_call_parens = "Always"
+single_arg_call_parens = "Omit"
 # simple_lambda_single_line = "Preserve"
 simple_lambda_single_line = "Always"
 # end_of_line = "LF"
@@ -67,5 +63,4 @@ align_in_statements = true
 
 [align]
 # continuous_assign_statement = false
-continuous_assign_statement = true
 # table_field = true
