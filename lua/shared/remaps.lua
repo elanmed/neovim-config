@@ -8,7 +8,6 @@ vim.keymap.set("i", "<C-p>", function()
 end, { expr = true, desc = "Insert a snippet", })
 vim.keymap.set("n", "<leader>h", ":tab help<space>", { desc = ":help", })
 vim.keymap.set("n", "-", "<nop>", { desc = "Unmap dir map", })
-vim.keymap.set("n", "<leader>q", vim.cmd.quit, { desc = "Quit", })
 vim.keymap.set("n", "J", "gJ", { desc = "J without whitespace", })
 vim.keymap.set("n", "<leader>c", vim.cmd.copen, { desc = ":copen", })
 vim.keymap.set("n", "<leader>/v", "/\\V", { desc = "/ without regex", })
@@ -140,13 +139,19 @@ vim.keymap.set("n", "z?", function()
 end, { desc = "Toggle fold", })
 vim.keymap.set("n", "ze", "z=", { desc = "z=", })
 
-vim.keymap.set("n", "q", function()
+vim.keymap.set("n", "<leader>qr", function()
   if vim.fn.reg_recording() == "" then
     return "qq"
   elseif vim.fn.reg_recording() == "q" then
     return "q"
   end
 end, { expr = true, nowait = true, desc = "Record a macro", })
+vim.keymap.set("n", "<C-e>", "@q", { desc = "Replay the last macro", })
+vim.keymap.set("n", "<C-a>", "Qj", { desc = "Add a cursor on the line below", })
+vim.keymap.set("n", "<leader>ql", function()
+  vim.cmd.normal "1Q"
+  vim.cmd.nohlsearch()
+end, { desc = "Add a cursor to every match", })
 vim.keymap.set("n", "<leader>v", "G" .. "V" .. "gg", { desc = "Select the entire buffer", })
 vim.keymap.set("n", "*", function()
   vim.fn.setreg("/", ("\\<%s\\>\\C"):format(vim.fn.expand "<cword>"))
@@ -268,11 +273,12 @@ end, { desc = "Close the html tag to left of the cursor", })
 
 -- abcdefghijklmnopqrstuvwxyz
 -- ------------m---q----v---z used by the os
--- ---d--g-i-----o--r--u-w--- used in default normal mode keymaps
--- -bc--f---jk--n-p---t------ used in custom normal mode keymaps
+-- ---d--g-i--l--o--r--u-w--- used in default normal mode keymaps
+-- abc-ef---jk--n-p---t------ used in custom normal mode keymaps
 -- -bcd-fg-ijk-mnopq--tuvw--z used
--- a---e--h---l------s----xy- available in normal
+-- -------h----------s----xy- available in normal
 
+-- abcdefghijklmnopqrstuvwxyz
 -- ------------m---q----v---z used by the os
 -- -----------------r-----xy- used in default insert mode keymaps
 -- -bc-e-gh-jkl---p---------- used in custom insert mode keymaps
@@ -284,8 +290,10 @@ end, { desc = "Close the html tag to left of the cursor", })
 -- toggle virtual lines (t)
 
 -- (only normal)
+-- add a cursor on the line below (a)
 -- toggle git file diff (b)
 -- scroll down (d)
+-- replay the q macro (e)
 -- toggle file tree (f)
 -- jump to tag (j)
 -- jump to tag in a split (k)
