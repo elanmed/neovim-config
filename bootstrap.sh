@@ -117,12 +117,5 @@ h_echo doing "installing rustup"
 # https://rustup.rs/
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y -q
 
-# https://github.com/EmmyLuaLs/emmylua-analyzer-rust
-h_echo doing "installing emmylua_ls"
-cargo install emmylua_ls
-
-h_echo doing "installing emmylua_check"
-cargo install emmylua_check
-
 h_echo doing "installing stylua"
 cargo install stylua --features luajit
