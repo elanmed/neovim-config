@@ -139,6 +139,7 @@ vim.keymap.set("n", "z?", function()
 end, { desc = "Toggle fold", })
 vim.keymap.set("n", "ze", "z=", { desc = "z=", })
 
+vim.keymap.set("n", "<leader>qu", vim.cmd.quit, { desc = ":q<cr>", })
 vim.keymap.set("n", "q;", function()
   local isCommandWindow = vim.fn.getcmdwintype() ~= ""
   if isCommandWindow then
