@@ -439,6 +439,11 @@ else
   vim.lsp.enable "eslint"
 end
 
+-- TODO: why doesn't this work in bashls.lua
+vim.lsp.config("bashls", {
+  filetypes = { "bash", "sh", "zsh" },
+})
+
 vim.lsp.enable {
   "ruby_lsp",
   "bashls",
