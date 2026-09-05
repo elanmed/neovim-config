@@ -249,7 +249,7 @@ end, { desc = ":source" })
 
 vim.keymap.set("n", "<leader>w", function()
   local winnr = vim.api.nvim_open_win(0, false, { split = "below", win = 0 })
-  vim.api.nvim_win_set_height(0, 1)
+  vim.api.nvim_win_resize(0, -1, 1)
   vim.api.nvim_set_current_win(winnr)
   vim.notify("Duplicated buf and split win", vim.log.levels.INFO)
 end)
