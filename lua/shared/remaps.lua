@@ -1,86 +1,100 @@
-vim.keymap.set("i", "<C-x><C-j>", "<C-x><C-]>", { desc = "Tag completion", })
+vim.keymap.set("i", "<C-x><C-j>", "<C-x><C-]>", { desc = "Tag completion" })
 vim.keymap.set("i", "<C-p>", function()
   if vim.fn.pumvisible() ~= 0 then
     return "<C-p>"
   else
     return "<C-o>:Snippet<space>"
   end
-end, { expr = true, desc = "Insert a snippet", })
-vim.keymap.set("n", "<leader>h", ":tab help<space>", { desc = ":help", })
-vim.keymap.set("n", "-", "<nop>", { desc = "Unmap dir map", })
-vim.keymap.set("n", "J", "gJ", { desc = "J without whitespace", })
-vim.keymap.set("n", "<leader>c", vim.cmd.copen, { desc = ":copen", })
-vim.keymap.set("n", "<leader>/v", "/\\V", { desc = "/ without regex", })
-vim.keymap.set("n", "<leader>/c", "/\\C<left><left>", { desc = "/ case sensitive", })
-vim.keymap.set("n", "<leader>/w", "/\\<\\><left><left>", { desc = "/ word sensitive", })
-vim.keymap.set("n", "<leader>/e", "/\\<\\>\\C<left><left><left><left>", { desc = "/ case and word sensitive", })
-vim.keymap.set("n", "<leader>/s", ":%s/\\<\\>\\C/<left><left><left><left><left>",
-  { desc = "%s in the current buffer, case and word sensitive", })
-vim.keymap.set("n", "<leader>n", vim.cmd.nohlsearch, { desc = "Turn off highlighting", })
-vim.keymap.set("n", "<leader>x", vim.cmd.tabclose, { desc = "Close the current tab", })
-vim.keymap.set("n", "<leader>;", ":", { desc = ":", })
-vim.keymap.set("n", "x", [["_x]], { desc = "x to the black hole buffer", })
-vim.keymap.set("n", "X", [["_X]], { desc = "X to the black hole buffer", })
-vim.keymap.set("n", "c", [["_c]], { desc = "c to the black hole buffer", })
-vim.keymap.set("n", "C", [["_C]], { desc = "C to the black hole buffer", })
-vim.keymap.set("n", "<leader>P", function() vim.cmd.pu { bang = true, } end, { desc = "Put on the line above", })
-vim.keymap.set("n", "<leader>p", vim.cmd.pu, { desc = "Put on the line below", })
+end, { expr = true, desc = "Insert a snippet" })
+vim.keymap.set("n", "<leader>h", ":tab help<space>", { desc = ":help" })
+vim.keymap.set("n", "-", "<nop>", { desc = "Unmap dir map" })
+vim.keymap.set("n", "J", "gJ", { desc = "J without whitespace" })
+vim.keymap.set("n", "<leader>c", vim.cmd.copen, { desc = ":copen" })
+vim.keymap.set("n", "<leader>/v", "/\\V", { desc = "/ without regex" })
+vim.keymap.set("n", "<leader>/c", "/\\C<left><left>", { desc = "/ case sensitive" })
+vim.keymap.set("n", "<leader>/w", "/\\<\\><left><left>", { desc = "/ word sensitive" })
+vim.keymap.set(
+  "n",
+  "<leader>/e",
+  "/\\<\\>\\C<left><left><left><left>",
+  { desc = "/ case and word sensitive" }
+)
+vim.keymap.set(
+  "n",
+  "<leader>/s",
+  ":%s/\\<\\>\\C/<left><left><left><left><left>",
+  { desc = "%s in the current buffer, case and word sensitive" }
+)
+vim.keymap.set("n", "<leader>n", vim.cmd.nohlsearch, { desc = "Turn off highlighting" })
+vim.keymap.set("n", "<leader>x", vim.cmd.tabclose, { desc = "Close the current tab" })
+vim.keymap.set("n", "<leader>;", ":", { desc = ":" })
+vim.keymap.set("n", "x", [["_x]], { desc = "x to the black hole buffer" })
+vim.keymap.set("n", "X", [["_X]], { desc = "X to the black hole buffer" })
+vim.keymap.set("n", "c", [["_c]], { desc = "c to the black hole buffer" })
+vim.keymap.set("n", "C", [["_C]], { desc = "C to the black hole buffer" })
+vim.keymap.set("n", "<leader>P", function()
+  vim.cmd.pu { bang = true }
+end, { desc = "Put on the line above" })
+vim.keymap.set("n", "<leader>p", vim.cmd.pu, { desc = "Put on the line below" })
 vim.keymap.set("n", "<leader>e", vim.cmd.edit)
 vim.keymap.set("n", "j", function()
   if vim.v.count > 0 then
     return [[m']] .. vim.v.count .. "j"
   end
   return "gj"
-end, { desc = "j with display lines", expr = true, })
+end, { desc = "j with display lines", expr = true })
 vim.keymap.set("n", "k", function()
   if vim.v.count > 0 then
     return [[m']] .. vim.v.count .. "k"
   end
   return "gk"
-end, { desc = "k with display lines", expr = true, })
-vim.keymap.set("n", "$", "g$", { desc = "$ with display lines", })
-vim.keymap.set("n", "0", "g0", { desc = "0 with display lines", })
-vim.keymap.set("i", "<C-/>", "<C-o>gcc", { remap = true, desc = "Comment the current line", })
-vim.keymap.set("n", "<C-/>", "gcc", { remap = true, desc = "Comment the current line", })
-vim.keymap.set("v", "<C-/>",
-  function()
-    local comment = "gc"
-    local reselect_last = "gv"
-    return comment .. reselect_last
-  end, { expr = true, remap = true, desc = "Comment the visual selection", })
+end, { desc = "k with display lines", expr = true })
+vim.keymap.set("n", "$", "g$", { desc = "$ with display lines" })
+vim.keymap.set("n", "0", "g0", { desc = "0 with display lines" })
+vim.keymap.set("i", "<C-/>", "<C-o>gcc", { remap = true, desc = "Comment the current line" })
+vim.keymap.set("n", "<C-/>", "gcc", { remap = true, desc = "Comment the current line" })
+vim.keymap.set("v", "<C-/>", function()
+  local comment = "gc"
+  local reselect_last = "gv"
+  return comment .. reselect_last
+end, { expr = true, remap = true, desc = "Comment the visual selection" })
 
-vim.keymap.set("n", "<leader>ur", function() require "helpers".utils.set_and_rotate(vim.fn.getreg "r") end)
-vim.keymap.set("n", "<leader>ua", function() require "helpers".utils.set_and_rotate(vim.fn.getreg "a") end)
-vim.keymap.set("n", "<leader>ud", function() require "helpers".utils.set_and_rotate(vim.fn.getreg "d") end)
-vim.keymap.set("n", "<leader>ub", function() require "helpers".utils.set_and_rotate(vim.fn.getreg "b") end)
+vim.keymap.set("n", "<leader>ur", function()
+  require("helpers").utils.set_and_rotate(vim.fn.getreg "r")
+end)
+vim.keymap.set("n", "<leader>ua", function()
+  require("helpers").utils.set_and_rotate(vim.fn.getreg "a")
+end)
+vim.keymap.set("n", "<leader>ud", function()
+  require("helpers").utils.set_and_rotate(vim.fn.getreg "d")
+end)
+vim.keymap.set("n", "<leader>ub", function()
+  require("helpers").utils.set_and_rotate(vim.fn.getreg "b")
+end)
 
-vim.keymap.set("n", "<leader>yc",
-  function()
-    local z_register = [["z]]
-    local yank_line = "yy"
-    local comment_line = "gcc"
-    local put = "p"
-    return z_register .. yank_line .. comment_line .. z_register .. put
-  end,
-  { expr = true, remap = true, desc = "Yank the current line, comment it, and put it below", })
+vim.keymap.set("n", "<leader>yc", function()
+  local z_register = [["z]]
+  local yank_line = "yy"
+  local comment_line = "gcc"
+  local put = "p"
+  return z_register .. yank_line .. comment_line .. z_register .. put
+end, { expr = true, remap = true, desc = "Yank the current line, comment it, and put it below" })
 
-vim.keymap.set("v", "<leader>yc",
-  function()
-    local z_register = [["z]]
-    local yank_and_unselect = "y"
-    local move_to_end_selection = "`>"
-    local put = "p"
-    local reselect_last = "gv"
-    local comment_selection = "gc"
-    return
-        z_register ..
-        yank_and_unselect ..
-        reselect_last ..
-        comment_selection ..
-        move_to_end_selection ..
-        z_register ..
-        put
-  end, { expr = true, remap = true, desc = "Yank the current selection, comment, and put it below", })
+vim.keymap.set("v", "<leader>yc", function()
+  local z_register = [["z]]
+  local yank_and_unselect = "y"
+  local move_to_end_selection = "`>"
+  local put = "p"
+  local reselect_last = "gv"
+  local comment_selection = "gc"
+  return z_register
+    .. yank_and_unselect
+    .. reselect_last
+    .. comment_selection
+    .. move_to_end_selection
+    .. z_register
+    .. put
+end, { expr = true, remap = true, desc = "Yank the current selection, comment, and put it below" })
 
 vim.keymap.set("v", "<leader>yp", function()
   local z_register = [["z]]
@@ -88,27 +102,31 @@ vim.keymap.set("v", "<leader>yp", function()
   local move_to_end_selection = "`>"
   local put = "p"
   return z_register .. yank_and_unselect .. move_to_end_selection .. z_register .. put
-end, { expr = true, desc = "Yank and put the visual selection", })
+end, { expr = true, desc = "Yank and put the visual selection" })
 
 vim.keymap.set("n", "<leader>ya", function()
   local abs_path = vim.api.nvim_buf_get_name(0)
-  require "helpers".utils.set_and_rotate(abs_path)
-end, { desc = "Yank the absolute path of the current buffer", })
+  require("helpers").utils.set_and_rotate(abs_path)
+end, { desc = "Yank the absolute path of the current buffer" })
 
 vim.keymap.set("n", "<leader>yr", function()
   local cwd = vim.uv.cwd()
-  if cwd == nil then return vim.notify("cwd is nil", vim.log.levels.WARN) end
+  if cwd == nil then
+    return vim.notify("cwd is nil", vim.log.levels.WARN)
+  end
 
   local rel_path = vim.fs.relpath(cwd, vim.api.nvim_buf_get_name(0))
-  if rel_path == nil then return vim.notify("relpath is nil", vim.log.levels.WARN) end
+  if rel_path == nil then
+    return vim.notify("relpath is nil", vim.log.levels.WARN)
+  end
 
-  require "helpers".utils.set_and_rotate(rel_path)
-end, { desc = "Yank the relative path of the current buffer", })
+  require("helpers").utils.set_and_rotate(rel_path)
+end, { desc = "Yank the relative path of the current buffer" })
 
 vim.keymap.set("n", "<leader>yf", function()
   vim.fn.setqflist(vim.fn.getqflist())
   vim.notify("Duplicated the current quickfix list", vim.log.levels.INFO)
-end, { desc = "Duplicate the current quickfix list", })
+end, { desc = "Duplicate the current quickfix list" })
 
 -- https://stackoverflow.com/a/9407015
 local function next_closed_fold(direction)
@@ -129,17 +147,24 @@ local function next_closed_fold(direction)
   end
 end
 
-vim.keymap.set("n", "zv", "zcjVkk", { desc = "Visually select the current fold", })
-vim.keymap.set("n", "zj", function() next_closed_fold "j" end, { desc = "Navigate to the next closed fold", })
-vim.keymap.set("n", "zk", function() next_closed_fold "k" end, { desc = "Navigate to the prev closed fold", })
-vim.keymap.set("n", "zt", "za", { desc = "Toggle fold", })
-vim.keymap.set("n", "zT", "zA", { desc = "Toggle fold", })
+vim.keymap.set("n", "zv", "zcjVkk", { desc = "Visually select the current fold" })
+vim.keymap.set("n", "zj", function()
+  next_closed_fold "j"
+end, { desc = "Navigate to the next closed fold" })
+vim.keymap.set("n", "zk", function()
+  next_closed_fold "k"
+end, { desc = "Navigate to the prev closed fold" })
+vim.keymap.set("n", "zt", "za", { desc = "Toggle fold" })
+vim.keymap.set("n", "zT", "zA", { desc = "Toggle fold" })
 vim.keymap.set("n", "z?", function()
-  vim.notify("common fold commands: z{t,T,c,C,o,O,R(open all folds),M(close all folds)}", vim.log.levels.INFO)
-end, { desc = "Toggle fold", })
-vim.keymap.set("n", "ze", "z=", { desc = "z=", })
+  vim.notify(
+    "common fold commands: z{t,T,c,C,o,O,R(open all folds),M(close all folds)}",
+    vim.log.levels.INFO
+  )
+end, { desc = "Toggle fold" })
+vim.keymap.set("n", "ze", "z=", { desc = "z=" })
 
-vim.keymap.set("n", "<leader>qu", vim.cmd.quit, { desc = ":q<cr>", })
+vim.keymap.set("n", "<leader>qu", vim.cmd.quit, { desc = ":q<cr>" })
 vim.keymap.set("n", "q;", function()
   local isCommandWindow = vim.fn.getcmdwintype() ~= ""
   if isCommandWindow then
@@ -147,29 +172,29 @@ vim.keymap.set("n", "q;", function()
   else
     vim.cmd.normal "q:"
   end
-end, { desc = "q:", })
+end, { desc = "q:" })
 vim.keymap.set("n", "<leader>qr", function()
   if vim.fn.reg_recording() == "" then
     return "qq"
   elseif vim.fn.reg_recording() == "q" then
     return "q"
   end
-end, { expr = true, nowait = true, desc = "Record a macro", })
-vim.keymap.set("n", "<C-e>", "@q", { desc = "rEplay the last macro", })
-vim.keymap.set("n", "<C-a>", "Qj", { desc = "Add a cursor on the line below", })
+end, { expr = true, nowait = true, desc = "Record a macro" })
+vim.keymap.set("n", "<C-e>", "@q", { desc = "rEplay the last macro" })
+vim.keymap.set("n", "<C-a>", "Qj", { desc = "Add a cursor on the line below" })
 vim.keymap.set("n", "<leader>ql", function()
   vim.cmd.normal "1Q"
   vim.cmd.nohlsearch()
-end, { desc = "Add a cursor to every match", })
-vim.keymap.set("n", "<leader>v", "G" .. "V" .. "gg", { desc = "Select the entire buffer", })
+end, { desc = "Add a cursor to every match" })
+vim.keymap.set("n", "<leader>v", "G" .. "V" .. "gg", { desc = "Select the entire buffer" })
 vim.keymap.set("n", "*", function()
   vim.fn.setreg("/", ("\\<%s\\>\\C"):format(vim.fn.expand "<cword>"))
   vim.o.hlsearch = true
-end, { silent = true, desc = "* but stay on the current search result", })
+end, { silent = true, desc = "* but stay on the current search result" })
 
 -- https://yobibyte.github.io/vim.html
 vim.keymap.set("n", "<leader>'", function()
-  vim.ui.input({ prompt = "$ ", }, function(cmd)
+  vim.ui.input({ prompt = "$ " }, function(cmd)
     if cmd and cmd ~= "" then
       vim.cmd.vnew()
       vim.bo.buftype = "nofile"
@@ -178,21 +203,21 @@ vim.keymap.set("n", "<leader>'", function()
       vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.fn.systemlist(cmd))
     end
   end)
-end, { desc = "Execute a terminal command and output the result to a buffer", })
+end, { desc = "Execute a terminal command and output the result to a buffer" })
 
-vim.keymap.set("c", "<C-c>", "<C-e><C-z>", { desc = "<C-e> and retrigger wildtrigger", })
+vim.keymap.set("c", "<C-c>", "<C-e><C-z>", { desc = "<C-e> and retrigger wildtrigger" })
 vim.keymap.set("c", "<C-h>", function()
-  if vim.fn.wildmenumode() == require "helpers".vimscript_true then
+  if vim.fn.wildmenumode() == require("helpers").vimscript_true then
     return "<C-e><Left><C-z>"
   end
   return "<Left>"
-end, { expr = true, desc = "<Left> and retrigger wildtrigger", })
+end, { expr = true, desc = "<Left> and retrigger wildtrigger" })
 vim.keymap.set("c", "<C-l>", function()
-  if vim.fn.wildmenumode() == require "helpers".vimscript_true then
+  if vim.fn.wildmenumode() == require("helpers").vimscript_true then
     return "<C-e><Right><C-z>"
   end
   return "<Right>"
-end, { expr = true, desc = "<Right> and retrigger wildtrigger", })
+end, { expr = true, desc = "<Right> and retrigger wildtrigger" })
 
 -- https://vim.fandom.com/wiki/Moving_lines_up_or_down
 vim.keymap.set("n", "<A-j>", [[:m .+1<CR>==]])
@@ -201,30 +226,29 @@ vim.keymap.set("i", "<A-j>", [[<Esc>:m .+1<CR>==gi]])
 vim.keymap.set("i", "<A-k>", [[<Esc>:m .-2<CR>==gi]])
 vim.keymap.set("v", "<A-j>", [[:m '>+1<CR>gv=gv]])
 vim.keymap.set("v", "<A-k>", [[:m '<-2<CR>gv=gv]])
-vim.keymap.set("v", ">", ">gv", { desc = "indent, preserving the selecting", })
-vim.keymap.set("v", "<", "<gv", { desc = "outdent, preserving the selecting", })
+vim.keymap.set("v", ">", ">gv", { desc = "indent, preserving the selecting" })
+vim.keymap.set("v", "<", "<gv", { desc = "outdent, preserving the selecting" })
 
-vim.keymap.set("n", "H", "{", { desc = "{", })
-vim.keymap.set("n", "L", "}", { desc = "}", })
+vim.keymap.set("n", "H", "{", { desc = "{" })
+vim.keymap.set("n", "L", "}", { desc = "}" })
 
 vim.keymap.set("n", "<leader>k", function()
   return "k" .. [["zyy]] .. vim.v.count .. "j" .. [["zp]]
-end, { desc = "Yank the file vim.v.count above and put it on the current line", expr = true, })
+end, { desc = "Yank the file vim.v.count above and put it on the current line", expr = true })
 vim.keymap.set("n", "<leader>j", function()
   return "j" .. [["zyy]] .. vim.v.count .. "k" .. [["zp]]
-end, { desc = "Yank the file vim.v.count below and put it on the current line", expr = true, })
+end, { desc = "Yank the file vim.v.count below and put it on the current line", expr = true })
 
-vim.keymap.set("n", "<C-j>", "<C-]>", { desc = "<C-]>", })
-vim.keymap.set("n", "<C-k>", "<C-w><C-]>", { desc = "<C-w><C-]>", })
+vim.keymap.set("n", "<C-j>", "<C-]>", { desc = "<C-]>" })
+vim.keymap.set("n", "<C-k>", "<C-w><C-]>", { desc = "<C-w><C-]>" })
 
-vim.keymap.set("n", "<leader>t",
-  function()
-    vim.cmd.source()
-    vim.notify(":source " .. vim.api.nvim_buf_get_name(0), vim.log.levels.INFO)
-  end, { desc = ":source", })
+vim.keymap.set("n", "<leader>t", function()
+  vim.cmd.source()
+  vim.notify(":source " .. vim.api.nvim_buf_get_name(0), vim.log.levels.INFO)
+end, { desc = ":source" })
 
 vim.keymap.set("n", "<leader>w", function()
-  local winnr = vim.api.nvim_open_win(0, false, { split = "below", win = 0, })
+  local winnr = vim.api.nvim_open_win(0, false, { split = "below", win = 0 })
   vim.api.nvim_win_set_height(0, 1)
   vim.api.nvim_set_current_win(winnr)
   vim.notify("Duplicated buf and split win", vim.log.levels.INFO)
@@ -232,12 +256,12 @@ end)
 
 vim.keymap.set("n", "<leader>mD", function()
   vim.cmd.delmarks "A-Za-z"
-  pcall(require "marks".refresh_signs)
+  pcall(require("marks").refresh_signs)
   vim.notify("Deleted all marks", vim.log.levels.INFO)
 end)
 
-vim.keymap.set({ "i", "c", }, "<C-r><C-;>", "<C-r>+")
-vim.keymap.set({ "i", "c", }, "<C-r>;", "<C-r>+")
+vim.keymap.set({ "i", "c" }, "<C-r><C-;>", "<C-r>+")
+vim.keymap.set({ "i", "c" }, "<C-r>;", "<C-r>+")
 vim.keymap.set("i", "<C-h>", "<left>")
 vim.keymap.set("i", "<C-l>", "<right>")
 
@@ -248,7 +272,7 @@ vim.keymap.set("i", "<C-e>", function()
     return "<C-e>"
   end
   return "<C-o>$"
-end, { expr = true, })
+end, { expr = true })
 vim.keymap.set("c", "<C-e>", "<End><C-z>")
 vim.keymap.set("i", "<C-w>", "<C-o>w")
 vim.keymap.set("c", "<C-w>", "<S-Right><C-z>")
@@ -268,17 +292,21 @@ vim.keymap.set("i", "<C-g>", function()
   -- \- makes it non-greedy
   -- () is a capture group, returns what's inside
   local tag_content = line:sub(1, col_1i_excl):match ".*<(.-)>.*$"
-  if tag_content == nil then return vim.notify("No matching tag", vim.log.levels.ERROR) end
+  if tag_content == nil then
+    return vim.notify("No matching tag", vim.log.levels.ERROR)
+  end
 
   -- match non-whitespace characters from the start
   local tag_name = tag_content:match "^%S+"
-  if tag_name == nil then return vim.notify("Invalid tag name", vim.log.levels.ERROR) end
+  if tag_name == nil then
+    return vim.notify("Invalid tag name", vim.log.levels.ERROR)
+  end
 
   local closing_tag = "</" .. tag_name .. ">"
   vim.api.nvim_buf_set_lines(0, row_0i, row_0i + 1, true, {
     line:sub(1, col_1i_excl) .. closing_tag .. line:sub(col_1i),
   })
-end, { desc = "Close the html tag to left of the cursor", })
+end, { desc = "Close the html tag to left of the cursor" })
 
 -- abcdefghijklmnopqrstuvwxyz
 -- ------------m---q----v---z used by the os

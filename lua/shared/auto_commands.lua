@@ -1,9 +1,16 @@
-local a = require "async"
 vim.o.pumheight = 10
-vim.api.nvim_create_autocmd("CmdlineEnter", { callback = function() vim.o.pumheight = 5 end, })
-vim.api.nvim_create_autocmd("CmdlineLeave", { callback = function() vim.o.pumheight = 10 end, })
+vim.api.nvim_create_autocmd("CmdlineEnter", {
+  callback = function()
+    vim.o.pumheight = 5
+  end,
+})
+vim.api.nvim_create_autocmd("CmdlineLeave", {
+  callback = function()
+    vim.o.pumheight = 10
+  end,
+})
 vim.api.nvim_create_autocmd("CmdlineChanged", {
-  pattern = { ":", "/", },
+  pattern = { ":", "/" },
   callback = function()
     local cmdline = vim.fn.getcmdline()
     local cmdtype = vim.fn.getcmdtype()
@@ -17,7 +24,7 @@ vim.api.nvim_create_autocmd("CmdlineChanged", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
-  group = vim.api.nvim_create_augroup("DisableAutoComments", { clear = true, }),
+  group = vim.api.nvim_create_augroup("DisableAutoComments", { clear = true }),
   callback = function()
     -- :h fo-table
     vim.o.formatoptions = "rl1j"
@@ -25,17 +32,19 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
-  group = vim.api.nvim_create_augroup("SetYankRing", { clear = true, }),
+  group = vim.api.nvim_create_augroup("SetYankRing", { clear = true }),
   callback = function()
     if vim.v.event.operator == "y" then
-      require "helpers".utils.rotate_registers()
+      require("helpers").utils.rotate_registers()
     end
   end,
 })
 
 vim.api.nvim_create_autocmd("TextYankPost", {
-  group = vim.api.nvim_create_augroup("HighlightOnYank", { clear = true, }),
-  callback = function() vim.hl.hl_op() end,
+  group = vim.api.nvim_create_augroup("HighlightOnYank", { clear = true }),
+  callback = function()
+    vim.hl.hl_op()
+  end,
 })
 
 vim.api.nvim_create_autocmd("BufWinEnter", {
@@ -60,7 +69,6 @@ local function foreground_for_hex(hex_color)
   end
 end
 
-
 local hex_ns_id = vim.api.nvim_create_namespace "HexColors"
 --- @param bufnr number
 local function highlight_hex_colors(bufnr)
@@ -72,12 +80,14 @@ local function highlight_hex_colors(bufnr)
     local start_pos_1i = 1
     while true do
       local match_start_1i, match_end_1i = line:find("#%x%x%x%x%x%x", start_pos_1i)
-      if match_start_1i == nil then break end
+      if match_start_1i == nil then
+        break
+      end
       local match_start_0i = match_start_1i - 1
 
       local hex_color = line:sub(match_start_1i, match_end_1i)
       local group_name = "HexColor_" .. hex_color:sub(2)
-      vim.api.nvim_set_hl(0, group_name, { bg = hex_color, fg = foreground_for_hex(hex_color), })
+      vim.api.nvim_set_hl(0, group_name, { bg = hex_color, fg = foreground_for_hex(hex_color) })
       vim.api.nvim_buf_set_extmark(bufnr, hex_ns_id, row_0i, match_start_0i, {
         end_col = match_end_1i,
         hl_group = group_name,
@@ -88,12 +98,18 @@ local function highlight_hex_colors(bufnr)
 end
 
 local hex_timer = nil
-vim.api.nvim_create_autocmd({ "BufWinEnter", "TextChanged", "TextChangedI", }, {
+vim.api.nvim_create_autocmd({ "BufWinEnter", "TextChanged", "TextChangedI" }, {
   callback = function(event)
-    if hex_timer then vim.fn.timer_stop(hex_timer) end
+    if hex_timer then
+      vim.fn.timer_stop(hex_timer)
+    end
     hex_timer = vim.fn.timer_start(500, function()
-      if not vim.api.nvim_buf_is_valid(event.buf) then return end
-      if vim.api.nvim_get_current_buf() ~= event.buf then return end
+      if not vim.api.nvim_buf_is_valid(event.buf) then
+        return
+      end
+      if vim.api.nvim_get_current_buf() ~= event.buf then
+        return
+      end
       highlight_hex_colors(event.buf)
     end)
   end,
@@ -101,31 +117,45 @@ vim.api.nvim_create_autocmd({ "BufWinEnter", "TextChanged", "TextChangedI", }, {
 
 local ctags_timer = nil
 vim.api.nvim_create_autocmd("BufWritePost", {
-  callback = (function()
-    if ctags_timer then vim.fn.timer_stop(ctags_timer) end
-    ctags_timer = vim.fn.timer_start(5000, a.make_spawn(function()
-      local h = require "helpers"
-      --- @type vim.SystemCompleted
-      local git_out = a.await(h.utils.vim_system { "git", "rev-parse", "--show-toplevel", })
-      if git_out.code ~= 0 then return end
-      if git_out.stdout == nil then return end
+  callback = function()
+    if ctags_timer then
+      vim.fn.timer_stop(ctags_timer)
+    end
+    ctags_timer = vim.fn.timer_start(5000, function()
+      vim.async.run(function()
+        local h = require "helpers"
+        --- @type vim.SystemCompleted
+        local git_out = h.utils.vim_system { "git", "rev-parse", "--show-toplevel" }
+        if git_out.code ~= 0 then
+          return
+        end
+        if git_out.stdout == nil then
+          return
+        end
 
-      local git_root = vim.trim(git_out.stdout)
-      if git_root == nil then return end
+        local git_root = vim.trim(git_out.stdout)
+        if git_root == nil then
+          return
+        end
 
-      --- @type vim.SystemCompleted
-      local rg_out = a.await(h.utils.vim_system({ "rg", "--files", }, { cwd = git_root, }))
-      if rg_out.code ~= 0 then return end
-      if rg_out.stdout == nil then return end
+        --- @type vim.SystemCompleted
+        local rg_out = h.utils.vim_system({ "rg", "--files" }, { cwd = git_root })
+        if rg_out.code ~= 0 then
+          return
+        end
+        if rg_out.stdout == nil then
+          return
+        end
 
-      -- https://github.com/universal-ctags/ctags/issues/218#issuecomment-377717588
-      vim.system({ "ctags", "--recurse", "--links=no", "-L", "-", }, { stdin = rg_out.stdout, })
-    end))
-  end),
+        -- https://github.com/universal-ctags/ctags/issues/218#issuecomment-377717588
+        vim.system({ "ctags", "--recurse", "--links=no", "-L", "-" }, { stdin = rg_out.stdout })
+      end)
+    end)
+  end,
 })
 
-vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter", }, {
-  group = vim.api.nvim_create_augroup("RedrawTabline", { clear = true, }),
+vim.api.nvim_create_autocmd({ "BufEnter", "BufWinEnter" }, {
+  group = vim.api.nvim_create_augroup("RedrawTabline", { clear = true }),
   callback = function()
     vim.api.nvim_set_option_value("tabline", "%!v:lua.Tabline()", {})
   end,

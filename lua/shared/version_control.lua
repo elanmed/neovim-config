@@ -1,4 +1,4 @@
-local noop_keymaps = { "<C-^>", "<C-o>", "<C-i>", "<leader>q", "<leader>e", }
+local noop_keymaps = { "<C-^>", "<C-o>", "<C-i>", "<leader>q", "<leader>e" }
 
 vim.keymap.set("n", "<C-b>", function()
   if vim.t.diff_view then
@@ -11,7 +11,7 @@ vim.keymap.set("n", "<C-b>", function()
     vim.api.nvim_set_current_buf(worktree_bufnr)
     local line_count = vim.api.nvim_buf_line_count(worktree_bufnr)
     local clamped = math.min(cursor[1], line_count)
-    vim.api.nvim_win_set_cursor(0, { clamped, cursor[2], })
+    vim.api.nvim_win_set_cursor(0, { clamped, cursor[2] })
     return
   end
 
@@ -43,21 +43,25 @@ vim.keymap.set("n", "<C-b>", function()
     win = tab_worktree_winnr,
   })
 
-  local out = vim.system { "git", "show", ":" .. curr_bufname, }:wait()
+  local out = vim.system({ "git", "show", ":" .. curr_bufname }):wait()
   local stdout = (function()
-    if out.code ~= 0 then return "" end
-    if out.stdout == nil then return "" end
+    if out.code ~= 0 then
+      return ""
+    end
+    if out.stdout == nil then
+      return ""
+    end
     return out.stdout
   end)()
-  local index_lines = vim.split(stdout, "\n", { trimempty = true, })
+  local index_lines = vim.split(stdout, "\n", { trimempty = true })
 
   vim.api.nvim_buf_set_lines(index_bufnr, 0, -1, false, index_lines)
 
   vim.bo[index_bufnr].filetype = curr_filetype
 
-  for _, bufnr in ipairs { worktree_bufnr, index_bufnr, } do
+  for _, bufnr in ipairs { worktree_bufnr, index_bufnr } do
     for _, keymap in ipairs(noop_keymaps) do
-      vim.keymap.set("n", keymap, "<Nop>", { buffer = bufnr, })
+      vim.keymap.set("n", keymap, "<Nop>", { buffer = bufnr })
     end
   end
 

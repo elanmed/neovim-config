@@ -1,5 +1,5 @@
 vim.g.ff = {
-  find_cmd = require "helpers".fd_cmd,
+  find_cmd = require("helpers").fd_cmd,
   results_win_config = {
     border = "single",
   },
@@ -17,34 +17,43 @@ vim.g.ff = {
   auto_setup = false,
 }
 
-vim.api.nvim_create_autocmd({ "FileType", }, {
-  group = vim.api.nvim_create_augroup("FFRemaps", { clear = true, }),
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  group = vim.api.nvim_create_augroup("FFRemaps", { clear = true }),
   pattern = "ff-picker",
   callback = function()
-    vim.keymap.set("i", "<cr>", "<Plug>FFResultSelect", { buffer = true, })
-    vim.keymap.set("i", "<c-n>", "<Plug>FFResultNext", { buffer = true, })
-    vim.keymap.set("i", "<c-p>", "<Plug>FFResultPrev", { buffer = true, })
-    vim.keymap.set("i", "<c-x>", "<Plug>FFResultDeleteFrecencyScore", { buffer = true, nowait = true, })
-    vim.keymap.set("i", "<esc>", "<Plug>FFClose", { buffer = true, })
-    vim.keymap.set("i", "<tab>", "<Plug>FFPreviewToggle", { buffer = true, })
-    vim.keymap.set("i", "<c-d>", "<Plug>FFPreviewScrollDown", { buffer = true, })
-    vim.keymap.set("i", "<c-u>", "<Plug>FFPreviewScrollUp", { buffer = true, })
-    vim.keymap.set("i", "<c-c>", "<Plug>FFInputClear", { buffer = true, })
+    vim.keymap.set("i", "<cr>", "<Plug>FFResultSelect", { buffer = true })
+    vim.keymap.set("i", "<c-n>", "<Plug>FFResultNext", { buffer = true })
+    vim.keymap.set("i", "<c-p>", "<Plug>FFResultPrev", { buffer = true })
+    vim.keymap.set(
+      "i",
+      "<c-x>",
+      "<Plug>FFResultDeleteFrecencyScore",
+      { buffer = true, nowait = true }
+    )
+    vim.keymap.set("i", "<esc>", "<Plug>FFClose", { buffer = true })
+    vim.keymap.set("i", "<tab>", "<Plug>FFPreviewToggle", { buffer = true })
+    vim.keymap.set("i", "<c-d>", "<Plug>FFPreviewScrollDown", { buffer = true })
+    vim.keymap.set("i", "<c-u>", "<Plug>FFPreviewScrollUp", { buffer = true })
+    vim.keymap.set("i", "<c-c>", "<Plug>FFInputClear", { buffer = true })
   end,
 })
 
 vim.keymap.set("n", "<leader>fi", function()
   local ff = require "ff"
-  ff.setup(function() ff.find() end)
+  ff.setup(function()
+    ff.find()
+  end)
 end)
 
 vim.keymap.set("n", "<leader>fe", function()
   local ff = require "ff"
-  ff.setup(function() ff.find { resume = true, } end)
+  ff.setup(function()
+    ff.find { resume = true }
+  end)
 end)
 
 vim.api.nvim_create_autocmd("User", {
-  group = vim.api.nvim_create_augroup("FFRefreshUserEvents", { clear = true, }),
+  group = vim.api.nvim_create_augroup("FFRefreshUserEvents", { clear = true }),
   pattern = {
     "TreeCreate",
     "TreeDelete",
@@ -55,6 +64,8 @@ vim.api.nvim_create_autocmd("User", {
   },
   callback = function()
     local ff = require "ff"
-    ff.setup(function() ff.refresh_files_cache() end)
+    ff.setup(function()
+      ff.refresh_files_cache()
+    end)
   end,
 })

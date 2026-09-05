@@ -9,7 +9,7 @@ local prev_state = {
 local term_winnr = nil
 
 local prev_query_file = "/tmp/fzf-prev"
-vim.fn.writefile({ "", }, prev_query_file)
+vim.fn.writefile({ "" }, prev_query_file)
 
 --- @class FzfResumeOpts
 --- @field is_replay? boolean
@@ -55,7 +55,9 @@ local fzf = function(opts)
   end)()
 
   local get_height = function(editor_height)
-    if height == "full" then return editor_height - border_height end
+    if height == "full" then
+      return editor_height - border_height
+    end
     return math.floor(editor_height * 0.5 - border_height)
   end
 
@@ -73,7 +75,9 @@ local fzf = function(opts)
 
   vim.api.nvim_create_autocmd("VimResized", {
     callback = function()
-      if not vim.api.nvim_win_is_valid(term_winnr) then return end
+      if not vim.api.nvim_win_is_valid(term_winnr) then
+        return
+      end
       local new_editor_height = vim.o.lines - 1
       vim.api.nvim_win_set_config(term_winnr, {
         width = vim.o.columns,
@@ -108,7 +112,8 @@ local fzf = function(opts)
 
   if opts.is_replay then
     local prev_query = vim.fn.readfile(prev_query_file)[1]
-    bare_cmd = table.concat({ bare_cmd, ("--query %s"):format(vim.fn.shellescape(prev_query)), }, " ")
+    bare_cmd =
+      table.concat({ bare_cmd, ("--query %s"):format(vim.fn.shellescape(prev_query)) }, " ")
   end
 
   local cmd_with_record_prev_query = table.concat({
@@ -169,15 +174,24 @@ local qf_preview_opts = {
 
 --- @param script_name "get_marks"|"delete_mark"|"ex_cmd"|"get_qf_list"|"get_qf_stack"|"get_buffers"|"get_lines"|"delete_buffer"|"get_registers"|"get_git_hunks"
 local function get_fzf_script(script_name)
-  local lua_script = vim.fs.joinpath(
-    vim.fn.stdpath "config",
-    "fzf_scripts",
-    ("%s.lua"):format(script_name)
-  )
+  local lua_script =
+    vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", ("%s.lua"):format(script_name))
 
   return table.concat(
-    { "nvim", "-i", "NONE", "--clean", "-u", "NONE", "--headless", "-l", lua_script, vim.v.servername, },
-    " ")
+    {
+      "nvim",
+      "-i",
+      "NONE",
+      "--clean",
+      "-u",
+      "NONE",
+      "--headless",
+      "-l",
+      lua_script,
+      vim.v.servername,
+    },
+    " "
+  )
 end
 
 --- @class QfSinklistOpts
@@ -222,16 +236,20 @@ vim.keymap.set("n", "<leader>l", function()
     source = source,
     options = h.tbl.extend(marks_opts_tbl, default_opts, multi_select_opts),
     sinklist = build_sinklist {
-      get_filename = function(entry) return vim.split(entry, "|")[3] end,
+      get_filename = function(entry)
+        return vim.split(entry, "|")[3]
+      end,
       get_qf_entry = function(entry)
         local _, lnum, filename = unpack(vim.split(entry, "|"))
-        return { filename = filename, lnum = lnum, col = 0, text = filename, }
+        return { filename = filename, lnum = lnum, col = 0, text = filename }
       end,
-      get_cursor_pos = function(entry) return { tonumber(vim.split(entry, "|")[2]), 0, } end,
+      get_cursor_pos = function(entry)
+        return { tonumber(vim.split(entry, "|")[2]), 0 }
+      end,
     },
   }
-  vim.api.nvim_win_set_config(term_winnr, { title = "Marks", })
-end, { desc = "fzf global marks", })
+  vim.api.nvim_win_set_config(term_winnr, { title = "Marks" })
+end, { desc = "fzf global marks" })
 
 vim.keymap.set("n", "<leader>b", function()
   local source = get_fzf_script "get_buffers"
@@ -246,15 +264,17 @@ vim.keymap.set("n", "<leader>b", function()
     source = source,
     options = h.tbl.extend(bufs_opts_tbl, default_opts, multi_select_opts),
     sinklist = build_sinklist {
-      get_filename = function(entry) return vim.split(entry, "|")[2] end,
+      get_filename = function(entry)
+        return vim.split(entry, "|")[2]
+      end,
       get_qf_entry = function(entry)
         local _, filename = unpack(vim.split(entry, "|"))
-        return { filename = filename, lnum = 1, col = 0, text = filename, }
+        return { filename = filename, lnum = 1, col = 0, text = filename }
       end,
     },
   }
-  vim.api.nvim_win_set_config(term_winnr, { title = "Buffers", })
-end, { desc = "fzf buffers", })
+  vim.api.nvim_win_set_config(term_winnr, { title = "Buffers" })
+end, { desc = "fzf buffers" })
 
 vim.keymap.set("n", "<leader>zu", function()
   local source = get_fzf_script "get_registers"
@@ -270,15 +290,17 @@ vim.keymap.set("n", "<leader>zu", function()
       vim.fn.setreg("+", reg_val)
     end,
   }
-  vim.api.nvim_win_set_config(term_winnr, { title = "Registers", })
-end, { desc = "fzf register", })
+  vim.api.nvim_win_set_config(term_winnr, { title = "Registers" })
+end, { desc = "fzf register" })
 
 vim.keymap.set("n", "<leader>z;", function()
   local source = {}
   local num_cmd_history = vim.fn.histnr "cmd"
   for i = 1, math.min(num_cmd_history, 15) do
     local item = vim.fn.histget("cmd", i * -1)
-    if item == "" then goto continue end
+    if item == "" then
+      goto continue
+    end
     table.insert(source, item)
 
     ::continue::
@@ -292,8 +314,8 @@ vim.keymap.set("n", "<leader>z;", function()
       vim.api.nvim_feedkeys(":" .. selected .. "\n", "n", false)
     end,
   }
-  vim.api.nvim_win_set_config(term_winnr, { title = "Command history", })
-end, { desc = "fzf command history", })
+  vim.api.nvim_win_set_config(term_winnr, { title = "Command history" })
+end, { desc = "fzf command history" })
 
 local function ripgrep_sinklist(list)
   if vim.tbl_count(list) == 1 then
@@ -303,13 +325,13 @@ local function ripgrep_sinklist(list)
     local col_one_index = tonumber(split_entry[3])
     local col_zero_index = col_one_index - 1
     vim.cmd.edit(filename)
-    vim.api.nvim_win_set_cursor(0, { row_one_index, col_zero_index, })
+    vim.api.nvim_win_set_cursor(0, { row_one_index, col_zero_index })
     return
   end
 
   local qf_list = vim.tbl_map(function(entry)
     local filename, row, col, text = unpack(vim.split(entry, "|"))
-    return { filename = filename, lnum = row, col = col, text = text, }
+    return { filename = filename, lnum = row, col = col, text = text }
   end, list)
   vim.fn.setqflist(qf_list)
   vim.cmd.copen()
@@ -317,18 +339,20 @@ end
 
 vim.keymap.set("n", "gli", function()
   local function run_cmd(cmd_parts)
-    return vim.split(vim.system(cmd_parts):wait().stdout, "\n", { trimempty = true, })
+    return vim.split(vim.system(cmd_parts):wait().stdout, "\n", { trimempty = true })
   end
 
-  local changed_files = run_cmd { "git", "diff", "--name-only", }
+  local changed_files = run_cmd { "git", "diff", "--name-only" }
 
   --- @type vim.quickfix.entry[]
   local qf_entries = {}
 
   for _, filepath in ipairs(changed_files) do
-    if vim.uv.fs_stat(filepath) == nil then goto continue end
+    if vim.uv.fs_stat(filepath) == nil then
+      goto continue
+    end
 
-    local head_lines = run_cmd { "git", "show", (":%s"):format(filepath), }
+    local head_lines = run_cmd { "git", "show", (":%s"):format(filepath) }
     local working_lines = vim.fn.readfile(filepath)
 
     local head_string = table.concat(head_lines, "\n") .. "\n"
@@ -336,7 +360,9 @@ vim.keymap.set("n", "gli", function()
 
     vim.text.diff(head_string, working_string, {
       on_hunk = function(_, _, start_b, _)
-        if start_b == 0 then return end
+        if start_b == 0 then
+          return
+        end
         local content = working_lines[start_b]
 
         --- @type vim.quickfix.entry
@@ -353,7 +379,7 @@ vim.keymap.set("n", "gli", function()
     ::continue::
   end
 
-  local untracked_files = run_cmd { "git", "ls-files", "--others", "--exclude-standard", }
+  local untracked_files = run_cmd { "git", "ls-files", "--others", "--exclude-standard" }
   for _, untracked_file in ipairs(untracked_files) do
     --- @type vim.quickfix.entry
     local entry = {
@@ -365,7 +391,9 @@ vim.keymap.set("n", "gli", function()
     table.insert(qf_entries, entry)
   end
 
-  if #qf_entries == 0 then return vim.notify("No git hunks found", vim.log.levels.WARN) end
+  if #qf_entries == 0 then
+    return vim.notify("No git hunks found", vim.log.levels.WARN)
+  end
   vim.fn.setqflist(qf_entries)
   vim.cmd.copen()
 end)
@@ -385,17 +413,21 @@ vim.keymap.set("n", "<leader>i", function()
     options = h.tbl.extend(default_opts, multi_select_opts, diff_opts_tbl),
     height = "full",
     sinklist = build_sinklist {
-      get_filename = function(entry) return entry end,
-      get_qf_entry = function(entry) return { lnum = 1, col = 0, filename = entry, } end,
+      get_filename = function(entry)
+        return entry
+      end,
+      get_qf_entry = function(entry)
+        return { lnum = 1, col = 0, filename = entry }
+      end,
       after_edit = function()
-        vim.api.nvim_win_set_cursor(0, { 1, 0, })
+        vim.api.nvim_win_set_cursor(0, { 1, 0 })
         vim.defer_fn(function()
           vim.cmd [[execute "normal \<Plug>GitDiffNextHunk"]]
         end, 10)
       end,
     },
   }
-end, { desc = "fzf git diff", })
+end, { desc = "fzf git diff" })
 
 --- @class RgOpts
 --- @field bind_start? string
@@ -418,35 +450,43 @@ local function rg(default_query, opts)
   assert(opts.bind_start ~= nil)
 
   local include_rg_result_pipe = (function()
-    if opts.include_rg_result_patterns == nil then return "" end
-    return (" | rg --regexp %s"):format(vim.fn.shellescape(
-      table.concat(opts.include_rg_result_patterns, "|")
-    ))
+    if opts.include_rg_result_patterns == nil then
+      return ""
+    end
+    return (" | rg --regexp %s"):format(
+      vim.fn.shellescape(table.concat(opts.include_rg_result_patterns, "|"))
+    )
   end)()
 
   local exclude_rg_result_pipe = (function()
-    if opts.exclude_rg_result_patterns == nil then return "" end
-    return (" | rg --invert-match %s"):format(vim.fn.shellescape(
-      table.concat(opts.exclude_rg_result_patterns, "|")
-    ))
+    if opts.exclude_rg_result_patterns == nil then
+      return ""
+    end
+    return (" | rg --invert-match %s"):format(
+      vim.fn.shellescape(table.concat(opts.exclude_rg_result_patterns, "|"))
+    )
   end)()
 
   local base_header =
-  [['<C-r> (ripgrep) | <C-f> (fzf) | -i --ignore-case | -s --case-sensitive | -S --smart-case | -w --word-regexp | -F --fixed-strings | -g --glob= | -t --type= | -. --hidden']]
+    [['<C-r> (ripgrep) | <C-f> (fzf) | -i --ignore-case | -s --case-sensitive | -S --smart-case | -w --word-regexp | -F --fixed-strings | -g --glob= | -t --type= | -. --hidden']]
 
   local rg_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "rg.sh")
 
-  local rg_cmd = ("%s {q}%s%s || true"):format(rg_script, include_rg_result_pipe, exclude_rg_result_pipe)
+  local rg_cmd = ("%s {q}%s%s || true"):format(
+    rg_script,
+    include_rg_result_pipe,
+    exclude_rg_result_pipe
+  )
 
   local rg_options = {
     "--disabled",
-    "--header", base_header,
+    "--header",
+    base_header,
     ([[--bind="start:reload(%s)+unbind(ctrl-r)%s"]]):format(rg_cmd, opts.bind_start),
-    ([[--bind="change:reload(sleep 0.1; %s)+transform-header(echo %s\\\nrg\ --hidden\ --ignore-case\ {q})"]])
-        :format(
-          rg_cmd,
-          base_header
-        ),
+    ([[--bind="change:reload(sleep 0.1; %s)+transform-header(echo %s\\\nrg\ --hidden\ --ignore-case\ {q})"]]):format(
+      rg_cmd,
+      base_header
+    ),
     [[--bind="ctrl-f:unbind(change,ctrl-f)+change-prompt(fzf> )+enable-search+rebind(ctrl-r)+transform-query(echo {q} > /tmp/rg-fzf-r; cat /tmp/rg-fzf-f)"]],
     [[--bind="ctrl-r:unbind(ctrl-r)+change-prompt(ripgrep> )+disable-search+reload($RG_PREFIX {q} || true)+rebind(change,ctrl-f)+transform-query(echo {q} > /tmp/rg-fzf-f; cat /tmp/rg-fzf-r)"]],
     [[--prompt='ripgrep> ']],
@@ -462,7 +502,7 @@ local function rg(default_query, opts)
     height = "full",
     sinklist = ripgrep_sinklist,
   }
-  vim.api.nvim_win_set_config(term_winnr, { title = "rg", })
+  vim.api.nvim_win_set_config(term_winnr, { title = "rg" })
 end
 
 vim.keymap.set("n", "<leader>zf", function()
@@ -474,8 +514,8 @@ vim.keymap.set("n", "<leader>zf", function()
     height = "full",
     sinklist = ripgrep_sinklist,
   }
-  vim.api.nvim_win_set_config(term_winnr, { title = "Qf list", })
-end, { desc = "fzf current quickfix list", })
+  vim.api.nvim_win_set_config(term_winnr, { title = "Qf list" })
+end, { desc = "fzf current quickfix list" })
 
 vim.keymap.set("n", "<leader>zs", function()
   vim.cmd.cclose()
@@ -490,8 +530,8 @@ vim.keymap.set("n", "<leader>zs", function()
       vim.cmd.copen()
     end,
   }
-  vim.api.nvim_win_set_config(term_winnr, { title = "Qf stack", })
-end, { desc = "fzf quickfix stack", })
+  vim.api.nvim_win_set_config(term_winnr, { title = "Qf stack" })
+end, { desc = "fzf quickfix stack" })
 
 vim.keymap.set("n", "/", function()
   local slash_opts = {
@@ -516,30 +556,30 @@ vim.keymap.set("n", "/", function()
       end
       local line_nr, filename = unpack(vim.split(entry[2], "|"))
       if vim.fn.strchars(query) == 0 then
-        vim.api.nvim_win_set_cursor(0, { tonumber(line_nr), 0, })
+        vim.api.nvim_win_set_cursor(0, { tonumber(line_nr), 0 })
         return
       end
-      local _, positions = unpack(vim.fn.matchfuzzypos({ filename, }, query))
+      local _, positions = unpack(vim.fn.matchfuzzypos({ filename }, query))
       if #positions == 0 then
-        vim.api.nvim_win_set_cursor(0, { tonumber(line_nr), 0, })
+        vim.api.nvim_win_set_cursor(0, { tonumber(line_nr), 0 })
         return
       end
 
-      vim.api.nvim_win_set_cursor(0, { tonumber(line_nr), positions[1][1], })
+      vim.api.nvim_win_set_cursor(0, { tonumber(line_nr), positions[1][1] })
     end,
   }
-  vim.api.nvim_win_set_config(term_winnr, { title = "/", })
-end, { desc = "fzf lines in the buf", })
+  vim.api.nvim_win_set_config(term_winnr, { title = "/" })
+end, { desc = "fzf lines in the buf" })
 
 vim.keymap.set("n", "<leader>zr", function()
   if prev_state.bare_cmd == nil then
     return vim.notify("No previous fzf terminal buffer", vim.log.levels.ERROR)
   end
-  fzf { is_replay = true, }
-  vim.api.nvim_win_set_config(term_winnr, { title = "Replay last search", })
-end, { desc = "fzf replay", })
+  fzf { is_replay = true }
+  vim.api.nvim_win_set_config(term_winnr, { title = "Replay last search" })
+end, { desc = "fzf replay" })
 
-local exact_search_flags = table.concat({ "-w", "-s", "-F", }, " ")
+local exact_search_flags = table.concat({ "-w", "-s", "-F" }, " ")
 local exclude_flags = table.concat({
   "-g",
   "'!*test*'",
@@ -550,8 +590,8 @@ local exclude_flags = table.concat({
 }, " ")
 
 vim.keymap.set("n", "<leader>zi", function()
-  rg([[-S -F -- '']], { bind_start = "backward-char", })
-end, { desc = "fzf rg", })
+  rg([[-S -F -- '']], { bind_start = "backward-char" })
+end, { desc = "fzf rg" })
 
 local exclude_import_pattern = "^[^|]*[|][^|]*[|][^|]*[|]import"
 
@@ -565,46 +605,50 @@ local get_exclude_cursor_pattern = function()
 end
 
 vim.keymap.set("n", "<leader>a", function()
-  rg(([[%s -S -F -- '']]):format(exclude_flags),
-    { bind_start = "backward-char", exclude_rg_result_patterns = { exclude_import_pattern, get_exclude_cursor_pattern(), }, })
-end, { desc = "fzf rg", })
-
+  rg(
+    ([[%s -S -F -- '']]):format(exclude_flags),
+    {
+      bind_start = "backward-char",
+      exclude_rg_result_patterns = { exclude_import_pattern, get_exclude_cursor_pattern() },
+    }
+  )
+end, { desc = "fzf rg" })
 
 vim.keymap.set("n", "<leader>zo", function()
   local cword = vim.fn.expand "<cword>"
-  rg(
-    ([[ %s -- '%s']]):format(exact_search_flags, cword),
-    { bind_start = "beginning-of-line", }
-  )
-end, { desc = "fzf rg with exact search flags", })
+  rg(([[ %s -- '%s']]):format(exact_search_flags, cword), { bind_start = "beginning-of-line" })
+end, { desc = "fzf rg with exact search flags" })
 
 vim.keymap.set("n", "<leader>o", function()
   local cword = vim.fn.expand "<cword>"
   rg(
     ([[ %s %s -- '%s']]):format(exact_search_flags, exclude_flags, cword),
-    { bind_start = "beginning-of-line", exclude_rg_result_patterns = { exclude_import_pattern, get_exclude_cursor_pattern(), }, }
+    {
+      bind_start = "beginning-of-line",
+      exclude_rg_result_patterns = { exclude_import_pattern, get_exclude_cursor_pattern() },
+    }
   )
-end, { desc = "fzf rg with exact search, exclude flags", })
+end, { desc = "fzf rg with exact search, exclude flags" })
 
 vim.keymap.set("v", "<leader>zo", function()
   local region = vim.fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".")
   if #region > 0 then
     rg(
       ([[ %s -- '%s']]):format(exact_search_flags, region[1]),
-      { bind_start = "beginning-of-line", }
+      { bind_start = "beginning-of-line" }
     )
   end
-end, { desc = "fzf rg with exact search flags", })
+end, { desc = "fzf rg with exact search flags" })
 
 vim.keymap.set("v", "<leader>o", function()
   local region = vim.fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".")
   if #region > 0 then
     rg(
       ([[ %s %s -- '%s']]):format(exact_search_flags, exclude_flags, region[1]),
-      { bind_start = "beginning-of-line", }
+      { bind_start = "beginning-of-line" }
     )
   end
-end, { desc = "fzf rg with exact search, exclude flags", })
+end, { desc = "fzf rg with exact search, exclude flags" })
 
 local function get_stripped_filename()
   local abs_path = vim.api.nvim_buf_get_name(0)
@@ -625,17 +669,21 @@ end
 
 vim.keymap.set("n", "<leader>zw", function()
   local stripped_filename = get_stripped_filename()
-  if stripped_filename == nil then return end
+  if stripped_filename == nil then
+    return
+  end
 
   rg(stripped_filename)
-end, { desc = "fzf rg starting with `wf_modules`", })
+end, { desc = "fzf rg starting with `wf_modules`" })
 
 vim.keymap.set("n", "<leader>yw", function()
   local stripped_filename = get_stripped_filename()
-  if stripped_filename == nil then return end
+  if stripped_filename == nil then
+    return
+  end
 
   h.utils.set_and_rotate(stripped_filename)
-end, { desc = "Yank a file name starting with `wf_modules`", })
+end, { desc = "Yank a file name starting with `wf_modules`" })
 
 --- @generic T
 --- @param items T[]
@@ -643,7 +691,9 @@ end, { desc = "Yank a file name starting with `wf_modules`", })
 --- @param on_choice fun(item: T?, idx: integer?)
 local function fzf_ui_select(items, opts, on_choice)
   opts.prompt = vim.nonnil(opts.prompt, "")
-  opts.format_item = vim.nonnil(opts.format_item, function(item) return item end)
+  opts.format_item = vim.nonnil(opts.format_item, function(item)
+    return item
+  end)
   local select_opts = {
     [[--delimiter='|']],
     [[--with-nth='2']],
@@ -662,7 +712,7 @@ local function fzf_ui_select(items, opts, on_choice)
       on_choice(items[tonumber(index)], tonumber(index))
     end,
   }
-  vim.api.nvim_win_set_config(term_winnr, { title = "Select", })
+  vim.api.nvim_win_set_config(term_winnr, { title = "Select" })
 end
 
 vim.ui.select = fzf_ui_select

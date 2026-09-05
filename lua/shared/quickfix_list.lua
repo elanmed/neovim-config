@@ -1,10 +1,7 @@
 --- @param bufnr number
 local function shorten_bufname(bufnr)
   local bufname = vim.fn.bufname(bufnr)
-  return vim.fs.joinpath(
-    vim.fs.basename(vim.fs.dirname(bufname)),
-    vim.fs.basename(bufname)
-  )
+  return vim.fs.joinpath(vim.fs.basename(vim.fs.dirname(bufname)), vim.fs.basename(bufname))
 end
 
 vim.o.quickfixtextfunc = "v:lua.GetQuickfixTextFunc"
@@ -37,19 +34,18 @@ function _G.GetQuickfixTextFunc()
   for index, item in pairs(qf_list) do
     local bufname = shorten_bufname(item.bufnr)
     local buffer_padding_right = longest_bufname_len - vim.fn.strchars(bufname)
-    local formatted_item =
-        bufname ..
-        string.rep(" ", buffer_padding_right) ..
-        " | " ..
-        h.str.pad(item.lnum, { min_len = longest_row_len, side = "left", }) ..
-        ":" ..
-        h.str.pad(item.col, { min_len = longest_col_len, side = "right", }) ..
-        " | " .. vim.fn.trim(item.text)
+    local formatted_item = bufname
+      .. string.rep(" ", buffer_padding_right)
+      .. " | "
+      .. h.str.pad(item.lnum, { min_len = longest_row_len, side = "left" })
+      .. ":"
+      .. h.str.pad(item.col, { min_len = longest_col_len, side = "right" })
+      .. " | "
+      .. vim.fn.trim(item.text)
 
     local misc_padding = 10
-    local win_width = (
-      vim.api.nvim_win_get_width(0) / (has_preview_win() and 1 or 2)
-    ) - misc_padding
+    local win_width = (vim.api.nvim_win_get_width(0) / (has_preview_win() and 1 or 2))
+      - misc_padding
     if vim.fn.strchars(formatted_item) > win_width then
       formatted_item = formatted_item:sub(1, win_width)
     end
@@ -60,40 +56,42 @@ function _G.GetQuickfixTextFunc()
 end
 
 vim.keymap.set("n", "<C-n>", function()
-  require "helpers".utils.vim_cmd_try_catch("cnext", "cfirst")
-end, { desc = ":cnext", })
+  require("helpers").utils.vim_cmd_try_catch("cnext", "cfirst")
+end, { desc = ":cnext" })
 vim.keymap.set("n", "<C-p>", function()
-  require "helpers".utils.vim_cmd_try_catch("cprev", "clast")
-end, { desc = ":cprev", })
+  require("helpers").utils.vim_cmd_try_catch("cprev", "clast")
+end, { desc = ":cprev" })
 
 vim.api.nvim_create_autocmd("FileType", {
-  group = vim.api.nvim_create_augroup("QfListRemaps", { clear = true, }),
+  group = vim.api.nvim_create_augroup("QfListRemaps", { clear = true }),
   pattern = "qf",
   callback = function()
-    vim.keymap.set("n", "<leader>c", vim.cmd.cclose, { buffer = true, })
-    vim.keymap.set("n", "o", function() vim.cmd.cc(vim.fn.line ".") end, { buffer = true, })
+    vim.keymap.set("n", "<leader>c", vim.cmd.cclose, { buffer = true })
+    vim.keymap.set("n", "o", function()
+      vim.cmd.cc(vim.fn.line ".")
+    end, { buffer = true })
     vim.keymap.set("n", "<cr>", function()
       local curr_line = vim.fn.line "."
       vim.cmd.cclose()
       vim.cmd.cc(curr_line)
-    end, { buffer = true, })
+    end, { buffer = true })
 
     vim.keymap.set("n", ">", function()
       local success = pcall(vim.cmd, "cnewer")
       if not success then
         vim.notify("No newer list!", vim.log.levels.ERROR)
       end
-    end, { buffer = true, })
+    end, { buffer = true })
 
     vim.keymap.set("n", "<", function()
       local success = pcall(vim.cmd, "colder")
       if not success then
         vim.notify("No older list!", vim.log.levels.ERROR)
       end
-    end, { buffer = true, })
+    end, { buffer = true })
 
-    vim.keymap.set("n", "<C-o>", "<nop>", { buffer = true, })
-    vim.keymap.set("n", "<C-i>", "<nop>", { buffer = true, })
-    vim.keymap.set("n", "q", "<nop>", { buffer = true, })
+    vim.keymap.set("n", "<C-o>", "<nop>", { buffer = true })
+    vim.keymap.set("n", "<C-i>", "<nop>", { buffer = true })
+    vim.keymap.set("n", "q", "<nop>", { buffer = true })
   end,
 })

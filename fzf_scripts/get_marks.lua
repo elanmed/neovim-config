@@ -1,7 +1,7 @@
 assert(arg[1], "Missing arg1: `servername`")
 local servername = arg[1]
 
-local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
+local chan = vim.fn.sockconnect("pipe", servername, { rpc = true })
 
 --- @class MarkListEntry
 --- @field file string
@@ -15,20 +15,30 @@ local cwd = vim.uv.cwd()
 assert(cwd ~= nil)
 
 vim.fn.chanclose(chan)
-if mark_list == nil then return end
+if mark_list == nil then
+  return
+end
 
 for _, mark_entry in pairs(mark_list) do
   local name = mark_entry.mark:sub(2, 2)
   local lnum = mark_entry.pos[2]
-  if name:match "[A-Z]" == nil then goto continue end
+  if name:match "[A-Z]" == nil then
+    goto continue
+  end
 
   local normalized = vim.fs.normalize(mark_entry.file)
-  if normalized == nil then goto continue end
+  if normalized == nil then
+    goto continue
+  end
 
-  if not vim.startswith(normalized, cwd) then goto continue end
+  if not vim.startswith(normalized, cwd) then
+    goto continue
+  end
 
   local rel_file = vim.fs.relpath(cwd, mark_entry.file)
-  if rel_file == nil then goto continue end
+  if rel_file == nil then
+    goto continue
+  end
 
   io.write(("%s|%s|%s"):format(name, lnum, rel_file) .. "\n")
   ::continue::

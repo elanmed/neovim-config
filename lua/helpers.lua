@@ -83,7 +83,7 @@ end
 --- @param ... any[]
 tbl.extend = function(...)
   local result = {}
-  for _, list in ipairs { ..., } do
+  for _, list in ipairs { ... } do
     vim.list_extend(result, list)
   end
   return result

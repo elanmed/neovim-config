@@ -14,8 +14,12 @@ vim.keymap.set("i", "<Cr>", function()
     end
   end
 
-  if not has_match then return "<Cr>" end
-  if current_line:match "end%s*$" then return "<Cr>" end
+  if not has_match then
+    return "<Cr>"
+  end
+  if current_line:match "end%s*$" then
+    return "<Cr>"
+  end
 
   return "\r" .. "end<C-o>O"
-end, { expr = true, buffer = true, })
+end, { expr = true, buffer = true })

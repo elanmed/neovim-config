@@ -4,24 +4,24 @@ vim.keymap.set("n", "gh", "<Plug>GitDiffResetHunk")
 vim.keymap.set("v", "gh", "<Plug>GitDiffResetHunk")
 vim.keymap.set("n", "gH", "<Plug>GitDiffResetFile")
 vim.keymap.set("n", "<leader>d", function()
-  require "git-diff".toggle_diff_view { diff_type = "worktree-index", }
+  require("git-diff").toggle_diff_view { diff_type = "worktree-index" }
 end)
 vim.keymap.set("n", "<leader>D", function()
-  require "git-diff".toggle_diff_view { diff_type = "head-mergebase", }
+  require("git-diff").toggle_diff_view { diff_type = "head-mergebase" }
 end)
 
-vim.api.nvim_create_autocmd({ "FileType", }, {
-  group = vim.api.nvim_create_augroup("GitDiffViewRemaps", { clear = true, }),
+vim.api.nvim_create_autocmd({ "FileType" }, {
+  group = vim.api.nvim_create_augroup("GitDiffViewRemaps", { clear = true }),
   pattern = "git-diff-view-file-list",
   callback = function()
-    vim.keymap.set("n", "<c-d>", "<Plug>GitDiffViewScrollDown", { buffer = true, })
-    vim.keymap.set("n", "<c-u>", "<Plug>GitDiffViewScrollUp", { buffer = true, })
-    vim.keymap.set("n", "<leader>e", "<Plug>GitDiffViewRefresh", { buffer = true, })
+    vim.keymap.set("n", "<c-d>", "<Plug>GitDiffViewScrollDown", { buffer = true })
+    vim.keymap.set("n", "<c-u>", "<Plug>GitDiffViewScrollUp", { buffer = true })
+    vim.keymap.set("n", "<leader>e", "<Plug>GitDiffViewRefresh", { buffer = true })
   end,
 })
 
 vim.api.nvim_create_autocmd("User", {
-  group = vim.api.nvim_create_augroup("GitDiffViewOpts", { clear = true, }),
+  group = vim.api.nvim_create_augroup("GitDiffViewOpts", { clear = true }),
   pattern = "GitDiffViewOpen",
   callback = function(ev)
     local old_winnr = ev.data.old_winnr

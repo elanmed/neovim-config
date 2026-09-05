@@ -29,14 +29,15 @@ vim.keymap.set("n", "<leader>g", function()
 
   vim.api.nvim_create_autocmd("VimResized", {
     callback = function()
-      if not vim.api.nvim_win_is_valid(lazygit_term_winnr) then return end
+      if not vim.api.nvim_win_is_valid(lazygit_term_winnr) then
+        return
+      end
       vim.api.nvim_win_set_config(lazygit_term_winnr, {
         width = vim.o.columns,
         height = get_avail_height(),
       })
     end,
   })
-
 
   if vim.api.nvim_buf_is_valid(lazygit_term_bufnr) then
     open_term()
@@ -49,7 +50,7 @@ vim.keymap.set("n", "<leader>g", function()
       vim.schedule(function()
         vim.notify("Closing the lazygit window, buffer saved", vim.log.levels.INFO)
       end)
-    end, { buffer = lazygit_term_bufnr, })
+    end, { buffer = lazygit_term_bufnr })
 
     vim.fn.jobstart("lazygit", {
       term = true,
@@ -60,4 +61,4 @@ vim.keymap.set("n", "<leader>g", function()
     })
   end
   vim.cmd.startinsert()
-end, { desc = "Open lazygit", })
+end, { desc = "Open lazygit" })

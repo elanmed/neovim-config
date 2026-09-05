@@ -18,22 +18,22 @@ vim.api.nvim_create_user_command("Format", function()
   local view = vim.fn.winsaveview()
   vim.cmd "keepjumps normal! gg=G"
   vim.fn.winrestview(view)
-  vim.cmd.write { mods = { silent = true, }, }
+  vim.cmd.write { mods = { silent = true } }
 end, {})
 
 vim.api.nvim_create_user_command("Snippet", function(opts)
   local snippet_trigger_to_file_mapping = {
-    bef = { file = "before.ts", movement = "ji\t", },
-    des = { file = "describe.ts", movement = 'f"l', },
-    fin = { file = "findBy.ts", movement = "f;", },
-    its = { file = "it.ts", movement = 'f"l', },
-    ndoc = { file = "notToBeInTheDocument.ts", movement = "f)", },
-    doc = { file = "toBeInTheDocument.ts", movement = "f)", },
-    cal = { file = "useCallback.ts", movement = "ji\t", },
-    eff = { file = "useEffect.ts", movement = "ji\t", },
-    mem = { file = "useMemo.ts", movement = "ji\t", },
-    wai = { file = "waitFor.ts", movement = "f>f)", },
-    af = { file = "arrowFn.ts", movement = "ji\t", },
+    bef = { file = "before.ts", movement = "ji\t" },
+    des = { file = "describe.ts", movement = "f\"l" },
+    fin = { file = "findBy.ts", movement = "f;" },
+    its = { file = "it.ts", movement = "f\"l" },
+    ndoc = { file = "notToBeInTheDocument.ts", movement = "f)" },
+    doc = { file = "toBeInTheDocument.ts", movement = "f)" },
+    cal = { file = "useCallback.ts", movement = "ji\t" },
+    eff = { file = "useEffect.ts", movement = "ji\t" },
+    mem = { file = "useMemo.ts", movement = "ji\t" },
+    wai = { file = "waitFor.ts", movement = "f>f)" },
+    af = { file = "arrowFn.ts", movement = "ji\t" },
   }
 
   local snippet_trigger = opts.fargs[1]
@@ -53,7 +53,8 @@ vim.api.nvim_create_user_command("Snippet", function(opts)
   end
 
   local snippets_path = vim.fs.joinpath(vim.fn.stdpath "config", "snippets")
-  local snippet_file = vim.fs.joinpath(snippets_path, snippet_trigger_to_file_mapping[snippet_trigger].file)
+  local snippet_file =
+    vim.fs.joinpath(snippets_path, snippet_trigger_to_file_mapping[snippet_trigger].file)
 
   local line_content = vim.api.nvim_get_current_line()
   local row_1i, col_0i = unpack(vim.api.nvim_win_get_cursor(0))
@@ -66,11 +67,11 @@ vim.api.nvim_create_user_command("Snippet", function(opts)
 
   vim.api.nvim_buf_set_lines(0, row_0i, row_0i + 1, false, snippet_content)
 
-  vim.cmd.normal { snippet_trigger_to_file_mapping[snippet_trigger].movement, bang = true, }
-end, { nargs = "*", })
+  vim.cmd.normal { snippet_trigger_to_file_mapping[snippet_trigger].movement, bang = true }
+end, { nargs = "*" })
 
 vim.api.nvim_create_user_command("FFRefresh", function()
-  require "ff".refresh_files_cache(function()
+  require("ff").refresh_files_cache(function()
     vim.notify("Refreshed file cache", vim.log.levels.INFO)
   end)
 end, {})

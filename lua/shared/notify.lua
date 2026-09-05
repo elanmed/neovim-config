@@ -5,7 +5,9 @@ local timer = nil
 --- @param level vim.log.levels|nil
 --- @param _opts table|nil
 local function notify(message, level, _opts)
-  if timer then vim.fn.timer_stop(timer) end
+  if timer then
+    vim.fn.timer_stop(timer)
+  end
 
   local level_to_hl_group = {
     [vim.log.levels.DEBUG] = "NotifyDebug",
@@ -18,13 +20,15 @@ local function notify(message, level, _opts)
   local hl_group = level_to_hl_group[level]
 
   local max_len = vim.o.columns - 1
-  if vim.fn.strchars(message) > max_len then message = message:sub(1, max_len - 1) .. "…" end
+  if vim.fn.strchars(message) > max_len then
+    message = message:sub(1, max_len - 1) .. "…"
+  end
 
   local add_to_history = true
-  vim.api.nvim_echo({ { message, hl_group, }, }, add_to_history, {})
+  vim.api.nvim_echo({ { message, hl_group } }, add_to_history, {})
   timer = vim.fn.timer_start(2000, function()
     if vim.fn.mode() == "n" then
-      vim.api.nvim_echo({ { "", }, }, not add_to_history, {})
+      vim.api.nvim_echo({ { "" } }, not add_to_history, {})
     end
   end)
 end

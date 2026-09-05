@@ -1,10 +1,12 @@
 assert(arg[1], "Missing arg1: `servername`")
 local servername = arg[1]
 
-local chan = vim.fn.sockconnect("pipe", servername, { rpc = true, })
+local chan = vim.fn.sockconnect("pipe", servername, { rpc = true })
 --- @type table | nil
-local qf_list = vim.rpcrequest(chan, "nvim_call_function", "getqflist", { { items = 0, }, })
-if qf_list == nil then return vim.fn.chanclose(chan) end
+local qf_list = vim.rpcrequest(chan, "nvim_call_function", "getqflist", { { items = 0 } })
+if qf_list == nil then
+  return vim.fn.chanclose(chan)
+end
 
 local cwd = vim.uv.cwd()
 assert(cwd ~= nil)
@@ -12,11 +14,15 @@ assert(cwd ~= nil)
 for _, entry in pairs(qf_list.items) do
   --- @type string | nil
   local filename = vim.rpcrequest(chan, "nvim_buf_get_name", entry.bufnr)
-  if filename == nil then goto continue end
+  if filename == nil then
+    goto continue
+  end
 
   --- @type string|nil
   local formatted_filename = vim.fs.relpath(cwd, filename)
-  if formatted_filename == nil then goto continue end
+  if formatted_filename == nil then
+    goto continue
+  end
 
   local source_entry = ("%s|%s|%s|%s"):format(formatted_filename, entry.lnum, entry.col, entry.text)
   io.write(source_entry .. "\n")
