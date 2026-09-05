@@ -479,7 +479,8 @@ vim.lsp.config("emmylua_ls", {
 vim.lsp.enable {
   "ruby_lsp",
   "bashls",
-  "lua_ls",
+  -- "lua_ls",
   "vimls",
   "clangd",
+  "emmylua_ls",
 }

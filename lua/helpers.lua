@@ -162,14 +162,8 @@ end
 --- @alias Resolve fun(...: any):nil
 --- @alias Promise fun(resolve: Resolve):nil
 
---- @param cmd string[]
---- @param opts vim.SystemOpts?
---- @return Promise
-utils.vim_system = function(cmd, opts)
-  return function(resolve)
-    vim.system(cmd, opts, function(out) resolve(out) end)
-  end
-end
+--- @type fun(cmd: string[], opts: vim.SystemOpts?): vim.SystemCompleted
+utils.vim_system = vim.async.wrap(3, vim.system)
 
 --- @class PadOpts
 --- @field min_len number
