@@ -6,4 +6,5 @@ return {
       shfmt = { simplifyCode = true, caseIndent = true },
     },
   },
+  filetypes = { "bash", "sh", "zsh" },
 }
