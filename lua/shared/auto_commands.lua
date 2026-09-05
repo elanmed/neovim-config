@@ -122,9 +122,8 @@ vim.api.nvim_create_autocmd("BufWritePost", {
       vim.fn.timer_stop(ctags_timer)
     end
     ctags_timer = vim.fn.timer_start(5000, function()
-      vim.async.run(function()
+      vim.async.run("ctags_task", function()
         local h = require "helpers"
-        --- @type vim.SystemCompleted
         local git_out = h.utils.vim_system { "git", "rev-parse", "--show-toplevel" }
         if git_out.code ~= 0 then
           return
