@@ -155,7 +155,7 @@ vim.keymap.set("n", "<leader>qr", function()
     return "q"
   end
 end, { expr = true, nowait = true, desc = "Record a macro", })
-vim.keymap.set("n", "<C-e>", "@q", { desc = "Replay the last macro", })
+vim.keymap.set("n", "<C-e>", "@q", { desc = "rEplay the last macro", })
 vim.keymap.set("n", "<C-a>", "Qj", { desc = "Add a cursor on the line below", })
 vim.keymap.set("n", "<leader>ql", function()
   vim.cmd.normal "1Q"

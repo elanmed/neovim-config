@@ -121,8 +121,8 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y -q
 h_echo doing "installing emmylua_ls"
 cargo install emmylua_ls
 
-h_echo doing "installing emmylua_formatter"
-cargo install emmylua_formatter
-
 h_echo doing "installing emmylua_check"
 cargo install emmylua_check
+
+h_echo doing "installing stylua"
+cargo install stylua --features luajit
