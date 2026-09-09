@@ -14,3 +14,6 @@ vim.g.clipboard = {
   },
   cache_enabled = false,
 }
+
+vim.keymap.set({ "i", "n" }, "<C-w>", "<esc>:wq<cr>", { nowait = true })
+vim.keymap.set({ "i", "n" }, "<C-q>", "<esc>:q!<cr>", { nowait = true })
