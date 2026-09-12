@@ -79,23 +79,13 @@ end
 
 local branch_cache = nil
 local get_branch = function()
-  local out = h.utils.vim_system { "git", "rev-parse", "--absolute-git-dir" }
-  if out.code ~= 0 then
+  local out = h.utils.vim_system { "git", "branch", "--show-current" }
+  if out.code ~= 0 or out.stdout == nil then
     return nil
   end
 
-  if out.stdout == nil then
-    return nil
-  end
-
-  local git_dir = vim.trim(out.stdout)
-  local head = vim.fn.readfile(git_dir .. "/HEAD")
-  if #head == 0 then
-    return nil
-  end
-
-  local ref = head[1]:match "ref: refs/heads/(.+)"
-  if ref == nil then
+  local ref = vim.trim(out.stdout)
+  if ref == "" then
     return nil
   end
 
@@ -103,7 +93,7 @@ local get_branch = function()
 end
 
 vim.async.run("onload_branch_task", function()
-  branch_cache = vim.async.await(get_branch)
+  branch_cache = get_branch()
 end)
 
 vim.api.nvim_create_autocmd("User", {
@@ -111,7 +101,7 @@ vim.api.nvim_create_autocmd("User", {
   pattern = "GitHeadChanged",
   callback = function()
     vim.async.run("autocmd_branch_task", function()
-      branch_cache = vim.async.await(get_branch)
+      branch_cache = get_branch()
     end)
   end,
 })
