@@ -254,7 +254,17 @@ vim.keymap.set("n", "s", function()
     if enable_deno_lsp() then
       format_with_cli { "deno", "fmt", "--", "-" }
     else
-      format_with_cli { "prettier", "--stdin-filepath", vim.api.nvim_buf_get_name(0) }
+      format_with_cli {
+        vim.fs.joinpath(
+          vim.fn.stdpath "config",
+          "language_servers",
+          "node_modules",
+          ".bin",
+          "prettier"
+        ),
+        "--stdin-filepath",
+        vim.api.nvim_buf_get_name(0),
+      }
     end
   elseif vim.list_contains(stylua_ft, vim.bo.filetype) then
     format_with_cli { "stylua", "-" }
