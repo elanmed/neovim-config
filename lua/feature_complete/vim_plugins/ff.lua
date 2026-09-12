@@ -39,16 +39,18 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
 })
 
 vim.keymap.set("n", "<leader>fi", function()
-  local ff = require "ff"
-  ff.setup(function()
-    ff.find()
+  vim.async.run("ff_find_task", function()
+    local ff = require "ff"
+    vim.async.await(ff.setup())
+    vim.async.await(ff.find())
   end)
 end)
 
 vim.keymap.set("n", "<leader>fe", function()
-  local ff = require "ff"
-  ff.setup(function()
-    ff.find { resume = true }
+  vim.async.run("ff_resume_task", function()
+    local ff = require "ff"
+    vim.async.await(ff.setup())
+    vim.async.await(ff.find { resume = true })
   end)
 end)
 
@@ -63,9 +65,10 @@ vim.api.nvim_create_autocmd("User", {
     "GitHeadChanged",
   },
   callback = function()
-    local ff = require "ff"
-    ff.setup(function()
-      ff.refresh_files_cache()
+    vim.async.run("ff_refresh_task", function()
+      local ff = require "ff"
+      vim.async.await(ff.setup())
+      vim.async.await(ff.refresh_files_cache())
     end)
   end,
 })
