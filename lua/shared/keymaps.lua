@@ -164,7 +164,7 @@ vim.keymap.set("n", "z?", function()
 end, { desc = "Toggle fold" })
 vim.keymap.set("n", "ze", "z=", { desc = "z=" })
 
-vim.keymap.set("n", "<leader>qu", vim.cmd.quit, { desc = ":q<cr>" })
+vim.keymap.set("n", "<leader>q", vim.cmd.quit, { desc = ":q<cr>" })
 vim.keymap.set("n", "q;", function()
   local isCommandWindow = vim.fn.getcmdwintype() ~= ""
   if isCommandWindow then
@@ -173,16 +173,16 @@ vim.keymap.set("n", "q;", function()
     vim.cmd.normal "q:"
   end
 end, { desc = "q:" })
-vim.keymap.set("n", "<leader>qr", function()
+vim.keymap.set("n", "<leader>ve", function()
   if vim.fn.reg_recording() == "" then
     return "qq"
   elseif vim.fn.reg_recording() == "q" then
     return "q"
   end
-end, { expr = true, nowait = true, desc = "Record a macro" })
+end, { expr = true, nowait = true, desc = "rEcord a macro" })
 vim.keymap.set("n", "<C-e>", "@q", { desc = "rEplay the last macro" })
 vim.keymap.set("n", "<C-a>", "Qj", { desc = "Add a cursor on the line below" })
-vim.keymap.set("n", "<leader>ql", function()
+vim.keymap.set("n", "<leader>vl", function()
   vim.cmd.normal "1Q"
   vim.cmd.nohlsearch()
 end, { desc = "Add a cursor to every match" })
