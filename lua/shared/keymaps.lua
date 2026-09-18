@@ -186,7 +186,6 @@ vim.keymap.set("n", "<leader>vl", function()
   vim.cmd.normal "1Q"
   vim.cmd.nohlsearch()
 end, { desc = "Add a cursor to every match" })
-vim.keymap.set("n", "<leader>v", "G" .. "V" .. "gg", { desc = "Select the entire buffer" })
 vim.keymap.set("n", "*", function()
   vim.fn.setreg("/", ("\\<%s\\>\\C"):format(vim.fn.expand "<cword>"))
   vim.o.hlsearch = true
