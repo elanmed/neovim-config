@@ -64,8 +64,8 @@ h_install_package "$package_manager" jq
 
 h_echo doing "installing nightly"
 export PATH="$HOME/.local/bin:$PATH"
-nvvm update
-nvim --headless -c "packupdate\!" -c "qa"
+nvvm update >/dev/null
+nvim --headless -c "packupdate!" -c "qa" >/dev/null 2>&1
 
 if [[ $desktop_env == "headless" ]]; then
   exit 0
@@ -110,12 +110,18 @@ if [[ $actual_sha != "$expected_sha" ]]; then
   exit 1
 fi
 
-tar --extract --gzip --file "$lua_ls_tar" --directory "$lua_ls_dir"
+tar --extract --gzip --file "$lua_ls_tar" --directory "$lua_ls_dir" >/dev/null
 rm -f "$lua_ls_tar"
 
 h_echo doing "installing rustup"
 # https://rustup.rs/
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y -q
+if ! command -v rustup >/dev/null 2>&1; then
+  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y -q >/dev/null
+else
+  rustup self update >/dev/null 2>&1
+  rustup update >/dev/null 2>&1
+fi
+export PATH="$HOME/.cargo/bin:$PATH"
 
 h_echo doing "installing stylua"
-cargo install stylua --features luajit
+cargo install stylua --features luajit >/dev/null 2>&1
