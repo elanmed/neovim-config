@@ -156,7 +156,7 @@ end
 --- @param opts IsBigFileOpts
 utils.is_big_file = function(opts)
   local one_pt_five_mb = 1.5 * 1024 * 1024
-  return vim.fn.getfsize(opts.bname) > one_pt_five_mb or opts.line_count > 5000
+  return vim.fn.getfsize(opts.bname) > one_pt_five_mb or opts.line_count > 20000
 end
 
 --- @alias Resolve fun(...: any):nil
