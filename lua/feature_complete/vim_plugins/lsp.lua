@@ -15,13 +15,6 @@ vim.treesitter.start = function() end
 
 local h = require "helpers"
 
-local function enable_deno_lsp()
-  local cwd = vim.uv.cwd()
-  assert(cwd ~= nil)
-
-  return vim.fn.filereadable(vim.fs.joinpath(cwd, ".deno-enable-lsp")) == h.vimscript_true
-end
-
 --- @class CallWriteOpts
 --- @field winnr number
 --- @field bufnr number
@@ -251,21 +244,17 @@ vim.keymap.set("n", "s", function()
     vim.notify("Bigfile, writing", vim.log.levels.INFO)
     vim.cmd.write { mods = { silent = true } }
   elseif vim.list_contains(prettier_ft, vim.bo.filetype) then
-    if enable_deno_lsp() then
-      format_with_cli { "deno", "fmt", "--", "-" }
-    else
-      format_with_cli {
-        vim.fs.joinpath(
-          vim.fn.stdpath "config",
-          "language_servers",
-          "node_modules",
-          ".bin",
-          "prettier"
-        ),
-        "--stdin-filepath",
-        vim.api.nvim_buf_get_name(0),
-      }
-    end
+    format_with_cli {
+      vim.fs.joinpath(
+        vim.fn.stdpath "config",
+        "language_servers",
+        "node_modules",
+        ".bin",
+        "prettier"
+      ),
+      "--stdin-filepath",
+      vim.api.nvim_buf_get_name(0),
+    }
   elseif vim.list_contains(stylua_ft, vim.bo.filetype) then
     format_with_cli { "stylua", "-" }
   elseif vim.list_contains(lsp_ft, vim.bo.filetype) then
@@ -442,17 +431,12 @@ vim.keymap.set("n", "[e", function()
   next_prev_diagnostic("prev", vim.diagnostic.severity.ERROR)
 end, { desc = "Next error diagnostic" })
 
-if enable_deno_lsp() then
-  vim.lsp.enable "denols"
-else
-  vim.lsp.enable "ts_ls"
-  vim.lsp.enable "eslint"
-end
-
 vim.lsp.enable {
   "ruby_lsp",
   "bashls",
   "lua_ls",
   "vimls",
   "clangd",
+  "ts_ls",
+  "eslint",
 }
