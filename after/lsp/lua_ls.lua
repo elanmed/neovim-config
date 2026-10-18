@@ -16,15 +16,6 @@ return {
       vim.api.nvim_get_runtime_file("lua/lspconfig", false)[1],
     }
 
-    -- index submodule deps so their globals (e.g. MiniTest) are registered;
-    -- LuaLS skips submodule dirs during regular workspace scanning
-    if client.workspace_folders then
-      local deps = client.workspace_folders[1].name .. "/deps"
-      if vim.uv.fs_stat(deps) then
-        table.insert(library, deps)
-      end
-    end
-
     client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
       runtime = {
         version = "LuaJIT",
@@ -35,6 +26,7 @@ return {
       },
       workspace = {
         checkThirdParty = false,
+        ignoreSubmodules = false,
         library = library,
       },
     })
