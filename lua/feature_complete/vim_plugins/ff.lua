@@ -1,20 +1,36 @@
 vim.g.ff = {
   find_cmd = require("helpers").fd_cmd,
-  results_win_config = {
-    border = "single",
-  },
-  input_win_config = {
-    border = "single",
-  },
-  results_win_opts = {
-    number = true,
-    scrolloff = 0,
-  },
-  preview_win_opts = {
-    number = true,
-    scrolloff = 0,
-  },
 }
+
+vim.api.nvim_create_autocmd("User", {
+  group = vim.api.nvim_create_augroup("FFResultsOpts", { clear = true }),
+  pattern = "FFResultsOpen",
+  callback = function(ev)
+    local winnr = ev.data.winnr
+    vim.api.nvim_win_set_config(winnr, { border = "single" })
+    vim.wo[winnr].number = true
+    vim.wo[winnr].scrolloff = 0
+  end,
+})
+
+vim.api.nvim_create_autocmd("User", {
+  group = vim.api.nvim_create_augroup("FFPreviewOpts", { clear = true }),
+  pattern = "FFPreviewOpen",
+  callback = function(ev)
+    local winnr = ev.data.winnr
+    vim.wo[winnr].number = true
+    vim.wo[winnr].scrolloff = 0
+  end,
+})
+
+vim.api.nvim_create_autocmd("User", {
+  group = vim.api.nvim_create_augroup("FFInputOpts", { clear = true }),
+  pattern = "FFInputOpen",
+  callback = function(ev)
+    local winnr = ev.data.winnr
+    vim.api.nvim_win_set_config(winnr, { border = "single" })
+  end,
+})
 
 vim.api.nvim_create_autocmd({ "FileType" }, {
   group = vim.api.nvim_create_augroup("FFRemaps", { clear = true }),
