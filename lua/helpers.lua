@@ -165,6 +165,9 @@ end
 --- @type fun(cmd: string[], opts: vim.SystemOpts?): vim.SystemCompleted
 utils.vim_system = vim.async.wrap(3, vim.system)
 
+--- @type fun(opts: vim.ui.input.Opts?): string?
+utils.ui_input = vim.async.wrap(2, vim.ui.input)
+
 --- @class PadOpts
 --- @field min_len number
 --- @field side 'left' | 'right'
