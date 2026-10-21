@@ -96,35 +96,32 @@ local format_with_cli = function(cmd)
   local winnr = vim.api.nvim_get_current_win()
   local bufnr = vim.api.nvim_get_current_buf()
 
-  vim.system(cmd, {
+  local result = h.utils.vim_system(cmd, {
     stdin = unformatted,
     text = true,
-  }, function(result)
-    if result.code ~= 0 then
-      return vim.schedule(function()
-        vim.notify(("[%s] non-zero exit code, writing"):format(cmd[1]), vim.log.levels.INFO)
-        call_write { bufnr = bufnr, winnr = winnr }
-      end)
-    end
+  })
+  vim.async.sleep(1)
 
-    local formatted = result.stdout
-    if formatted == nil then
-      return vim.schedule(function()
-        vim.notify(("[%s] no stdout, writing"):format(cmd[1]), vim.log.levels.INFO)
-        call_write { bufnr = bufnr, winnr = winnr }
-      end)
-    end
+  if result.code ~= 0 then
+    vim.notify(("[%s] non-zero exit code, writing"):format(cmd[1]), vim.log.levels.INFO)
+    call_write { bufnr = bufnr, winnr = winnr }
+    return
+  end
 
-    vim.schedule(function()
-      vim.notify(("[%s] applying minimal diff, writing"):format(cmd[1]), vim.log.levels.INFO)
-      apply_minimal_changes {
-        unformatted = unformatted,
-        formatted = formatted,
-        winnr = winnr,
-        bufnr = bufnr,
-      }
-    end)
-  end)
+  local formatted = result.stdout
+  if formatted == nil then
+    vim.notify(("[%s] no stdout, writing"):format(cmd[1]), vim.log.levels.INFO)
+    call_write { bufnr = bufnr, winnr = winnr }
+    return
+  end
+
+  vim.notify(("[%s] applying minimal diff, writing"):format(cmd[1]), vim.log.levels.INFO)
+  apply_minimal_changes {
+    unformatted = unformatted,
+    formatted = formatted,
+    winnr = winnr,
+    bufnr = bufnr,
+  }
 end
 
 local format_with_lsp = function()
@@ -228,10 +225,7 @@ local lsp_ft = {
   "zsh",
 }
 
-vim.keymap.set("n", "<bs>", function()
-  vim.notify("Use s instead!", vim.log.levels.ERROR)
-end)
-vim.keymap.set("n", "s", function()
+local write = function()
   if vim.bo.readonly or vim.bo.buftype ~= "" then
     return vim.notify("Aborting", vim.log.levels.ERROR)
   end
@@ -262,7 +256,57 @@ vim.keymap.set("n", "s", function()
   else
     vim.cmd.write()
   end
+end
+
+vim.keymap.set("n", "s", function()
+  vim.async.run("s_keymap_task", write)
 end)
+
+vim.api.nvim_create_user_command("Commit", function()
+  vim.async.run("git_stage_commit_task", function()
+    local name = vim.api.nvim_buf_get_name(0)
+
+    if name == "" then
+      return vim.notify("Buffer has no name, cannot stage", vim.log.levels.WARN)
+    end
+
+    if vim.bo.buftype ~= "" then
+      return vim.notify("Not a normal buffer, cannot stage", vim.log.levels.WARN)
+    end
+
+    if vim.fn.filereadable(name) == require("helpers").vimscript_false then
+      return vim.notify("File is not readable, cannot stage", vim.log.levels.WARN)
+    end
+
+    local commit_message = h.utils.ui_input { prompt = "Commit message: " }
+
+    if commit_message == nil or commit_message == "" then
+      vim.notify("[Commit aborted]", vim.log.levels.INFO)
+      return
+    end
+
+    if vim.bo.modified then
+      write()
+    end
+
+    local is_untracked = h.utils.vim_system({ "git", "ls-files", "--error-unmatch", "--", name }).code
+      ~= 0
+
+    if is_untracked then
+      h.utils.vim_system { "git", "add", "--", name }
+    end
+
+    vim.notify("Committing…", vim.log.levels.INFO)
+    local commit_result =
+      h.utils.vim_system { "git", "commit", "--only", "-m", commit_message, "--", name }
+    local commit_succeeded = commit_result.code == 0
+
+    vim.notify(
+      commit_succeeded and commit_result.stdout or commit_result.stderr,
+      commit_succeeded and vim.log.levels.TRACE or vim.log.levels.ERROR
+    )
+  end)
+end, {})
 
 local signs = {
   text = {
@@ -369,10 +413,6 @@ end, { desc = "LSP go to filtered references" })
 vim.keymap.set("n", "gle", function()
   vim.lsp.buf.references()
 end, { desc = "LSP go to default references" })
-
-vim.keymap.set("n", "gli", function()
-  vim.lsp.buf.definition()
-end, { desc = "LSP go to definition" })
 vim.keymap.set("n", "gla", function()
   vim.lsp.buf.code_action()
 end, { desc = "LSP code action" })
