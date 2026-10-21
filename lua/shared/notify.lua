@@ -33,4 +33,4 @@ local function notify(message, level, _opts)
   end)
 end
 
-vim.notify = notify
+vim.notify = vim.schedule_wrap(notify)
