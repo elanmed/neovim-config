@@ -20,8 +20,13 @@ local function notify(message, level, _opts)
   local hl_group = level_to_hl_group[level]
 
   local max_len = vim.o.columns - 1
-  if vim.fn.strchars(message) > max_len then
-    message = message:sub(1, max_len - 1) .. "…"
+
+  local newline_index_1i = string.find(message, "\n", 1, true) or math.huge
+  local needs_cut = newline_index_1i < math.huge or vim.fn.strchars(message) > max_len
+
+  if needs_cut then
+    local cut_length = math.min(newline_index_1i - 1, max_len - 1)
+    message = vim.fn.strcharpart(message, 0, cut_length) .. "…"
   end
 
   local add_to_history = true
