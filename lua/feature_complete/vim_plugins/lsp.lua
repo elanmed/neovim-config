@@ -262,20 +262,53 @@ vim.keymap.set("n", "s", function()
   vim.async.run("s_keymap_task", write)
 end)
 
+local function get_stageable_buffer_name()
+  local name = vim.api.nvim_buf_get_name(0)
+
+  if name == "" then
+    vim.notify("Buffer has no name, cannot stage", vim.log.levels.WARN)
+    return nil
+  end
+
+  if vim.bo.buftype ~= "" then
+    vim.notify("Not a normal buffer, cannot stage", vim.log.levels.WARN)
+    return nil
+  end
+
+  if vim.fn.filereadable(name) == require("helpers").vimscript_false then
+    vim.notify("File is not readable, cannot stage", vim.log.levels.WARN)
+    return nil
+  end
+
+  if vim.bo.modified then
+    write()
+  end
+
+  return name
+end
+
+local function stage_file(name)
+  h.utils.vim_system { "git", "add", "--", name }
+end
+
+vim.api.nvim_create_user_command("Add", function()
+  vim.async.run("git_add_task", function()
+    local name = get_stageable_buffer_name()
+
+    if name == nil then
+      return
+    end
+
+    stage_file(name)
+    vim.notify("Staged", vim.log.levels.TRACE)
+  end)
+end, {})
+
 vim.api.nvim_create_user_command("Commit", function()
   vim.async.run("git_stage_commit_task", function()
-    local name = vim.api.nvim_buf_get_name(0)
-
-    if name == "" then
-      return vim.notify("Buffer has no name, cannot stage", vim.log.levels.WARN)
-    end
-
-    if vim.bo.buftype ~= "" then
-      return vim.notify("Not a normal buffer, cannot stage", vim.log.levels.WARN)
-    end
-
-    if vim.fn.filereadable(name) == require("helpers").vimscript_false then
-      return vim.notify("File is not readable, cannot stage", vim.log.levels.WARN)
+    local name = get_stageable_buffer_name()
+    if name == nil then
+      return
     end
 
     local commit_message = h.utils.ui_input { prompt = "Commit message: " }
@@ -285,16 +318,7 @@ vim.api.nvim_create_user_command("Commit", function()
       return
     end
 
-    if vim.bo.modified then
-      write()
-    end
-
-    local is_untracked = h.utils.vim_system({ "git", "ls-files", "--error-unmatch", "--", name }).code
-      ~= 0
-
-    if is_untracked then
-      h.utils.vim_system { "git", "add", "--", name }
-    end
+    stage_file(name)
 
     vim.notify("Committing…", vim.log.levels.INFO)
     local commit_result =
