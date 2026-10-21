@@ -177,21 +177,18 @@ local function get_fzf_script(script_name)
   local lua_script =
     vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", ("%s.lua"):format(script_name))
 
-  return table.concat(
-    {
-      "nvim",
-      "-i",
-      "NONE",
-      "--clean",
-      "-u",
-      "NONE",
-      "--headless",
-      "-l",
-      lua_script,
-      vim.v.servername,
-    },
-    " "
-  )
+  return table.concat({
+    "nvim",
+    "-i",
+    "NONE",
+    "--clean",
+    "-u",
+    "NONE",
+    "--headless",
+    "-l",
+    lua_script,
+    vim.v.servername,
+  }, " ")
 end
 
 --- @class QfSinklistOpts
@@ -605,13 +602,10 @@ local get_exclude_cursor_pattern = function()
 end
 
 vim.keymap.set("n", "<leader>a", function()
-  rg(
-    ([[%s -S -F -- '']]):format(exclude_flags),
-    {
-      bind_start = "backward-char",
-      exclude_rg_result_patterns = { exclude_import_pattern, get_exclude_cursor_pattern() },
-    }
-  )
+  rg(([[%s -S -F -- '']]):format(exclude_flags), {
+    bind_start = "backward-char",
+    exclude_rg_result_patterns = { exclude_import_pattern, get_exclude_cursor_pattern() },
+  })
 end, { desc = "fzf rg" })
 
 vim.keymap.set("n", "<leader>zo", function()
@@ -621,13 +615,10 @@ end, { desc = "fzf rg with exact search flags" })
 
 vim.keymap.set("n", "<leader>o", function()
   local cword = vim.fn.expand "<cword>"
-  rg(
-    ([[ %s %s -- '%s']]):format(exact_search_flags, exclude_flags, cword),
-    {
-      bind_start = "beginning-of-line",
-      exclude_rg_result_patterns = { exclude_import_pattern, get_exclude_cursor_pattern() },
-    }
-  )
+  rg(([[ %s %s -- '%s']]):format(exact_search_flags, exclude_flags, cword), {
+    bind_start = "beginning-of-line",
+    exclude_rg_result_patterns = { exclude_import_pattern, get_exclude_cursor_pattern() },
+  })
 end, { desc = "fzf rg with exact search, exclude flags" })
 
 vim.keymap.set("v", "<leader>zo", function()
