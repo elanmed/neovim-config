@@ -311,15 +311,9 @@ vim.api.nvim_create_user_command("Commit", function()
       return
     end
 
-    local commit_message = h.async.ui_input { prompt = "Commit message: " }
-
-    if commit_message == nil or commit_message == "" then
-      vim.notify("[Commit aborted]", vim.log.levels.INFO)
-      return
-    end
-
     stage_file(name)
 
+    local commit_message = ("[:Commit] %s"):format(vim.fs.basename(name))
     vim.notify("Committing…", vim.log.levels.INFO)
     local commit_result =
       h.async.system { "git", "commit", "--only", "-m", commit_message, "--", name }
