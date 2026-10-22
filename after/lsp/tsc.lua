@@ -1,6 +1,6 @@
 --- @type vim.lsp.Config
 return {
-  init_options = {
+  settings = {
     preferences = {
       importModuleSpecifierPreference = "non-relative",
       jsxAttributeCompletionStyle = "braces",
