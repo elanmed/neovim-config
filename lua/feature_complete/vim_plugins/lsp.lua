@@ -9,6 +9,7 @@ vim.g.markdown_fenced_languages = {
   "ruby",
   "typescript",
   "typescriptreact",
+  "java",
 }
 
 vim.treesitter.start = function() end
@@ -495,6 +496,6 @@ vim.lsp.enable {
   "lua_ls",
   "vimls",
   "clangd",
-  "ts_ls",
+  "tsc",
   "eslint",
 }

@@ -1,13 +1,12 @@
 {
   "packageManager": "pnpm@11.1.0",
   "dependencies": {
-    "vim-language-server": "*",
-    "vscode-langservers-extracted": "*",
-    "typescript": "*",
-    "typescript-language-server": "*",
-    "bash-language-server": "*",
-    "@typescript/native-preview": "*",
-    "prettier": "*"
+    "@typescript/native-preview": "7.0.0-dev.20260707.2",
+    "bash-language-server": "^5.8.1",
+    "prettier": "^3.9.10",
+    "typescript": "^7.0.2",
+    "vim-language-server": "^2.3.1",
+    "vscode-langservers-extracted": "^4.10.0"
   },
   "overrides": {
     "minimatch": "^10.2.3"
