@@ -183,7 +183,7 @@ end, { expr = true, nowait = true, desc = "rEcord a macro" })
 vim.keymap.set("n", "<C-e>", "@q", { desc = "rEplay the last macro" })
 vim.keymap.set("n", "<C-a>", "Qj", { desc = "Add a cursor on the line below" })
 vim.keymap.set("n", "<leader>vl", function()
-  vim.cmd.normal "1Q"
+  vim.cmd.normal { "zqgn", bang = true }
   vim.cmd.nohlsearch()
 end, { desc = "Add a cursor to every match" })
 vim.keymap.set("n", "*", function()
