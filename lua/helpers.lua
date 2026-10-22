@@ -4,6 +4,7 @@ local _os = {}
 local dev = {}
 local utils = {}
 local diff = {}
+local async = {}
 
 --- @class UnpackedHunk
 --- @field start_old_1i number
@@ -163,10 +164,10 @@ end
 --- @alias Promise fun(resolve: Resolve):nil
 
 --- @type fun(cmd: string[], opts: vim.SystemOpts?): vim.SystemCompleted
-utils.vim_system = vim.async.wrap(3, vim.system)
+async.system = vim.async.wrap(3, vim.system)
 
 --- @type fun(opts: vim.ui.input.Opts?): string?
-utils.ui_input = vim.async.wrap(2, vim.ui.input)
+async.ui_input = vim.async.wrap(2, vim.ui.input)
 
 --- @class PadOpts
 --- @field min_len number
@@ -226,4 +227,5 @@ return {
   utils = utils,
   str = str,
   diff = diff,
+  async = async,
 }

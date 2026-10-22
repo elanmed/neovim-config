@@ -96,7 +96,7 @@ local format_with_cli = function(cmd)
   local winnr = vim.api.nvim_get_current_win()
   local bufnr = vim.api.nvim_get_current_buf()
 
-  local result = h.utils.vim_system(cmd, {
+  local result = h.async.system(cmd, {
     stdin = unformatted,
     text = true,
   })
@@ -288,7 +288,7 @@ local function get_stageable_buffer_name()
 end
 
 local function stage_file(name)
-  h.utils.vim_system { "git", "add", "--", name }
+  h.async.system { "git", "add", "--", name }
 end
 
 vim.api.nvim_create_user_command("Add", function()
@@ -311,7 +311,7 @@ vim.api.nvim_create_user_command("Commit", function()
       return
     end
 
-    local commit_message = h.utils.ui_input { prompt = "Commit message: " }
+    local commit_message = h.async.ui_input { prompt = "Commit message: " }
 
     if commit_message == nil or commit_message == "" then
       vim.notify("[Commit aborted]", vim.log.levels.INFO)
@@ -322,7 +322,7 @@ vim.api.nvim_create_user_command("Commit", function()
 
     vim.notify("Committing…", vim.log.levels.INFO)
     local commit_result =
-      h.utils.vim_system { "git", "commit", "--only", "-m", commit_message, "--", name }
+      h.async.system { "git", "commit", "--only", "-m", commit_message, "--", name }
     local commit_succeeded = commit_result.code == 0
 
     vim.notify(

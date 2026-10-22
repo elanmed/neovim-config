@@ -124,7 +124,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     ctags_timer = vim.fn.timer_start(5000, function()
       vim.async.run("ctags_task", function()
         local h = require "helpers"
-        local git_out = h.utils.vim_system { "git", "rev-parse", "--show-toplevel" }
+        local git_out = h.async.system { "git", "rev-parse", "--show-toplevel" }
         if git_out.code ~= 0 then
           return
         end
@@ -138,7 +138,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
         end
 
         --- @type vim.SystemCompleted
-        local rg_out = h.utils.vim_system({ "rg", "--files" }, { cwd = git_root })
+        local rg_out = h.async.system({ "rg", "--files" }, { cwd = git_root })
         if rg_out.code ~= 0 then
           return
         end
