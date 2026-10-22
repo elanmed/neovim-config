@@ -476,6 +476,7 @@ local function rg(default_query, opts)
   )
 
   local rg_options = {
+    [[--with-shell='/bin/sh -c']],
     "--disabled",
     "--header",
     base_header,
