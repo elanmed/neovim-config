@@ -299,13 +299,18 @@ vim.keymap.set("i", "<C-g>", function()
     return vim.notify("No matching tag", vim.log.levels.ERROR)
   end
 
-  -- match non-whitespace characters from the start
-  local tag_name = tag_content:match "^%S+"
-  if tag_name == nil then
-    return vim.notify("Invalid tag name", vim.log.levels.ERROR)
+  local closing_tag
+  if tag_content == "" then
+    closing_tag = "</>"
+  else
+    -- match non-whitespace characters from the start
+    local tag_name = tag_content:match "^%S+"
+    if tag_name == nil then
+      return vim.notify("Invalid tag name", vim.log.levels.ERROR)
+    end
+    closing_tag = "</" .. tag_name .. ">"
   end
 
-  local closing_tag = "</" .. tag_name .. ">"
   vim.api.nvim_buf_set_lines(0, row_0i, row_0i + 1, true, {
     line:sub(1, col_1i_excl) .. closing_tag .. line:sub(col_1i),
   })
