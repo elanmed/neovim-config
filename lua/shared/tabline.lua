@@ -93,18 +93,18 @@ local get_branch = function()
   return ref
 end
 
-vim.async.run("onload_branch_task", function()
-  branch_cache = get_branch()
-end)
+vim.async
+  .run("onload_branch_task", function()
+    branch_cache = get_branch()
+  end)
+  :raise_on_error()
 
 vim.api.nvim_create_autocmd("User", {
   group = vim.api.nvim_create_augroup("InvalidateBranchCache", { clear = true }),
   pattern = "GitHeadChanged",
-  callback = function()
-    vim.async.run("autocmd_branch_task", function()
-      branch_cache = get_branch()
-    end)
-  end,
+  callback = h.async.callback(function()
+    branch_cache = get_branch()
+  end),
 })
 
 _G.Statusline = function()

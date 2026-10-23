@@ -169,6 +169,17 @@ async.system = vim.async.wrap(3, vim.system)
 --- @type fun(opts: vim.ui.input.Opts?): string?
 async.ui_input = vim.async.wrap(2, vim.ui.input)
 
+async.callback = function(callback)
+  return function(...)
+    local arguments = { ... }
+    vim.async
+      .run(function()
+        callback(unpack(arguments))
+      end)
+      :raise_on_error()
+  end
+end
+
 --- @class PadOpts
 --- @field min_len number
 --- @field side 'left' | 'right'

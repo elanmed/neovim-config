@@ -121,9 +121,10 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     if ctags_timer then
       vim.fn.timer_stop(ctags_timer)
     end
-    ctags_timer = vim.fn.timer_start(5000, function()
-      vim.async.run("ctags_task", function()
-        local h = require "helpers"
+    local h = require "helpers"
+    ctags_timer = vim.fn.timer_start(
+      5000,
+      h.async.callback(function()
         local git_out = h.async.system { "git", "rev-parse", "--show-toplevel" }
         if git_out.code ~= 0 then
           return
@@ -131,7 +132,6 @@ vim.api.nvim_create_autocmd("BufWritePost", {
         if git_out.stdout == nil then
           return
         end
-
         local git_root = vim.trim(git_out.stdout)
         if git_root == nil then
           return
@@ -149,7 +149,7 @@ vim.api.nvim_create_autocmd("BufWritePost", {
         -- https://github.com/universal-ctags/ctags/issues/218#issuecomment-377717588
         vim.system({ "ctags", "--recurse", "--links=no", "-L", "-" }, { stdin = rg_out.stdout })
       end)
-    end)
+    )
   end,
 })
 

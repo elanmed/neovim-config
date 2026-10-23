@@ -259,9 +259,7 @@ local write = function()
   end
 end
 
-vim.keymap.set("n", "s", function()
-  vim.async.run("s_keymap_task", write)
-end)
+vim.keymap.set("n", "s", h.async.callback(write))
 
 local function get_stageable_buffer_name()
   local name = vim.api.nvim_buf_get_name(0)
@@ -292,8 +290,9 @@ local function stage_file(name)
   h.async.system { "git", "add", "--", name }
 end
 
-vim.api.nvim_create_user_command("Add", function()
-  vim.async.run("git_add_task", function()
+vim.api.nvim_create_user_command(
+  "Add",
+  h.async.callback(function()
     local name = get_stageable_buffer_name()
 
     if name == nil then
@@ -302,11 +301,13 @@ vim.api.nvim_create_user_command("Add", function()
 
     stage_file(name)
     vim.notify("Staged", vim.log.levels.TRACE)
-  end)
-end, {})
+  end),
+  {}
+)
 
-vim.api.nvim_create_user_command("Commit", function()
-  vim.async.run("git_stage_commit_task", function()
+vim.api.nvim_create_user_command(
+  "Commit",
+  h.async.callback("git_stage_commit_task", function()
     local name = get_stageable_buffer_name()
     if name == nil then
       return
@@ -324,8 +325,9 @@ vim.api.nvim_create_user_command("Commit", function()
       commit_succeeded and commit_result.stdout or commit_result.stderr,
       commit_succeeded and vim.log.levels.TRACE or vim.log.levels.ERROR
     )
-  end)
-end, {})
+  end),
+  {}
+)
 
 local signs = {
   text = {
