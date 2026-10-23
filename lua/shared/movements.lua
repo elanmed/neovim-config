@@ -13,11 +13,7 @@ local function smooth_scroll(direction, num_lines)
 end
 
 local function get_half_page_lines()
-  local tabline_height = 1
-  local statusline_height = 1
-  local cmdline_height = 1
-  local height = vim.o.lines - tabline_height - statusline_height - cmdline_height
-  return math.floor(height / 2) - 1
+  return math.floor(vim.api.nvim_win_get_height(0) / 2) - 1
 end
 
 vim.keymap.set({ "n", "v" }, "<C-d>", function()
