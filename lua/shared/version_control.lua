@@ -1,79 +1,86 @@
 local noop_keymaps = { "<C-^>", "<C-o>", "<C-i>", "<leader>q", "<leader>e" }
 
-vim.keymap.set("n", "<C-b>", function()
-  if vim.t.diff_view then
-    local worktree_bufnr = vim.t.worktree_bufnr
-    local cursor = vim.api.nvim_win_get_cursor(0)
-    for _, keymap in ipairs(noop_keymaps) do
-      pcall(vim.api.nvim_buf_del_keymap, worktree_bufnr, "n", keymap)
+local h = require "helpers"
+vim.keymap.set(
+  "n",
+  "<C-b>",
+  h.async.cb(function()
+    if vim.t.diff_view then
+      local worktree_bufnr = vim.t.worktree_bufnr
+      local cursor = vim.api.nvim_win_get_cursor(0)
+      for _, keymap in ipairs(noop_keymaps) do
+        pcall(vim.api.nvim_buf_del_keymap, worktree_bufnr, "n", keymap)
+      end
+      vim.cmd.tabclose()
+      vim.api.nvim_set_current_buf(worktree_bufnr)
+      local line_count = vim.api.nvim_buf_line_count(worktree_bufnr)
+      local clamped = math.min(cursor[1], line_count)
+      vim.api.nvim_win_set_cursor(0, { clamped, cursor[2] })
+      return
     end
-    vim.cmd.tabclose()
-    vim.api.nvim_set_current_buf(worktree_bufnr)
-    local line_count = vim.api.nvim_buf_line_count(worktree_bufnr)
-    local clamped = math.min(cursor[1], line_count)
-    vim.api.nvim_win_set_cursor(0, { clamped, cursor[2] })
-    return
-  end
 
-  if vim.bo.buftype ~= "" then
-    return vim.notify("buftype is not normal", vim.log.levels.ERROR)
-  end
-
-  local worktree_bufnr = vim.api.nvim_get_current_buf()
-
-  local curr_cursor = vim.api.nvim_win_get_cursor(0)
-  local cwd = vim.uv.cwd()
-  assert(cwd ~= nil)
-  local curr_bufname = vim.fs.relpath(cwd, vim.api.nvim_buf_get_name(worktree_bufnr))
-  if curr_bufname == nil then
-    return vim.notify("relpath is nil", vim.log.levels.WARN)
-  end
-
-  local curr_filetype = vim.bo.filetype
-  vim.cmd.tabnew()
-  local tab_worktree_winnr = vim.api.nvim_get_current_win()
-  vim.api.nvim_win_set_buf(tab_worktree_winnr, worktree_bufnr)
-
-  vim.t.diff_view = true
-  vim.t.worktree_bufnr = worktree_bufnr
-
-  local index_bufnr = vim.api.nvim_create_buf(false, true)
-  local index_winnr = vim.api.nvim_open_win(index_bufnr, true, {
-    split = "left",
-    win = tab_worktree_winnr,
-  })
-
-  local out = vim.system({ "git", "show", ":" .. curr_bufname }):wait()
-  local stdout = (function()
-    if out.code ~= 0 then
-      return ""
+    if vim.bo.buftype ~= "" then
+      return vim.notify("buftype is not normal", vim.log.levels.ERROR)
     end
-    if out.stdout == nil then
-      return ""
+
+    local worktree_bufnr = vim.api.nvim_get_current_buf()
+
+    local curr_cursor = vim.api.nvim_win_get_cursor(0)
+    local cwd = vim.uv.cwd()
+    assert(cwd ~= nil)
+    local curr_bufname = vim.fs.relpath(cwd, vim.api.nvim_buf_get_name(worktree_bufnr))
+    if curr_bufname == nil then
+      return vim.notify("relpath is nil", vim.log.levels.WARN)
     end
-    return out.stdout
-  end)()
-  local index_lines = vim.split(stdout, "\n", { trimempty = true })
 
-  vim.api.nvim_buf_set_lines(index_bufnr, 0, -1, false, index_lines)
+    local curr_filetype = vim.bo.filetype
+    vim.cmd.tabnew()
+    local tab_worktree_winnr = vim.api.nvim_get_current_win()
+    vim.api.nvim_win_set_buf(tab_worktree_winnr, worktree_bufnr)
 
-  vim.bo[index_bufnr].filetype = curr_filetype
+    vim.t.diff_view = true
+    vim.t.worktree_bufnr = worktree_bufnr
 
-  for _, bufnr in ipairs { worktree_bufnr, index_bufnr } do
-    for _, keymap in ipairs(noop_keymaps) do
-      vim.keymap.set("n", keymap, "<Nop>", { buffer = bufnr })
+    local index_bufnr = vim.api.nvim_create_buf(false, true)
+    local index_winnr = vim.api.nvim_open_win(index_bufnr, true, {
+      split = "left",
+      win = tab_worktree_winnr,
+    })
+
+    local out = h.async.system { "git", "show", ":" .. curr_bufname }
+    h.async.ensure_main_loop()
+
+    local stdout = (function()
+      if out.code ~= 0 then
+        return ""
+      end
+      if out.stdout == nil then
+        return ""
+      end
+      return out.stdout
+    end)()
+    local index_lines = vim.split(stdout, "\n", { trimempty = true })
+
+    vim.api.nvim_buf_set_lines(index_bufnr, 0, -1, false, index_lines)
+
+    vim.bo[index_bufnr].filetype = curr_filetype
+
+    for _, bufnr in ipairs { worktree_bufnr, index_bufnr } do
+      for _, keymap in ipairs(noop_keymaps) do
+        vim.keymap.set("n", keymap, "<Nop>", { buffer = bufnr })
+      end
     end
-  end
 
-  pcall(vim.api.nvim_win_set_cursor, index_winnr, curr_cursor)
-  vim.api.nvim_win_set_cursor(tab_worktree_winnr, curr_cursor)
+    pcall(vim.api.nvim_win_set_cursor, index_winnr, curr_cursor)
+    vim.api.nvim_win_set_cursor(tab_worktree_winnr, curr_cursor)
 
-  vim.bo[index_bufnr].modifiable = false
-  vim.bo[index_bufnr].bufhidden = "wipe"
+    vim.bo[index_bufnr].modifiable = false
+    vim.bo[index_bufnr].bufhidden = "wipe"
 
-  vim.wo[index_winnr].winbar = "HEAD"
-  vim.wo[tab_worktree_winnr].winbar = "Worktree"
+    vim.wo[index_winnr].winbar = "HEAD"
+    vim.wo[tab_worktree_winnr].winbar = "Worktree"
 
-  vim.api.nvim_win_call(index_winnr, vim.cmd.diffthis)
-  vim.api.nvim_win_call(tab_worktree_winnr, vim.cmd.diffthis)
-end)
+    vim.api.nvim_win_call(index_winnr, vim.cmd.diffthis)
+    vim.api.nvim_win_call(tab_worktree_winnr, vim.cmd.diffthis)
+  end)
+)

@@ -334,66 +334,77 @@ local function ripgrep_sinklist(list)
   vim.cmd.copen()
 end
 
-vim.keymap.set("n", "gli", function()
-  local function run_cmd(cmd_parts)
-    return vim.split(vim.system(cmd_parts):wait().stdout, "\n", { trimempty = true })
-  end
-
-  local changed_files = run_cmd { "git", "diff", "--name-only" }
-
-  --- @type vim.quickfix.entry[]
-  local qf_entries = {}
-
-  for _, filepath in ipairs(changed_files) do
-    if vim.uv.fs_stat(filepath) == nil then
-      goto continue
+vim.keymap.set(
+  "n",
+  "gli",
+  h.async.cb(function()
+    local function run_cmd(cmd_parts)
+      local out = h.async.system(cmd_parts)
+      if out.stderr ~= nil then
+        vim.notify(out.stderr, vim.log.levels.ERROR)
+      end
+      if out.stdout == nil then
+        return {}
+      end
+      return vim.split(out.stdout, "\n", { trimempty = true })
     end
 
-    local head_lines = run_cmd { "git", "show", (":%s"):format(filepath) }
-    local working_lines = vim.fn.readfile(filepath)
+    local changed_files = run_cmd { "git", "diff", "--name-only" }
 
-    local head_string = table.concat(head_lines, "\n") .. "\n"
-    local working_string = table.concat(working_lines, "\n") .. "\n"
+    --- @type vim.quickfix.entry[]
+    local qf_entries = {}
 
-    vim.text.diff(head_string, working_string, {
-      on_hunk = function(_, _, start_b, _)
-        if start_b == 0 then
-          return
-        end
-        local content = working_lines[start_b]
+    for _, filepath in ipairs(changed_files) do
+      if vim.uv.fs_stat(filepath) == nil then
+        goto continue
+      end
 
-        --- @type vim.quickfix.entry
-        local entry = {
-          filename = filepath,
-          lnum = start_b,
-          col = 1,
-          text = content,
-        }
-        table.insert(qf_entries, entry)
-      end,
-    })
+      local head_lines = run_cmd { "git", "show", (":%s"):format(filepath) }
+      local working_lines = vim.fn.readfile(filepath)
 
-    ::continue::
-  end
+      local head_string = table.concat(head_lines, "\n") .. "\n"
+      local working_string = table.concat(working_lines, "\n") .. "\n"
 
-  local untracked_files = run_cmd { "git", "ls-files", "--others", "--exclude-standard" }
-  for _, untracked_file in ipairs(untracked_files) do
-    --- @type vim.quickfix.entry
-    local entry = {
-      filename = untracked_file,
-      lnum = 1,
-      col = 1,
-      text = "[untracked]",
-    }
-    table.insert(qf_entries, entry)
-  end
+      vim.text.diff(head_string, working_string, {
+        on_hunk = function(_, _, start_b, _)
+          if start_b == 0 then
+            return
+          end
+          local content = working_lines[start_b]
 
-  if #qf_entries == 0 then
-    return vim.notify("No git hunks found", vim.log.levels.WARN)
-  end
-  vim.fn.setqflist(qf_entries)
-  vim.cmd.copen()
-end)
+          --- @type vim.quickfix.entry
+          local entry = {
+            filename = filepath,
+            lnum = start_b,
+            col = 1,
+            text = content,
+          }
+          table.insert(qf_entries, entry)
+        end,
+      })
+
+      ::continue::
+    end
+
+    local untracked_files = run_cmd { "git", "ls-files", "--others", "--exclude-standard" }
+    for _, untracked_file in ipairs(untracked_files) do
+      --- @type vim.quickfix.entry
+      local entry = {
+        filename = untracked_file,
+        lnum = 1,
+        col = 1,
+        text = "[untracked]",
+      }
+      table.insert(qf_entries, entry)
+    end
+
+    if #qf_entries == 0 then
+      return vim.notify("No git hunks found", vim.log.levels.WARN)
+    end
+    vim.fn.setqflist(qf_entries)
+    vim.cmd.copen()
+  end)
+)
 
 local git_preview_script = vim.fs.joinpath(vim.fn.stdpath "config", "fzf_scripts", "git_preview.sh")
 vim.keymap.set("n", "<leader>i", function()

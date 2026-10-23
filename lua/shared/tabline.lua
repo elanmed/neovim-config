@@ -102,7 +102,7 @@ vim.async
 vim.api.nvim_create_autocmd("User", {
   group = vim.api.nvim_create_augroup("InvalidateBranchCache", { clear = true }),
   pattern = "GitHeadChanged",
-  callback = h.async.callback(function()
+  callback = h.async.cb(function()
     branch_cache = get_branch()
   end),
 })

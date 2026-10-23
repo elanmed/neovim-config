@@ -169,7 +169,7 @@ async.system = vim.async.wrap(3, vim.system)
 --- @type fun(opts: vim.ui.input.Opts?): string?
 async.ui_input = vim.async.wrap(2, vim.ui.input)
 
-async.callback = function(callback)
+async.cb = function(callback)
   return function(...)
     local arguments = { ... }
     vim.async
@@ -178,6 +178,10 @@ async.callback = function(callback)
       end)
       :raise_on_error()
   end
+end
+
+async.ensure_main_loop = function()
+  vim.async.sleep(0)
 end
 
 --- @class PadOpts

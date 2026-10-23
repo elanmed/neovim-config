@@ -259,7 +259,7 @@ local write = function()
   end
 end
 
-vim.keymap.set("n", "s", h.async.callback(write))
+vim.keymap.set("n", "s", h.async.cb(write))
 
 local function get_stageable_buffer_name()
   local name = vim.api.nvim_buf_get_name(0)
@@ -292,7 +292,7 @@ end
 
 vim.api.nvim_create_user_command(
   "Add",
-  h.async.callback(function()
+  h.async.cb(function()
     local name = get_stageable_buffer_name()
 
     if name == nil then
@@ -307,7 +307,7 @@ vim.api.nvim_create_user_command(
 
 vim.api.nvim_create_user_command(
   "Commit",
-  h.async.callback("git_stage_commit_task", function()
+  h.async.cb("git_stage_commit_task", function()
     local name = get_stageable_buffer_name()
     if name == nil then
       return
