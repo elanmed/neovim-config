@@ -170,8 +170,8 @@ vim.keymap.set("n", "ze", "z=", { desc = "z=" })
 
 vim.keymap.set("n", "<leader>q", vim.cmd.quit, { desc = ":q<cr>" })
 vim.keymap.set("n", "q;", function()
-  local isCommandWindow = vim.fn.getcmdwintype() ~= ""
-  if isCommandWindow then
+  local is_command_window = vim.fn.getcmdwintype() ~= ""
+  if is_command_window then
     vim.cmd.quit()
   else
     vim.cmd.normal "q:"
@@ -231,9 +231,6 @@ vim.keymap.set("v", "<A-j>", [[:m '>+1<CR>gv=gv]])
 vim.keymap.set("v", "<A-k>", [[:m '<-2<CR>gv=gv]])
 vim.keymap.set("v", ">", ">gv", { desc = "indent, preserving the selecting" })
 vim.keymap.set("v", "<", "<gv", { desc = "outdent, preserving the selecting" })
-
-vim.keymap.set("n", "H", "{", { desc = "{" })
-vim.keymap.set("n", "L", "}", { desc = "}" })
 
 vim.keymap.set("n", "<leader>k", function()
   return "k" .. [["zyy]] .. vim.v.count .. "j" .. [["zp]]
