@@ -14,9 +14,10 @@ vim.keymap.set("n", "<C-f>", function()
     vim.cmd [[execute "normal \<Plug>(nvim-dir-up)"]]
   end
 end)
-if vim.fn.executable "fd" == 1 then
+local h = require "helpers"
+if vim.fn.executable "fd" == h.vimscript_true then
   function _G.FdFindFiles(cmdarg)
-    local fnames = vim.fn.systemlist(require("helpers").fd_cmd.join " ")
+    local fnames = vim.fn.systemlist(table.concat(h.fd_cmd, " "))
     return vim.fn.matchfuzzy(fnames, cmdarg, { matchseq = 1, limit = 100 })
   end
 
