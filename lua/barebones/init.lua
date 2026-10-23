@@ -4,6 +4,8 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "directory",
   callback = function(ev)
     vim.bo[ev.buf].bufhidden = "delete"
+    vim.keymap.set("n", "h", "<Plug>(nvim-dir-up)")
+    vim.keymap.set("n", "l", "<Plug>(nvim-dir-open)")
   end,
 })
 
@@ -14,6 +16,7 @@ vim.keymap.set("n", "<C-f>", function()
     vim.cmd [[execute "normal \<Plug>(nvim-dir-up)"]]
   end
 end)
+
 local h = require "helpers"
 if vim.fn.executable "fd" == h.vimscript_true then
   function _G.FdFindFiles(cmdarg)
