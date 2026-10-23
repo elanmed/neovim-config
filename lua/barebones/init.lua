@@ -1,5 +1,19 @@
 vim.o.pummaxwidth = vim.o.columns
 
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "directory",
+  callback = function(ev)
+    vim.bo[ev.buf].bufhidden = "delete"
+  end,
+})
+
+vim.keymap.set("n", "<C-f>", function()
+  if vim.bo.filetype == "directory" then
+    vim.cmd.bdelete()
+  else
+    vim.cmd [[execute "normal \<Plug>(nvim-dir-up)"]]
+  end
+end)
 if vim.fn.executable "fd" == 1 then
   function _G.FdFindFiles(cmdarg)
     local fnames = vim.fn.systemlist(require("helpers").fd_cmd.join " ")
