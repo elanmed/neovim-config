@@ -71,3 +71,9 @@ vim.api.nvim_create_autocmd("User", {
     require("ff").refresh_files_cache()
   end,
 })
+
+vim.api.nvim_create_user_command("FFRefresh", function()
+  require("ff").refresh_files_cache(function()
+    vim.notify("Refreshed file cache", vim.log.levels.INFO)
+  end)
+end, {})
