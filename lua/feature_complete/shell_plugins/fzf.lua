@@ -360,6 +360,7 @@ vim.keymap.set(
       end
 
       local head_lines = run_cmd { "git", "show", (":%s"):format(filepath) }
+      h.async.ensure_main_loop()
       local working_lines = vim.fn.readfile(filepath)
 
       local head_string = table.concat(head_lines, "\n") .. "\n"
@@ -401,6 +402,7 @@ vim.keymap.set(
     if #qf_entries == 0 then
       return vim.notify("No git hunks found", vim.log.levels.WARN)
     end
+    h.async.ensure_main_loop()
     vim.fn.setqflist(qf_entries)
     vim.cmd.copen()
   end)
