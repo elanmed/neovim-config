@@ -125,7 +125,7 @@ vim.keymap.set("n", "<leader>ye", function()
   end
   local row_1i, col_0i = unpack(vim.api.nvim_win_get_cursor(0))
   local col_1i = col_0i + 1
-  local formatted = ("%s|%d|%d"):format(rel_path, row_1i, col_1i)
+  local formatted = ("%s|%d|%d\n\n"):format(rel_path, row_1i, col_1i)
   require("helpers").utils.set_and_rotate(formatted)
 end, { desc = "Yank the relative path of the current buffer alone with the linE" })
 
