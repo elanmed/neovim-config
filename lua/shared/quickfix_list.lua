@@ -79,14 +79,14 @@ vim.api.nvim_create_autocmd("FileType", {
     vim.keymap.set("n", ">", function()
       local success = pcall(vim.cmd, "cnewer")
       if not success then
-        vim.notify("No newer list!", vim.log.levels.ERROR)
+        vim.notify("No newer list!", vim.log.levels.WARN)
       end
     end, { buffer = true })
 
     vim.keymap.set("n", "<", function()
       local success = pcall(vim.cmd, "colder")
       if not success then
-        vim.notify("No older list!", vim.log.levels.ERROR)
+        vim.notify("No older list!", vim.log.levels.WARN)
       end
     end, { buffer = true })
 

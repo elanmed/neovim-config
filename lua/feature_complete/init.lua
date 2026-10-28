@@ -6,7 +6,7 @@ vim.pack.add {
   "https://github.com/nvim-mini/mini.splitjoin",
 
   "https://github.com/elanmed/ff.nvim", -- [x]
-  "https://github.com/elanmed/rg-far.nvim", -- [ ]
+  "https://github.com/elanmed/rg-far.nvim", -- [x]
   "https://github.com/elanmed/tree.nvim", -- [ ]
   "https://github.com/elanmed/surround.nvim", -- [ ]
   "https://github.com/elanmed/seek.nvim", -- [ ]

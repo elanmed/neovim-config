@@ -227,8 +227,12 @@ local lsp_ft = {
 }
 
 local write = function()
-  if vim.bo.readonly or vim.bo.buftype ~= "" then
-    return vim.notify("Aborting", vim.log.levels.ERROR)
+  if vim.bo.readonly then
+    return vim.notify("Aborting, readonly", vim.log.levels.WARN)
+  end
+
+  if vim.bo.buftype ~= "" then
+    return vim.notify("Aborting, buftype is not normal", vim.log.levels.WARN)
   end
 
   local bufnr = vim.api.nvim_get_current_buf()
@@ -466,7 +470,7 @@ local function next_prev_diagnostic(direction, severity)
   if vim.tbl_count(diagnostics) == 0 then
     vim.notify(
       string.format("No %s diagnostics", vim.diagnostic.severity[severity] or "ANY"),
-      vim.log.levels.ERROR
+      vim.log.levels.WARN
     )
     return
   end

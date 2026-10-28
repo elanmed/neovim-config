@@ -20,7 +20,7 @@ vim.keymap.set(
     end
 
     if vim.bo.buftype ~= "" then
-      return vim.notify("buftype is not normal", vim.log.levels.ERROR)
+      return vim.notify("Aborting, buftype is not normal", vim.log.levels.WARN)
     end
 
     local worktree_bufnr = vim.api.nvim_get_current_buf()

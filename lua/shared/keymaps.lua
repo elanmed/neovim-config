@@ -309,7 +309,7 @@ vim.keymap.set("i", "<C-g>", function()
   -- () is a capture group, returns what's inside
   local tag_content = line:sub(1, col_1i_excl):match ".*<(.-)>.*$"
   if tag_content == nil then
-    return vim.notify("No matching tag", vim.log.levels.ERROR)
+    return vim.notify("No matching tag", vim.log.levels.WARN)
   end
 
   local closing_tag

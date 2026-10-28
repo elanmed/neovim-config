@@ -7,8 +7,12 @@ vim.api.nvim_create_user_command("PrintRemaps", function()
 end, {})
 
 vim.api.nvim_create_user_command("Format", function()
-  if vim.bo.readonly or vim.bo.buftype ~= "" then
-    return vim.notify("Aborting", vim.log.levels.ERROR)
+  if vim.bo.readonly then
+    return vim.notify("Aborting, readonly", vim.log.levels.WARN)
+  end
+
+  if vim.bo.buftype ~= "" then
+    return vim.notify("Aborting, buftype is not normal", vim.log.levels.WARN)
   end
 
   local view = vim.fn.winsaveview()
@@ -44,7 +48,7 @@ vim.api.nvim_create_user_command("Snippet", function(opts)
 
   local snippet_triggers = vim.tbl_keys(snippet_trigger_to_file_mapping)
   if not vim.tbl_contains(snippet_triggers, snippet_trigger) then
-    vim.notify(snippet_trigger .. " is not a valid snippet trigger!", vim.log.levels.ERROR)
+    vim.notify(snippet_trigger .. " is not a valid snippet trigger!", vim.log.levels.WARN)
     return
   end
 

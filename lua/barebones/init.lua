@@ -122,9 +122,15 @@ vim.keymap.set("n", "<leader>l", function()
     vim.api.nvim_win_set_cursor(0, { mark.lnum, 0 })
   end)
 end)
+
 vim.keymap.set("n", "s", function()
-  if vim.bo.readonly or vim.bo.buftype ~= "" then
-    return vim.notify("Aborting", vim.log.levels.ERROR)
+  if vim.bo.readonly then
+    return vim.notify("Aborting, readonly", vim.log.levels.WARN)
   end
+
+  if vim.bo.buftype ~= "" then
+    return vim.notify("Aborting, buftype is not normal", vim.log.levels.WARN)
+  end
+
   vim.cmd.write()
 end)
