@@ -73,6 +73,7 @@ vim.keymap.set(
 
     pcall(vim.api.nvim_win_set_cursor, index_winnr, curr_cursor)
     vim.api.nvim_win_set_cursor(tab_worktree_winnr, curr_cursor)
+    vim.api.nvim_set_current_win(tab_worktree_winnr)
 
     vim.bo[index_bufnr].modifiable = false
     vim.bo[index_bufnr].bufhidden = "wipe"
