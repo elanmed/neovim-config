@@ -12,7 +12,7 @@ vim.api.nvim_create_autocmd("FileType", {
       "<Plug>RgFarResultsToQfList<Plug>RgFarClose",
       { buffer = true }
     )
-    vim.keymap.set("n", "<leader>o", "<Plug>RgFarOpenResult", { buffer = true })
+    vim.keymap.set("n", "o", "<Plug>RgFarOpenResult", { buffer = true })
     vim.keymap.set("n", "<leader>e", "<Plug>RgFarRefreshResults", { buffer = true })
   end,
 })
