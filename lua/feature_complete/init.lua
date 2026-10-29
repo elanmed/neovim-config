@@ -11,8 +11,8 @@ vim.pack.add {
   "https://github.com/elanmed/surround.nvim", -- [x]
   "https://github.com/elanmed/seek.nvim", -- [x]
   "https://github.com/elanmed/marks.nvim", -- [x]
-  "https://github.com/elanmed/ft-highlight.nvim", -- [ ]
-  "https://github.com/elanmed/quickfix-preview.nvim", -- [ ]
+  "https://github.com/elanmed/ft-highlight.nvim", -- [x]
+  "https://github.com/elanmed/quickfix-preview.nvim", -- [x]
   "https://github.com/elanmed/git-diff.nvim", -- [ ]
 }
 
