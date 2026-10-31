@@ -3,69 +3,7 @@ local str = {}
 local _os = {}
 local dev = {}
 local utils = {}
-local diff = {}
 local async = {}
-
---- @class UnpackedHunk
---- @field start_old_1i number
---- @field start_old_0i number
---- @field count_old number
---- @field end_old_1i_excl number
---- @field end_old_1i_incl number
---- @field end_old_0i_excl number
---- @field end_old_0i_incl number
---- @field start_new_1i number
---- @field start_new_0i number
---- @field count_new number
---- @field end_new_1i_excl number
---- @field end_new_1i_incl number
---- @field end_new_0i_excl number
---- @field end_new_0i_incl number
---- @field is_deletion boolean
---- @field is_insertion boolean
-
---- @alias DiffHunk { [1]: integer, [2]: integer, [3]: integer, [4]: integer }
---- @param hunk DiffHunk
---- @return UnpackedHunk
-diff.unpack_hunk = function(hunk)
-  local start_old_1i, count_old, start_new_1i, count_new = unpack(hunk)
-
-  local start_old_0i = start_old_1i - 1
-  local end_old_1i_excl = start_old_1i + count_old
-  local end_old_1i_incl = end_old_1i_excl - 1
-  local end_old_0i_excl = end_old_1i_excl - 1
-  local end_old_0i_incl = end_old_1i_incl - 1
-
-  local start_new_0i = start_new_1i - 1
-  local end_new_1i_excl = start_new_1i + count_new
-  local end_new_1i_incl = end_new_1i_excl - 1
-  local end_new_0i_excl = end_new_1i_excl - 1
-  local end_new_0i_incl = end_new_1i_incl - 1
-
-  local is_deletion = count_new == 0
-  local is_insertion = count_old == 0
-
-  return {
-    start_old_1i = start_old_1i,
-    start_old_0i = start_old_0i,
-    count_old = count_old,
-    end_old_1i_excl = end_old_1i_excl,
-    end_old_1i_incl = end_old_1i_incl,
-    end_old_0i_excl = end_old_0i_excl,
-    end_old_0i_incl = end_old_0i_incl,
-
-    start_new_1i = start_new_1i,
-    start_new_0i = start_new_0i,
-    count_new = count_new,
-    end_new_1i_excl = end_new_1i_excl,
-    end_new_1i_incl = end_new_1i_incl,
-    end_new_0i_excl = end_new_0i_excl,
-    end_new_0i_incl = end_new_0i_incl,
-
-    is_deletion = is_deletion,
-    is_insertion = is_insertion,
-  }
-end
 
 local vimscript_true = 1
 local vimscript_false = 0
@@ -241,6 +179,5 @@ return {
   },
   utils = utils,
   str = str,
-  diff = diff,
   async = async,
 }

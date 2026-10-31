@@ -50,13 +50,12 @@ local apply_minimal_changes = function(opts)
   table.remove(formatted_lines)
 
   for _, raw_hunk in ipairs(indices) do
-    local hunk = require("helpers").diff.unpack_hunk(raw_hunk)
-    local new_text_lines = vim.list_slice(formatted_lines, hunk.start_new_1i, hunk.end_new_1i_incl)
-
+    local hunk = require("git-hunks").unpack_hunk(raw_hunk)
     local new_text = (function()
-      if hunk.is_deletion then
+      if hunk.kind == "deletion" then
         return ""
       end
+      local new_text_lines = vim.list_slice(formatted_lines, hunk.start_new_1i, hunk.end_new_1i_incl)
       -- lsp expects that every line in newText will end with a newline
       return table.concat(new_text_lines, "\n") .. "\n"
     end)()
@@ -65,15 +64,15 @@ local apply_minimal_changes = function(opts)
     -- for insertions, line_x is after
 
     local start_line = (function()
-      if hunk.is_insertion then
-        return hunk.start_old_0i + 1
+      if hunk.kind == "insertion" then
+        return hunk.after_old_1i
       end
       return hunk.start_old_0i
     end)()
 
     local end_line = (function()
-      if hunk.is_insertion then
-        return hunk.start_old_0i + 1
+      if hunk.kind == "insertion" then
+        return hunk.after_old_1i
       end
       return hunk.end_old_0i_excl
     end)()
