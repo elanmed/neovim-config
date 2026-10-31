@@ -67,10 +67,6 @@ export PATH="$HOME/.local/bin:$PATH"
 nvvm update >/dev/null
 nvim --headless -c "packupdate!" -c "qa" >/dev/null 2>&1
 
-if [[ $desktop_env == "headless" ]]; then
-  exit 0
-fi
-
 h_echo doing "installing language servers from package.json"
 pnpm install --yes --silent --prefix "$HOME/.dotfiles/neovim/.config/nvim/language_servers/"
 
