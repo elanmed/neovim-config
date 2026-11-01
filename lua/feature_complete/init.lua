@@ -12,9 +12,9 @@ vim.pack.add {
   "https://github.com/elanmed/seek.nvim", -- [ ]
   "https://github.com/elanmed/marks.nvim", -- [ ]
   "https://github.com/elanmed/ft-highlight.nvim", -- [ ]
-  "https://github.com/elanmed/quickfix-preview.nvim", -- [ ]
+  "https://github.com/elanmed/quickfix-preview.nvim", -- [x]
   "https://github.com/elanmed/git-hunks.nvim", -- [x]
-  "https://github.com/elanmed/git-diffs.nvim", -- [ ]
+  "https://github.com/elanmed/git-diffs.nvim", -- [x]
 }
 
 local h = require "helpers"
