@@ -55,7 +55,8 @@ local apply_minimal_changes = function(opts)
       if hunk.kind == "deletion" then
         return ""
       end
-      local new_text_lines = vim.list_slice(formatted_lines, hunk.start_new_1i, hunk.end_new_1i_incl)
+      local new_text_lines =
+        vim.list_slice(formatted_lines, hunk.start_new_1i, hunk.end_new_1i_incl)
       -- lsp expects that every line in newText will end with a newline
       return table.concat(new_text_lines, "\n") .. "\n"
     end)()
