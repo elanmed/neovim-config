@@ -600,7 +600,7 @@ local exclude_flags = table.concat({
   "'!*.json'",
 }, " ")
 
-vim.keymap.set("n", "<leader>zi", function()
+vim.keymap.set("n", "<leader>a", function()
   rg([[-S -F -- '']], { bind_start = "backward-char" })
 end, { desc = "fzf rg" })
 
@@ -615,27 +615,19 @@ local get_exclude_cursor_pattern = function()
   return ("^%s[|]%s[|][^|]*[|][^|]*"):format(relative, row_1i)
 end
 
-vim.keymap.set("n", "<leader>a", function()
+vim.keymap.set("n", "<leader>zi", function()
   rg(([[%s -S -F -- '']]):format(exclude_flags), {
     bind_start = "backward-char",
     exclude_rg_result_patterns = { exclude_import_pattern, get_exclude_cursor_pattern() },
   })
 end, { desc = "fzf rg" })
 
-vim.keymap.set("n", "<leader>zo", function()
+vim.keymap.set("n", "<leader>o", function()
   local cword = vim.fn.expand "<cword>"
   rg(([[ %s -- '%s']]):format(exact_search_flags, cword), { bind_start = "beginning-of-line" })
 end, { desc = "fzf rg with exact search flags" })
 
-vim.keymap.set("n", "<leader>o", function()
-  local cword = vim.fn.expand "<cword>"
-  rg(([[ %s %s -- '%s']]):format(exact_search_flags, exclude_flags, cword), {
-    bind_start = "beginning-of-line",
-    exclude_rg_result_patterns = { exclude_import_pattern, get_exclude_cursor_pattern() },
-  })
-end, { desc = "fzf rg with exact search, exclude flags" })
-
-vim.keymap.set("v", "<leader>zo", function()
+vim.keymap.set("v", "<leader>o", function()
   local region = vim.fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".")
   if #region > 0 then
     rg(
@@ -645,7 +637,15 @@ vim.keymap.set("v", "<leader>zo", function()
   end
 end, { desc = "fzf rg with exact search flags" })
 
-vim.keymap.set("v", "<leader>o", function()
+vim.keymap.set("n", "<leader>zo", function()
+  local cword = vim.fn.expand "<cword>"
+  rg(([[ %s %s -- '%s']]):format(exact_search_flags, exclude_flags, cword), {
+    bind_start = "beginning-of-line",
+    exclude_rg_result_patterns = { exclude_import_pattern, get_exclude_cursor_pattern() },
+  })
+end, { desc = "fzf rg with exact search, exclude flags" })
+
+vim.keymap.set("v", "<leader>zo", function()
   local region = vim.fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".")
   if #region > 0 then
     rg(
