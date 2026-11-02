@@ -311,7 +311,7 @@ vim.api.nvim_create_user_command(
 
 vim.api.nvim_create_user_command(
   "Commit",
-  h.async.cb("git_stage_commit_task", function()
+  h.async.cb(function()
     local name = get_stageable_buffer_name()
     if name == nil then
       return
