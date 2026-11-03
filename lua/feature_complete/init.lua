@@ -7,7 +7,7 @@ vim.pack.add {
 
   "https://github.com/elanmed/ff.nvim", -- [ ]
   "https://github.com/elanmed/rg-far.nvim", -- [ ]
-  "https://github.com/elanmed/tree.nvim", -- [ ]
+  "https://github.com/elanmed/tree.nvim", -- [x]
   "https://github.com/elanmed/surround.nvim", -- [x]
   "https://github.com/elanmed/seek.nvim", -- [x]
   "https://github.com/elanmed/marks.nvim", -- [x]
