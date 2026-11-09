@@ -43,14 +43,13 @@ end
 local apply_minimal_changes = function(opts)
   opts.formatted = opts.formatted:gsub("\n+$", "") .. "\n"
 
-  --- @type DiffHunk[]
-  local indices = vim.text.diff(opts.unformatted, opts.formatted, { result_type = "indices" })
+  local indices = vim.text.diff(opts.unformatted, opts.formatted, { result_type = "indices" }) --[[@as IndicesHunk[]?]]
   local edits = {}
   local formatted_lines = vim.split(opts.formatted, "\n")
   table.remove(formatted_lines)
 
   for _, raw_hunk in ipairs(indices) do
-    local hunk = require("git-hunks").unpack_hunk(raw_hunk)
+    local hunk = require("git-hunks").unpack_indices_hunk(raw_hunk)
     local new_text = (function()
       if hunk.kind == "deletion" then
         return ""

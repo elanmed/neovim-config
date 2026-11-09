@@ -2,6 +2,8 @@ vim.keymap.set("n", "]c", "<Plug>GitHunksNextHunk")
 vim.keymap.set("n", "[c", "<Plug>GitHunksPrevHunk")
 vim.keymap.set("n", "gh", "<Plug>GitHunksResetHunk")
 vim.keymap.set("v", "gh", "<Plug>GitHunksResetHunk")
+vim.keymap.set("n", "ga", "<Plug>GitHunksStageHunk")
+vim.keymap.set("v", "ga", "<Plug>GitHunksStageHunk")
 vim.keymap.set("n", "gH", "<Plug>GitHunksResetFile")
 vim.keymap.set("n", "<leader>d", function()
   require("git-diffs").toggle_multi_file_diff_view { diff_type = "worktree-index" }
