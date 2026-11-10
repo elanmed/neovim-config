@@ -1,0 +1,7 @@
+{
+  "runtime.version": "LuaJIT",
+  "workspace": {
+    "library": ["lua", "$VIMRUNTIME/lua", "deps/mini.test"],
+    "ignoreSubmodules": false
+  }
+}

@@ -70,9 +70,13 @@ end
 --- @param try string
 --- @param catch string
 utils.vim_cmd_try_catch = function(try, catch)
-  local success, _ = pcall(vim.cmd, try)
+  local success = pcall(function()
+    vim.cmd(try)
+  end)
   if not success then
-    pcall(vim.cmd, catch)
+    pcall(function()
+      vim.cmd(catch)
+    end)
   end
 end
 
@@ -87,16 +91,19 @@ qf.filter = function(predicate)
 
   local qf_lists = vim
     .iter(vim.fn.range(1, count))
-    :map(function(qf_list_number)
-      ---@diagnostic disable-next-line: missing-return-value
-      return vim.fn.getqflist {
-        nr = qf_list_number,
-        items = 0,
-        context = 0,
-        idx = 0,
-        title = 0,
-      }
-    end)
+    :map(
+      --- @param qf_list_number_arg integer
+      function(qf_list_number_arg)
+        ---@diagnostic disable-next-line: missing-return-value
+        return vim.fn.getqflist {
+          nr = qf_list_number_arg,
+          items = 0,
+          context = 0,
+          idx = 0,
+          title = 0,
+        }
+      end
+    )
     :filter(predicate)
     :totable()
 
@@ -150,12 +157,14 @@ async.system = vim.async.wrap(3, vim.system)
 --- @type fun(opts: vim.ui.input.Opts?): string?
 async.ui_input = vim.async.wrap(2, vim.ui.input)
 
+--- @param callback fun(...: any): any
+--- @return fun(...: any): nil
 async.cb = function(callback)
   return function(...)
     local arguments = { ... }
     vim.async
       .run(function()
-        callback(unpack(arguments))
+        return callback(unpack(arguments))
       end)
       :raise_on_error()
   end

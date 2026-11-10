@@ -15,7 +15,7 @@ vim.fn.writefile({ "" }, prev_query_file)
 --- @field is_replay? boolean
 
 --- @class FzfNewOpts
---- @field source string|table|nil
+--- @field source string|string[]|nil
 --- @field options? table
 --- @field sink? fun(entry: string)
 --- @field sinklist? fun(entry:string[])
@@ -90,12 +90,13 @@ local fzf = function(opts)
     if opts.is_replay then
       return prev_state.bare_cmd
     else
+      local source_arg = opts.source
       local source = (function()
-        if type(opts.source) == "string" then
-          return opts.source
-        elseif type(opts.source) == "table" then
-          return ([[echo %s]]):format(vim.fn.shellescape(table.concat(opts.source, "\n")))
-        elseif opts.source == nil then
+        if type(source_arg) == "string" then
+          return source_arg
+        elseif type(source_arg) == "table" then
+          return ([[echo %s]]):format(vim.fn.shellescape(table.concat(source_arg, "\n")))
+        elseif source_arg == nil then
           return nil
         end
       end)()

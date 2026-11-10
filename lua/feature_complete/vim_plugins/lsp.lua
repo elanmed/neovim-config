@@ -12,7 +12,7 @@ vim.g.markdown_fenced_languages = {
   "java",
 }
 
-vim.treesitter.start = function() end
+rawset(vim.treesitter, "start", function() end)
 
 local h = require "helpers"
 
@@ -43,7 +43,10 @@ end
 local apply_minimal_changes = function(opts)
   opts.formatted = opts.formatted:gsub("\n+$", "") .. "\n"
 
-  local indices = vim.text.diff(opts.unformatted, opts.formatted, { result_type = "indices" }) --[[@as IndicesHunk[]?]]
+  local indices = vim.text.diff(opts.unformatted, opts.formatted, { result_type = "indices" })
+  if type(indices) ~= "table" then
+    return
+  end
   local edits = {}
   local formatted_lines = vim.split(opts.formatted, "\n")
   table.remove(formatted_lines)
@@ -325,7 +328,7 @@ vim.api.nvim_create_user_command(
     local commit_succeeded = commit_result.code == 0
 
     vim.notify(
-      commit_succeeded and commit_result.stdout or commit_result.stderr,
+      commit_succeeded and commit_result.stdout or commit_result.stderr or "",
       commit_succeeded and vim.log.levels.TRACE or vim.log.levels.ERROR
     )
   end),

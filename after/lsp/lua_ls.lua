@@ -16,7 +16,12 @@ return {
       vim.api.nvim_get_runtime_file("lua/lspconfig", false)[1],
     }
 
-    client.config.settings.Lua = vim.tbl_deep_extend("force", client.config.settings.Lua, {
+    local lua_settings = client.config.settings.Lua
+    if type(lua_settings) ~= "table" then
+      lua_settings = {}
+    end
+
+    client.config.settings.Lua = vim.tbl_deep_extend("force", lua_settings, {
       runtime = {
         version = "LuaJIT",
         path = {
