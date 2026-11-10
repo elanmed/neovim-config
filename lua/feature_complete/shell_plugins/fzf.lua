@@ -403,8 +403,56 @@ vim.keymap.set(
       return vim.notify("No git hunks found", vim.log.levels.WARN)
     end
     h.async.ensure_main_loop()
-    vim.fn.setqflist(qf_entries)
-    vim.cmd.copen()
+
+    local count = vim.fn.getqflist({ nr = "$" }).nr
+    if count > 0 then
+      local qf_lists = vim
+        .iter(vim.fn.range(1, count))
+        :map(
+          ---@param qf_list_number integer
+          function(qf_list_number)
+            ---@diagnostic disable-next-line: missing-return-value
+            return {
+              nr = qf_list_number,
+              qf = vim.fn.getqflist {
+                nr = qf_list_number,
+                items = 0,
+                context = 0,
+                idx = 0,
+                title = 0,
+              },
+            }
+          end
+        )
+        :filter(
+          ---@param list { nr: integer, qf: table }
+          function(list)
+            return vim.tbl_get(list.qf, "context", "name") ~= "hunks"
+          end
+        )
+        :filter(
+          ---@param list { nr: integer, qf: table }
+          function(list)
+            return #list.qf.items > 0
+          end
+        )
+        :totable()
+
+      vim.fn.setqflist({}, "f")
+
+      for _, list in ipairs(qf_lists) do
+        vim.fn.setqflist({}, " ", {
+          nr = "$",
+          items = list.qf.items,
+          title = list.qf.title,
+          context = list.qf.context,
+          idx = list.qf.idx,
+        })
+      end
+    end
+
+    vim.fn.setqflist({}, " ", { items = qf_entries, context = { name = "hunks" } })
+    return vim.cmd.copen()
   end)
 )
 
