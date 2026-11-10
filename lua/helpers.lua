@@ -198,16 +198,21 @@ end
 --- @param opts TruncateOpts
 str.truncate = function(val, opts)
   local ellipsis = "…"
-  local max_len = opts.max_len - vim.fn.strchars(ellipsis)
-
-  if vim.fn.strchars(val) <= max_len then
+  local char_count = vim.fn.strchars(val)
+  if char_count <= opts.max_len then
     return val
   end
-
-  if opts.side == "right" then
-    return val:sub(1, max_len) .. ellipsis
+  if opts.max_len <= 0 then
+    return ""
   end
-  return ellipsis .. val:sub(-max_len)
+
+  local content_len = opts.max_len - vim.fn.strchars(ellipsis)
+  if opts.side == "right" then
+    return vim.fn.strcharpart(val, 0, content_len) .. ellipsis
+  end
+
+  local start_index = char_count - content_len
+  return ellipsis .. vim.fn.strcharpart(val, start_index, content_len)
 end
 
 return {
