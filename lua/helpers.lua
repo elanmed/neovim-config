@@ -4,6 +4,7 @@ local _os = {}
 local dev = {}
 local utils = {}
 local async = {}
+local qf = {}
 
 local vimscript_true = 1
 local vimscript_false = 0
@@ -72,6 +73,48 @@ utils.vim_cmd_try_catch = function(try, catch)
   local success, _ = pcall(vim.cmd, try)
   if not success then
     pcall(vim.cmd, catch)
+  end
+end
+
+--- @generic T : vim.fn.getqflist.ret
+--- @param predicate fun(qf: T): boolean
+--- @return T[]
+qf.filter = function(predicate)
+  local count = vim.fn.getqflist({ nr = "$" }).nr
+  if count == 0 then
+    return {}
+  end
+
+  local qf_lists = vim
+    .iter(vim.fn.range(1, count))
+    :map(function(qf_list_number)
+      ---@diagnostic disable-next-line: missing-return-value
+      return vim.fn.getqflist {
+        nr = qf_list_number,
+        items = 0,
+        context = 0,
+        idx = 0,
+        title = 0,
+      }
+    end)
+    :filter(predicate)
+    :totable()
+
+  return qf_lists
+end
+
+--- @param qf_lists vim.fn.getqflist.ret[]
+qf.replace = function(qf_lists)
+  vim.fn.setqflist({}, "f")
+
+  for _, list in ipairs(qf_lists) do
+    vim.fn.setqflist({}, " ", {
+      nr = "$",
+      items = list.items,
+      title = list.title,
+      context = list.context,
+      idx = list.idx,
+    })
   end
 end
 
@@ -178,6 +221,7 @@ return {
     "dist",
   },
   utils = utils,
+  qf = qf,
   str = str,
   async = async,
 }

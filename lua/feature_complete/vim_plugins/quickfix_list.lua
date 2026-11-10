@@ -14,6 +14,14 @@ vim.api.nvim_create_autocmd({ "FileType" }, {
     vim.keymap.set("n", "<leader>d", function()
       vim.cmd.QuickfixPreviewClosePreview()
       vim.fn.setqflist({}, "r")
+
+      local qf_lists = require("helpers").qf.filter(function(qf_list)
+        return #qf_list.items > 0
+      end)
+      require("helpers").qf.replace(qf_lists)
+      if #qf_lists == 0 then
+        vim.cmd.cclose()
+      end
     end, { buffer = true, desc = "Clear the current quickfix list" })
   end,
 })
