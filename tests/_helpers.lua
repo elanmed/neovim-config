@@ -2,19 +2,30 @@ local MiniTest = require "mini.test"
 
 local M = {}
 
-M.mock = function(target, overrides)
+M.mock_child = function(target, overrides)
   local originals = {}
   local calls = {}
   for name, replacement in pairs(overrides) do
     originals[name] = target[name]
     rawset(target, name, function(...)
-      local args = vim.tbl_filter(function(arg)
-        return type(arg) ~= "function"
-      end, { ... })
+      local args = {}
+      for index = 1, select("#", ...) do
+        local arg = select(index, ...)
+        if type(arg) == "function" then
+          arg = "<function>"
+        end
+        args[index] = arg
+      end
       table.insert(calls, { name = name, args = args })
       return replacement(...)
     end)
   end
+
+  return calls, originals
+end
+
+M.mock = function(target, overrides)
+  local calls, originals = M.mock_child(target, overrides)
 
   MiniTest.finally(function()
     for name, original in pairs(originals) do
@@ -25,26 +36,16 @@ M.mock = function(target, overrides)
   return calls
 end
 
-M.expect_buffer_lines = MiniTest.new_expectation("buffer lines", function(buf_id, lines)
-  return vim.deep_equal(vim.api.nvim_buf_get_lines(buf_id, 0, -1, false), lines)
-end, function(buf_id, lines)
-  return string.format(
-    "Buffer %d\nObserved: %s\nExpected: %s",
-    buf_id,
-    vim.inspect(vim.api.nvim_buf_get_lines(buf_id, 0, -1, false)),
-    vim.inspect(lines)
-  )
+M.expect_lines = MiniTest.new_expectation("buffer lines", function(lines, expected)
+  return vim.deep_equal(lines, expected)
+end, function(lines, expected)
+  return string.format("Observed: %s\nExpected: %s", vim.inspect(lines), vim.inspect(expected))
 end)
 
-M.expect_cursor = MiniTest.new_expectation("cursor position", function(win_id, position)
-  return vim.deep_equal(vim.api.nvim_win_get_cursor(win_id), position)
-end, function(win_id, position)
-  return string.format(
-    "Window %d\nObserved: %s\nExpected: %s",
-    win_id,
-    vim.inspect(vim.api.nvim_win_get_cursor(win_id)),
-    vim.inspect(position)
-  )
+M.expect_cursor = MiniTest.new_expectation("cursor position", function(position, expected)
+  return vim.deep_equal(position, expected)
+end, function(position, expected)
+  return string.format("Observed: %s\nExpected: %s", vim.inspect(position), vim.inspect(expected))
 end)
 
 M.expect_eventually = MiniTest.new_expectation(
@@ -73,24 +74,13 @@ M.make_temp_dir = function()
   return dir
 end
 
-M.chdir_to_sandbox = function()
-  local original_cwd = vim.fn.getcwd()
-  local sandbox_dir = M.make_temp_dir()
-  vim.fn.chdir(sandbox_dir)
-  MiniTest.finally(function()
-    vim.fn.chdir(original_cwd)
-  end)
-
-  return sandbox_dir
-end
+-- Fixtures below are handed to `child.lua_func`, so they must not reference `M`
+-- or any other upvalue.
 
 M.open_file_buffer = function(lines)
-  local path = vim.fs.joinpath(M.make_temp_dir(), "test.txt")
+  local path = vim.fn.tempname()
   vim.fn.writefile(lines, path)
   vim.cmd.edit { args = { path }, mods = { silent = true } }
-  MiniTest.finally(function()
-    vim.cmd.bwipeout { bang = true }
-  end)
 
   return path
 end
@@ -98,16 +88,14 @@ end
 M.open_buffer = function()
   local buf_id = vim.api.nvim_create_buf(true, false)
   vim.api.nvim_set_current_buf(buf_id)
-  MiniTest.finally(function()
-    vim.api.nvim_buf_delete(buf_id, { force = true })
-  end)
 
   return buf_id
 end
 
 M.open_named_buffer = function(name)
-  local buf_id = M.open_buffer()
+  local buf_id = vim.api.nvim_create_buf(true, false)
   vim.api.nvim_buf_set_name(buf_id, name)
+  vim.api.nvim_set_current_buf(buf_id)
 
   return buf_id
 end
@@ -117,9 +105,6 @@ M.open_scratch_buffer = function(lines, cursor)
   vim.api.nvim_set_current_buf(buf_id)
   vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, lines)
   vim.api.nvim_win_set_cursor(0, cursor)
-  MiniTest.finally(function()
-    vim.api.nvim_buf_delete(buf_id, { force = true })
-  end)
 
   return buf_id
 end
@@ -130,24 +115,6 @@ M.file_contains = function(path, line)
   end, vim.fn.readfile(path))
 
   return vim.tbl_contains(lines, line)
-end
-
-M.with_saved_registers = function(callback)
-  local numbered_register_infos = {}
-  for index = 0, 9 do
-    numbered_register_infos[index] = vim.fn.getreginfo(tostring(index))
-  end
-  local unnamed_register_info = vim.fn.getreginfo "\""
-
-  MiniTest.finally(function()
-    for index = 0, 9 do
-      local register_info = numbered_register_infos[index]
-      vim.fn.setreg(tostring(index), register_info.regcontents, register_info.regtype)
-    end
-    vim.fn.setreg("\"", unnamed_register_info.regcontents, unnamed_register_info.regtype)
-  end)
-
-  callback()
 end
 
 M.write_temp_file = function(contents)

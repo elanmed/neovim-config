@@ -160,10 +160,10 @@ T["fs.readfile()"]["closes the descriptor after reading mocked contents"] = func
     str = "first\n\nlast\n",
   })
   MiniTest.expect.equality(calls, {
-    { name = "fs_open", args = { "mocked.txt", 0, 0 } },
-    { name = "fs_fstat", args = { 17 } },
-    { name = "fs_read", args = { 17, #content, 0 } },
-    { name = "fs_close", args = { 17 } },
+    { name = "fs_open", args = { "mocked.txt", 0, 0, "<function>" } },
+    { name = "fs_fstat", args = { 17, "<function>" } },
+    { name = "fs_read", args = { 17, #content, 0, "<function>" } },
+    { name = "fs_close", args = { 17, "<function>" } },
   })
 end
 
@@ -291,15 +291,30 @@ T["utils.vim_cmd_try_catch()"] = function()
   vim.g.helpers_try_catch_result = nil
 end
 
-local clear_qf = function()
-  vim.fn.setqflist({}, "f")
-end
+local child = MiniTest.new_child_neovim()
 
-local add_qf_list = function(title, item_text, context_id)
+local child_hooks = {
+  pre_case = function()
+    child.restart { "-u", "scripts/minimal_init.lua" }
+  end,
+  post_once = function()
+    if child.is_running() then
+      child.stop()
+    end
+  end,
+}
+
+local seed_qf_lists = function()
+  vim.fn.setqflist({}, "f")
   vim.fn.setqflist({}, " ", {
-    title = title,
-    items = { { text = item_text, valid = 1 } },
-    context = { id = context_id },
+    title = "first",
+    items = { { text = "first item", valid = 1 } },
+    context = { id = 1 },
+  })
+  vim.fn.setqflist({}, " ", {
+    title = "second",
+    items = { { text = "second item", valid = 1 } },
+    context = { id = 2 },
   })
 end
 
@@ -309,75 +324,97 @@ local get_qf_titles = function()
   for index = 1, count do
     table.insert(titles, vim.fn.getqflist({ nr = index, title = 0 }).title)
   end
+
   return titles
 end
 
-local qf_hooks = {
-  pre_case = function()
-    clear_qf()
-    add_qf_list("first", "first item", 1)
-    add_qf_list("second", "second item", 2)
-  end,
-  post_case = clear_qf,
-}
-
-T["qf.filter()"] = MiniTest.new_set { hooks = qf_hooks }
+T["qf.filter()"] = MiniTest.new_set { hooks = child_hooks }
 
 T["qf.filter()"]["returns an empty list when no list matches"] = function()
-  MiniTest.expect.equality(
-    h.qf.filter(function()
+  child.lua_func(seed_qf_lists)
+
+  local filtered_count = child.lua_func(function()
+    local helpers = require "helpers"
+
+    return #helpers.qf.filter(function()
       return false
-    end),
-    {}
-  )
+    end)
+  end)
+
+  MiniTest.expect.equality(filtered_count, 0)
 end
 
 T["qf.filter()"]["returns an empty list when quickfix history is empty"] = function()
-  clear_qf()
+  local filtered_count = child.lua_func(function()
+    local helpers = require "helpers"
 
-  MiniTest.expect.equality(
-    h.qf.filter(function()
+    vim.fn.setqflist({}, "f")
+
+    return #helpers.qf.filter(function()
       return true
-    end),
-    {}
-  )
+    end)
+  end)
+
+  MiniTest.expect.equality(filtered_count, 0)
 end
 
 T["qf.filter()"]["filters quickfix lists by predicate"] = function()
-  local result = h.qf.filter(function(list_arg)
-    return list_arg.title == "second"
-  end)
+  child.lua_func(seed_qf_lists)
 
-  MiniTest.expect.equality(get_qf_titles(), { "first", "second" })
+  MiniTest.expect.equality(child.lua_func(get_qf_titles), { "first", "second" })
   MiniTest.expect.equality(
-    vim.tbl_map(function(list_arg)
-      return list_arg.title
-    end, result),
+    child.lua_func(function()
+      local helpers = require "helpers"
+
+      local filtered = helpers.qf.filter(function(list_arg)
+        return list_arg.title == "second"
+      end)
+
+      local titles = {}
+      for _, list in ipairs(filtered) do
+        table.insert(titles, list.title)
+      end
+
+      return titles
+    end),
     { "second" }
   )
 end
 
-T["qf.replace()"] = MiniTest.new_set { hooks = qf_hooks }
+T["qf.replace()"] = MiniTest.new_set { hooks = child_hooks }
 
 T["qf.replace()"]["replaces quickfix history with the supplied lists"] = function()
-  h.qf.replace(h.qf.filter(function()
-    return true
-  end))
+  child.lua_func(seed_qf_lists)
+  child.lua_func(function()
+    local helpers = require "helpers"
 
-  MiniTest.expect.equality(get_qf_titles(), { "first", "second" })
+    helpers.qf.replace(helpers.qf.filter(function()
+      return true
+    end))
+  end)
+
+  MiniTest.expect.equality(child.lua_func(get_qf_titles), { "first", "second" })
   MiniTest.expect.equality(
-    vim.tbl_map(function(item_arg)
-      return item_arg.text
-    end, vim.fn.getqflist({ nr = 1, items = 0 }).items),
+    child.lua_func(function()
+      return vim.tbl_map(function(item_arg)
+        return item_arg.text
+      end, vim.fn.getqflist({ nr = 1, items = 0 }).items)
+    end),
     { "first item" }
   )
-  MiniTest.expect.equality(vim.fn.getqflist({ nr = 1, context = 0, idx = 0 }).context, { id = 1 })
+  MiniTest.expect.equality(
+    child.lua_func(function()
+      return vim.fn.getqflist({ nr = 1, context = 0, idx = 0 }).context
+    end),
+    { id = 1 }
+  )
 end
 
 T["qf.replace()"]["clears quickfix history when given no lists"] = function()
-  h.qf.replace {}
+  child.lua_func(seed_qf_lists)
+  child.lua [[require("helpers").qf.replace {}]]
 
-  MiniTest.expect.equality(get_qf_titles(), {})
+  MiniTest.expect.equality(child.lua_func(get_qf_titles), {})
 end
 
 T["utils.is_big_file()"] = MiniTest.new_set()
@@ -403,60 +440,98 @@ T["utils.is_big_file()"]["detects files larger than one and a half megabytes"] =
   MiniTest.expect.equality(h.utils.is_big_file { bname = path, line_count = 0 }, true)
 end
 
-T["utils.rotate_registers()"] = MiniTest.new_set()
+T["utils.rotate_registers()"] = MiniTest.new_set { hooks = child_hooks }
 
 T["utils.rotate_registers()"]["shifts numbered registers up by one"] = function()
-  test_helpers.with_saved_registers(function()
+  local register_contents = child.lua_func(function()
+    local helpers = require "helpers"
+
     for index = 0, 9 do
       vim.fn.setreg(tostring(index), "reg" .. index)
     end
 
-    h.utils.rotate_registers()
+    helpers.utils.rotate_registers()
 
-    MiniTest.expect.equality(
-      vim.tbl_map(function(index_arg)
-        return vim.fn.getreginfo(tostring(index_arg)).regcontents[1]
-      end, { 1, 2, 3, 4, 5, 6, 7, 8, 9 }),
-      { "reg0", "reg1", "reg2", "reg3", "reg4", "reg5", "reg6", "reg7", "reg8" }
-    )
+    local contents = {}
+    for index = 1, 9 do
+      table.insert(contents, vim.fn.getreginfo(tostring(index)).regcontents[1])
+    end
+
+    return contents
   end)
+
+  MiniTest.expect.equality(register_contents, {
+    "reg0",
+    "reg1",
+    "reg2",
+    "reg3",
+    "reg4",
+    "reg5",
+    "reg6",
+    "reg7",
+    "reg8",
+  })
 end
 
-T["utils.set_and_rotate()"] = function()
-  test_helpers.with_saved_registers(function()
-    local original_setreg = vim.fn.setreg
+T["utils.set_and_rotate()"] = MiniTest.new_set { hooks = child_hooks }
+
+T["utils.set_and_rotate()"]["sets the clipboard and unnamed registers and rotates the rest"] = function()
+  local result = child.lua_func(function()
+    local helpers = require "helpers"
+
+    local test_helpers = require "tests._helpers"
+
     local clipboard_value = nil
-    test_helpers.mock(vim.fn, {
+    local original_setreg = vim.fn.setreg
+    test_helpers.mock_child(vim.fn, {
       setreg = function(register_arg, value_arg, regtype_arg)
         if register_arg == "+" then
           clipboard_value = value_arg
           return 0
         end
+
         return original_setreg(register_arg, value_arg, regtype_arg)
       end,
     })
-    local notifications = test_helpers.mock(vim, { notify = function() end })
+    local notifications = test_helpers.mock_child(vim, { notify = function() end })
 
     for index = 0, 9 do
       vim.fn.setreg(tostring(index), "reg" .. index)
     end
-    h.utils.set_and_rotate "new value"
+    helpers.utils.set_and_rotate "new value"
 
-    MiniTest.expect.equality(vim.fn.getreg("\"", 1, true), { "new value" })
-    MiniTest.expect.equality(clipboard_value, "new value")
-    MiniTest.expect.equality(notifications, {
-      {
-        name = "notify",
-        args = { "Setting the unnamed and + registers to: `new value`", vim.log.levels.INFO },
-      },
-    })
-    MiniTest.expect.equality(
-      vim.tbl_map(function(index_arg)
-        return vim.fn.getreginfo(tostring(index_arg)).regcontents[1]
-      end, { 1, 2, 3, 4, 5, 6, 7, 8, 9 }),
-      { "new value", "reg1", "reg2", "reg3", "reg4", "reg5", "reg6", "reg7", "reg8" }
-    )
+    local register_contents = {}
+    for index = 1, 9 do
+      table.insert(register_contents, vim.fn.getreginfo(tostring(index)).regcontents[1])
+    end
+
+    return {
+      unnamed = vim.fn.getreg("\"", 1, true),
+      clipboard = clipboard_value,
+      notifications = notifications,
+      registers = register_contents,
+    }
   end)
+
+  MiniTest.expect.equality(result.unnamed, { "new value" })
+  MiniTest.expect.equality(result.clipboard, "new value")
+  MiniTest.expect.equality(result.notifications, {
+    {
+      name = "notify",
+      args = { "Setting the unnamed and + registers to: `new value`", vim.log.levels.INFO },
+    },
+  })
+  MiniTest.expect.equality(result.registers, {
+    "new value",
+    "reg1",
+    "reg2",
+    "reg3",
+    "reg4",
+    "reg5",
+    "reg6",
+    "reg7",
+    "reg8",
+  })
 end
 
 T["async.system()"] = function()
@@ -468,25 +543,24 @@ T["async.system()"] = function()
   MiniTest.expect.equality({ err = err, stdout = stdout }, { err = nil, stdout = "async output" })
 end
 
-T["async.ui_input()"] = function()
-  local original_helpers = package.loaded.helpers
-  test_helpers.mock(vim.ui, {
-    input = function(_, callback_arg)
-      callback_arg "confirmed"
-    end,
-  })
-  package.loaded.helpers = nil
-  local helpers_with_stubbed_input = require "helpers"
+T["async.ui_input()"] = MiniTest.new_set { hooks = child_hooks }
 
-  MiniTest.finally(function()
-    package.loaded.helpers = original_helpers
+T["async.ui_input()"]["returns the value passed to the callback"] = function()
+  local result = child.lua_func(function()
+    require("tests._helpers").mock_child(vim.ui, {
+      input = function(_, callback_arg)
+        callback_arg "confirmed"
+      end,
+    })
+    package.loaded.helpers = nil
+    local helpers_with_stubbed_input = require "helpers"
+
+    return vim.async
+      .run(function()
+        return helpers_with_stubbed_input.async.ui_input { prompt = "test" }
+      end)
+      :wait(1000)
   end)
-
-  local result = vim.async
-    .run(function()
-      return helpers_with_stubbed_input.async.ui_input { prompt = "test" }
-    end)
-    :wait(1000)
 
   MiniTest.expect.equality(result, "confirmed")
 end
