@@ -125,18 +125,18 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     ctags_timer = vim.fn.timer_start(
       5000,
       h.async.cb(function()
-        local git_stdout, git_err = vim.async.await(
+        local git_err, git_stdout = vim.async.await(
           h.async.system { "git", "rev-parse", "--show-toplevel" }
         )
         if git_err ~= nil or git_stdout == nil then
           return
         end
-        local git_root = vim.trim(git_stdout)
+        local git_root = vim.trim(git_stdout --[[@as string]])
         if git_root == nil then
           return
         end
 
-        local rg_stdout, rg_err = vim.async.await(
+        local rg_err, rg_stdout = vim.async.await(
           h.async.system({ "rg", "--files" }, { cwd = git_root })
         )
         if rg_err ~= nil or rg_stdout == nil then

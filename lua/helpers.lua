@@ -163,11 +163,11 @@ async.system = function(cmd, opts)
         err = "unknown error"
       end
       --- @diagnostic disable-next-line: redundant-return-value
-      return nil, string.format("%s failed. Error: %s", table.concat(cmd, " "), err)
+      return string.format("%s failed. Error: %s", table.concat(cmd, " "), err), nil
     end
 
     --- @diagnostic disable-next-line: redundant-return-value
-    return out.stdout, nil
+    return nil, out.stdout
   end)
 end
 
@@ -195,8 +195,12 @@ end
 --- @return vim.async.Task<{ lines: string[], str: string }>
 fs.readfile = function(filepath)
   return vim.async.run(function()
-    local open_err, fd = vim.async.await(4, vim.uv.fs_open, filepath, "r", 0)
-    assert(fd, open_err)
+    local open_err, fd = vim.async.await(function(callback)
+      vim.uv.fs_open(filepath, 0, 0, callback)
+    end)
+    if open_err then
+      error(open_err, 0)
+    end
 
     local stat_err, stat = vim.async.await(2, vim.uv.fs_fstat, fd)
     if stat_err ~= nil then
@@ -210,8 +214,12 @@ fs.readfile = function(filepath)
       read_err, content = vim.async.await(4, vim.uv.fs_read, fd, stat.size, 0)
     end
     local close_err = vim.async.await(2, vim.uv.fs_close, fd)
-    assert(not read_err, read_err)
-    assert(not close_err, close_err)
+    if read_err then
+      error(read_err, 0)
+    end
+    if close_err then
+      error(close_err, 0)
+    end
 
     local lines = (function()
       if content == "" then
@@ -220,17 +228,19 @@ fs.readfile = function(filepath)
       return vim.split(content, "\n", { plain = true })
     end)()
 
-    -- Drop the extra empty item produced by a trailing newline
+    -- vim.split on a string that ends in a newline produces a trailing "" item
     if lines[#lines] == "" then
       table.remove(lines)
     end
 
-    for index, line in ipairs(lines) do
-      -- matches vim.fn.readfile
-      lines[index] = line:gsub("\r$", "")
-    end
+    local str = (function()
+      if #lines == 0 then
+        return ""
+      end
+      return table.concat(lines, "\n") .. "\n"
+    end)()
 
-    return { lines = lines, str = table.concat(lines, "\n") .. "\n" }
+    return { lines = lines, str = str }
   end)
 end
 

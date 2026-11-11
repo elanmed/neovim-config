@@ -336,16 +336,22 @@ local function ripgrep_sinklist(list)
 end
 
 local function run_cmd(cmd_parts)
-  local stdout, err = vim.async.await(h.async.system(cmd_parts))
+  local err, stdout = vim.async.await(h.async.system(cmd_parts))
   if err ~= nil then
-    vim.notify(err, vim.log.levels.ERROR)
+    vim.notify(err --[[@as string]], vim.log.levels.ERROR)
   end
   if stdout == nil then
     return {}
   end
-  return vim.split(stdout, "\n", { trimempty = true })
+  return vim.split(stdout --[[@as string]], "\n", { trimempty = true })
 end
 
+--- @class IndexAndWorktree
+--- @field index string
+--- @field working { lines: string[], str: string }
+
+--- @param filepath string
+--- @return IndexAndWorktree
 local function read_index_and_worktree(filepath)
   local index_lines = run_cmd { "git", "show", (":%s"):format(filepath) }
   return {
