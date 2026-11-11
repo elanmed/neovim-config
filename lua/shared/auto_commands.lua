@@ -125,9 +125,8 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     ctags_timer = vim.fn.timer_start(
       5000,
       h.async.cb(function()
-        local git_err, git_stdout = vim.async.await(
-          h.async.system { "git", "rev-parse", "--show-toplevel" }
-        )
+        local git_err, git_stdout =
+          vim.async.await(h.async.system { "git", "rev-parse", "--show-toplevel" })
         if git_err ~= nil or git_stdout == nil then
           return
         end
@@ -136,9 +135,8 @@ vim.api.nvim_create_autocmd("BufWritePost", {
           return
         end
 
-        local rg_err, rg_stdout = vim.async.await(
-          h.async.system({ "rg", "--files" }, { cwd = git_root })
-        )
+        local rg_err, rg_stdout =
+          vim.async.await(h.async.system({ "rg", "--files" }, { cwd = git_root }))
         if rg_err ~= nil or rg_stdout == nil then
           return
         end
