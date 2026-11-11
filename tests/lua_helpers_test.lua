@@ -493,7 +493,7 @@ T["utils.set_and_rotate()"]["sets the clipboard and unnamed registers and rotate
         return original_setreg(register_arg, value_arg, regtype_arg)
       end,
     })
-    local notifications = test_helpers.mock_child(vim, { notify = function() end })
+    local notifications = test_helpers.stub_notify()
 
     for index = 0, 9 do
       vim.fn.setreg(tostring(index), "reg" .. index)

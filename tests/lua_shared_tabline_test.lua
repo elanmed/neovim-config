@@ -28,14 +28,14 @@ end
 local stub_branch = function(result)
   local helpers = require "helpers"
 
-  _G.branch_calls = require("tests._helpers").mock_child(helpers.async, {
+  require("tests._helpers").mock_child(helpers.async, {
     system = function()
       return vim.async.run(function()
         --- @diagnostic disable-next-line: redundant-return-value
         return result.err, result.stdout
       end)
     end,
-  })
+  }, "branch_calls")
 end
 
 T["setup"] = MiniTest.new_set()

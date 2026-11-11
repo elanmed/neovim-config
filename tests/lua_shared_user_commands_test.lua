@@ -13,10 +13,6 @@ local T = MiniTest.new_set {
   },
 }
 
-local stub_notify = function()
-  _G.notifications = require("tests._helpers").mock_child(vim, { notify = function() end })
-end
-
 local stub_snippets_config_dir = function(config_dir)
   require("tests._helpers").mock_child(vim.fn, {
     stdpath = function(what_arg)
@@ -131,7 +127,7 @@ T["Format"]["aborts for readonly buffers"] = function()
   child.lua_func(test_helpers.open_file_buffer, { "a" })
   child.bo.equalprg = [[sed -e 's/^/x/']]
   child.bo.readonly = true
-  child.lua_func(stub_notify)
+  child.lua_func(test_helpers.stub_notify)
 
   child.cmd "silent Format"
 
@@ -144,7 +140,7 @@ end
 T["Format"]["aborts for buffers with a non-normal buftype"] = function()
   child.lua_func(test_helpers.open_scratch_buffer, { "a" }, { 1, 0 })
   child.bo.equalprg = [[sed -e 's/^/x/']]
-  child.lua_func(stub_notify)
+  child.lua_func(test_helpers.stub_notify)
 
   child.cmd "silent Format"
 
@@ -157,7 +153,7 @@ end
 T["Snippet"] = MiniTest.new_set()
 
 T["Snippet"]["lists the available triggers when no trigger is given"] = function()
-  child.lua [[_G.prints = require("tests._helpers").mock_child(_G, { print = function() end })]]
+  child.lua [[require("tests._helpers").mock_child(_G, { print = function() end }, "prints")]]
 
   child.cmd "Snippet"
 
@@ -184,7 +180,7 @@ end
 
 T["Snippet"]["warns about unknown triggers"] = function()
   child.lua_func(test_helpers.open_scratch_buffer, { "current" }, { 1, 0 })
-  child.lua_func(stub_notify)
+  child.lua_func(test_helpers.stub_notify)
 
   child.cmd "Snippet nope"
 

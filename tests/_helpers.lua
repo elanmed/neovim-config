@@ -2,7 +2,7 @@ local MiniTest = require "mini.test"
 
 local M = {}
 
-M.mock_child = function(target, overrides)
+M.mock_child = function(target, overrides, store_name)
   local originals = {}
   local calls = {}
   for name, replacement in pairs(overrides) do
@@ -21,6 +21,10 @@ M.mock_child = function(target, overrides)
     end)
   end
 
+  if store_name ~= nil then
+    _G[store_name] = calls
+  end
+
   return calls, originals
 end
 
@@ -34,6 +38,10 @@ M.mock = function(target, overrides)
   end)
 
   return calls
+end
+
+M.stub_notify = function()
+  return require("tests._helpers").mock_child(vim, { notify = function() end }, "notifications")
 end
 
 M.expect_lines = MiniTest.new_expectation("buffer lines", function(lines, expected)
