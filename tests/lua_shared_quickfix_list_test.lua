@@ -116,26 +116,35 @@ T["GetQuickfixTextFunc()"]["keeps the full entry when a preview window is open"]
   )
 end
 
-T["GetQuickfixTextFunc()"]["cuts multibyte text in the middle of a character"] = function()
+T["GetQuickfixTextFunc()"]["truncates multibyte text by characters"] = function()
   local paths = test_helpers.make_files { "dd/f.lua" }
   set_qf_list {
     { path = paths[1], lnum = 1, col = 1, text = string.rep("é", 30) },
   }
   child.cmd "silent copen"
 
-  MiniTest.expect.equality(
-    formatted_items(),
-    { "dd/f.lua | 1:1 | " .. string.rep("é", 11) .. "\195" }
-  )
+  MiniTest.expect.equality(formatted_items(), { "dd/f.lua | 1:1 | " .. string.rep("é", 23) })
 end
 
-T["GetQuickfixTextFunc()"]["uses the current buffer name for entries without a file"] = function()
+T["GetQuickfixTextFunc()"]["shows only the text for entries without a file"] = function()
   child.o.columns = 300
   local paths = test_helpers.make_files { "alpha/short.lua" }
   child.cmd("edit " .. vim.fn.fnameescape(paths[1]))
   set_qf_list { { text = "no file" } }
 
-  MiniTest.expect.equality(formatted_items(), { "alpha/short.lua | 0:0 | no file" })
+  MiniTest.expect.equality(formatted_items(), { "no file" })
+end
+
+T["GetQuickfixTextFunc()"]["shows only the text for entries with an unnamed buffer"] = function()
+  child.o.columns = 300
+  child.lua_func(function()
+    local bufnr = vim.api.nvim_create_buf(false, true)
+    vim.fn.setqflist({}, " ", {
+      items = { { bufnr = bufnr, lnum = 2, col = 3, text = "  scratch  " } },
+    })
+  end)
+
+  MiniTest.expect.equality(formatted_items(), { "scratch" })
 end
 
 T["<C-n>"] = MiniTest.new_set()

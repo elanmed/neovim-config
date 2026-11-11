@@ -1,6 +1,14 @@
 --- @param bufnr number
 local function shorten_bufname(bufnr)
+  if bufnr == 0 then
+    return ""
+  end
+
   local bufname = vim.fn.bufname(bufnr)
+  if bufname == "" then
+    return ""
+  end
+
   return vim.fs.joinpath(vim.fs.basename(vim.fs.dirname(bufname)), vim.fs.basename(bufname))
 end
 
@@ -33,21 +41,25 @@ function _G.GetQuickfixTextFunc()
 
   for index, item in pairs(qf_list) do
     local bufname = shorten_bufname(item.bufnr)
-    local buffer_padding_right = longest_bufname_len - vim.fn.strchars(bufname)
-    local formatted_item = bufname
-      .. string.rep(" ", buffer_padding_right)
-      .. " | "
-      .. h.str.pad(item.lnum, { min_len = longest_row_len, side = "left" })
-      .. ":"
-      .. h.str.pad(item.col, { min_len = longest_col_len, side = "right" })
-      .. " | "
-      .. vim.fn.trim(item.text)
+    local text = vim.trim(item.text)
+    local formatted_item = text
+    if bufname ~= "" then
+      local buffer_padding_right = longest_bufname_len - vim.fn.strchars(bufname)
+      formatted_item = bufname
+        .. string.rep(" ", buffer_padding_right)
+        .. " | "
+        .. h.str.pad(item.lnum, { min_len = longest_row_len, side = "left" })
+        .. ":"
+        .. h.str.pad(item.col, { min_len = longest_col_len, side = "right" })
+        .. " | "
+        .. text
+    end
 
     local misc_padding = 10
-    local win_width = (vim.api.nvim_win_get_width(0) / (has_preview_win() and 1 or 2))
-      - misc_padding
+    local win_width =
+      math.floor(vim.api.nvim_win_get_width(0) / (has_preview_win() and 1 or 2) - misc_padding)
     if vim.fn.strchars(formatted_item) > win_width then
-      formatted_item = formatted_item:sub(1, win_width)
+      formatted_item = vim.fn.strcharpart(formatted_item, 0, win_width)
     end
     items[index] = formatted_item
   end

@@ -7,7 +7,7 @@ local T = MiniTest.new_set {
   hooks = {
     pre_case = function()
       child.restart { "-u", "scripts/minimal_init.lua" }
-      child.o.columns = 60
+      child.o.columns = 30
     end,
     post_once = child.stop,
   },
@@ -66,9 +66,7 @@ T["Tabline()"]["shows the current and the alternate buffer names"] = function()
 
   MiniTest.expect.equality(
     tabline(),
-    " %#TabLineTitle#EDIT %#TabLineSel#a/one.lua"
-      .. string.rep(" ", 22)
-      .. "%#TabLine#ALT b/two.lua"
+    " %#TabLineTitle#EDIT %#TabLineSel#a/one.lua       %#TabLine#ALT b/two.lua"
   )
 end
 
@@ -79,9 +77,7 @@ T["Tabline()"]["truncates long buffer names from the left"] = function()
 
   MiniTest.expect.equality(
     tabline(),
-    " %#TabLineTitle#EDIT %#TabLineSel#…1234567890123456789"
-      .. string.rep(" ", 11)
-      .. "%#TabLine#ALT a/one.lua"
+    " %#TabLineTitle#EDIT %#TabLineSel#…123456789      %#TabLine#ALT a/one.lua"
   )
 end
 
@@ -91,7 +87,7 @@ T["Tabline()"]["shows [unnamed] for buffers without a name"] = function()
 
   MiniTest.expect.equality(
     tabline(),
-    " %#TabLineTitle#EDIT %#TabLineSel#[unnamed]" .. string.rep(" ", 22) .. "%#TabLine#ALT "
+    " %#TabLineTitle#EDIT %#TabLineSel#[unnamed]       %#TabLine#ALT "
   )
 end
 
@@ -102,18 +98,18 @@ T["Tabline()"]["shows [terminal] for terminal buffers"] = function()
 
   MiniTest.expect.equality(
     tabline(),
-    " %#TabLineTitle#EDIT %#TabLineSel#[terminal]" .. string.rep(" ", 21) .. "%#TabLine#ALT "
+    " %#TabLineTitle#EDIT %#TabLineSel#[terminal]      %#TabLine#ALT "
   )
 end
 
 T["Tabline()"]["hides the alternate buffer when it has the same relative name"] = function()
   load_module()
-  child.lua_func(test_helpers.open_named_buffer, "/root/one/x/dir/file.lua")
-  child.lua_func(test_helpers.open_named_buffer, "/root/two/y/dir/file.lua")
+  child.lua_func(test_helpers.open_named_buffer, "/root/one/x/dir/f.lua")
+  child.lua_func(test_helpers.open_named_buffer, "/root/two/y/dir/f.lua")
 
   MiniTest.expect.equality(
     tabline(),
-    " %#TabLineTitle#EDIT %#TabLineSel#dir/file.lua" .. string.rep(" ", 19) .. "%#TabLine#ALT "
+    " %#TabLineTitle#EDIT %#TabLineSel#dir/f.lua       %#TabLine#ALT "
   )
 end
 
@@ -123,23 +119,19 @@ T["Tabline()"]["shows the current tab page number when there are multiple tab pa
 
   MiniTest.expect.equality(
     tabline(),
-    "%#Search# 2 %#TabLine# %#TabLineTitle#EDIT %#TabLineSel#[unnamed]"
-      .. string.rep(" ", 22)
-      .. "%#TabLine#ALT "
+    "%#Search# 2 %#TabLine# %#TabLineTitle#EDIT %#TabLineSel#[unnamed]       %#TabLine#ALT "
   )
 end
 
 T["Tabline()"]["pads fractional section lengths up"] = function()
-  child.o.columns = 57
+  child.o.columns = 27
   load_module()
   child.lua_func(test_helpers.open_named_buffer, "/root/one/b/two.lua")
   child.lua_func(test_helpers.open_named_buffer, "/root/one/a/one.lua")
 
   MiniTest.expect.equality(
     tabline(),
-    " %#TabLineTitle#EDIT %#TabLineSel#a/one.lua"
-      .. string.rep(" ", 21)
-      .. "%#TabLine#ALT b/two.lua"
+    " %#TabLineTitle#EDIT %#TabLineSel#a/one.lua      %#TabLine#ALT b/two.lua"
   )
 end
 

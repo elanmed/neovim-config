@@ -32,6 +32,14 @@ local bufnr = (function()
 end)()
 ```
 
+## Neovim APIs
+
+Prefer the native Lua implementation over its `vim.fn` binding: it skips the Vimscript bridge and carries types. Use `vim.trim`, `vim.split`, `vim.fs.*`, `vim.text.*`, and `vim.api.*`; reach for `vim.fn.*` only when there is no Lua equivalent, or when the Vimscript version does more (`vim.fn.trim` also trims a list).
+
+```lua
+local text = vim.trim(item.text)
+```
+
 ## Type annotations
 
 Every function parameter carries a `--- @param` type comment, including anonymous callbacks and `child.lua_func` closures. Name parameters with an `_arg` suffix when the callback would shadow an outer name.
