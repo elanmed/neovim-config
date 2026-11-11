@@ -121,6 +121,11 @@ M.open_file_buffer = function(lines)
   return path
 end
 
+--- @param path string
+M.edit_file = function(path)
+  vim.cmd.edit { args = { path }, mods = { silent = true } }
+end
+
 M.open_buffer = function()
   local buf_id = vim.api.nvim_create_buf(true, false)
   vim.api.nvim_set_current_buf(buf_id)

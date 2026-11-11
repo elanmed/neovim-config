@@ -129,7 +129,7 @@ end
 T["GetQuickfixTextFunc()"]["shows only the text for entries without a file"] = function()
   child.o.columns = 300
   local paths = test_helpers.make_files { "alpha/short.lua" }
-  child.cmd("edit " .. vim.fn.fnameescape(paths[1]))
+  child.lua_func(test_helpers.edit_file, paths[1])
   set_qf_list { { text = "no file" } }
 
   MiniTest.expect.equality(formatted_items(), { "no file" })
