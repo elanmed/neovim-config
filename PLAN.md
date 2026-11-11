@@ -1,14 +1,18 @@
-# Plan: add smoke-test placeholders for every config Lua source
+# Plan: add meaningful tests for config Lua sources
 
 ## Scope
 
-Create one `mini.test` file for each of the 29 in-scope config-owned Lua source files under the repository root. Exclude `after/`, `ftplugin/java.lua`, all of `fzf_scripts/`, `lua/feature_complete/shell_plugins/fzf.lua` (these fzf files are planned to move into a plugin), `tests/`, `deps/`, and `language_servers/`. The language-server release under `language_servers/` is an ignored installed distribution, and `deps/mini.test` is test infrastructure; neither should receive project tests. Tests themselves are excluded to avoid recursively creating tests for tests.
+Future work: create one meaningful `mini.test` file for each of the 29 in-scope config-owned Lua source files under the repository root. Do not add empty smoke-test placeholders; this TODO list tracks the backlog. Exclude `after/`, `ftplugin/java.lua`, all of `fzf_scripts/`, `lua/feature_complete/shell_plugins/fzf.lua` (these fzf files are planned to move into a plugin), `tests/`, `deps/`, and `language_servers/`. The language-server release under `language_servers/` is an ignored installed distribution, and `deps/mini.test` is test infrastructure; neither should receive project tests. Tests themselves are excluded to avoid recursively creating tests for tests.
 
-Each new file will be placed in `tests/` and named by replacing `/` in the source path with `_`, removing `.lua`, then appending `_test.lua` (for example, `lua/shared/options.lua` becomes `tests/lua_shared_options_test.lua`). Each will contain one smoke case using a trivial `MiniTest.expect.equality(true, true)` assertion; these placeholders are to be filled out with meaningful checks later.
+Place each eventual test in `tests/` and name it by replacing `/` in the source path with `_`, removing `.lua`, then appending `_test.lua` (for example, `lua/shared/options.lua` becomes `tests/lua_shared_options_test.lua`). Each test should exercise observable behavior rather than use a dummy equality assertion.
 
-`mini.test` discovers `test_*.lua` by default, so update `scripts/minimal_init.lua` to discover both the existing `test_*.lua` file and the new `*_test.lua` files. This preserves the existing dummy suite while ensuring every generated smoke test runs. The current `make test` target will remain unchanged.
+`mini.test` discovers `test_*.lua` by default, so update `scripts/minimal_init.lua` to discover both the existing `test_*.lua` file and the new `*_test.lua` files. This preserves the existing dummy suite while ensuring the per-file tests are collected. The current `make test` target will remain unchanged.
 
-## TODO: replace smoke placeholders with substantive tests
+## Consult the template.nvim model
+
+Shallow-clone `elanmed/template.nvim` to `/tmp/template.nvim`. Read `/tmp/template.nvim/PRINCIPLES.md` in full and assess which principles apply to this Neovim config and its tests.
+
+## TODO: create and fill in substantive tests
 
 - [ ] `tests/barebones_test.lua` — `barebones.lua`
 - [ ] `tests/container_test.lua` — `container.lua`
@@ -27,7 +31,7 @@ Each new file will be placed in `tests/` and named by replacing `/` in the sourc
 - [ ] `tests/lua_feature_complete_vim_plugins_quickfix_list_test.lua` — `lua/feature_complete/vim_plugins/quickfix_list.lua`
 - [ ] `tests/lua_feature_complete_vim_plugins_version_control_test.lua` — `lua/feature_complete/vim_plugins/version_control.lua`
 - [ ] `tests/lua_first_test.lua` — `lua/first.lua`
-- [ ] `tests/lua_helpers_test.lua` — `lua/helpers.lua`
+- [x] `tests/lua_helpers_test.lua` — `lua/helpers.lua`
 - [ ] `tests/lua_shared_abbrev_test.lua` — `lua/shared/abbrev.lua`
 - [ ] `tests/lua_shared_auto_commands_test.lua` — `lua/shared/auto_commands.lua`
 - [ ] `tests/lua_shared_keymaps_test.lua` — `lua/shared/keymaps.lua`
@@ -42,4 +46,4 @@ Each new file will be placed in `tests/` and named by replacing `/` in the sourc
 
 ## Verification after approval
 
-Run `make test`, `make lint`, and StyLua checks. Confirm MiniTest discovers all 29 new smoke cases plus the existing smoke test, for 30 total cases.
+Run `make test`, `make lint`, and StyLua checks. When tests are added, confirm MiniTest discovers every `*_test.lua` file along with the existing `test_*.lua` suite.
