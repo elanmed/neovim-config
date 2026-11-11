@@ -179,8 +179,41 @@ T["Snippet"]["replaces the current line with the snippet content"] = function()
 
   child.cmd "Snippet its"
 
-  test_helpers.expect_lines(get_lines(), { "  it(\"\", () => {", "", "});" })
+  test_helpers.expect_eventually(get_lines, { "it(\"\", () => {", "", "});" })
+  test_helpers.expect_cursor(get_cursor(), { 1, 4 })
+end
+
+T["Snippet"]["keeps the text before the cursor"] = function()
+  child.lua_func(stub_snippets_config_dir, make_snippets_config_dir())
+  child.lua_func(test_helpers.open_scratch_buffer, { "  click(\"x\")" }, { 1, 2 })
+
+  child.cmd "Snippet its"
+
+  test_helpers.expect_eventually(get_lines, { "  it(\"\", () => {", "", "});" })
   test_helpers.expect_cursor(get_cursor(), { 1, 6 })
+end
+
+T["Snippet"]["warns when the snippet file is missing"] = function()
+  local config_dir = test_helpers.make_temp_dir()
+  child.lua_func(stub_snippets_config_dir, config_dir)
+  child.lua_func(test_helpers.open_scratch_buffer, { "  click(\"x\")" }, { 1, 2 })
+  child.lua_func(test_helpers.stub_notify)
+
+  child.cmd "Snippet its"
+
+  test_helpers.expect_eventually(function()
+    return child.lua_get [[_G.notifications]]
+  end, {
+    {
+      name = "notify",
+      args = {
+        "Could not read snippet file " .. vim.fs.joinpath(config_dir, "snippets", "it.ts"),
+        vim.log.levels.WARN,
+      },
+    },
+  })
+  test_helpers.expect_lines(get_lines(), { "  click(\"x\")" })
+  test_helpers.expect_cursor(get_cursor(), { 1, 2 })
 end
 
 T["Snippet"]["moves the cursor according to the snippet trigger"] = function()
@@ -189,8 +222,8 @@ T["Snippet"]["moves the cursor according to the snippet trigger"] = function()
 
   child.cmd "Snippet ndoc"
 
-  test_helpers.expect_lines(get_lines(), { "  expect().not.toBeInTheDocument();" })
-  test_helpers.expect_cursor(get_cursor(), { 1, 9 })
+  test_helpers.expect_eventually(get_lines, { "expect().not.toBeInTheDocument();" })
+  test_helpers.expect_cursor(get_cursor(), { 1, 7 })
 end
 
 return T

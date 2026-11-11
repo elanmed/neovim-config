@@ -192,20 +192,22 @@ async.ensure_main_loop = function()
 end
 
 --- @param filepath string
---- @return vim.async.Task<{ lines: string[], str: string }>
+--- @return vim.async.Task<string?, { lines: string[], str: string }?>
 fs.readfile = function(filepath)
+  --- @return string?, { lines: string[], str: string }?
   return vim.async.run(function()
+    --- @diagnostic disable: redundant-return-value
     local open_err, fd = vim.async.await(function(callback)
       vim.uv.fs_open(filepath, 0, 0, callback)
     end)
     if open_err then
-      error(open_err, 0)
+      return open_err, nil
     end
 
     local stat_err, stat = vim.async.await(2, vim.uv.fs_fstat, fd)
     if stat_err ~= nil then
       vim.async.await(2, vim.uv.fs_close, fd)
-      error(stat_err, 0)
+      return stat_err, nil
     end
 
     local content = ""
@@ -215,10 +217,10 @@ fs.readfile = function(filepath)
     end
     local close_err = vim.async.await(2, vim.uv.fs_close, fd)
     if read_err then
-      error(read_err, 0)
+      return read_err, nil
     end
     if close_err then
-      error(close_err, 0)
+      return close_err, nil
     end
 
     local lines = (function()
@@ -240,7 +242,8 @@ fs.readfile = function(filepath)
       return table.concat(lines, "\n") .. "\n"
     end)()
 
-    return { lines = lines, str = str }
+    return nil, { lines = lines, str = str }
+    --- @diagnostic enable: redundant-return-value
   end)
 end
 

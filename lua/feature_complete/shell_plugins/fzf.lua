@@ -351,12 +351,16 @@ end
 --- @field working { lines: string[], str: string }
 
 --- @param filepath string
---- @return IndexAndWorktree
 local function read_index_and_worktree(filepath)
+  local read_err, working = vim.async.await(h.fs.readfile(filepath))
+  if read_err ~= nil then
+    return read_err, nil
+  end
+
   local index_lines = run_cmd { "git", "show", (":%s"):format(filepath) }
-  return {
+  return nil, {
     index = table.concat(index_lines, "\n") .. "\n",
-    working = vim.async.await(h.fs.readfile(filepath)),
+    working = working,
   }
 end
 
@@ -370,11 +374,11 @@ vim.keymap.set(
     local qf_entries = {}
 
     for _, filepath in ipairs(changed_files) do
-      if vim.uv.fs_stat(filepath) == nil then
+      local read_err, file_contents = read_index_and_worktree(filepath)
+      if read_err ~= nil or file_contents == nil then
         goto continue
       end
 
-      local file_contents = read_index_and_worktree(filepath)
       vim.text.diff(file_contents.index, file_contents.working.str, {
         on_hunk = function(start_old_1i, count_old, start_new_1i, count_new)
           local raw_hunk = { start_old_1i, count_old, start_new_1i, count_new }
@@ -437,11 +441,11 @@ vim.keymap.set(
     local qf_entries = {}
 
     for _, filepath in ipairs(changed_files) do
-      if vim.uv.fs_stat(filepath) == nil then
+      local read_err, file_contents = read_index_and_worktree(filepath)
+      if read_err ~= nil or file_contents == nil then
         goto continue
       end
 
-      local file_contents = read_index_and_worktree(filepath)
       local raw_hunks = vim.text.diff(file_contents.index, file_contents.working.str, {
         result_type = "indices",
       })

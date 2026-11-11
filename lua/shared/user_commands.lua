@@ -1,3 +1,5 @@
+local h = require "helpers"
+
 vim.api.nvim_create_user_command("PrintHighlights", function()
   vim.cmd "redir! > highlights.txt | silent hi | redir END"
 end, {})
@@ -21,51 +23,60 @@ vim.api.nvim_create_user_command("Format", function()
   vim.cmd.write { mods = { silent = true } }
 end, {})
 
-vim.api.nvim_create_user_command("Snippet", function(opts)
-  local snippet_trigger_to_file_mapping = {
-    bef = { file = "before.ts", movement = "ji\t" },
-    des = { file = "describe.ts", movement = "f\"l" },
-    fin = { file = "findBy.ts", movement = "f;" },
-    its = { file = "it.ts", movement = "f\"l" },
-    ndoc = { file = "notToBeInTheDocument.ts", movement = "f)" },
-    doc = { file = "toBeInTheDocument.ts", movement = "f)" },
-    cal = { file = "useCallback.ts", movement = "ji\t" },
-    eff = { file = "useEffect.ts", movement = "ji\t" },
-    mem = { file = "useMemo.ts", movement = "ji\t" },
-    wai = { file = "waitFor.ts", movement = "f>f)" },
-    af = { file = "arrowFn.ts", movement = "ji\t" },
-  }
+vim.api.nvim_create_user_command(
+  "Snippet",
+  h.async.cb(function(opts)
+    local snippet_trigger_to_file_mapping = {
+      bef = { file = "before.ts", movement = "ji\t" },
+      des = { file = "describe.ts", movement = "f\"l" },
+      fin = { file = "findBy.ts", movement = "f;" },
+      its = { file = "it.ts", movement = "f\"l" },
+      ndoc = { file = "notToBeInTheDocument.ts", movement = "f)" },
+      doc = { file = "toBeInTheDocument.ts", movement = "f)" },
+      cal = { file = "useCallback.ts", movement = "ji\t" },
+      eff = { file = "useEffect.ts", movement = "ji\t" },
+      mem = { file = "useMemo.ts", movement = "ji\t" },
+      wai = { file = "waitFor.ts", movement = "f>f)" },
+      af = { file = "arrowFn.ts", movement = "ji\t" },
+    }
 
-  local snippet_trigger = opts.fargs[1]
+    local snippet_trigger = opts.fargs[1]
 
-  if snippet_trigger == nil then
-    print "Available snippet triggers:"
-    for trigger in pairs(snippet_trigger_to_file_mapping) do
-      print(trigger)
+    if snippet_trigger == nil then
+      print "Available snippet triggers:"
+      for trigger in pairs(snippet_trigger_to_file_mapping) do
+        print(trigger)
+      end
+      return
     end
-    return
-  end
 
-  local snippet_triggers = vim.tbl_keys(snippet_trigger_to_file_mapping)
-  if not vim.tbl_contains(snippet_triggers, snippet_trigger) then
-    vim.notify(snippet_trigger .. " is not a valid snippet trigger!", vim.log.levels.WARN)
-    return
-  end
+    local snippet_triggers = vim.tbl_keys(snippet_trigger_to_file_mapping)
+    if not vim.tbl_contains(snippet_triggers, snippet_trigger) then
+      vim.notify(snippet_trigger .. " is not a valid snippet trigger!", vim.log.levels.WARN)
+      return
+    end
 
-  local snippets_path = vim.fs.joinpath(vim.fn.stdpath "config", "snippets")
-  local snippet_file =
-    vim.fs.joinpath(snippets_path, snippet_trigger_to_file_mapping[snippet_trigger].file)
+    local snippets_path = vim.fs.joinpath(vim.fn.stdpath "config", "snippets")
+    local snippet_file =
+      vim.fs.joinpath(snippets_path, snippet_trigger_to_file_mapping[snippet_trigger].file)
 
-  local line_content = vim.api.nvim_get_current_line()
-  local row_1i, col_0i = unpack(vim.api.nvim_win_get_cursor(0))
-  local row_0i = row_1i - 1
-  local col_1i = col_0i + 1
-  local col_1i_incl = col_1i + 1
-  local curr_content = line_content:sub(1, col_1i_incl)
-  local snippet_content = vim.fn.readfile(snippet_file)
-  snippet_content[1] = curr_content .. snippet_content[1]
+    local line_content = vim.api.nvim_get_current_line()
+    local row_1i, col_0i = unpack(vim.api.nvim_win_get_cursor(0))
+    local row_0i = row_1i - 1
+    local curr_content = line_content:sub(1, col_0i)
 
-  vim.api.nvim_buf_set_lines(0, row_0i, row_0i + 1, false, snippet_content)
+    local read_err, snippet_file_content = vim.async.await(h.fs.readfile(snippet_file))
+    h.async.ensure_main_loop()
+    if read_err ~= nil then
+      return vim.notify("Could not read snippet file " .. snippet_file, vim.log.levels.WARN)
+    end
 
-  vim.cmd.normal { snippet_trigger_to_file_mapping[snippet_trigger].movement, bang = true }
-end, { nargs = "*" })
+    local snippet_content = snippet_file_content.lines
+    snippet_content[1] = curr_content .. (snippet_content[1] or "")
+
+    vim.api.nvim_buf_set_lines(0, row_0i, row_0i + 1, false, snippet_content)
+
+    vim.cmd.normal { snippet_trigger_to_file_mapping[snippet_trigger].movement, bang = true }
+  end),
+  { nargs = "*" }
+)

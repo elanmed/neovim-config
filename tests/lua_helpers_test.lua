@@ -70,7 +70,10 @@ T["fs.readfile()"] = MiniTest.new_set()
 T["fs.readfile()"]["reads lines asynchronously"] = function()
   local path = test_helpers.write_temp_file "first\n\nlast\n"
 
-  MiniTest.expect.equality(readfile(path), {
+  local err, content = readfile(path)
+
+  MiniTest.expect.equality(err, nil)
+  MiniTest.expect.equality(content, {
     lines = { "first", "", "last" },
     str = "first\n\nlast\n",
   })
@@ -79,7 +82,10 @@ end
 T["fs.readfile()"]["normalizes files without a final newline"] = function()
   local path = test_helpers.write_temp_file "first\nsecond"
 
-  MiniTest.expect.equality(readfile(path), {
+  local err, content = readfile(path)
+
+  MiniTest.expect.equality(err, nil)
+  MiniTest.expect.equality(content, {
     lines = { "first", "second" },
     str = "first\nsecond\n",
   })
@@ -88,7 +94,10 @@ end
 T["fs.readfile()"]["preserves multiple trailing blank lines"] = function()
   local path = test_helpers.write_temp_file "first\n\n\n"
 
-  MiniTest.expect.equality(readfile(path), {
+  local err, content = readfile(path)
+
+  MiniTest.expect.equality(err, nil)
+  MiniTest.expect.equality(content, {
     lines = { "first", "", "" },
     str = "first\n\n\n",
   })
@@ -97,21 +106,28 @@ end
 T["fs.readfile()"]["preserves leading blank lines"] = function()
   local path = test_helpers.write_temp_file "\nfirst\n"
 
-  MiniTest.expect.equality(readfile(path), { lines = { "", "first" }, str = "\nfirst\n" })
+  local err, content = readfile(path)
+
+  MiniTest.expect.equality(err, nil)
+  MiniTest.expect.equality(content, { lines = { "", "first" }, str = "\nfirst\n" })
 end
 
 T["fs.readfile()"]["returns empty contents for empty files"] = function()
   local path = test_helpers.write_temp_file ""
 
-  MiniTest.expect.equality(readfile(path), { lines = {}, str = "" })
+  local err, content = readfile(path)
+
+  MiniTest.expect.equality(err, nil)
+  MiniTest.expect.equality(content, { lines = {}, str = "" })
 end
 
-T["fs.readfile()"]["raises an error for missing files"] = function()
+T["fs.readfile()"]["returns an error for missing files"] = function()
   local path = vim.fn.tempname()
 
-  MiniTest.expect.error(function()
-    readfile(path)
-  end)
+  local err, content = readfile(path)
+
+  MiniTest.expect.equality(type(err), "string")
+  MiniTest.expect.equality(content, nil)
 end
 
 T["fs.readfile()"]["returns empty contents without reading zero-byte files"] = function()
@@ -135,20 +151,24 @@ T["fs.readfile()"]["returns empty contents without reading zero-byte files"] = f
     end,
   })
 
-  MiniTest.expect.equality(readfile "mocked-empty.txt", { lines = {}, str = "" })
+  local err, content = readfile "mocked-empty.txt"
+
+  MiniTest.expect.equality(err, nil)
+  MiniTest.expect.equality(content, { lines = {}, str = "" })
   MiniTest.expect.equality({ did_read, did_close }, { false, true })
 end
 
-T["fs.readfile()"]["propagates open errors"] = function()
+T["fs.readfile()"]["returns open errors"] = function()
   test_helpers.mock(vim.uv, {
     fs_open = function(_, _, _, callback)
       callback "open failed"
     end,
   })
 
-  MiniTest.expect.error(function()
-    readfile "mocked-missing.txt"
-  end)
+  local err, content = readfile "mocked-missing.txt"
+
+  MiniTest.expect.equality(err, "open failed")
+  MiniTest.expect.equality(content, nil)
 end
 
 T["fs.readfile()"]["closes the descriptor after reading mocked contents"] = function()
@@ -168,7 +188,10 @@ T["fs.readfile()"]["closes the descriptor after reading mocked contents"] = func
     end,
   })
 
-  MiniTest.expect.equality(readfile "mocked.txt", {
+  local read_err, read_content = readfile "mocked.txt"
+
+  MiniTest.expect.equality(read_err, nil)
+  MiniTest.expect.equality(read_content, {
     lines = { "first", "", "last" },
     str = "first\n\nlast\n",
   })
@@ -195,9 +218,10 @@ T["fs.readfile()"]["closes the descriptor when stat fails"] = function()
     end,
   })
 
-  MiniTest.expect.error(function()
-    readfile "mocked.txt"
-  end)
+  local err, content = readfile "mocked.txt"
+
+  MiniTest.expect.equality(err, "stat failed")
+  MiniTest.expect.equality(content, nil)
   MiniTest.expect.equality(did_close, true)
 end
 
@@ -219,13 +243,14 @@ T["fs.readfile()"]["closes the descriptor when reading fails"] = function()
     end,
   })
 
-  MiniTest.expect.error(function()
-    readfile "mocked.txt"
-  end)
+  local err, content = readfile "mocked.txt"
+
+  MiniTest.expect.equality(err, "read failed")
+  MiniTest.expect.equality(content, nil)
   MiniTest.expect.equality(did_close, true)
 end
 
-T["fs.readfile()"]["raises when closing fails"] = function()
+T["fs.readfile()"]["returns an error when closing fails"] = function()
   test_helpers.mock(vim.uv, {
     fs_open = function(_, _, _, callback)
       callback(nil, 17)
@@ -241,9 +266,10 @@ T["fs.readfile()"]["raises when closing fails"] = function()
     end,
   })
 
-  MiniTest.expect.error(function()
-    readfile "mocked.txt"
-  end)
+  local err, content = readfile "mocked.txt"
+
+  MiniTest.expect.equality(err, "close failed")
+  MiniTest.expect.equality(content, nil)
 end
 
 T["str.pad()"] = MiniTest.new_set()
