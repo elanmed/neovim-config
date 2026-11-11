@@ -99,19 +99,18 @@ local format_with_cli = function(cmd)
   local winnr = vim.api.nvim_get_current_win()
   local bufnr = vim.api.nvim_get_current_buf()
 
-  local result = h.async.system(cmd, {
+  local formatted, err = vim.async.await(h.async.system(cmd, {
     stdin = unformatted,
     text = true,
-  })
+  }))
   vim.async.sleep(1)
 
-  if result.code ~= 0 then
+  if err ~= nil then
     vim.notify(("[%s] non-zero exit code, writing"):format(cmd[1]), vim.log.levels.INFO)
     call_write { bufnr = bufnr, winnr = winnr }
     return
   end
 
-  local formatted = result.stdout
   if formatted == nil then
     vim.notify(("[%s] no stdout, writing"):format(cmd[1]), vim.log.levels.INFO)
     call_write { bufnr = bufnr, winnr = winnr }
@@ -293,7 +292,7 @@ local function get_stageable_buffer_name()
 end
 
 local function stage_file(name)
-  h.async.system { "git", "add", "--", name }
+  vim.async.await(h.async.system { "git", "add", "--", name })
 end
 
 vim.api.nvim_create_user_command(
@@ -323,12 +322,13 @@ vim.api.nvim_create_user_command(
 
     local commit_message = ("[:Commit] %s"):format(vim.fs.basename(name))
     vim.notify("Committing…", vim.log.levels.INFO)
-    local commit_result =
+    local commit_stdout, commit_err = vim.async.await(
       h.async.system { "git", "commit", "--only", "-m", commit_message, "--", name }
-    local commit_succeeded = commit_result.code == 0
+    )
+    local commit_succeeded = commit_err == nil
 
     vim.notify(
-      commit_succeeded and commit_result.stdout or commit_result.stderr or "",
+      commit_succeeded and commit_stdout or commit_err or "",
       commit_succeeded and vim.log.levels.TRACE or vim.log.levels.ERROR
     )
   end),

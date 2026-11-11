@@ -336,14 +336,22 @@ local function ripgrep_sinklist(list)
 end
 
 local function run_cmd(cmd_parts)
-  local out = h.async.system(cmd_parts)
-  if out.stderr ~= nil then
-    vim.notify(out.stderr, vim.log.levels.ERROR)
+  local stdout, err = vim.async.await(h.async.system(cmd_parts))
+  if err ~= nil then
+    vim.notify(err, vim.log.levels.ERROR)
   end
-  if out.stdout == nil then
+  if stdout == nil then
     return {}
   end
-  return vim.split(out.stdout, "\n", { trimempty = true })
+  return vim.split(stdout, "\n", { trimempty = true })
+end
+
+local function read_index_and_worktree(filepath)
+  local index_lines = run_cmd { "git", "show", (":%s"):format(filepath) }
+  return {
+    index = table.concat(index_lines, "\n") .. "\n",
+    working = vim.async.await(h.fs.readfile(filepath)),
+  }
 end
 
 vim.keymap.set(
@@ -360,14 +368,8 @@ vim.keymap.set(
         goto continue
       end
 
-      local head_lines = run_cmd { "git", "show", (":%s"):format(filepath) }
-      h.async.ensure_main_loop()
-      local working_lines = vim.fn.readfile(filepath)
-
-      local head_string = table.concat(head_lines, "\n") .. "\n"
-      local working_string = table.concat(working_lines, "\n") .. "\n"
-
-      vim.text.diff(head_string, working_string, {
+      local file_contents = read_index_and_worktree(filepath)
+      vim.text.diff(file_contents.index, file_contents.working.str, {
         on_hunk = function(start_old_1i, count_old, start_new_1i, count_new)
           local raw_hunk = { start_old_1i, count_old, start_new_1i, count_new }
 
@@ -376,7 +378,7 @@ vim.keymap.set(
             return
           end
 
-          local content = working_lines[hunk.start_new_1i]
+          local content = file_contents.working.lines[hunk.start_new_1i]
 
           --- @type vim.quickfix.entry
           local entry = {
@@ -433,14 +435,10 @@ vim.keymap.set(
         goto continue
       end
 
-      local head_lines = run_cmd { "git", "show", (":%s"):format(filepath) }
-      h.async.ensure_main_loop()
-      local working_lines = vim.fn.readfile(filepath)
-
-      local head_string = table.concat(head_lines, "\n") .. "\n"
-      local working_string = table.concat(working_lines, "\n") .. "\n"
-
-      local raw_hunks = vim.text.diff(head_string, working_string, { result_type = "indices" })
+      local file_contents = read_index_and_worktree(filepath)
+      local raw_hunks = vim.text.diff(file_contents.index, file_contents.working.str, {
+        result_type = "indices",
+      })
       if raw_hunks == nil then
         goto continue
       end

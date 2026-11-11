@@ -125,29 +125,26 @@ vim.api.nvim_create_autocmd("BufWritePost", {
     ctags_timer = vim.fn.timer_start(
       5000,
       h.async.cb(function()
-        local git_out = h.async.system { "git", "rev-parse", "--show-toplevel" }
-        if git_out.code ~= 0 then
+        local git_stdout, git_err = vim.async.await(
+          h.async.system { "git", "rev-parse", "--show-toplevel" }
+        )
+        if git_err ~= nil or git_stdout == nil then
           return
         end
-        if git_out.stdout == nil then
-          return
-        end
-        local git_root = vim.trim(git_out.stdout)
+        local git_root = vim.trim(git_stdout)
         if git_root == nil then
           return
         end
 
-        --- @type vim.SystemCompleted
-        local rg_out = h.async.system({ "rg", "--files" }, { cwd = git_root })
-        if rg_out.code ~= 0 then
-          return
-        end
-        if rg_out.stdout == nil then
+        local rg_stdout, rg_err = vim.async.await(
+          h.async.system({ "rg", "--files" }, { cwd = git_root })
+        )
+        if rg_err ~= nil or rg_stdout == nil then
           return
         end
 
         -- https://github.com/universal-ctags/ctags/issues/218#issuecomment-377717588
-        vim.system({ "ctags", "--recurse", "--links=no", "-L", "-" }, { stdin = rg_out.stdout })
+        vim.system({ "ctags", "--recurse", "--links=no", "-L", "-" }, { stdin = rg_stdout })
       end)
     )
   end,

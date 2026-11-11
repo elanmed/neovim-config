@@ -5,6 +5,7 @@ local dev = {}
 local utils = {}
 local async = {}
 local qf = {}
+local fs = {}
 
 local vimscript_true = 1
 local vimscript_false = 0
@@ -148,11 +149,27 @@ utils.is_big_file = function(opts)
   return vim.fn.getfsize(opts.bname) > one_pt_five_mb or opts.line_count > 20000
 end
 
---- @alias Resolve fun(...: any):nil
---- @alias Promise fun(resolve: Resolve):nil
-
 --- @type fun(cmd: string[], opts: vim.SystemOpts?): vim.SystemCompleted
-async.system = vim.async.wrap(3, vim.system)
+local system_async = vim.async.wrap(3, vim.system)
+
+--- @type fun(cmd: string[], opts: vim.SystemOpts?): vim.async.Task<string?, string?>
+async.system = function(cmd, opts)
+  --- @return string?, string?
+  return vim.async.run(function()
+    local out = system_async(cmd, opts)
+    if out.code ~= 0 then
+      local err = vim.trim(out.stderr)
+      if err == "" then
+        err = "unknown error"
+      end
+      --- @diagnostic disable-next-line: redundant-return-value
+      return nil, string.format("%s failed. Error: %s", table.concat(cmd, " "), err)
+    end
+
+    --- @diagnostic disable-next-line: redundant-return-value
+    return out.stdout, nil
+  end)
+end
 
 --- @type fun(opts: vim.ui.input.Opts?): string?
 async.ui_input = vim.async.wrap(2, vim.ui.input)
@@ -172,6 +189,49 @@ end
 
 async.ensure_main_loop = function()
   vim.async.sleep(0)
+end
+
+--- @param filepath string
+--- @return vim.async.Task<{ lines: string[], str: string }>
+fs.readfile = function(filepath)
+  return vim.async.run(function()
+    local open_err, fd = vim.async.await(4, vim.uv.fs_open, filepath, "r", 0)
+    assert(fd, open_err)
+
+    local stat_err, stat = vim.async.await(2, vim.uv.fs_fstat, fd)
+    if stat_err ~= nil then
+      vim.async.await(2, vim.uv.fs_close, fd)
+      error(stat_err, 0)
+    end
+
+    local content = ""
+    local read_err = nil
+    if stat.size > 0 then
+      read_err, content = vim.async.await(4, vim.uv.fs_read, fd, stat.size, 0)
+    end
+    local close_err = vim.async.await(2, vim.uv.fs_close, fd)
+    assert(not read_err, read_err)
+    assert(not close_err, close_err)
+
+    local lines = (function()
+      if content == "" then
+        return {}
+      end
+      return vim.split(content, "\n", { plain = true })
+    end)()
+
+    -- Drop the extra empty item produced by a trailing newline
+    if lines[#lines] == "" then
+      table.remove(lines)
+    end
+
+    for index, line in ipairs(lines) do
+      -- matches vim.fn.readfile
+      lines[index] = line:gsub("\r$", "")
+    end
+
+    return { lines = lines, str = table.concat(lines, "\n") .. "\n" }
+  end)
 end
 
 --- @class PadOpts
@@ -236,6 +296,7 @@ return {
   },
   utils = utils,
   qf = qf,
+  fs = fs,
   str = str,
   async = async,
 }

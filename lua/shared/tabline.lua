@@ -80,12 +80,12 @@ end
 local branch_cache = nil
 --- @async
 local get_branch = function()
-  local out = h.async.system { "git", "branch", "--show-current" }
-  if out.code ~= 0 or out.stdout == nil then
+  local stdout, err = vim.async.await(h.async.system { "git", "branch", "--show-current" })
+  if err ~= nil or stdout == nil then
     return nil
   end
 
-  local ref = vim.trim(out.stdout)
+  local ref = vim.trim(stdout)
   if ref == "" then
     return nil
   end
