@@ -129,6 +129,20 @@ T["Tabline()"]["shows the current tab page number when there are multiple tab pa
   )
 end
 
+T["Tabline()"]["pads fractional section lengths up"] = function()
+  child.o.columns = 57
+  load_module()
+  child.lua_func(test_helpers.open_named_buffer, "/root/one/b/two.lua")
+  child.lua_func(test_helpers.open_named_buffer, "/root/one/a/one.lua")
+
+  MiniTest.expect.equality(
+    tabline(),
+    " %#TabLineTitle#EDIT %#TabLineSel#a/one.lua"
+      .. string.rep(" ", 21)
+      .. "%#TabLine#ALT b/two.lua"
+  )
+end
+
 T["Tabline()"]["caps the sections at forty columns"] = function()
   child.o.columns = 300
   load_module()

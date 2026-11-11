@@ -257,7 +257,7 @@ str.pad = function(val, opts)
     return tostring(val)
   end
 
-  local num_spaces = opts.min_len - vim.fn.strchars(tostring(val))
+  local num_spaces = math.ceil(opts.min_len) - vim.fn.strchars(tostring(val))
   if opts.side == "left" then
     return string.rep(" ", num_spaces) .. tostring(val)
   end

@@ -284,6 +284,11 @@ T["str.pad()"]["does not truncate values already at the requested length"] = fun
   MiniTest.expect.equality(h.str.pad(12, { min_len = 4, side = "right" }), "12  ")
 end
 
+T["str.pad()"]["rounds a fractional minimum length up"] = function()
+  MiniTest.expect.equality(h.str.pad("abc", { min_len = 5.5, side = "left" }), "   abc")
+  MiniTest.expect.equality(h.str.pad("abc", { min_len = 5.5, side = "right" }), "abc   ")
+end
+
 T["str.pad()"]["counts multibyte characters"] = function()
   MiniTest.expect.equality(h.str.pad("猫", { min_len = 3, side = "left" }), "  猫")
 end
