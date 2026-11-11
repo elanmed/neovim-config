@@ -36,7 +36,7 @@ Put reusable fixtures and expectations in `tests/_helpers.lua`; do not define th
 
 - Prefer helpers that return a value over helpers that take a callback: callers should keep a flat case body (`local sandbox_dir = test_helpers.chdir_to_sandbox()`). Take a callback only when the helper must bracket the work, like `with_saved_registers`.
 - Add a custom expectation instead of repeating a raw API call plus `expect.equality` (`nvim_buf_get_lines`, `nvim_win_get_cursor`), and give it a failure message that shows the observed and the expected value.
-- Assert single values with plain `expect.equality`. Do not build compared tables with `vim.tbl_map` or other indirection; write out each expected value, even when it means eight consecutive `expect.equality` calls.
+- Mapping is fine when the value under test is itself a table (`expect.equality(vim.tbl_map(function(list_arg) return list_arg.title end, result), { "second" })`) and when it collapses genuinely repetitive access, such as the numbered registers (`vim.tbl_map(function(index_arg) return vim.fn.getreginfo(tostring(index_arg)).regcontents[1] end, { 1, 2, 3, 4, 5, 6, 7, 8, 9 })`). Do not map just to save a line or two when the asserted values are distinct; write those out as separate `expect.equality` calls.
 - Name constants instead of hardcoding magic numbers: `vim.log.levels.WARN` / `vim.log.levels.INFO`, not `3` / `2`.
 - Stub via `test_helpers.mock`, assert the recorded calls as a full literal list (`{ { name = "notify", args = { "Aborting, readonly", vim.log.levels.WARN } } }`). Do not hand-roll `rawset` plus manual restore.
 - Assert command output files with readable literal lines (`test_helpers.file_contains(path, "n gzq * <Cmd>echo 1<CR>")`), not with Lua patterns that encode column padding.

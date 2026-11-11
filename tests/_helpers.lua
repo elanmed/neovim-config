@@ -99,6 +99,24 @@ M.file_contains = function(path, line)
   return vim.tbl_contains(lines, line)
 end
 
+M.with_saved_registers = function(callback)
+  local numbered_register_infos = {}
+  for index = 0, 9 do
+    numbered_register_infos[index] = vim.fn.getreginfo(tostring(index))
+  end
+  local unnamed_register_info = vim.fn.getreginfo "\""
+
+  MiniTest.finally(function()
+    for index = 0, 9 do
+      local register_info = numbered_register_infos[index]
+      vim.fn.setreg(tostring(index), register_info.regcontents, register_info.regtype)
+    end
+    vim.fn.setreg("\"", unnamed_register_info.regcontents, unnamed_register_info.regtype)
+  end)
+
+  callback()
+end
+
 M.write_temp_file = function(contents)
   local path = vim.fn.tempname()
   MiniTest.finally(function()

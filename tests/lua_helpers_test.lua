@@ -403,88 +403,60 @@ T["utils.is_big_file()"]["detects files larger than one and a half megabytes"] =
   MiniTest.expect.equality(h.utils.is_big_file { bname = path, line_count = 0 }, true)
 end
 
-local original_registers = {}
-T["utils.rotate_registers()"] = MiniTest.new_set {
-  hooks = {
-    pre_once = function()
-      for index = 0, 9 do
-        original_registers[index] = vim.fn.getreginfo(tostring(index))
-      end
-    end,
-    pre_case = function()
-      for index = 0, 9 do
-        vim.fn.setreg(tostring(index), "reg" .. index)
-      end
-    end,
-    post_case = function()
-      for index = 0, 9 do
-        local register_info = original_registers[index]
-        vim.fn.setreg(tostring(index), register_info.regcontents, register_info.regtype)
-      end
-    end,
-  },
-}
+T["utils.rotate_registers()"] = MiniTest.new_set()
 
 T["utils.rotate_registers()"]["shifts numbered registers up by one"] = function()
-  h.utils.rotate_registers()
+  test_helpers.with_saved_registers(function()
+    for index = 0, 9 do
+      vim.fn.setreg(tostring(index), "reg" .. index)
+    end
 
-  MiniTest.expect.equality(
-    vim.tbl_map(function(index_arg)
-      return vim.fn.getreginfo(tostring(index_arg)).regcontents[1]
-    end, { 1, 2, 3, 4, 5, 6, 7, 8, 9 }),
-    { "reg0", "reg1", "reg2", "reg3", "reg4", "reg5", "reg6", "reg7", "reg8" }
-  )
+    h.utils.rotate_registers()
+
+    MiniTest.expect.equality(
+      vim.tbl_map(function(index_arg)
+        return vim.fn.getreginfo(tostring(index_arg)).regcontents[1]
+      end, { 1, 2, 3, 4, 5, 6, 7, 8, 9 }),
+      { "reg0", "reg1", "reg2", "reg3", "reg4", "reg5", "reg6", "reg7", "reg8" }
+    )
+  end)
 end
 
 T["utils.set_and_rotate()"] = function()
-  local original_registers = {}
-  for index = 0, 9 do
-    original_registers[index] = vim.fn.getreginfo(tostring(index))
-  end
-  original_registers.unnamed = vim.fn.getreginfo "\""
+  test_helpers.with_saved_registers(function()
+    local original_setreg = vim.fn.setreg
+    local clipboard_value = nil
+    test_helpers.mock(vim.fn, {
+      setreg = function(register_arg, value_arg, regtype_arg)
+        if register_arg == "+" then
+          clipboard_value = value_arg
+          return 0
+        end
+        return original_setreg(register_arg, value_arg, regtype_arg)
+      end,
+    })
+    local notifications = test_helpers.mock(vim, { notify = function() end })
 
-  local original_setreg = vim.fn.setreg
-  local original_notify = vim.notify
-  local clipboard_value = nil
-  local notification = nil
-  rawset(vim.fn, "setreg", function(register_arg, value_arg, regtype_arg)
-    if register_arg == "+" then
-      clipboard_value = value_arg
-      return 0
-    end
-    return original_setreg(register_arg, value_arg, regtype_arg)
-  end)
-  rawset(vim, "notify", function(message_arg, level_arg)
-    notification = { message = message_arg, level = level_arg }
-  end)
-
-  MiniTest.finally(function()
-    rawset(vim.fn, "setreg", original_setreg)
-    rawset(vim, "notify", original_notify)
     for index = 0, 9 do
-      local register_info = original_registers[index]
-      vim.fn.setreg(tostring(index), register_info.regcontents, register_info.regtype)
+      vim.fn.setreg(tostring(index), "reg" .. index)
     end
-    vim.fn.setreg("\"", original_registers.unnamed.regcontents, original_registers.unnamed.regtype)
+    h.utils.set_and_rotate "new value"
+
+    MiniTest.expect.equality(vim.fn.getreg("\"", 1, true), { "new value" })
+    MiniTest.expect.equality(clipboard_value, "new value")
+    MiniTest.expect.equality(notifications, {
+      {
+        name = "notify",
+        args = { "Setting the unnamed and + registers to: `new value`", vim.log.levels.INFO },
+      },
+    })
+    MiniTest.expect.equality(
+      vim.tbl_map(function(index_arg)
+        return vim.fn.getreginfo(tostring(index_arg)).regcontents[1]
+      end, { 1, 2, 3, 4, 5, 6, 7, 8, 9 }),
+      { "new value", "reg1", "reg2", "reg3", "reg4", "reg5", "reg6", "reg7", "reg8" }
+    )
   end)
-
-  for index = 0, 9 do
-    vim.fn.setreg(tostring(index), "reg" .. index)
-  end
-  h.utils.set_and_rotate "new value"
-
-  MiniTest.expect.equality(vim.fn.getreg("\"", 1, true), { "new value" })
-  MiniTest.expect.equality(clipboard_value, "new value")
-  MiniTest.expect.equality(notification, {
-    message = "Setting the unnamed and + registers to: `new value`",
-    level = 2,
-  })
-  MiniTest.expect.equality(
-    vim.tbl_map(function(index_arg)
-      return vim.fn.getreginfo(tostring(index_arg)).regcontents[1]
-    end, { 1, 2, 3, 4, 5, 6, 7, 8, 9 }),
-    { "new value", "reg1", "reg2", "reg3", "reg4", "reg5", "reg6", "reg7", "reg8" }
-  )
 end
 
 T["async.system()"] = function()
@@ -498,15 +470,15 @@ end
 
 T["async.ui_input()"] = function()
   local original_helpers = package.loaded.helpers
-  local original_input = vim.ui.input
-  rawset(vim.ui, "input", function(opts_arg, callback_arg)
-    callback_arg "confirmed"
-  end)
+  test_helpers.mock(vim.ui, {
+    input = function(_, callback_arg)
+      callback_arg "confirmed"
+    end,
+  })
   package.loaded.helpers = nil
   local helpers_with_stubbed_input = require "helpers"
 
   MiniTest.finally(function()
-    rawset(vim.ui, "input", original_input)
     package.loaded.helpers = original_helpers
   end)
 
