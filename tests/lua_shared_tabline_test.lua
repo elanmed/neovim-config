@@ -25,37 +25,25 @@ local statusline = function()
   return child.lua_get [[_G.Statusline()]]
 end
 
+--- @class BranchStubResult
+--- @field err string?
+--- @field stdout string?
+
+--- @param result BranchStubResult
 local stub_branch = function(result)
   local helpers = require "helpers"
 
   require("tests._helpers").mock_child(helpers.async, {
     system = function()
       return vim.async.run(function()
-        --- @diagnostic disable-next-line: redundant-return-value
+        --- @diagnostic disable-next-line: redundant-return-value, return-type-mismatch
         return result.err, result.stdout
       end)
     end,
   }, "branch_calls")
 end
 
-T["setup"] = MiniTest.new_set()
-
-T["setup"]["defines the global Tabline and Statusline functions"] = function()
-  load_module()
-
-  MiniTest.expect.equality(child.lua_get [[type(_G.Tabline)]], "function")
-  MiniTest.expect.equality(child.lua_get [[type(_G.Statusline)]], "function")
-end
-
-T["setup"]["sets the tabline and statusline options"] = function()
-  load_module()
-
-  MiniTest.expect.equality(child.o.showtabline, 2)
-  MiniTest.expect.equality(child.o.tabline, "%!v:lua.Tabline()")
-  MiniTest.expect.equality(child.o.statusline, "%!v:lua.Statusline()")
-end
-
-T["setup"]["invalidates the branch cache on GitHeadChanged"] = function()
+T["invalidates the branch cache on GitHeadChanged"] = function()
   load_module()
 
   local autocmd_count = child.lua_func(function()

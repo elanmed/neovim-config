@@ -18,6 +18,20 @@ Read `/tmp/template.nvim/PRINCIPLES.md` in full and use it to judge which princi
 - `scripts/minimal_init.lua` collects both `tests/**/test_*.lua` and `tests/**/*_test.lua`, so no registration is needed for new files.
 - Potential bugs found while writing tests are recorded in `BUGS.md` (code reference, surprising behavior, and the test case that pins it down).
 
+## Lua style
+
+Prefer an immediately invoked function expression over the ternary-style `cond and a or b`, which silently drops a falsy `a` and hides multi-step branches:
+
+```lua
+local bufnr = (function()
+  if item_arg.path == nil then
+    return nil
+  end
+
+  return vim.fn.bufadd(item_arg.path)
+end)()
+```
+
 ## Type annotations
 
 Every function parameter carries a `--- @param` type comment, including anonymous callbacks, custom expectation predicates, and `child.lua_func` closures. Name parameters with an `_arg` suffix when the callback would shadow an outer name.

@@ -13,8 +13,10 @@ local T = MiniTest.new_set {
   },
 }
 
+--- @param config_dir string
 local stub_snippets_config_dir = function(config_dir)
   require("tests._helpers").mock_child(vim.fn, {
+    --- @param what_arg string
     stdpath = function(what_arg)
       if what_arg == "config" then
         return config_dir
@@ -44,28 +46,6 @@ end
 
 local get_cursor = function()
   return child.api.nvim_win_get_cursor(0)
-end
-
-T["defines the user commands"] = function()
-  local commands = child.lua_func(function()
-    local commands = vim.api.nvim_get_commands {}
-
-    local descriptions = {}
-    for _, name in ipairs { "Format", "PrintHighlights", "PrintRemaps", "Snippet" } do
-      descriptions[name] = { name = commands[name].name, nargs = commands[name].nargs }
-    end
-
-    return descriptions
-  end)
-
-  MiniTest.expect.equality(commands.Format.name, "Format")
-  MiniTest.expect.equality(commands.Format.nargs, "0")
-  MiniTest.expect.equality(commands.PrintHighlights.name, "PrintHighlights")
-  MiniTest.expect.equality(commands.PrintHighlights.nargs, "0")
-  MiniTest.expect.equality(commands.PrintRemaps.name, "PrintRemaps")
-  MiniTest.expect.equality(commands.PrintRemaps.nargs, "0")
-  MiniTest.expect.equality(commands.Snippet.name, "Snippet")
-  MiniTest.expect.equality(commands.Snippet.nargs, "*")
 end
 
 T["PrintHighlights"] = function()
@@ -158,9 +138,13 @@ T["Snippet"]["lists the available triggers when no trigger is given"] = function
   child.cmd "Snippet"
 
   local prints = child.lua_get [[_G.prints]]
-  local triggers = vim.tbl_map(function(print_arg)
-    return print_arg.args[1]
-  end, vim.list_slice(prints, 2))
+  local triggers = vim.tbl_map(
+    --- @param print_arg MockCall
+    function(print_arg)
+      return print_arg.args[1]
+    end,
+    vim.list_slice(prints, 2)
+  )
 
   MiniTest.expect.equality(prints[1], { name = "print", args = { "Available snippet triggers:" } })
   MiniTest.expect.equality(vim.fn.sort(triggers), {

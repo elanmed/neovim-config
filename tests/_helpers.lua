@@ -2,11 +2,19 @@ local MiniTest = require "mini.test"
 
 local M = {}
 
+--- @class MockCall
+--- @field name string
+--- @field args any[]
+
+--- @param target table<string, any>
+--- @param overrides table<string, function>
+--- @param store_name string?
 M.mock_child = function(target, overrides, store_name)
   local originals = {}
   local calls = {}
   for name, replacement in pairs(overrides) do
     originals[name] = target[name]
+    --- @param ... any
     rawset(target, name, function(...)
       local args = {}
       for index = 1, select("#", ...) do
@@ -28,6 +36,8 @@ M.mock_child = function(target, overrides, store_name)
   return calls, originals
 end
 
+--- @param target table<string, any>
+--- @param overrides table<string, function>
 M.mock = function(target, overrides)
   local calls, originals = M.mock_child(target, overrides)
 
@@ -44,25 +54,45 @@ M.stub_notify = function()
   return require("tests._helpers").mock_child(vim, { notify = function() end }, "notifications")
 end
 
-M.expect_lines = MiniTest.new_expectation("buffer lines", function(lines, expected)
-  return vim.deep_equal(lines, expected)
-end, function(lines, expected)
-  return string.format("Observed: %s\nExpected: %s", vim.inspect(lines), vim.inspect(expected))
-end)
+M.expect_lines = MiniTest.new_expectation(
+  "buffer lines",
+  --- @param lines string[]
+  --- @param expected string[]
+  function(lines, expected)
+    return vim.deep_equal(lines, expected)
+  end,
+  --- @param lines string[]
+  --- @param expected string[]
+  function(lines, expected)
+    return string.format("Observed: %s\nExpected: %s", vim.inspect(lines), vim.inspect(expected))
+  end
+)
 
-M.expect_cursor = MiniTest.new_expectation("cursor position", function(position, expected)
-  return vim.deep_equal(position, expected)
-end, function(position, expected)
-  return string.format("Observed: %s\nExpected: %s", vim.inspect(position), vim.inspect(expected))
-end)
+M.expect_cursor = MiniTest.new_expectation(
+  "cursor position",
+  --- @param position integer[]
+  --- @param expected integer[]
+  function(position, expected)
+    return vim.deep_equal(position, expected)
+  end,
+  --- @param position integer[]
+  --- @param expected integer[]
+  function(position, expected)
+    return string.format("Observed: %s\nExpected: %s", vim.inspect(position), vim.inspect(expected))
+  end
+)
 
 M.expect_eventually = MiniTest.new_expectation(
   "eventually matching value",
+  --- @param get_value fun(): any
+  --- @param expected any
   function(get_value, expected)
     return vim.wait(1000, function()
       return vim.deep_equal(get_value(), expected)
     end)
   end,
+  --- @param get_value fun(): any
+  --- @param expected any
   function(get_value, expected)
     return string.format(
       "Observed: %s\nExpected: %s",
@@ -82,9 +112,27 @@ M.make_temp_dir = function()
   return dir
 end
 
+--- @param relative_paths string[]
+M.make_files = function(relative_paths)
+  local dir = M.make_temp_dir()
+
+  return vim.tbl_map(
+    --- @param relative_path_arg string
+    function(relative_path_arg)
+      local path = vim.fs.joinpath(dir, relative_path_arg)
+      vim.fn.mkdir(vim.fs.dirname(path), "p")
+      vim.fn.writefile(vim.fn.range(1, 30), path)
+
+      return path
+    end,
+    relative_paths
+  )
+end
+
 -- Fixtures below are handed to `child.lua_func`, so they must not reference `M`
 -- or any other upvalue.
 
+--- @param lines string[]
 M.open_file_buffer = function(lines)
   local path = vim.fn.tempname()
   vim.fn.writefile(lines, path)
@@ -100,6 +148,7 @@ M.open_buffer = function()
   return buf_id
 end
 
+--- @param name string
 M.open_named_buffer = function(name)
   local buf_id = vim.api.nvim_create_buf(true, false)
   vim.api.nvim_buf_set_name(buf_id, name)
@@ -108,6 +157,8 @@ M.open_named_buffer = function(name)
   return buf_id
 end
 
+--- @param lines string[]
+--- @param cursor integer[]
 M.open_scratch_buffer = function(lines, cursor)
   local buf_id = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_set_current_buf(buf_id)
@@ -117,7 +168,10 @@ M.open_scratch_buffer = function(lines, cursor)
   return buf_id
 end
 
+--- @param path string
+--- @param line string
 M.file_contains = function(path, line)
+  --- @param line_arg string
   local lines = vim.tbl_map(function(line_arg)
     return (line_arg:gsub("%s+", " "))
   end, vim.fn.readfile(path))
@@ -125,6 +179,7 @@ M.file_contains = function(path, line)
   return vim.tbl_contains(lines, line)
 end
 
+--- @param contents string
 M.write_temp_file = function(contents)
   local path = vim.fn.tempname()
   MiniTest.finally(function()
