@@ -335,21 +335,21 @@ local function ripgrep_sinklist(list)
   vim.cmd.copen()
 end
 
+local function run_cmd(cmd_parts)
+  local out = h.async.system(cmd_parts)
+  if out.stderr ~= nil then
+    vim.notify(out.stderr, vim.log.levels.ERROR)
+  end
+  if out.stdout == nil then
+    return {}
+  end
+  return vim.split(out.stdout, "\n", { trimempty = true })
+end
+
 vim.keymap.set(
   "n",
   "gli",
   h.async.cb(function()
-    local function run_cmd(cmd_parts)
-      local out = h.async.system(cmd_parts)
-      if out.stderr ~= nil then
-        vim.notify(out.stderr, vim.log.levels.ERROR)
-      end
-      if out.stdout == nil then
-        return {}
-      end
-      return vim.split(out.stdout, "\n", { trimempty = true })
-    end
-
     local changed_files = run_cmd { "git", "diff", "--name-only" }
 
     --- @type vim.quickfix.entry[]
@@ -368,16 +368,20 @@ vim.keymap.set(
       local working_string = table.concat(working_lines, "\n") .. "\n"
 
       vim.text.diff(head_string, working_string, {
-        on_hunk = function(_, _, start_b, _)
-          if start_b == 0 then
+        on_hunk = function(start_old_1i, count_old, start_new_1i, count_new)
+          local raw_hunk = { start_old_1i, count_old, start_new_1i, count_new }
+
+          local hunk = require("git-hunks").unpack_indices_hunk(raw_hunk)
+          if hunk.kind == "deletion" then
             return
           end
-          local content = working_lines[start_b]
+
+          local content = working_lines[hunk.start_new_1i]
 
           --- @type vim.quickfix.entry
           local entry = {
             filename = filepath,
-            lnum = start_b,
+            lnum = hunk.start_new_1i,
             col = 1,
             text = content,
           }
@@ -411,6 +415,83 @@ vim.keymap.set(
     h.qf.replace(qf_lists)
 
     vim.fn.setqflist({}, " ", { items = qf_entries, context = { name = "hunks" } })
+    return vim.cmd.copen()
+  end)
+)
+
+vim.keymap.set(
+  "n",
+  "glu",
+  h.async.cb(function()
+    local changed_files = run_cmd { "git", "diff", "--name-only" }
+
+    --- @type vim.quickfix.entry[]
+    local qf_entries = {}
+
+    for _, filepath in ipairs(changed_files) do
+      if vim.uv.fs_stat(filepath) == nil then
+        goto continue
+      end
+
+      local head_lines = run_cmd { "git", "show", (":%s"):format(filepath) }
+      h.async.ensure_main_loop()
+      local working_lines = vim.fn.readfile(filepath)
+
+      local head_string = table.concat(head_lines, "\n") .. "\n"
+      local working_string = table.concat(working_lines, "\n") .. "\n"
+
+      local raw_hunks = vim.text.diff(head_string, working_string, { result_type = "indices" })
+      if raw_hunks == nil then
+        goto continue
+      end
+
+      local first_hunk = raw_hunks[1]
+      if first_hunk == nil then
+        goto continue
+      end
+
+      local hunk = require("git-hunks").unpack_indices_hunk(first_hunk)
+      local row_1i = (function()
+        if hunk.kind == "deletion" then
+          return hunk.after_new_1i_visible
+        end
+        return hunk.start_new_1i
+      end)()
+
+      --- @type vim.quickfix.entry
+      local entry = {
+        filename = filepath,
+        lnum = row_1i,
+        col = 1,
+      }
+      table.insert(qf_entries, entry)
+
+      ::continue::
+    end
+
+    local untracked_files = run_cmd { "git", "ls-files", "--others", "--exclude-standard" }
+    for _, untracked_file in ipairs(untracked_files) do
+      --- @type vim.quickfix.entry
+      local entry = {
+        filename = untracked_file,
+        lnum = 1,
+        col = 1,
+        text = "[untracked]",
+      }
+      table.insert(qf_entries, entry)
+    end
+
+    if #qf_entries == 0 then
+      return vim.notify("No changed files", vim.log.levels.WARN)
+    end
+    h.async.ensure_main_loop()
+
+    local qf_lists = h.qf.filter(function(qf_list)
+      return vim.tbl_get(qf_list, "context", "name") ~= "diff-files" and #qf_list.items > 0
+    end)
+    h.qf.replace(qf_lists)
+
+    vim.fn.setqflist({}, " ", { items = qf_entries, context = { name = "diff-files" } })
     return vim.cmd.copen()
   end)
 )
