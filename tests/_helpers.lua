@@ -47,6 +47,22 @@ end, function(win_id, position)
   )
 end)
 
+M.expect_eventually = MiniTest.new_expectation(
+  "eventually matching value",
+  function(get_value, expected)
+    return vim.wait(1000, function()
+      return vim.deep_equal(get_value(), expected)
+    end)
+  end,
+  function(get_value, expected)
+    return string.format(
+      "Observed: %s\nExpected: %s",
+      vim.inspect(get_value()),
+      vim.inspect(expected)
+    )
+  end
+)
+
 M.make_temp_dir = function()
   local dir = vim.fn.tempname()
   vim.fn.mkdir(dir, "p")
@@ -77,6 +93,23 @@ M.open_file_buffer = function(lines)
   end)
 
   return path
+end
+
+M.open_buffer = function()
+  local buf_id = vim.api.nvim_create_buf(true, false)
+  vim.api.nvim_set_current_buf(buf_id)
+  MiniTest.finally(function()
+    vim.api.nvim_buf_delete(buf_id, { force = true })
+  end)
+
+  return buf_id
+end
+
+M.open_named_buffer = function(name)
+  local buf_id = M.open_buffer()
+  vim.api.nvim_buf_set_name(buf_id, name)
+
+  return buf_id
 end
 
 M.open_scratch_buffer = function(lines, cursor)

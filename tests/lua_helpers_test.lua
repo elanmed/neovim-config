@@ -498,13 +498,9 @@ T["async.cb()"] = function()
   end)
   callback "callback value"
 
-  MiniTest.expect.equality(
-    vim.wait(1000, function()
-      return callback_result ~= nil
-    end),
-    true
-  )
-  MiniTest.expect.equality(callback_result, "callback value")
+  test_helpers.expect_eventually(function()
+    return callback_result
+  end, "callback value")
 end
 
 T["async.ensure_main_loop()"] = function()

@@ -39,7 +39,7 @@ Shallow-clone `elanmed/template.nvim` to `/tmp/template.nvim`. Read `/tmp/templa
 - [ ] `tests/lua_shared_options_test.lua` — `lua/shared/options.lua`
 - [ ] `tests/lua_shared_pairs_test.lua` — `lua/shared/pairs.lua`
 - [ ] `tests/lua_shared_quickfix_list_test.lua` — `lua/shared/quickfix_list.lua`
-- [ ] `tests/lua_shared_tabline_test.lua` — `lua/shared/tabline.lua`
+- [x] `tests/lua_shared_tabline_test.lua` — `lua/shared/tabline.lua`
 - [x] `tests/lua_shared_user_commands_test.lua` — `lua/shared/user_commands.lua`
 - [ ] `tests/scripts_minimal_init_test.lua` — `scripts/minimal_init.lua`
 

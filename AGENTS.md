@@ -20,17 +20,7 @@ Read `/tmp/template.nvim/PRINCIPLES.md` in full and use it to judge which princi
 
 ## Helpers
 
-Put reusable fixtures and expectations in `tests/_helpers.lua`; do not define them locally in individual test files. Some examples available today:
-
-- `mock(target, overrides)` -> recorded `{ name, args }` calls; restores the originals automatically.
-- `expect_buffer_lines(buf_id, lines)` and `expect_cursor(win_id, position)` -> custom `MiniTest.new_expectation` expectations.
-- `make_temp_dir()` -> created dir, deleted afterwards.
-- `chdir_to_sandbox()` -> temp dir that is also the cwd, cwd restored afterwards.
-- `open_file_buffer(lines)` -> path of a written file opened in the current window; buffer wiped afterwards.
-- `open_scratch_buffer(lines, cursor)` -> scratch buffer id made current; buffer deleted afterwards.
-- `file_contains(path, line)` -> whether the file holds `line` (whitespace runs collapsed).
-- `with_saved_registers(callback)` -> runs the callback, then restores registers `0`-`9` and the unnamed register.
-- `write_temp_file(contents)` -> path of a written temp file.
+Put reusable fixtures and expectations in `tests/_helpers.lua`; do not define them locally in individual test files. If a test helper would only be used by one test file, do not put it in `tests/_helpers.lua`. When you add a helper, re-read every other test file and adopt it wherever it now fits.
 
 ## Test principles
 
@@ -41,6 +31,7 @@ Put reusable fixtures and expectations in `tests/_helpers.lua`; do not define th
 - Stub via `test_helpers.mock`, assert the recorded calls as a full literal list (`{ { name = "notify", args = { "Aborting, readonly", vim.log.levels.WARN } } }`). Do not hand-roll `rawset` plus manual restore.
 - Assert command output files with readable literal lines (`test_helpers.file_contains(path, "n gzq * <Cmd>echo 1<CR>")`), not with Lua patterns that encode column padding.
 - Only assert on output the code under test controls. Vim's builtin `:hi`/`:map` dumps are long and ordered by Vim's defaults, so an index-based assertion would test Vim, not this config.
+- When adding tests, look for bugs in the code under test and flag them to the user (with the case that reveals them) instead of silently encoding the current behavior as correct, and record each one in `BUGS.md` (code reference, surprising behavior, and the test case that pins it down).
 - Prefer deterministic fixtures over stubs of the filesystem: real temp dirs and files, and stubbed externals at the boundary (cwd, `stdpath`, `notify`, clipboard registers).
 
 ## Verification
