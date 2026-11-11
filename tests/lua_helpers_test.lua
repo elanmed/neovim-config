@@ -3,6 +3,13 @@ local h = require "helpers"
 local test_helpers = require "tests._helpers"
 local T = MiniTest.new_set()
 
+local readfile = function(filepath)
+  local task = vim.async.run(function()
+    return vim.async.await(h.fs.readfile(filepath))
+  end)
+  return task:wait(1000)
+end
+
 T["tbl.map()"] = MiniTest.new_set()
 
 T["tbl.map()"]["maps values and passes their indices"] = function()
@@ -43,6 +50,187 @@ end
 
 T["tbl.reverse()"]["handles empty input"] = function()
   MiniTest.expect.equality(h.tbl.reverse {}, {})
+end
+
+T["fs.readfile()"] = MiniTest.new_set()
+
+T["fs.readfile()"]["reads lines asynchronously"] = function()
+  local path = test_helpers.write_temp_file "first\n\nlast\n"
+
+  MiniTest.expect.equality(readfile(path), {
+    lines = { "first", "", "last" },
+    str = "first\n\nlast\n",
+  })
+end
+
+T["fs.readfile()"]["normalizes files without a final newline"] = function()
+  local path = test_helpers.write_temp_file "first\nsecond"
+
+  MiniTest.expect.equality(readfile(path), {
+    lines = { "first", "second" },
+    str = "first\nsecond\n",
+  })
+end
+
+T["fs.readfile()"]["preserves multiple trailing blank lines"] = function()
+  local path = test_helpers.write_temp_file "first\n\n\n"
+
+  MiniTest.expect.equality(readfile(path), {
+    lines = { "first", "", "" },
+    str = "first\n\n\n",
+  })
+end
+
+T["fs.readfile()"]["preserves leading blank lines"] = function()
+  local path = test_helpers.write_temp_file "\nfirst\n"
+
+  MiniTest.expect.equality(readfile(path), { lines = { "", "first" }, str = "\nfirst\n" })
+end
+
+T["fs.readfile()"]["returns empty contents for empty files"] = function()
+  local path = test_helpers.write_temp_file ""
+
+  MiniTest.expect.equality(readfile(path), { lines = {}, str = "" })
+end
+
+T["fs.readfile()"]["raises an error for missing files"] = function()
+  local path = vim.fn.tempname()
+
+  MiniTest.expect.error(function()
+    readfile(path)
+  end)
+end
+
+T["fs.readfile()"]["returns empty contents without reading zero-byte files"] = function()
+  local did_read = false
+  local did_close = false
+
+  test_helpers.mock(vim.uv, {
+    fs_open = function(_, _, _, callback)
+      callback(nil, 17)
+    end,
+    fs_fstat = function(_, callback)
+      callback(nil, { size = 0 })
+    end,
+    fs_read = function(_, _, _, callback)
+      did_read = true
+      callback(nil, "")
+    end,
+    fs_close = function(_, callback)
+      did_close = true
+      callback(nil)
+    end,
+  })
+
+  MiniTest.expect.equality(readfile "mocked-empty.txt", { lines = {}, str = "" })
+  MiniTest.expect.equality({ did_read, did_close }, { false, true })
+end
+
+T["fs.readfile()"]["propagates open errors"] = function()
+  test_helpers.mock(vim.uv, {
+    fs_open = function(_, _, _, callback)
+      callback "open failed"
+    end,
+  })
+
+  MiniTest.expect.error(function()
+    readfile "mocked-missing.txt"
+  end)
+end
+
+T["fs.readfile()"]["closes the descriptor after reading mocked contents"] = function()
+  local content = "first\n\nlast\n"
+  local calls = test_helpers.mock(vim.uv, {
+    fs_open = function(_, _, _, callback)
+      callback(nil, 17)
+    end,
+    fs_fstat = function(_, callback)
+      callback(nil, { size = #content })
+    end,
+    fs_read = function(_, _, _, callback)
+      callback(nil, content)
+    end,
+    fs_close = function(_, callback)
+      callback(nil)
+    end,
+  })
+
+  MiniTest.expect.equality(readfile "mocked.txt", {
+    lines = { "first", "", "last" },
+    str = "first\n\nlast\n",
+  })
+  MiniTest.expect.equality(calls, {
+    { name = "fs_open", args = { "mocked.txt", 0, 0 } },
+    { name = "fs_fstat", args = { 17 } },
+    { name = "fs_read", args = { 17, #content, 0 } },
+    { name = "fs_close", args = { 17 } },
+  })
+end
+
+T["fs.readfile()"]["closes the descriptor when stat fails"] = function()
+  local did_close = false
+  test_helpers.mock(vim.uv, {
+    fs_open = function(_, _, _, callback)
+      callback(nil, 17)
+    end,
+    fs_fstat = function(_, callback)
+      callback "stat failed"
+    end,
+    fs_close = function(_, callback)
+      did_close = true
+      callback(nil)
+    end,
+  })
+
+  MiniTest.expect.error(function()
+    readfile "mocked.txt"
+  end)
+  MiniTest.expect.equality(did_close, true)
+end
+
+T["fs.readfile()"]["closes the descriptor when reading fails"] = function()
+  local did_close = false
+  test_helpers.mock(vim.uv, {
+    fs_open = function(_, _, _, callback)
+      callback(nil, 17)
+    end,
+    fs_fstat = function(_, callback)
+      callback(nil, { size = 1 })
+    end,
+    fs_read = function(_, _, _, callback)
+      callback "read failed"
+    end,
+    fs_close = function(_, callback)
+      did_close = true
+      callback(nil)
+    end,
+  })
+
+  MiniTest.expect.error(function()
+    readfile "mocked.txt"
+  end)
+  MiniTest.expect.equality(did_close, true)
+end
+
+T["fs.readfile()"]["raises when closing fails"] = function()
+  test_helpers.mock(vim.uv, {
+    fs_open = function(_, _, _, callback)
+      callback(nil, 17)
+    end,
+    fs_fstat = function(_, callback)
+      callback(nil, { size = 1 })
+    end,
+    fs_read = function(_, _, _, callback)
+      callback(nil, "x")
+    end,
+    fs_close = function(_, callback)
+      callback "close failed"
+    end,
+  })
+
+  MiniTest.expect.error(function()
+    readfile "mocked.txt"
+  end)
 end
 
 T["str.pad()"] = MiniTest.new_set()
@@ -300,19 +488,12 @@ T["utils.set_and_rotate()"] = function()
 end
 
 T["async.system()"] = function()
-  --- @type vim.async.Task<vim.SystemCompleted>
-  local task = vim.async.run(
-    --- @return vim.SystemCompleted
-    function()
-      return h.async.system { "printf", "%s", "async output" }
-    end
-  )
-  local result = task:wait(1000) --[[@as vim.SystemCompleted]]
+  local task = vim.async.run(function()
+    return vim.async.await(h.async.system { "printf", "%s", "async output" })
+  end)
+  local err, stdout = task:wait(1000)
 
-  MiniTest.expect.equality(
-    { code = result.code, stdout = result.stdout, stderr = result.stderr },
-    { code = 0, stdout = "async output", stderr = "" }
-  )
+  MiniTest.expect.equality({ err = err, stdout = stdout }, { err = nil, stdout = "async output" })
 end
 
 T["async.ui_input()"] = function()
