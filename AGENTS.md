@@ -18,6 +18,34 @@ Read `/tmp/template.nvim/PRINCIPLES.md` in full and use it to judge which princi
 - `scripts/minimal_init.lua` collects both `tests/**/test_*.lua` and `tests/**/*_test.lua`, so no registration is needed for new files.
 - Potential bugs found while writing tests are recorded in `BUGS.md` (code reference, surprising behavior, and the test case that pins it down).
 
+## Type annotations
+
+Every function parameter carries a `--- @param` type comment, including anonymous callbacks, custom expectation predicates, and `child.lua_func` closures. Name parameters with an `_arg` suffix when the callback would shadow an outer name.
+
+```lua
+--- @param items QuickfixTestItem[]
+--- @param idx integer?
+local set_qf_list = function(items, idx)
+  child.lua_func(
+    --- @param items_arg QuickfixTestItem[]
+    --- @param idx_arg integer
+    function(items_arg, idx_arg)
+      -- ...
+    end,
+    items,
+    idx or 1
+  )
+end
+```
+
+Prefer a named class over a bare `table` parameter, declaring it next to its first use and marking fields that fixtures may omit as optional:
+
+```lua
+--- @class QuickfixTestItem
+--- @field path string?
+--- @field lnum integer?
+```
+
 ## Verification
 
 Before calling the work done, run all of these:
