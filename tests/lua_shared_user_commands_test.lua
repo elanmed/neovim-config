@@ -38,10 +38,13 @@ T["defines the user commands"] = function()
 
   MiniTest.expect.equality(commands.Format.name, "Format")
   MiniTest.expect.equality(commands.Format.nargs, "0")
+
   MiniTest.expect.equality(commands.PrintHighlights.name, "PrintHighlights")
   MiniTest.expect.equality(commands.PrintHighlights.nargs, "0")
+
   MiniTest.expect.equality(commands.PrintRemaps.name, "PrintRemaps")
   MiniTest.expect.equality(commands.PrintRemaps.nargs, "0")
+
   MiniTest.expect.equality(commands.Snippet.name, "Snippet")
   MiniTest.expect.equality(commands.Snippet.nargs, "*")
 end
@@ -87,7 +90,7 @@ T["Format"]["formats and writes the current buffer"] = function()
 
   vim.cmd "silent Format"
 
-  MiniTest.expect.equality(vim.api.nvim_buf_get_lines(0, 0, -1, false), { "xa", "xb", "xc" })
+  test_helpers.expect_buffer_lines(0, { "xa", "xb", "xc" })
   MiniTest.expect.equality(vim.fn.readfile(path), { "xa", "xb", "xc" })
   MiniTest.expect.equality(vim.bo.modified, false)
 end
@@ -99,7 +102,7 @@ T["Format"]["restores the cursor position"] = function()
 
   vim.cmd "silent Format"
 
-  MiniTest.expect.equality(vim.api.nvim_win_get_cursor(0), { 3, 0 })
+  test_helpers.expect_cursor(0, { 3, 0 })
 end
 
 T["Format"]["aborts for readonly buffers"] = function()
@@ -111,9 +114,9 @@ T["Format"]["aborts for readonly buffers"] = function()
   vim.cmd "silent Format"
 
   MiniTest.expect.equality(notifications, {
-    { name = "notify", args = { "Aborting, readonly", 3 } },
+    { name = "notify", args = { "Aborting, readonly", vim.log.levels.WARN } },
   })
-  MiniTest.expect.equality(vim.api.nvim_buf_get_lines(0, 0, -1, false), { "a" })
+  test_helpers.expect_buffer_lines(0, { "a" })
 end
 
 T["Format"]["aborts for buffers with a non-normal buftype"] = function()
@@ -124,9 +127,9 @@ T["Format"]["aborts for buffers with a non-normal buftype"] = function()
   vim.cmd "silent Format"
 
   MiniTest.expect.equality(notifications, {
-    { name = "notify", args = { "Aborting, buftype is not normal", 3 } },
+    { name = "notify", args = { "Aborting, buftype is not normal", vim.log.levels.WARN } },
   })
-  MiniTest.expect.equality(vim.api.nvim_buf_get_lines(buf_id, 0, -1, false), { "a" })
+  test_helpers.expect_buffer_lines(buf_id, { "a" })
 end
 
 T["Snippet"] = MiniTest.new_set()
@@ -156,9 +159,9 @@ T["Snippet"]["warns about unknown triggers"] = function()
   vim.cmd "Snippet nope"
 
   MiniTest.expect.equality(notifications, {
-    { name = "notify", args = { "nope is not a valid snippet trigger!", 3 } },
+    { name = "notify", args = { "nope is not a valid snippet trigger!", vim.log.levels.WARN } },
   })
-  MiniTest.expect.equality(vim.api.nvim_buf_get_lines(buf_id, 0, -1, false), { "current" })
+  test_helpers.expect_buffer_lines(buf_id, { "current" })
 end
 
 T["Snippet"]["replaces the current line with the snippet content"] = function()
@@ -167,12 +170,8 @@ T["Snippet"]["replaces the current line with the snippet content"] = function()
 
   vim.cmd "Snippet its"
 
-  MiniTest.expect.equality(vim.api.nvim_buf_get_lines(buf_id, 0, -1, false), {
-    "  it(\"\", () => {",
-    "",
-    "});",
-  })
-  MiniTest.expect.equality(vim.api.nvim_win_get_cursor(0), { 1, 6 })
+  test_helpers.expect_buffer_lines(buf_id, { "  it(\"\", () => {", "", "});" })
+  test_helpers.expect_cursor(0, { 1, 6 })
 end
 
 T["Snippet"]["moves the cursor according to the snippet trigger"] = function()
@@ -181,11 +180,8 @@ T["Snippet"]["moves the cursor according to the snippet trigger"] = function()
 
   vim.cmd "Snippet ndoc"
 
-  MiniTest.expect.equality(
-    vim.api.nvim_buf_get_lines(buf_id, 0, -1, false),
-    { "  expect().not.toBeInTheDocument();" }
-  )
-  MiniTest.expect.equality(vim.api.nvim_win_get_cursor(0), { 1, 9 })
+  test_helpers.expect_buffer_lines(buf_id, { "  expect().not.toBeInTheDocument();" })
+  test_helpers.expect_cursor(0, { 1, 9 })
 end
 
 return T

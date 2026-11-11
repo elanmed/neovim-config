@@ -25,6 +25,28 @@ M.mock = function(target, overrides)
   return calls
 end
 
+M.expect_buffer_lines = MiniTest.new_expectation("buffer lines", function(buf_id, lines)
+  return vim.deep_equal(vim.api.nvim_buf_get_lines(buf_id, 0, -1, false), lines)
+end, function(buf_id, lines)
+  return string.format(
+    "Buffer %d\nObserved: %s\nExpected: %s",
+    buf_id,
+    vim.inspect(vim.api.nvim_buf_get_lines(buf_id, 0, -1, false)),
+    vim.inspect(lines)
+  )
+end)
+
+M.expect_cursor = MiniTest.new_expectation("cursor position", function(win_id, position)
+  return vim.deep_equal(vim.api.nvim_win_get_cursor(win_id), position)
+end, function(win_id, position)
+  return string.format(
+    "Window %d\nObserved: %s\nExpected: %s",
+    win_id,
+    vim.inspect(vim.api.nvim_win_get_cursor(win_id)),
+    vim.inspect(position)
+  )
+end)
+
 M.make_temp_dir = function()
   local dir = vim.fn.tempname()
   vim.fn.mkdir(dir, "p")
