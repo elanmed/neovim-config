@@ -2,7 +2,7 @@
 
 ## Scope
 
-Future work: create one meaningful `mini.test` file for each of the 29 in-scope config-owned Lua source files under the repository root. Do not add empty smoke-test placeholders; this TODO list tracks the backlog. Exclude `after/`, `ftplugin/java.lua`, all of `fzf_scripts/`, `lua/feature_complete/shell_plugins/fzf.lua` (these fzf files are planned to move into a plugin), `tests/`, `deps/`, and `language_servers/`. The language-server release under `language_servers/` is an ignored installed distribution, and `deps/mini.test` is test infrastructure; neither should receive project tests. Tests themselves are excluded to avoid recursively creating tests for tests.
+Skip tests for pure configuration: files whose entire job is declaring state — options, keymaps, abbreviations, highlight groups, `vim.pack.add`, plugin `setup()` calls, and autocmd/keymap registrations that only delegate to a plugin. Assigning `vim.o.cursorline = true` and then asserting `vim.o.cursorline` tests Neovim, not this config. A file earns tests only when it branches, computes, formats, or transitions state; the declarative files already reviewed are listed under `## No tests: pure configuration`.
 
 Place each eventual test in `tests/` and name it by replacing `/` in the source path with `_`, removing `.lua`, then appending `_test.lua` (for example, `lua/shared/options.lua` becomes `tests/lua_shared_options_test.lua`). Each test should exercise observable behavior rather than use a dummy equality assertion.
 
@@ -12,11 +12,22 @@ Place each eventual test in `tests/` and name it by replacing `/` in the source 
 
 Shallow-clone `elanmed/template.nvim` to `/tmp/template.nvim`. Read `/tmp/template.nvim/PRINCIPLES.md` in full and assess which principles apply to this Neovim config and its tests.
 
+## No tests: pure configuration
+
+Reviewed and intentionally left without tests:
+
+- `init.lua`, `barebones.lua`, `feature_complete.lua` — bootstrap `require`/`require_dir` calls.
+- `container.lua` — `vim.g.clipboard` plus two keymaps.
+- `lua/first.lua` — `mapleader`/`maplocalleader` and `vim.loader.enable()`.
+- `lua/feature_complete/init.lua` — `vim.pack.add`, `require_dir`, `packadd`.
+- `lua/shared/options.lua`, `lua/shared/abbrev.lua` — option and abbreviation assignments.
+- `lua/feature_complete/vim_plugins/colorscheme.lua` — highlight group definitions.
+- `scripts/minimal_init.lua` — `runtimepath` and `mini.test` setup.
+
 ## TODO: create and fill in substantive tests
 
-- [ ] `tests/barebones_test.lua` — `barebones.lua`
-- [ ] `tests/container_test.lua` — `container.lua`
-- [ ] `tests/feature_complete_test.lua` — `feature_complete.lua`
+Files with real logic, kept in the backlog:
+
 - [ ] `tests/ftplugin_lua_test.lua` — `ftplugin/lua.lua`
 - [ ] `tests/lua_barebones_init_test.lua` — `lua/barebones/init.lua`
 - [ ] `tests/lua_feature_complete_init_test.lua` — `lua/feature_complete/init.lua`
@@ -36,12 +47,10 @@ Shallow-clone `elanmed/template.nvim` to `/tmp/template.nvim`. Read `/tmp/templa
 - [ ] `tests/lua_shared_keymaps_test.lua` — `lua/shared/keymaps.lua`
 - [ ] `tests/lua_shared_movements_test.lua` — `lua/shared/movements.lua`
 - [ ] `tests/lua_shared_notify_test.lua` — `lua/shared/notify.lua`
-- [ ] `tests/lua_shared_options_test.lua` — `lua/shared/options.lua`
 - [ ] `tests/lua_shared_pairs_test.lua` — `lua/shared/pairs.lua`
 - [ ] `tests/lua_shared_quickfix_list_test.lua` — `lua/shared/quickfix_list.lua`
 - [x] `tests/lua_shared_tabline_test.lua` — `lua/shared/tabline.lua`
 - [x] `tests/lua_shared_user_commands_test.lua` — `lua/shared/user_commands.lua`
-- [ ] `tests/scripts_minimal_init_test.lua` — `scripts/minimal_init.lua`
 
 ## Verification after approval
 
