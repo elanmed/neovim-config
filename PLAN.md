@@ -32,7 +32,6 @@ Shallow-clone `elanmed/template.nvim` to `/tmp/template.nvim`. Read `/tmp/templa
 - [ ] `tests/lua_feature_complete_vim_plugins_version_control_test.lua` — `lua/feature_complete/vim_plugins/version_control.lua`
 - [ ] `tests/lua_first_test.lua` — `lua/first.lua`
 - [x] `tests/lua_helpers_test.lua` — `lua/helpers.lua`
-- [ ] `tests/lua_shared_abbrev_test.lua` — `lua/shared/abbrev.lua`
 - [ ] `tests/lua_shared_auto_commands_test.lua` — `lua/shared/auto_commands.lua`
 - [ ] `tests/lua_shared_keymaps_test.lua` — `lua/shared/keymaps.lua`
 - [ ] `tests/lua_shared_movements_test.lua` — `lua/shared/movements.lua`
@@ -41,7 +40,7 @@ Shallow-clone `elanmed/template.nvim` to `/tmp/template.nvim`. Read `/tmp/templa
 - [ ] `tests/lua_shared_pairs_test.lua` — `lua/shared/pairs.lua`
 - [ ] `tests/lua_shared_quickfix_list_test.lua` — `lua/shared/quickfix_list.lua`
 - [ ] `tests/lua_shared_tabline_test.lua` — `lua/shared/tabline.lua`
-- [ ] `tests/lua_shared_user_commands_test.lua` — `lua/shared/user_commands.lua`
+- [x] `tests/lua_shared_user_commands_test.lua` — `lua/shared/user_commands.lua`
 - [ ] `tests/scripts_minimal_init_test.lua` — `scripts/minimal_init.lua`
 
 ## Verification after approval
