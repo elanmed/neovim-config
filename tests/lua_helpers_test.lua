@@ -9,9 +9,6 @@ local T = MiniTest.new_set()
 --- @class QuickfixItem
 --- @field text string
 
---- @class UvStatStub
---- @field size integer
-
 --- @param filepath string
 local readfile = function(filepath)
   local task = vim.async.run(function()
@@ -122,20 +119,16 @@ T["fs.readfile()"]["returns empty contents without reading zero-byte files"] = f
   local did_close = false
 
   test_helpers.mock(vim.uv, {
-    --- @param callback fun(err: string?, fd: integer?)
     fs_open = function(_, _, _, callback)
       callback(nil, 17)
     end,
-    --- @param callback fun(err: string?, stat: UvStatStub?)
     fs_fstat = function(_, callback)
       callback(nil, { size = 0 })
     end,
-    --- @param callback fun(err: string?, data: string?)
     fs_read = function(_, _, _, callback)
       did_read = true
       callback(nil, "")
     end,
-    --- @param callback fun(err: string?)
     fs_close = function(_, callback)
       did_close = true
       callback(nil)
@@ -148,7 +141,6 @@ end
 
 T["fs.readfile()"]["propagates open errors"] = function()
   test_helpers.mock(vim.uv, {
-    --- @param callback fun(err: string?, fd: integer?)
     fs_open = function(_, _, _, callback)
       callback "open failed"
     end,
@@ -162,19 +154,15 @@ end
 T["fs.readfile()"]["closes the descriptor after reading mocked contents"] = function()
   local content = "first\n\nlast\n"
   local calls = test_helpers.mock(vim.uv, {
-    --- @param callback fun(err: string?, fd: integer?)
     fs_open = function(_, _, _, callback)
       callback(nil, 17)
     end,
-    --- @param callback fun(err: string?, stat: UvStatStub?)
     fs_fstat = function(_, callback)
       callback(nil, { size = #content })
     end,
-    --- @param callback fun(err: string?, data: string?)
     fs_read = function(_, _, _, callback)
       callback(nil, content)
     end,
-    --- @param callback fun(err: string?)
     fs_close = function(_, callback)
       callback(nil)
     end,
@@ -195,15 +183,12 @@ end
 T["fs.readfile()"]["closes the descriptor when stat fails"] = function()
   local did_close = false
   test_helpers.mock(vim.uv, {
-    --- @param callback fun(err: string?, fd: integer?)
     fs_open = function(_, _, _, callback)
       callback(nil, 17)
     end,
-    --- @param callback fun(err: string?, stat: UvStatStub?)
     fs_fstat = function(_, callback)
       callback "stat failed"
     end,
-    --- @param callback fun(err: string?)
     fs_close = function(_, callback)
       did_close = true
       callback(nil)
@@ -219,19 +204,15 @@ end
 T["fs.readfile()"]["closes the descriptor when reading fails"] = function()
   local did_close = false
   test_helpers.mock(vim.uv, {
-    --- @param callback fun(err: string?, fd: integer?)
     fs_open = function(_, _, _, callback)
       callback(nil, 17)
     end,
-    --- @param callback fun(err: string?, stat: UvStatStub?)
     fs_fstat = function(_, callback)
       callback(nil, { size = 1 })
     end,
-    --- @param callback fun(err: string?, data: string?)
     fs_read = function(_, _, _, callback)
       callback "read failed"
     end,
-    --- @param callback fun(err: string?)
     fs_close = function(_, callback)
       did_close = true
       callback(nil)
@@ -246,19 +227,15 @@ end
 
 T["fs.readfile()"]["raises when closing fails"] = function()
   test_helpers.mock(vim.uv, {
-    --- @param callback fun(err: string?, fd: integer?)
     fs_open = function(_, _, _, callback)
       callback(nil, 17)
     end,
-    --- @param callback fun(err: string?, stat: UvStatStub?)
     fs_fstat = function(_, callback)
       callback(nil, { size = 1 })
     end,
-    --- @param callback fun(err: string?, data: string?)
     fs_read = function(_, _, _, callback)
       callback(nil, "x")
     end,
-    --- @param callback fun(err: string?)
     fs_close = function(_, callback)
       callback "close failed"
     end,
@@ -527,9 +504,6 @@ T["utils.set_and_rotate()"]["sets the clipboard and unnamed registers and rotate
     local clipboard_value = nil
     local original_setreg = vim.fn.setreg
     test_helpers.mock_child(vim.fn, {
-      --- @param register_arg string
-      --- @param value_arg string | string[]
-      --- @param regtype_arg string?
       setreg = function(register_arg, value_arg, regtype_arg)
         if register_arg == "+" then
           clipboard_value = value_arg
@@ -594,7 +568,6 @@ T["async.ui_input()"] = MiniTest.new_set { hooks = child_hooks }
 T["async.ui_input()"]["returns the value passed to the callback"] = function()
   local result = child.lua_func(function()
     require("tests._helpers").mock_child(vim.ui, {
-      --- @param callback_arg fun(input: string?)
       input = function(_, callback_arg)
         callback_arg "confirmed"
       end,

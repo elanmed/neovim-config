@@ -60,33 +60,17 @@ local current_qf_list_nr = function()
   return child.lua_get [[vim.fn.getqflist({ nr = 0 }).nr]]
 end
 
-local expect_bufname = MiniTest.new_expectation(
-  "buffer name",
-  --- @param observed string
-  --- @param expected string
-  function(observed, expected)
-    return observed == expected
-  end,
-  --- @param observed string
-  --- @param expected string
-  function(observed, expected)
-    return string.format("Observed: %s\nExpected: %s", vim.inspect(observed), vim.inspect(expected))
-  end
-)
+local expect_bufname = MiniTest.new_expectation("buffer name", function(observed, expected)
+  return observed == expected
+end, function(observed, expected)
+  return string.format("Observed: %s\nExpected: %s", vim.inspect(observed), vim.inspect(expected))
+end)
 
-local expect_line = MiniTest.new_expectation(
-  "cursor line",
-  --- @param observed integer
-  --- @param expected integer
-  function(observed, expected)
-    return observed == expected
-  end,
-  --- @param observed integer
-  --- @param expected integer
-  function(observed, expected)
-    return string.format("Observed: %s\nExpected: %s", vim.inspect(observed), vim.inspect(expected))
-  end
-)
+local expect_line = MiniTest.new_expectation("cursor line", function(observed, expected)
+  return observed == expected
+end, function(observed, expected)
+  return string.format("Observed: %s\nExpected: %s", vim.inspect(observed), vim.inspect(expected))
+end)
 
 T["GetQuickfixTextFunc()"] = MiniTest.new_set()
 

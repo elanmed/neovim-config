@@ -16,7 +16,6 @@ local T = MiniTest.new_set {
 --- @param config_dir string
 local stub_snippets_config_dir = function(config_dir)
   require("tests._helpers").mock_child(vim.fn, {
-    --- @param what_arg string
     stdpath = function(what_arg)
       if what_arg == "config" then
         return config_dir

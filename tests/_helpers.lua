@@ -54,45 +54,25 @@ M.stub_notify = function()
   return require("tests._helpers").mock_child(vim, { notify = function() end }, "notifications")
 end
 
-M.expect_lines = MiniTest.new_expectation(
-  "buffer lines",
-  --- @param lines string[]
-  --- @param expected string[]
-  function(lines, expected)
-    return vim.deep_equal(lines, expected)
-  end,
-  --- @param lines string[]
-  --- @param expected string[]
-  function(lines, expected)
-    return string.format("Observed: %s\nExpected: %s", vim.inspect(lines), vim.inspect(expected))
-  end
-)
+M.expect_lines = MiniTest.new_expectation("buffer lines", function(lines, expected)
+  return vim.deep_equal(lines, expected)
+end, function(lines, expected)
+  return string.format("Observed: %s\nExpected: %s", vim.inspect(lines), vim.inspect(expected))
+end)
 
-M.expect_cursor = MiniTest.new_expectation(
-  "cursor position",
-  --- @param position integer[]
-  --- @param expected integer[]
-  function(position, expected)
-    return vim.deep_equal(position, expected)
-  end,
-  --- @param position integer[]
-  --- @param expected integer[]
-  function(position, expected)
-    return string.format("Observed: %s\nExpected: %s", vim.inspect(position), vim.inspect(expected))
-  end
-)
+M.expect_cursor = MiniTest.new_expectation("cursor position", function(position, expected)
+  return vim.deep_equal(position, expected)
+end, function(position, expected)
+  return string.format("Observed: %s\nExpected: %s", vim.inspect(position), vim.inspect(expected))
+end)
 
 M.expect_eventually = MiniTest.new_expectation(
   "eventually matching value",
-  --- @param get_value fun(): any
-  --- @param expected any
   function(get_value, expected)
     return vim.wait(1000, function()
       return vim.deep_equal(get_value(), expected)
     end)
   end,
-  --- @param get_value fun(): any
-  --- @param expected any
   function(get_value, expected)
     return string.format(
       "Observed: %s\nExpected: %s",

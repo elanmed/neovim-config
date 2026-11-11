@@ -34,7 +34,12 @@ end)()
 
 ## Type annotations
 
-Every function parameter carries a `--- @param` type comment, including anonymous callbacks, custom expectation predicates, and `child.lua_func` closures. Name parameters with an `_arg` suffix when the callback would shadow an outer name.
+Every function parameter carries a `--- @param` type comment, including anonymous callbacks and `child.lua_func` closures. Name parameters with an `_arg` suffix when the callback would shadow an outer name.
+
+Two exceptions stay unannotated, because their signatures are dictated by MiniTest or by the API being faked:
+
+- the predicate and failure-context functions of `MiniTest.new_expectation`;
+- the override functions inside a `mock`/`mock_child` table.
 
 ```lua
 --- @param items QuickfixTestItem[]
