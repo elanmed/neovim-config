@@ -56,6 +56,32 @@ M.get_calls = function(child, store_name)
   return child.lua_get(("_G.%s"):format(store_name))
 end
 
+--- @class StubbedSystemResponse
+--- @field err string?
+--- @field stdout string?
+
+--- @param responses table<string, StubbedSystemResponse>
+M.stub_async_system = function(responses)
+  local helpers = require "tests._helpers"
+  local h = require "helpers"
+  --- @diagnostic disable-next-line: undefined-field
+  local previous_calls = _G.async_system_calls or {}
+  local calls = helpers.mock_child(h.async, {
+    system = function(cmd_arg)
+      local response = responses[cmd_arg[1]]
+
+      return vim.async.run(
+        --- @return string?, string?
+        function()
+          --- @diagnostic disable-next-line: redundant-return-value
+          return response.err, response.stdout
+        end
+      )
+    end,
+  }, "async_system_calls")
+  vim.list_extend(calls, previous_calls)
+end
+
 M.stub_notify = function()
   return require("tests._helpers").mock_child(vim, { notify = function() end }, "notifications")
 end

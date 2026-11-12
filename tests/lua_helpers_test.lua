@@ -317,7 +317,9 @@ T["str.truncate()"]["handles limits of zero and one"] = function()
 end
 
 T["utils.vim_cmd_try_catch()"] = function()
-  vim.g.helpers_try_catch_result = nil
+  MiniTest.finally(function()
+    vim.g.helpers_try_catch_result = nil
+  end)
 
   h.utils.vim_cmd_try_catch(
     "let g:helpers_try_catch_result = 'try'",
@@ -331,8 +333,6 @@ T["utils.vim_cmd_try_catch()"] = function()
     "let g:helpers_try_catch_result = 'catch'"
   )
   MiniTest.expect.equality(vim.g.helpers_try_catch_result, "catch")
-
-  vim.g.helpers_try_catch_result = nil
 end
 
 local child = MiniTest.new_child_neovim()

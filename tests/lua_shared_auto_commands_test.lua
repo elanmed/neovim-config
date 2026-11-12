@@ -17,29 +17,21 @@ local stub_timers = function()
   }, "timer_calls")
 end
 
---- @class StubbedSystemResponse
---- @field err string?
---- @field stdout string?
-
---- @param responses table<string, StubbedSystemResponse>
-local stub_systems = function(responses)
+local stub_ctags = function()
   local helpers = require "tests._helpers"
   local h = require "helpers"
+  local cb = h.async.cb
 
+  _G.finished_ctags_runs = 0
   helpers.mock_child(vim, { system = function() end }, "system_calls")
   helpers.mock_child(h.async, {
-    system = function(cmd_arg)
-      local response = responses[cmd_arg[1]]
-
-      return vim.async.run(
-        --- @return string?, string?
-        function()
-          --- @diagnostic disable-next-line: redundant-return-value
-          return response.err, response.stdout
-        end
-      )
+    cb = function(callback_arg)
+      return cb(function(...)
+        callback_arg(...)
+        _G.finished_ctags_runs = _G.finished_ctags_runs + 1
+      end)
     end,
-  }, "async_system_calls")
+  })
 end
 
 local T = MiniTest.new_set {
@@ -108,6 +100,12 @@ end, function(name, expected)
     vim.inspect(expected)
   )
 end)
+
+local expect_ctags_finished = function()
+  test_helpers.expect_eventually(function()
+    return child.lua_get [[_G.finished_ctags_runs]]
+  end, 1)
+end
 
 local highlight_hex_colors = function()
   child.lua [[vim.api.nvim_exec_autocmds("TextChanged", { buffer = 0 })]]
@@ -190,14 +188,15 @@ end
 T["ctags"] = MiniTest.new_set()
 
 T["ctags"]["runs ctags with the files of the git root on write"] = function()
-  child.lua_func(stub_systems, {
+  child.lua_func(stub_ctags)
+  child.lua_func(test_helpers.stub_async_system, {
     git = { err = nil, stdout = "/repo\n" },
     rg = { err = nil, stdout = "a.lua\nb.lua\n" },
   })
   child.lua [[vim.api.nvim_exec_autocmds("BufWritePost", {})]]
 
   run_last_timer_callback()
-  child.lua [[vim.wait(100)]]
+  expect_ctags_finished()
 
   MiniTest.expect.equality(test_helpers.get_calls(child, "async_system_calls"), {
     { name = "system", args = { { "git", "rev-parse", "--show-toplevel" } } },
@@ -215,11 +214,12 @@ T["ctags"]["runs ctags with the files of the git root on write"] = function()
 end
 
 T["ctags"]["does not run ctags when the git root cannot be determined"] = function()
-  child.lua_func(stub_systems, { git = { err = "git failed", stdout = nil } })
+  child.lua_func(stub_ctags)
+  child.lua_func(test_helpers.stub_async_system, { git = { err = "git failed", stdout = nil } })
   child.lua [[vim.api.nvim_exec_autocmds("BufWritePost", {})]]
 
   run_last_timer_callback()
-  child.lua [[vim.wait(100)]]
+  expect_ctags_finished()
 
   MiniTest.expect.equality(test_helpers.get_calls(child, "async_system_calls"), {
     { name = "system", args = { { "git", "rev-parse", "--show-toplevel" } } },
@@ -228,14 +228,15 @@ T["ctags"]["does not run ctags when the git root cannot be determined"] = functi
 end
 
 T["ctags"]["does not run ctags when the file listing fails"] = function()
-  child.lua_func(stub_systems, {
+  child.lua_func(stub_ctags)
+  child.lua_func(test_helpers.stub_async_system, {
     git = { err = nil, stdout = "/repo\n" },
     rg = { err = "rg failed", stdout = nil },
   })
   child.lua [[vim.api.nvim_exec_autocmds("BufWritePost", {})]]
 
   run_last_timer_callback()
-  child.lua [[vim.wait(100)]]
+  expect_ctags_finished()
 
   MiniTest.expect.equality(test_helpers.get_calls(child, "async_system_calls"), {
     { name = "system", args = { { "git", "rev-parse", "--show-toplevel" } } },

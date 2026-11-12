@@ -25,38 +25,6 @@ local statusline = function()
   return child.lua_get [[_G.Statusline()]]
 end
 
---- @class BranchStubResult
---- @field err string?
---- @field stdout string?
-
---- @param result BranchStubResult
-local stub_branch = function(result)
-  local helpers = require "helpers"
-
-  require("tests._helpers").mock_child(helpers.async, {
-    system = function()
-      return vim.async.run(function()
-        --- @diagnostic disable-next-line: redundant-return-value, return-type-mismatch
-        return result.err, result.stdout
-      end)
-    end,
-  }, "branch_calls")
-end
-
-T["invalidates the branch cache on GitHeadChanged"] = function()
-  load_module()
-
-  local autocmd_count = child.lua_func(function()
-    return #vim.api.nvim_get_autocmds {
-      group = "InvalidateBranchCache",
-      event = "User",
-      pattern = "GitHeadChanged",
-    }
-  end)
-
-  MiniTest.expect.equality(autocmd_count, 1)
-end
-
 T["Tabline()"] = MiniTest.new_set()
 
 T["Tabline()"]["shows the current and the alternate buffer names"] = function()
@@ -152,38 +120,46 @@ end
 T["Statusline()"] = MiniTest.new_set()
 
 T["Statusline()"]["shows the current branch"] = function()
-  child.lua_func(stub_branch, { stdout = "main\n" })
+  child.lua_func(test_helpers.stub_async_system, { git = { stdout = "main\n" } })
   load_module()
 
   test_helpers.expect_eventually(statusline, "%#TabLine#BRANCH: main")
-  MiniTest.expect.equality(test_helpers.get_calls(child, "branch_calls"), {
+  MiniTest.expect.equality(test_helpers.get_calls(child, "async_system_calls"), {
     { name = "system", args = { { "git", "branch", "--show-current" } } },
   })
 end
 
 T["Statusline()"]["updates the branch when GitHeadChanged fires"] = function()
-  child.lua_func(stub_branch, { stdout = "main\n" })
+  child.lua_func(test_helpers.stub_async_system, { git = { stdout = "main\n" } })
   load_module()
   test_helpers.expect_eventually(statusline, "%#TabLine#BRANCH: main")
 
-  child.lua_func(stub_branch, { stdout = "feature\n" })
+  MiniTest.expect.equality(test_helpers.get_calls(child, "async_system_calls"), {
+    { name = "system", args = { { "git", "branch", "--show-current" } } },
+  })
+
+  child.lua_func(test_helpers.stub_async_system, { git = { stdout = "feature\n" } })
   child.lua [[vim.api.nvim_exec_autocmds("User", { pattern = "GitHeadChanged" })]]
 
   test_helpers.expect_eventually(statusline, "%#TabLine#BRANCH: feature")
-  MiniTest.expect.equality(test_helpers.get_calls(child, "branch_calls"), {
+  MiniTest.expect.equality(test_helpers.get_calls(child, "async_system_calls"), {
+    { name = "system", args = { { "git", "branch", "--show-current" } } },
     { name = "system", args = { { "git", "branch", "--show-current" } } },
   })
 end
 
 T["Statusline()"]["shows [no branch] when git fails"] = function()
-  child.lua_func(stub_branch, { err = "git branch --show-current failed. Error: fatal" })
+  child.lua_func(
+    test_helpers.stub_async_system,
+    { git = { err = "git branch --show-current failed. Error: fatal" } }
+  )
   load_module()
 
   test_helpers.expect_eventually(statusline, "%#TabLine#BRANCH: [no branch]")
 end
 
 T["Statusline()"]["shows [no branch] when git reports no branch"] = function()
-  child.lua_func(stub_branch, { stdout = "\n" })
+  child.lua_func(test_helpers.stub_async_system, { git = { stdout = "\n" } })
   load_module()
 
   test_helpers.expect_eventually(statusline, "%#TabLine#BRANCH: [no branch]")
