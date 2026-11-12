@@ -318,21 +318,14 @@ end
 
 T["utils.vim_cmd_try_catch()"] = function()
   MiniTest.finally(function()
-    vim.g.helpers_try_catch_result = nil
+    vim.o.number = false
   end)
 
-  h.utils.vim_cmd_try_catch(
-    "let g:helpers_try_catch_result = 'try'",
-    "let g:helpers_try_catch_result = 'catch'"
-  )
-  MiniTest.expect.equality(vim.g.helpers_try_catch_result, "try")
+  h.utils.vim_cmd_try_catch("set number", "set nonumber")
+  MiniTest.expect.equality(vim.o.number, true)
 
-  vim.g.helpers_try_catch_result = nil
-  h.utils.vim_cmd_try_catch(
-    "invalid-helper-test-command",
-    "let g:helpers_try_catch_result = 'catch'"
-  )
-  MiniTest.expect.equality(vim.g.helpers_try_catch_result, "catch")
+  h.utils.vim_cmd_try_catch("invalid-helper-test-command", "set nonumber")
+  MiniTest.expect.equality(vim.o.number, false)
 end
 
 local child = MiniTest.new_child_neovim()
