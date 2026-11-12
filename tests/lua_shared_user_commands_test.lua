@@ -43,10 +43,6 @@ local get_lines = function()
   return child.api.nvim_buf_get_lines(0, 0, -1, false)
 end
 
-local get_cursor = function()
-  return child.api.nvim_win_get_cursor(0)
-end
-
 T["PrintHighlights"] = function()
   local sandbox_dir = test_helpers.make_temp_dir()
   child.cmd("cd " .. vim.fn.fnameescape(sandbox_dir))
@@ -87,7 +83,7 @@ T["Format"]["formats and writes the current buffer"] = function()
 
   child.cmd "silent Format"
 
-  test_helpers.expect_lines(get_lines(), { "xa", "xb", "xc" })
+  test_helpers.expect_lines(child, { "xa", "xb", "xc" })
   MiniTest.expect.equality(vim.fn.readfile(path), { "xa", "xb", "xc" })
   MiniTest.expect.equality(child.bo.modified, false)
 end
@@ -99,7 +95,7 @@ T["Format"]["restores the cursor position"] = function()
 
   child.cmd "silent Format"
 
-  test_helpers.expect_cursor(get_cursor(), { 3, 0 })
+  test_helpers.expect_cursor(child, { 3, 0 })
 end
 
 T["Format"]["aborts for readonly buffers"] = function()
@@ -113,7 +109,7 @@ T["Format"]["aborts for readonly buffers"] = function()
   MiniTest.expect.equality(child.lua_get [[_G.notifications]], {
     { name = "notify", args = { "Aborting, readonly", vim.log.levels.WARN } },
   })
-  test_helpers.expect_lines(get_lines(), { "a" })
+  test_helpers.expect_lines(child, { "a" })
 end
 
 T["Format"]["aborts for buffers with a non-normal buftype"] = function()
@@ -126,7 +122,7 @@ T["Format"]["aborts for buffers with a non-normal buftype"] = function()
   MiniTest.expect.equality(child.lua_get [[_G.notifications]], {
     { name = "notify", args = { "Aborting, buftype is not normal", vim.log.levels.WARN } },
   })
-  test_helpers.expect_lines(get_lines(), { "a" })
+  test_helpers.expect_lines(child, { "a" })
 end
 
 T["Snippet"] = MiniTest.new_set()
@@ -170,7 +166,7 @@ T["Snippet"]["warns about unknown triggers"] = function()
   MiniTest.expect.equality(child.lua_get [[_G.notifications]], {
     { name = "notify", args = { "nope is not a valid snippet trigger!", vim.log.levels.WARN } },
   })
-  test_helpers.expect_lines(get_lines(), { "current" })
+  test_helpers.expect_lines(child, { "current" })
 end
 
 T["Snippet"]["replaces the current line with the snippet content"] = function()
@@ -180,7 +176,7 @@ T["Snippet"]["replaces the current line with the snippet content"] = function()
   child.cmd "Snippet its"
 
   test_helpers.expect_eventually(get_lines, { "it(\"\", () => {", "", "});" })
-  test_helpers.expect_cursor(get_cursor(), { 1, 4 })
+  test_helpers.expect_cursor(child, { 1, 4 })
 end
 
 T["Snippet"]["keeps the text before the cursor"] = function()
@@ -190,7 +186,7 @@ T["Snippet"]["keeps the text before the cursor"] = function()
   child.cmd "Snippet its"
 
   test_helpers.expect_eventually(get_lines, { "  it(\"\", () => {", "", "});" })
-  test_helpers.expect_cursor(get_cursor(), { 1, 6 })
+  test_helpers.expect_cursor(child, { 1, 6 })
 end
 
 T["Snippet"]["warns when the snippet file is missing"] = function()
@@ -212,8 +208,8 @@ T["Snippet"]["warns when the snippet file is missing"] = function()
       },
     },
   })
-  test_helpers.expect_lines(get_lines(), { "  click(\"x\")" })
-  test_helpers.expect_cursor(get_cursor(), { 1, 2 })
+  test_helpers.expect_lines(child, { "  click(\"x\")" })
+  test_helpers.expect_cursor(child, { 1, 2 })
 end
 
 T["Snippet"]["moves the cursor according to the snippet trigger"] = function()
@@ -223,7 +219,7 @@ T["Snippet"]["moves the cursor according to the snippet trigger"] = function()
   child.cmd "Snippet ndoc"
 
   test_helpers.expect_eventually(get_lines, { "expect().not.toBeInTheDocument();" })
-  test_helpers.expect_cursor(get_cursor(), { 1, 7 })
+  test_helpers.expect_cursor(child, { 1, 7 })
 end
 
 return T

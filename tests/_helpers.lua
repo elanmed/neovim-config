@@ -54,16 +54,44 @@ M.stub_notify = function()
   return require("tests._helpers").mock_child(vim, { notify = function() end }, "notifications")
 end
 
-M.expect_lines = MiniTest.new_expectation("buffer lines", function(lines, expected)
-  return vim.deep_equal(lines, expected)
-end, function(lines, expected)
-  return string.format("Observed: %s\nExpected: %s", vim.inspect(lines), vim.inspect(expected))
+M.expect_lines = MiniTest.new_expectation("buffer lines", function(child, expected)
+  return vim.deep_equal(child.api.nvim_buf_get_lines(0, 0, -1, false), expected)
+end, function(child, expected)
+  return string.format(
+    "Observed: %s\nExpected: %s",
+    vim.inspect(child.api.nvim_buf_get_lines(0, 0, -1, false)),
+    vim.inspect(expected)
+  )
 end)
 
-M.expect_cursor = MiniTest.new_expectation("cursor position", function(position, expected)
-  return vim.deep_equal(position, expected)
-end, function(position, expected)
-  return string.format("Observed: %s\nExpected: %s", vim.inspect(position), vim.inspect(expected))
+M.expect_cursor = MiniTest.new_expectation("cursor position", function(child, expected)
+  return vim.deep_equal(child.api.nvim_win_get_cursor(0), expected)
+end, function(child, expected)
+  return string.format(
+    "Observed: %s\nExpected: %s",
+    vim.inspect(child.api.nvim_win_get_cursor(0)),
+    vim.inspect(expected)
+  )
+end)
+
+M.expect_cmdline = MiniTest.new_expectation("command line", function(child, expected)
+  return vim.deep_equal(child.lua_get [[vim.fn.getcmdline()]], expected)
+end, function(child, expected)
+  return string.format(
+    "Observed: %s\nExpected: %s",
+    vim.inspect(child.lua_get [[vim.fn.getcmdline()]]),
+    vim.inspect(expected)
+  )
+end)
+
+M.expect_cmdline_cursor = MiniTest.new_expectation("command line cursor", function(child, expected)
+  return vim.deep_equal(child.lua_get [[vim.fn.getcmdpos()]], expected)
+end, function(child, expected)
+  return string.format(
+    "Observed: %s\nExpected: %s",
+    vim.inspect(child.lua_get [[vim.fn.getcmdpos()]]),
+    vim.inspect(expected)
+  )
 end)
 
 M.expect_eventually = MiniTest.new_expectation(
