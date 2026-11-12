@@ -77,17 +77,6 @@ end, function(expected)
   )
 end)
 
---- @param fragment string
-local messages_contain = function(fragment)
-  for _, line in ipairs(child.lua_func(get_messages)) do
-    if line:find(fragment, 1, true) ~= nil then
-      return true
-    end
-  end
-
-  return false
-end
-
 local press_lazygit_key = function()
   child.type_keys "\\g"
   test_helpers.expect_eventually(function()
@@ -199,7 +188,7 @@ T["lazygit exit"]["closes the window and deletes the terminal buffer"] = functio
   MiniTest.expect.equality(child.lua_func(get_messages), {})
 end
 
-T["lazygit exit"]["errors when the exit arrives after <c-c> closed the window"] = function()
+T["lazygit exit"]["closes cleanly when the exit arrives after <c-c> closed the window"] = function()
   press_lazygit_key()
   local buf_id = child.api.nvim_get_current_buf()
   local job_id = child.lua_func(get_terminal_job_id)
@@ -207,12 +196,15 @@ T["lazygit exit"]["errors when the exit arrives after <c-c> closed the window"] 
   child.type_keys "<c-c>"
   child.lua_func(stop_lazygit, job_id)
 
-  -- Pins the bug in BUGS.md: the closed window makes `nvim_win_close` throw, so
-  -- the terminal buffer is left behind.
   test_helpers.expect_eventually(function()
-    return messages_contain "Invalid window id"
-  end, true)
-  MiniTest.expect.equality(child.api.nvim_buf_is_valid(buf_id), true)
+    return child.api.nvim_buf_is_valid(buf_id)
+  end, false)
+  MiniTest.expect.equality(#child.api.nvim_list_wins(), 1)
+  MiniTest.expect.equality(child.lua_func(get_messages), {})
+
+  press_lazygit_key()
+
+  MiniTest.expect.equality(child.lua_func(get_jobstart_commands), { "lazygit", "lazygit" })
 end
 
 return T

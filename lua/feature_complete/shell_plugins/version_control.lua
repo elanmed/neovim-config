@@ -55,8 +55,14 @@ vim.keymap.set("n", "<leader>g", function()
     vim.fn.jobstart("lazygit", {
       term = true,
       on_exit = function()
-        vim.api.nvim_win_close(lazygit_term_winnr, true)
-        vim.cmd.bdelete(lazygit_term_bufnr)
+        if vim.api.nvim_win_is_valid(lazygit_term_winnr) then
+          vim.api.nvim_win_close(lazygit_term_winnr, true)
+        end
+        if vim.api.nvim_buf_is_valid(lazygit_term_bufnr) then
+          vim.cmd.bdelete(lazygit_term_bufnr)
+        end
+        lazygit_term_winnr = -1
+        lazygit_term_bufnr = -1
       end,
     })
   end

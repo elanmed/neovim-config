@@ -9,7 +9,3 @@ Found while writing tests. Each entry records the code under test, the surprisin
 ## `lua/shared/notify.lua` — message width ignores double-width characters
 
 `needs_cut` compares `strchars(message)` with `columns - 1`, counting characters instead of display cells, so a wide-character message overflows the window: with `columns = 40`, 30 `猫` (60 cells) is echoed unchanged.
-
-## `lua/feature_complete/shell_plugins/version_control.lua` — lazygit exit throws after `<c-c>` closed the window
-
-`<c-c>` closes the floating window but leaves `lazygit_term_winnr` pointing at the destroyed window id and the job running. When lazygit later exits, `on_exit` calls `nvim_win_close` on that stale id without an `nvim_win_is_valid` guard, so it raises `Invalid window id` and `bdelete` never runs: the terminal buffer survives, and pressing `<leader>g` again finds it valid and reopens a dead buffer. Test: `tests/lua_feature_complete_shell_plugins_version_control_test.lua`, case `lazygit exit | errors when the exit arrives after <c-c> closed the window`.
