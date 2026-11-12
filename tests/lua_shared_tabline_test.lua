@@ -156,7 +156,7 @@ T["Statusline()"]["shows the current branch"] = function()
   load_module()
 
   test_helpers.expect_eventually(statusline, "%#TabLine#BRANCH: main")
-  MiniTest.expect.equality(child.lua_get [[_G.branch_calls]], {
+  MiniTest.expect.equality(test_helpers.get_calls(child, "branch_calls"), {
     { name = "system", args = { { "git", "branch", "--show-current" } } },
   })
 end
@@ -170,7 +170,7 @@ T["Statusline()"]["updates the branch when GitHeadChanged fires"] = function()
   child.lua [[vim.api.nvim_exec_autocmds("User", { pattern = "GitHeadChanged" })]]
 
   test_helpers.expect_eventually(statusline, "%#TabLine#BRANCH: feature")
-  MiniTest.expect.equality(child.lua_get [[_G.branch_calls]], {
+  MiniTest.expect.equality(test_helpers.get_calls(child, "branch_calls"), {
     { name = "system", args = { { "git", "branch", "--show-current" } } },
   })
 end

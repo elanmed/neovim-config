@@ -50,6 +50,12 @@ M.mock = function(target, overrides)
   return calls
 end
 
+--- @param store_name string
+--- @return MockCall[]
+M.get_calls = function(child, store_name)
+  return child.lua_get(("_G.%s"):format(store_name))
+end
+
 M.stub_notify = function()
   return require("tests._helpers").mock_child(vim, { notify = function() end }, "notifications")
 end

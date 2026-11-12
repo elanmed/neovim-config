@@ -273,7 +273,7 @@ T["quickfix window keymaps"]["> and < move between the lists"] = function()
   child.type_keys "<"
 
   MiniTest.expect.equality(current_qf_list_nr(), 1)
-  MiniTest.expect.equality(child.lua_get [[_G.notifications]], {})
+  MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {})
 
   child.type_keys "<"
   child.type_keys ">"
@@ -283,7 +283,7 @@ T["quickfix window keymaps"]["> and < move between the lists"] = function()
   child.type_keys ">"
 
   MiniTest.expect.equality(current_qf_list_nr(), 2)
-  MiniTest.expect.equality(child.lua_get [[_G.notifications]], {
+  MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {
     { name = "notify", args = { "No older list!", vim.log.levels.WARN } },
     { name = "notify", args = { "No newer list!", vim.log.levels.WARN } },
   })

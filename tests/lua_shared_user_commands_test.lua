@@ -106,7 +106,7 @@ T["Format"]["aborts for readonly buffers"] = function()
 
   child.cmd "silent Format"
 
-  MiniTest.expect.equality(child.lua_get [[_G.notifications]], {
+  MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {
     { name = "notify", args = { "Aborting, readonly", vim.log.levels.WARN } },
   })
   test_helpers.expect_lines(child, { "a" })
@@ -119,7 +119,7 @@ T["Format"]["aborts for buffers with a non-normal buftype"] = function()
 
   child.cmd "silent Format"
 
-  MiniTest.expect.equality(child.lua_get [[_G.notifications]], {
+  MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {
     { name = "notify", args = { "Aborting, buftype is not normal", vim.log.levels.WARN } },
   })
   test_helpers.expect_lines(child, { "a" })
@@ -132,7 +132,7 @@ T["Snippet"]["lists the available triggers when no trigger is given"] = function
 
   child.cmd "Snippet"
 
-  local prints = child.lua_get [[_G.prints]]
+  local prints = test_helpers.get_calls(child, "prints")
   local triggers = vim.tbl_map(
     --- @param print_arg MockCall
     function(print_arg)
@@ -163,7 +163,7 @@ T["Snippet"]["warns about unknown triggers"] = function()
 
   child.cmd "Snippet nope"
 
-  MiniTest.expect.equality(child.lua_get [[_G.notifications]], {
+  MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {
     { name = "notify", args = { "nope is not a valid snippet trigger!", vim.log.levels.WARN } },
   })
   test_helpers.expect_lines(child, { "current" })
@@ -198,7 +198,7 @@ T["Snippet"]["warns when the snippet file is missing"] = function()
   child.cmd "Snippet its"
 
   test_helpers.expect_eventually(function()
-    return child.lua_get [[_G.notifications]]
+    return test_helpers.get_calls(child, "notifications")
   end, {
     {
       name = "notify",
