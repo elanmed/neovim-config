@@ -16,7 +16,7 @@ Files with real logic, kept in the backlog:
 - [ ] `tests/lua_barebones_init_test.lua` — `lua/barebones/init.lua`
 - [ ] `tests/lua_feature_complete_shell_plugins_version_control_test.lua` — `lua/feature_complete/shell_plugins/version_control.lua`
 - [ ] `tests/lua_feature_complete_vim_plugins_lsp_test.lua` — `lua/feature_complete/vim_plugins/lsp.lua`
-- [ ] `tests/lua_feature_complete_vim_plugins_movements_test.lua` — `lua/feature_complete/vim_plugins/movements.lua`
+- [x] `tests/lua_feature_complete_vim_plugins_movements_test.lua` — `lua/feature_complete/vim_plugins/movements.lua`
 - [ ] `tests/lua_feature_complete_vim_plugins_quickfix_list_test.lua` — `lua/feature_complete/vim_plugins/quickfix_list.lua`
 - [x] `tests/lua_helpers_test.lua` — `lua/helpers.lua`
 - [x] `tests/lua_shared_auto_commands_test.lua` — `lua/shared/auto_commands.lua`
