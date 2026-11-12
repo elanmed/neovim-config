@@ -8,10 +8,6 @@ Place each eventual test in `tests/` and name it by replacing `/` in the source 
 
 `mini.test` discovers `test_*.lua` by default, so update `scripts/minimal_init.lua` to discover both the existing `test_*.lua` file and the new `*_test.lua` files. This preserves the existing dummy suite while ensuring the per-file tests are collected. The current `make test` target will remain unchanged.
 
-## Consult the template.nvim model
-
-Shallow-clone `elanmed/template.nvim` to `/tmp/template.nvim`. Read `/tmp/template.nvim/PRINCIPLES.md` in full and assess which principles apply to this Neovim config and its tests.
-
 ## No tests: pure configuration
 
 Reviewed and intentionally left without tests:
