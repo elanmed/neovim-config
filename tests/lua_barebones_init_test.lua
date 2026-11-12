@@ -71,36 +71,6 @@ local stub_select = function(opts)
   })
 end
 
---- @class BufferFixtures
---- @field named integer[]
---- @field unnamed integer
---- @field unlisted integer
---- @field unloaded integer
-
---- @param paths string[] four file paths
---- @return BufferFixtures
-local make_buffer_fixtures = function(paths)
-  local fixtures = { named = {} }
-
-  for index = 1, 2 do
-    vim.cmd.edit { args = { paths[index] }, mods = { silent = true } }
-    table.insert(fixtures.named, vim.api.nvim_get_current_buf())
-  end
-
-  fixtures.unnamed = vim.api.nvim_create_buf(true, false)
-
-  vim.cmd.edit { args = { paths[3] }, mods = { silent = true } }
-  fixtures.unlisted = vim.api.nvim_get_current_buf()
-  vim.bo[fixtures.unlisted].buflisted = false
-
-  vim.cmd.edit { args = { paths[4] }, mods = { silent = true } }
-  fixtures.unloaded = vim.api.nvim_get_current_buf()
-  vim.api.nvim_set_current_buf(fixtures.named[2])
-  vim.api.nvim_buf_delete(fixtures.unloaded, { unload = true })
-
-  return fixtures
-end
-
 --- @param path string
 --- @param mark string
 --- @param lnum integer
@@ -130,19 +100,32 @@ T["<leader>b"] = MiniTest.new_set()
 T["<leader>b"]["lists only loaded, listed, and named buffers"] = function()
   load_config()
   local paths = test_helpers.make_files { "a.lua", "b.lua", "c.lua", "d.lua" }
-  local fixtures = child.lua_func(make_buffer_fixtures, paths)
+  child.lua_func(test_helpers.edit_file, paths[1])
+  child.lua_func(test_helpers.edit_file, paths[2])
+  child.api.nvim_create_buf(true, false)
+  child.lua_func(test_helpers.edit_file, paths[3])
+  child.bo.buflisted = false
+  child.lua_func(test_helpers.edit_file, paths[4])
+
+  local unloaded_buf = child.api.nvim_get_current_buf()
+  child.lua_func(test_helpers.edit_file, paths[2])
+  child.api.nvim_buf_delete(unloaded_buf, { unload = true })
   child.lua_func(stub_cwd, vim.fs.dirname(paths[1]))
-  child.lua_func(stub_select, { choice = fixtures.named[1] })
+  child.lua_func(stub_select, { choice = child.fn.bufnr(paths[1]) })
 
   child.type_keys "\\b"
 
-  MiniTest.expect.equality(test_helpers.get_calls(child, "selected_items"), fixtures.named)
+  MiniTest.expect.equality(test_helpers.get_calls(child, "selected_items"), {
+    child.fn.bufnr(paths[1]),
+    child.fn.bufnr(paths[2]),
+  })
 end
 
 T["<leader>b"]["formats buffers relative to the working directory"] = function()
   load_config()
-  local paths = test_helpers.make_files { "a.lua", "b.lua", "c.lua", "d.lua" }
-  child.lua_func(make_buffer_fixtures, paths)
+  local paths = test_helpers.make_files { "a.lua", "b.lua" }
+  child.lua_func(test_helpers.edit_file, paths[1])
+  child.lua_func(test_helpers.edit_file, paths[2])
   child.lua_func(stub_cwd, vim.fs.dirname(paths[1]))
   child.lua_func(stub_select, {})
 
@@ -156,32 +139,35 @@ end
 
 T["<leader>b"]["switches to the selected buffer"] = function()
   load_config()
-  local paths = test_helpers.make_files { "a.lua", "b.lua", "c.lua", "d.lua" }
-  local fixtures = child.lua_func(make_buffer_fixtures, paths)
+  local paths = test_helpers.make_files { "a.lua", "b.lua" }
+  child.lua_func(test_helpers.edit_file, paths[1])
+  child.lua_func(test_helpers.edit_file, paths[2])
   child.lua_func(stub_cwd, vim.fs.dirname(paths[1]))
-  child.lua_func(stub_select, { choice = fixtures.named[1] })
+  child.lua_func(stub_select, { choice = child.fn.bufnr(paths[1]) })
 
   child.type_keys "\\b"
 
-  MiniTest.expect.equality(child.api.nvim_get_current_buf(), fixtures.named[1])
+  MiniTest.expect.equality(child.api.nvim_get_current_buf(), child.fn.bufnr(paths[1]))
 end
 
 T["<leader>b"]["keeps the current buffer when the selection is cancelled"] = function()
   load_config()
-  local paths = test_helpers.make_files { "a.lua", "b.lua", "c.lua", "d.lua" }
-  local fixtures = child.lua_func(make_buffer_fixtures, paths)
+  local paths = test_helpers.make_files { "a.lua", "b.lua" }
+  child.lua_func(test_helpers.edit_file, paths[1])
+  child.lua_func(test_helpers.edit_file, paths[2])
   child.lua_func(stub_cwd, vim.fs.dirname(paths[1]))
   child.lua_func(stub_select, {})
 
   child.type_keys "\\b"
 
-  MiniTest.expect.equality(child.api.nvim_get_current_buf(), fixtures.named[2])
+  MiniTest.expect.equality(child.api.nvim_buf_get_name(0), paths[2])
 end
 
 T["<leader>b"]["warns when the relative path is unavailable"] = function()
   load_config()
-  local paths = test_helpers.make_files { "a.lua", "b.lua", "c.lua", "d.lua" }
-  child.lua_func(make_buffer_fixtures, paths)
+  local paths = test_helpers.make_files { "a.lua", "b.lua" }
+  child.lua_func(test_helpers.edit_file, paths[1])
+  child.lua_func(test_helpers.edit_file, paths[2])
   child.lua_func(stub_missing_relpath, vim.fs.dirname(paths[1]))
   child.lua_func(stub_select, {})
   child.lua_func(test_helpers.stub_notify)
