@@ -578,6 +578,36 @@ T["utils.set_and_rotate()"]["sets the clipboard and unnamed registers and rotate
   })
 end
 
+--- @param keys_arg string
+--- @return string
+local get_visual_selection = function(keys_arg)
+  local helpers = require "helpers"
+
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, { "foo bar", "baz qux" })
+  vim.api.nvim_win_set_cursor(0, { 1, 0 })
+  vim.fn.feedkeys(keys_arg, "x")
+
+  return helpers.utils.visual_selection()
+end
+
+T["utils.visual_selection()"] = MiniTest.new_set { hooks = child_hooks }
+
+T["utils.visual_selection()"]["returns the charwise selection"] = function()
+  MiniTest.expect.equality(child.lua_func(get_visual_selection, "vee"), "foo bar")
+end
+
+T["utils.visual_selection()"]["joins a linewise selection"] = function()
+  MiniTest.expect.equality(child.lua_func(get_visual_selection, "Vj"), "foo bar baz qux")
+end
+
+T["utils.visual_selection()"]["joins a blockwise selection"] = function()
+  MiniTest.expect.equality(child.lua_func(get_visual_selection, "l\22jl"), "oo az")
+end
+
+T["utils.visual_selection()"]["returns a single character for an empty selection"] = function()
+  MiniTest.expect.equality(child.lua_func(get_visual_selection, "v"), "f")
+end
+
 T["async.system()"] = function()
   local task = vim.async.run(function()
     return vim.async.await(h.async.system { "printf", "%s", "async output" })

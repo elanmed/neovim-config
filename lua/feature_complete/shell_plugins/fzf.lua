@@ -724,13 +724,11 @@ vim.keymap.set("n", "<leader>o", function()
 end, { desc = "fzf rg with exact search flags" })
 
 vim.keymap.set("v", "<leader>o", function()
-  local region = vim.fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".")
-  if #region > 0 then
-    rg(
-      ([[ %s -- '%s']]):format(exact_search_flags, region[1]),
-      { bind_start = "beginning-of-line" }
-    )
+  local text = h.utils.visual_selection()
+  if text == "" then
+    return
   end
+  rg(([[ %s -- '%s']]):format(exact_search_flags, text), { bind_start = "beginning-of-line" })
 end, { desc = "fzf rg with exact search flags" })
 
 vim.keymap.set("n", "<leader>zo", function()
@@ -742,13 +740,13 @@ vim.keymap.set("n", "<leader>zo", function()
 end, { desc = "fzf rg with exact search, exclude flags" })
 
 vim.keymap.set("v", "<leader>zo", function()
-  local region = vim.fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".")
-  if #region > 0 then
-    rg(
-      ([[ %s %s -- '%s']]):format(exact_search_flags, exclude_flags, region[1]),
-      { bind_start = "beginning-of-line" }
-    )
+  local text = h.utils.visual_selection()
+  if text == "" then
+    return
   end
+  rg(([[ %s %s -- '%s']]):format(exact_search_flags, exclude_flags, text), {
+    bind_start = "beginning-of-line",
+  })
 end, { desc = "fzf rg with exact search, exclude flags" })
 
 local function get_stripped_filename()

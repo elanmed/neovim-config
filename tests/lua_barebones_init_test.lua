@@ -71,6 +71,46 @@ local stub_select = function(opts)
   })
 end
 
+local skip_without_rg = function()
+  if vim.fn.executable "rg" == 0 then
+    MiniTest.skip "requires ripgrep"
+  end
+end
+
+--- @class GrepItem
+--- @field bufnr integer
+--- @field lnum integer
+--- @field col integer
+--- @field text string
+
+--- @return GrepItem[]
+local get_grep_items = function()
+  return vim.tbl_map(
+    --- @param item_arg vim.quickfix.entry
+    function(item_arg)
+      return {
+        bufnr = item_arg.bufnr,
+        lnum = item_arg.lnum,
+        col = item_arg.col,
+        text = item_arg.text,
+      }
+    end,
+    vim.fn.getqflist()
+  )
+end
+
+--- @param lines string[]
+--- @return string
+local open_grep_file = function(lines)
+  local dir = test_helpers.make_temp_dir()
+  local path = vim.fs.joinpath(dir, "a.txt")
+  vim.fn.writefile(lines, path)
+  child.fn.chdir(dir)
+  child.lua_func(test_helpers.edit_file, path)
+
+  return path
+end
+
 --- @param path string
 --- @param mark string
 --- @param lnum integer
@@ -181,6 +221,47 @@ T["<leader>b"]["warns when the relative path is unavailable"] = function()
   })
 end
 
+T["<leader>o"] = MiniTest.new_set()
+
+T["<leader>o"]["greps the word under the cursor"] = function()
+  skip_without_rg()
+  load_config()
+  local path = open_grep_file { "hello world", "foo bar" }
+  child.api.nvim_win_set_cursor(0, { 1, 7 })
+
+  child.type_keys "\\o"
+
+  MiniTest.expect.equality(child.lua_func(get_grep_items), {
+    { bufnr = child.fn.bufnr(path), lnum = 1, col = 7, text = "hello world" },
+  })
+end
+
+T["<leader>o"]["greps the word under the cursor as a fixed string"] = function()
+  skip_without_rg()
+  load_config()
+  local path = open_grep_file { "foo.bar", "fooxbar" }
+  child.api.nvim_win_set_cursor(0, { 1, 0 })
+
+  child.type_keys "\\o"
+
+  MiniTest.expect.equality(child.lua_func(get_grep_items), {
+    { bufnr = child.fn.bufnr(path), lnum = 1, col = 1, text = "foo.bar" },
+  })
+end
+
+T["<leader>o"]["greps the visual selection"] = function()
+  skip_without_rg()
+  load_config()
+  local path = open_grep_file { "hello world", "foo bar" }
+  child.api.nvim_win_set_cursor(0, { 2, 0 })
+
+  child.type_keys("v", "e", "e", "\\o")
+
+  MiniTest.expect.equality(child.lua_func(get_grep_items), {
+    { bufnr = child.fn.bufnr(path), lnum = 2, col = 1, text = "foo bar" },
+  })
+end
+
 T["<leader>l"] = MiniTest.new_set()
 
 T["<leader>l"]["lists the marks inside the working directory"] = function()
@@ -258,6 +339,41 @@ T["<leader>l"]["excludes marks outside the working directory"] = function()
   MiniTest.expect.equality(test_helpers.get_calls(child, "selected_items"), {
     { name = "A", lnum = 7, file = paths[1] },
   })
+end
+
+T["<leader>x"] = MiniTest.new_set()
+
+T["<leader>x"]["clears every quickfix list"] = function()
+  load_config()
+  child.lua_func(test_helpers.seed_quickfix_lists)
+  child.cmd "silent copen"
+
+  child.type_keys "\\x"
+
+  MiniTest.expect.equality(child.lua_func(test_helpers.get_quickfix_titles), {})
+end
+
+T["<leader>d"] = MiniTest.new_set()
+
+T["<leader>d"]["clears the current list and drops it from the history"] = function()
+  load_config()
+  child.lua_func(test_helpers.seed_quickfix_lists)
+  child.cmd "silent copen"
+
+  child.type_keys "\\d"
+
+  MiniTest.expect.equality(child.lua_func(test_helpers.get_quickfix_titles), { "first" })
+end
+
+T["<leader>d"]["closes the quickfix window when no list is left"] = function()
+  load_config()
+  child.lua_func(test_helpers.seed_quickfix_list)
+  child.cmd "silent copen"
+
+  child.type_keys "\\d"
+
+  MiniTest.expect.equality(#child.api.nvim_list_wins(), 1)
+  MiniTest.expect.equality(child.lua_func(test_helpers.get_quickfix_titles), {})
 end
 
 T["s"] = MiniTest.new_set()

@@ -140,6 +140,12 @@ utils.set_and_rotate = function(val)
   utils.rotate_registers()
 end
 
+--- @return string
+utils.visual_selection = function()
+  local lines = vim.fn.getregion(vim.fn.getpos "v", vim.fn.getpos ".", { type = vim.fn.mode() })
+  return table.concat(lines, " ")
+end
+
 --- @class IsBigFileOpts
 --- @field bname string
 --- @field line_count number

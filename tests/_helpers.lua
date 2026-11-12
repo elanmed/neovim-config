@@ -228,6 +228,27 @@ M.file_contains = function(path, line)
   return vim.tbl_contains(lines, line)
 end
 
+M.seed_quickfix_lists = function()
+  vim.fn.setqflist({}, "f")
+  vim.fn.setqflist({}, " ", { title = "first", items = { { text = "first item", valid = 1 } } })
+  vim.fn.setqflist({}, " ", { title = "second", items = { { text = "second item", valid = 1 } } })
+end
+
+M.seed_quickfix_list = function()
+  vim.fn.setqflist({}, "f")
+  vim.fn.setqflist({}, " ", { title = "only", items = { { text = "only item", valid = 1 } } })
+end
+
+--- @return string[]
+M.get_quickfix_titles = function()
+  local titles = {}
+  for index = 1, vim.fn.getqflist({ nr = "$" }).nr do
+    table.insert(titles, vim.fn.getqflist({ nr = index, title = 0 }).title)
+  end
+
+  return titles
+end
+
 --- @param contents string
 M.write_temp_file = function(contents)
   local path = vim.fn.tempname()

@@ -26,9 +26,22 @@ if vim.fn.executable "fd" == h.vimscript_true then
 
   vim.o.findfunc = "v:lua.FdFindFiles"
 end
+vim.o.grepprg = "rg --vimgrep --smart-case --hidden --color=never -g '!.git/**/*'"
+vim.o.grepformat = "%f:%l:%c:%m"
 vim.keymap.set("n", "/", "/\\V", { desc = "/ without regex" })
 vim.keymap.set("n", "K", "<C-w><C-]>", { desc = "Tags hover" })
 vim.keymap.set("n", "<leader>f", ":find ", { desc = ":find" })
+vim.keymap.set("n", "<leader>a", ":grep ", { desc = ":grep" })
+vim.keymap.set("n", "<leader>o", function()
+  vim.cmd.grep(("-F -w %s"):format(vim.fn.shellescape(vim.fn.expand "<cword>")))
+end, { desc = "Grep the word under the cursor" })
+vim.keymap.set("v", "<leader>o", function()
+  local pattern = h.utils.visual_selection()
+  if pattern == "" then
+    return
+  end
+  vim.cmd.grep(("-F -w %s"):format(vim.fn.shellescape(pattern)))
+end, { desc = "Grep the current selection" })
 vim.keymap.set("n", "<leader>b", function()
   local buffers = vim
     .iter(vim.api.nvim_list_bufs())
@@ -154,3 +167,25 @@ vim.keymap.set("n", "s", function()
 
   vim.cmd.write()
 end)
+
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("BarebonesQfListRemaps", { clear = true }),
+  pattern = "qf",
+  callback = function(ev)
+    vim.keymap.set("n", "<leader>x", function()
+      vim.fn.setqflist({}, "f")
+    end, { buffer = ev.buf, desc = "Clear all quickfix lists" })
+
+    vim.keymap.set("n", "<leader>d", function()
+      vim.fn.setqflist({}, "r")
+
+      local qf_lists = h.qf.filter(function(qf_list)
+        return #qf_list.items > 0
+      end)
+      h.qf.replace(qf_lists)
+      if #qf_lists == 0 then
+        vim.cmd.cclose()
+      end
+    end, { buffer = ev.buf, desc = "Clear the current quickfix list" })
+  end,
+})
