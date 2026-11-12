@@ -1,3 +1,11 @@
 # Potential bugs
 
-Found while writing tests. Each entry records the code under test, the surprising behavior, and the test case that pins it down.
+Found while writing tests. Each entry records the code under test, the surprising behavior, and the test case or reproduction that pins it down.
+
+## `lua/shared/notify.lua` — newline cut mixes byte and character offsets
+
+`string.find(message, "\n", 1, true)` returns a byte index, but it is passed to `strcharpart` as a character count. Any multibyte character before the newline inflates the index, so the newline and part of the following line survive the cut: `vim.notify("日本語\nsecond", vim.log.levels.INFO)` echoes `日本語\nsecon…` instead of `日本語…`.
+
+## `lua/shared/notify.lua` — message width ignores double-width characters
+
+`needs_cut` compares `strchars(message)` with `columns - 1`, counting characters instead of display cells, so a wide-character message overflows the window: with `columns = 40`, 30 `猫` (60 cells) is echoed unchanged.

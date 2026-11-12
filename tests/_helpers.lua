@@ -160,9 +160,13 @@ M.edit_file = function(path)
   vim.cmd.edit { args = { path }, mods = { silent = true } }
 end
 
-M.open_buffer = function()
+--- @param lines string[]?
+M.open_buffer = function(lines)
   local buf_id = vim.api.nvim_create_buf(true, false)
   vim.api.nvim_set_current_buf(buf_id)
+  if lines ~= nil then
+    vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, lines)
+  end
 
   return buf_id
 end

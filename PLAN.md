@@ -41,7 +41,7 @@ Files with real logic, kept in the backlog:
 - [x] `tests/lua_helpers_test.lua` — `lua/helpers.lua`
 - [ ] `tests/lua_shared_auto_commands_test.lua` — `lua/shared/auto_commands.lua`
 - [ ] `tests/lua_shared_keymaps_test.lua` — `lua/shared/keymaps.lua`
-- [ ] `tests/lua_shared_movements_test.lua` — `lua/shared/movements.lua`
+- [x] `tests/lua_shared_movements_test.lua` — `lua/shared/movements.lua`
 - [x] `tests/lua_shared_notify_test.lua` — `lua/shared/notify.lua`
 - [x] `tests/lua_shared_pairs_test.lua` — `lua/shared/pairs.lua`
 - [x] `tests/lua_shared_quickfix_list_test.lua` — `lua/shared/quickfix_list.lua`
