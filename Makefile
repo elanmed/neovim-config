@@ -1,6 +1,6 @@
 SHELL := /bin/bash
 
-.PHONY: test lint format
+.PHONY: test lint format update-submodules
 
 test:
 	nvim --headless --noplugin -u scripts/minimal_init.lua -c "lua MiniTest.run()"
@@ -17,3 +17,7 @@ lint:
 format:
 	stylua *.lua after ftplugin fzf_scripts lua scripts tests
 
+update-submodules:
+	git submodule update --init --recursive --remote
+
+deploy: update-submodules test lint format docs
