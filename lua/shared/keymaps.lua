@@ -144,7 +144,9 @@ vim.keymap.set("n", "<leader>yr", function()
 end, { desc = "Yank the relative path of the current buffer" })
 
 vim.keymap.set("n", "<leader>yf", function()
-  vim.fn.setqflist(vim.fn.getqflist())
+  local qf_list = vim.fn.getqflist { items = 0, context = 0, title = 0, idx = 0 }
+  --- @diagnostic disable-next-line: param-type-mismatch
+  vim.fn.setqflist({}, " ", qf_list)
   vim.notify("Duplicated the current quickfix list", vim.log.levels.INFO)
 end, { desc = "Duplicate the current quickfix list" })
 
@@ -164,6 +166,12 @@ local function next_closed_fold(direction)
 
   if is_open then
     vim.fn.winrestview(view)
+    return
+  end
+
+  local fold_first_line = vim.fn.foldclosed(vim.fn.line ".")
+  if fold_first_line > 0 then
+    vim.fn.cursor(fold_first_line, 1)
   end
 end
 
@@ -320,6 +328,9 @@ vim.keymap.set("i", "<C-g>", function()
     local tag_name = tag_content:match "^%S+"
     if tag_name == nil then
       return vim.notify("Invalid tag name", vim.log.levels.ERROR)
+    end
+    if tag_name:sub(1, 1) == "/" then
+      return vim.notify("No matching tag", vim.log.levels.WARN)
     end
     closing_tag = "</" .. tag_name .. ">"
   end

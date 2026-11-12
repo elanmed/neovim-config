@@ -454,7 +454,13 @@ vim.keymap.set("n", "K", function()
     end
   end
   vim.notify("No LSP, falling back to ctags", vim.log.levels.INFO)
-  vim.cmd.wincmd "]"
+
+  local success, err = pcall(function()
+    vim.cmd.wincmd "]"
+  end)
+  if not success then
+    vim.notify(err --[[@as string]], vim.log.levels.ERROR)
+  end
 end, { desc = "LSP hover" })
 vim.keymap.set({ "n", "i" }, "<C-c>", function()
   for _, win in ipairs(vim.api.nvim_list_wins()) do

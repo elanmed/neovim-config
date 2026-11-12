@@ -73,7 +73,21 @@ end
 
 local seed_quickfix_list = function()
   vim.fn.setqflist({}, "f")
-  vim.fn.setqflist({}, " ", { title = "first", items = { { text = "first item", valid = 1 } } })
+  vim.fn.setqflist({}, " ", {
+    title = "first",
+    items = { { text = "first item", valid = 1 } },
+    context = { id = 1 },
+  })
+end
+
+local get_quickfix_list_metadata = function()
+  local metadata = {}
+  for index = 1, vim.fn.getqflist({ nr = "$" }).nr do
+    local qf_list = vim.fn.getqflist { nr = index, title = 0, context = 0 }
+    table.insert(metadata, { title = qf_list.title, context = qf_list.context })
+  end
+
+  return metadata
 end
 
 local get_quickfix_texts = function()
@@ -146,6 +160,17 @@ T["<C-g>"]["closes a tag that text follows"] = function()
   test_helpers.expect_cursor(child, { 1, 9 })
 end
 
+T["<C-g>"]["warns when the tag left of the cursor is already closed"] = function()
+  child.lua_func(test_helpers.stub_notify)
+
+  close_tag "<div></div>"
+
+  test_helpers.expect_lines(child, { "<div></div>" })
+  MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {
+    { name = "notify", args = { "No matching tag", vim.log.levels.WARN } },
+  })
+end
+
 T["<C-g>"]["warns when there is no tag left of the cursor"] = function()
   child.lua_func(test_helpers.stub_notify)
 
@@ -196,7 +221,7 @@ T["zk"]["jumps to the previous closed fold"] = function()
 
   child.type_keys "zk"
 
-  test_helpers.expect_cursor(child, { 4, 0 })
+  test_helpers.expect_cursor(child, { 2, 0 })
 end
 
 T["zj"]["restores the cursor when no fold is closed"] = function()
@@ -352,6 +377,10 @@ T["<leader>yf"]["duplicates the current quickfix list"] = function()
   MiniTest.expect.equality(child.lua_func(get_quickfix_texts), {
     { "first item" },
     { "first item" },
+  })
+  MiniTest.expect.equality(child.lua_func(get_quickfix_list_metadata), {
+    { title = "first", context = { id = 1 } },
+    { title = "first", context = { id = 1 } },
   })
   MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {
     { name = "notify", args = { "Duplicated the current quickfix list", vim.log.levels.INFO } },
