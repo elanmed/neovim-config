@@ -119,7 +119,12 @@ vim.keymap.set("n", "<leader>ye", function()
     return vim.notify("cwd is nil", vim.log.levels.WARN)
   end
 
-  local rel_path = vim.fs.relpath(cwd, vim.api.nvim_buf_get_name(0))
+  local bname = vim.api.nvim_buf_get_name(0)
+  if bname == "" then
+    return vim.notify("buffer is unnamed", vim.log.levels.WARN)
+  end
+
+  local rel_path = vim.fs.relpath(cwd, bname)
   if rel_path == nil then
     return vim.notify("relpath is nil", vim.log.levels.WARN)
   end
@@ -135,7 +140,12 @@ vim.keymap.set("n", "<leader>yr", function()
     return vim.notify("cwd is nil", vim.log.levels.WARN)
   end
 
-  local rel_path = vim.fs.relpath(cwd, vim.api.nvim_buf_get_name(0))
+  local bname = vim.api.nvim_buf_get_name(0)
+  if bname == "" then
+    return vim.notify("buffer is unnamed", vim.log.levels.WARN)
+  end
+
+  local rel_path = vim.fs.relpath(cwd, bname)
   if rel_path == nil then
     return vim.notify("relpath is nil", vim.log.levels.WARN)
   end

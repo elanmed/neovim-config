@@ -300,6 +300,18 @@ T["<leader>ye"]["sets the registers to the relative path with the position"] = f
   })
 end
 
+T["<leader>ye"]["warns when the buffer is unnamed"] = function()
+  child.lua_func(test_helpers.open_buffer)
+  child.lua_func(test_helpers.stub_notify)
+
+  child.type_keys "\\ye"
+
+  expect_unnamed_register ""
+  MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {
+    { name = "notify", args = { "buffer is unnamed", vim.log.levels.WARN } },
+  })
+end
+
 T["<leader>ye"]["warns when the working directory is unavailable"] = function()
   child.lua_func(test_helpers.open_named_buffer, "/root/one/foo.lua")
   child.lua_func(stub_cwd, nil)
@@ -337,6 +349,18 @@ T["<leader>yr"]["sets the registers to the relative path"] = function()
   child.type_keys "\\yr"
 
   expect_unnamed_register "foo.lua"
+end
+
+T["<leader>yr"]["warns when the buffer is unnamed"] = function()
+  child.lua_func(test_helpers.open_buffer)
+  child.lua_func(test_helpers.stub_notify)
+
+  child.type_keys "\\yr"
+
+  expect_unnamed_register ""
+  MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {
+    { name = "notify", args = { "buffer is unnamed", vim.log.levels.WARN } },
+  })
 end
 
 T["<leader>yr"]["warns when the working directory is unavailable"] = function()

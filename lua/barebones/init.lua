@@ -4,8 +4,8 @@ vim.api.nvim_create_autocmd("FileType", {
   pattern = "directory",
   callback = function(ev)
     vim.bo[ev.buf].bufhidden = "delete"
-    vim.keymap.set("n", "h", "<Plug>(nvim-dir-up)")
-    vim.keymap.set("n", "l", "<Plug>(nvim-dir-open)")
+    vim.keymap.set("n", "h", "<Plug>(nvim-dir-up)", { buffer = ev.buf })
+    vim.keymap.set("n", "l", "<Plug>(nvim-dir-open)", { buffer = ev.buf })
   end,
 })
 
@@ -114,7 +114,7 @@ vim.keymap.set("n", "<leader>l", function()
 
         local cwd = vim.uv.cwd()
         assert(cwd ~= nil)
-        if not vim.startswith(normalized, cwd) then
+        if vim.fs.relpath(cwd, normalized) == nil then
           return false
         end
 

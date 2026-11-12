@@ -13,7 +13,7 @@ Place each eventual test in `tests/` and name it by replacing `/` in the source 
 Files with real logic, kept in the backlog:
 
 - [x] `tests/ftplugin_lua_test.lua` — `ftplugin/lua.lua`
-- [ ] `tests/lua_barebones_init_test.lua` — `lua/barebones/init.lua`
+- [x] `tests/lua_barebones_init_test.lua` — `lua/barebones/init.lua`
 - [ ] `tests/lua_feature_complete_shell_plugins_version_control_test.lua` — `lua/feature_complete/shell_plugins/version_control.lua`
 - [ ] `tests/lua_feature_complete_vim_plugins_lsp_test.lua` — `lua/feature_complete/vim_plugins/lsp.lua`
 - [x] `tests/lua_feature_complete_vim_plugins_movements_test.lua` — `lua/feature_complete/vim_plugins/movements.lua`

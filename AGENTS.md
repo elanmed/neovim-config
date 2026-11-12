@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Conventions live in skills.
+Conventions live in skills - load all Neovim related skills.
 
 ## Test layout
 
