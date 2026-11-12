@@ -20,4 +20,4 @@ format:
 update-submodules:
 	git submodule update --init --recursive --remote
 
-deploy: update-submodules test lint format docs
+deploy: update-submodules test lint format
