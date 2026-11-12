@@ -39,7 +39,7 @@ Files with real logic, kept in the backlog:
 - [ ] `tests/lua_feature_complete_vim_plugins_version_control_test.lua` — `lua/feature_complete/vim_plugins/version_control.lua`
 - [ ] `tests/lua_first_test.lua` — `lua/first.lua`
 - [x] `tests/lua_helpers_test.lua` — `lua/helpers.lua`
-- [ ] `tests/lua_shared_auto_commands_test.lua` — `lua/shared/auto_commands.lua`
+- [x] `tests/lua_shared_auto_commands_test.lua` — `lua/shared/auto_commands.lua`
 - [ ] `tests/lua_shared_keymaps_test.lua` — `lua/shared/keymaps.lua`
 - [x] `tests/lua_shared_movements_test.lua` — `lua/shared/movements.lua`
 - [x] `tests/lua_shared_notify_test.lua` — `lua/shared/notify.lua`
