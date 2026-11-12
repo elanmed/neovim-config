@@ -131,7 +131,7 @@ M.expect_eventually = MiniTest.new_expectation(
   function(get_value, expected)
     return vim.wait(1000, function()
       return vim.deep_equal(get_value(), expected)
-    end)
+    end, 10)
   end,
   function(get_value, expected)
     return string.format(
