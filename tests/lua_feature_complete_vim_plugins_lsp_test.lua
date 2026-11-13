@@ -71,11 +71,15 @@ end
 --- @field result lsp.TextEdit[]?
 
 --- @param response FormattingResponse
-local stub_formatting_response = function(response)
+--- @param switch_to_bufnr integer?
+local stub_formatting_response = function(response, switch_to_bufnr)
   --- @type FakeLspClient
   local client = {
     --- @param callback fun(err: string?, result: lsp.TextEdit[]?): nil
     request = function(_, _, _, callback)
+      if switch_to_bufnr ~= nil then
+        vim.api.nvim_set_current_buf(switch_to_bufnr)
+      end
       callback(response.err, response.result)
     end,
   }
@@ -158,6 +162,12 @@ end
 --- @field lnum integer
 --- @field end_lnum integer
 --- @field text string
+
+--- @param bufnr integer
+--- @return string[]
+local get_buffer_lines = function(bufnr)
+  return vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+end
 
 --- @return QuickfixListEntryWithFilename[]
 local get_quickfix_items = function()
@@ -262,8 +272,7 @@ T["write"]["aborts for a readonly buffer"] = function()
   child.bo.readonly = true
   child.api.nvim_buf_set_lines(0, 1, 1, false, { "second" })
 
-  child.lua_func(run_module_fn, "write")
-
+  MiniTest.expect.equality(child.lua_func(run_module_fn, "write"), false)
   MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {
     { name = "notify", args = { "Aborting, readonly", vim.log.levels.WARN } },
   })
@@ -391,8 +400,7 @@ T["write"]["writes other filetypes directly"] = function()
   local path = child.lua_func(test_helpers.open_file_buffer, { "first" })
   child.api.nvim_buf_set_lines(0, 1, 1, false, { "second" })
 
-  child.lua_func(run_module_fn, "write")
-
+  MiniTest.expect.equality(child.lua_func(run_module_fn, "write"), true)
   MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {})
   MiniTest.expect.equality(child.fn.readfile(path), { "first", "second" })
   MiniTest.expect.equality(child.bo.modified, false)
@@ -607,6 +615,36 @@ local b = 2
   MiniTest.expect.equality(child.fn.readfile(path), { "local a = 1", "local b = 2" })
 end
 
+T["format_with_lsp"]["diffs the requested buffer when the current buffer changed"] = function()
+  local other_bufnr = child.lua_func(test_helpers.open_buffer, { "keep", "keep2" })
+  local path = child.lua_func(test_helpers.open_file_buffer, { "keep", "local  a=1", "keep2" })
+  local bufnr = child.api.nvim_get_current_buf()
+  child.bo.filetype = "c"
+  child.lua_func(stub_formatting_response, {
+    result = {
+      {
+        range = {
+          start = { line = 0, character = 0 },
+          ["end"] = { line = 3, character = 0 },
+        },
+        newText = [[
+keep
+local a = 1
+keep2
+]],
+      },
+    },
+  }, other_bufnr)
+
+  child.lua_func(run_module_fn, "format_with_lsp")
+
+  test_helpers.expect_eventually(function()
+    return child.lua_func(get_buffer_lines, bufnr)
+  end, { "keep", "local a = 1", "keep2" })
+  MiniTest.expect.equality(child.lua_func(get_buffer_lines, other_bufnr), { "keep", "keep2" })
+  MiniTest.expect.equality(child.fn.readfile(path), { "keep", "local a = 1", "keep2" })
+end
+
 T["format_with_lsp"]["applies partial edits directly"] = function()
   local path = child.lua_func(test_helpers.open_file_buffer, { "local a=1" })
   child.bo.filetype = "c"
@@ -665,7 +703,7 @@ T["Add"]["does not stage a buffer without a name"] = function()
   MiniTest.expect.equality(test_helpers.get_calls(child, "async_system_calls"), {})
 end
 
-T["Add"]["notifies staged even when git add fails"] = function()
+T["Add"]["notifies the error when git add fails"] = function()
   local path = child.lua_func(test_helpers.open_file_buffer, { "first" })
   child.lua_func(test_helpers.stub_async_system, {
     git = { err = "git add failed. Error: boom" },
@@ -673,13 +711,15 @@ T["Add"]["notifies staged even when git add fails"] = function()
 
   child.cmd "Add"
 
-  expect_notifications { { name = "notify", args = { "Staged", vim.log.levels.TRACE } } }
+  expect_notifications {
+    { name = "notify", args = { "git add failed. Error: boom", vim.log.levels.ERROR } },
+  }
   MiniTest.expect.equality(test_helpers.get_calls(child, "async_system_calls"), {
     { name = "system", args = { { "git", "add", "--", path } } },
   })
 end
 
-T["Add"]["stages the on-disk content of a modified readonly buffer"] = function()
+T["Add"]["does not stage a readonly buffer with unsaved changes"] = function()
   local path = child.lua_func(test_helpers.open_file_buffer, { "first" })
   child.bo.readonly = true
   child.api.nvim_buf_set_lines(0, 1, 1, false, { "second" })
@@ -689,8 +729,8 @@ T["Add"]["stages the on-disk content of a modified readonly buffer"] = function(
 
   expect_notifications {
     { name = "notify", args = { "Aborting, readonly", vim.log.levels.WARN } },
-    { name = "notify", args = { "Staged", vim.log.levels.TRACE } },
   }
+  MiniTest.expect.equality(test_helpers.get_calls(child, "async_system_calls"), {})
   MiniTest.expect.equality(child.fn.readfile(path), { "first" })
 end
 
@@ -824,10 +864,20 @@ T["<C-t>"]["toggles virtual lines on and off"] = function()
   })
 end
 
-T["<C-t>"]["notifies disabled when enabling over the VimEnter default"] = function()
+T["<C-t>"]["notifies enabled over the VimEnter default"] = function()
   child.type_keys "<C-t>"
 
   MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {
+    { name = "notify", args = { "Virtual lines enabled", vim.log.levels.TRACE } },
+  })
+end
+
+T["<C-t>"]["notifies disabled when turning them off"] = function()
+  child.type_keys "<C-t>"
+  child.type_keys "<C-t>"
+
+  MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {
+    { name = "notify", args = { "Virtual lines enabled", vim.log.levels.TRACE } },
     { name = "notify", args = { "Virtual lines disabled", vim.log.levels.OFF } },
   })
 end

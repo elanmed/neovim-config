@@ -173,7 +173,8 @@ M.format_with_lsp = function()
       end)()
 
       if is_full_replace then
-        local unformatted = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n") .. "\n"
+        local unformatted = table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, -1, false), "\n")
+          .. "\n"
         local formatted = result[1].newText
 
         vim.schedule(function()
@@ -229,13 +230,16 @@ local lsp_ft = {
   "zsh",
 }
 
+--- @return boolean
 M.write = function()
   if vim.bo.readonly then
-    return vim.notify("Aborting, readonly", vim.log.levels.WARN)
+    vim.notify("Aborting, readonly", vim.log.levels.WARN)
+    return false
   end
 
   if vim.bo.buftype ~= "" then
-    return vim.notify("Aborting, buftype is not normal", vim.log.levels.WARN)
+    vim.notify("Aborting, buftype is not normal", vim.log.levels.WARN)
+    return false
   end
 
   local bufnr = vim.api.nvim_get_current_buf()
@@ -264,6 +268,8 @@ M.write = function()
   else
     vim.cmd.write()
   end
+
+  return true
 end
 
 vim.keymap.set("n", "s", h.async.cb(M.write))
@@ -287,14 +293,20 @@ M.get_stageable_buffer_name = function()
   end
 
   if vim.bo.modified then
-    M.write()
+    local wrote = M.write()
+    if not wrote then
+      return nil
+    end
   end
 
   return name
 end
 
+--- @param name string
+--- @return string?
 M.stage_file = function(name)
-  vim.async.await(h.async.system { "git", "add", "--", name })
+  local err = vim.async.await(h.async.system { "git", "add", "--", name }) --[[@as string?]]
+  return err
 end
 
 vim.api.nvim_create_user_command(
@@ -306,7 +318,12 @@ vim.api.nvim_create_user_command(
       return
     end
 
-    M.stage_file(name)
+    local stage_err = M.stage_file(name)
+    if stage_err ~= nil then
+      vim.notify(stage_err, vim.log.levels.ERROR)
+      return
+    end
+
     vim.notify("Staged", vim.log.levels.TRACE)
   end),
   {}
@@ -364,12 +381,12 @@ vim.api.nvim_create_autocmd("VimEnter", {
 })
 
 M.toggle_virtual_lines = function()
-  local current_virtual_lines = vim.diagnostic.config().virtual_lines
+  local virtual_lines = not vim.diagnostic.config().virtual_lines
   vim.diagnostic.config(
-    vim.tbl_extend("error", base_diagnostic_config, { virtual_lines = not current_virtual_lines })
+    vim.tbl_extend("error", base_diagnostic_config, { virtual_lines = virtual_lines })
   )
 
-  if current_virtual_lines == nil then
+  if virtual_lines then
     vim.notify("Virtual lines enabled", vim.log.levels.TRACE)
   else
     vim.notify("Virtual lines disabled", vim.log.levels.OFF)
