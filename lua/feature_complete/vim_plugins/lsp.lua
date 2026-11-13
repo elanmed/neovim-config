@@ -14,6 +14,8 @@ vim.g.markdown_fenced_languages = {
 
 rawset(vim.treesitter, "start", function() end)
 
+local M = {}
+
 local h = require "helpers"
 
 --- @class CallWriteOpts
@@ -22,7 +24,7 @@ local h = require "helpers"
 --- @field view? vim.fn.winsaveview.ret
 
 --- @param opts CallWriteOpts
-local call_write = function(opts)
+M.call_write = function(opts)
   vim.api.nvim_win_call(opts.winnr, function()
     vim.api.nvim_buf_call(opts.bufnr, function()
       if opts.view then
@@ -40,7 +42,7 @@ end
 --- @field bufnr number
 
 --- @param opts ApplyMinimalChangesOpts
-local apply_minimal_changes = function(opts)
+M.apply_minimal_changes = function(opts)
   opts.formatted = opts.formatted:gsub("\n+$", "") .. "\n"
 
   local indices = vim.text.diff(opts.unformatted, opts.formatted, { result_type = "indices" })
@@ -90,11 +92,11 @@ local apply_minimal_changes = function(opts)
   end
   local view = vim.fn.winsaveview()
   vim.lsp.util.apply_text_edits(edits, opts.bufnr, "utf-8")
-  call_write { bufnr = opts.bufnr, winnr = opts.winnr, view = view }
+  M.call_write { bufnr = opts.bufnr, winnr = opts.winnr, view = view }
 end
 
---- @param cmd table
-local format_with_cli = function(cmd)
+--- @param cmd string[]
+M.format_with_cli = function(cmd)
   local unformatted = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n") .. "\n"
   local winnr = vim.api.nvim_get_current_win()
   local bufnr = vim.api.nvim_get_current_buf()
@@ -107,18 +109,18 @@ local format_with_cli = function(cmd)
 
   if err ~= nil then
     vim.notify(("[%s] non-zero exit code, writing"):format(cmd[1]), vim.log.levels.INFO)
-    call_write { bufnr = bufnr, winnr = winnr }
+    M.call_write { bufnr = bufnr, winnr = winnr }
     return
   end
 
   if formatted == nil then
     vim.notify(("[%s] no stdout, writing"):format(cmd[1]), vim.log.levels.INFO)
-    call_write { bufnr = bufnr, winnr = winnr }
+    M.call_write { bufnr = bufnr, winnr = winnr }
     return
   end
 
   vim.notify(("[%s] applying minimal diff, writing"):format(cmd[1]), vim.log.levels.INFO)
-  apply_minimal_changes {
+  M.apply_minimal_changes {
     unformatted = unformatted,
     formatted = formatted --[[@as string]],
     winnr = winnr,
@@ -126,7 +128,7 @@ local format_with_cli = function(cmd)
   }
 end
 
-local format_with_lsp = function()
+M.format_with_lsp = function()
   local clients = vim.lsp.get_clients {
     bufnr = 0,
     method = "textDocument/formatting",
@@ -148,14 +150,14 @@ local format_with_lsp = function()
       if err then
         return vim.schedule(function()
           vim.notify("[textDocument/formatting] error, writing", vim.log.levels.INFO)
-          call_write { bufnr = bufnr, winnr = winnr }
+          M.call_write { bufnr = bufnr, winnr = winnr }
         end)
       end
 
       if result == nil or #result == 0 then
         return vim.schedule(function()
           vim.notify("[textDocument/formatting] no result, writing", vim.log.levels.INFO)
-          call_write { bufnr = bufnr, winnr = winnr }
+          M.call_write { bufnr = bufnr, winnr = winnr }
         end)
       end
 
@@ -179,7 +181,7 @@ local format_with_lsp = function()
             "[textDocument/formatting] applying minimal diff, writing",
             vim.log.levels.INFO
           )
-          apply_minimal_changes {
+          M.apply_minimal_changes {
             unformatted = unformatted,
             formatted = formatted,
             winnr = winnr,
@@ -193,7 +195,7 @@ local format_with_lsp = function()
             vim.log.levels.INFO
           )
           vim.lsp.util.apply_text_edits(result, bufnr, "utf-8")
-          call_write { bufnr = bufnr, winnr = winnr }
+          M.call_write { bufnr = bufnr, winnr = winnr }
         end)
       end
     end
@@ -227,7 +229,7 @@ local lsp_ft = {
   "zsh",
 }
 
-local write = function()
+M.write = function()
   if vim.bo.readonly then
     return vim.notify("Aborting, readonly", vim.log.levels.WARN)
   end
@@ -244,7 +246,7 @@ local write = function()
     vim.notify("Bigfile, writing", vim.log.levels.INFO)
     vim.cmd.write { mods = { silent = true } }
   elseif vim.list_contains(prettier_ft, vim.bo.filetype) then
-    format_with_cli {
+    M.format_with_cli {
       vim.fs.joinpath(
         vim.fn.stdpath "config",
         "language_servers",
@@ -256,17 +258,17 @@ local write = function()
       vim.api.nvim_buf_get_name(0),
     }
   elseif vim.list_contains(stylua_ft, vim.bo.filetype) then
-    format_with_cli { "stylua", "-" }
+    M.format_with_cli { "stylua", "-" }
   elseif vim.list_contains(lsp_ft, vim.bo.filetype) then
-    format_with_lsp()
+    M.format_with_lsp()
   else
     vim.cmd.write()
   end
 end
 
-vim.keymap.set("n", "s", h.async.cb(write))
+vim.keymap.set("n", "s", h.async.cb(M.write))
 
-local function get_stageable_buffer_name()
+M.get_stageable_buffer_name = function()
   local name = vim.api.nvim_buf_get_name(0)
 
   if name == "" then
@@ -285,26 +287,26 @@ local function get_stageable_buffer_name()
   end
 
   if vim.bo.modified then
-    write()
+    M.write()
   end
 
   return name
 end
 
-local function stage_file(name)
+M.stage_file = function(name)
   vim.async.await(h.async.system { "git", "add", "--", name })
 end
 
 vim.api.nvim_create_user_command(
   "Add",
   h.async.cb(function()
-    local name = get_stageable_buffer_name()
+    local name = M.get_stageable_buffer_name()
 
     if name == nil then
       return
     end
 
-    stage_file(name)
+    M.stage_file(name)
     vim.notify("Staged", vim.log.levels.TRACE)
   end),
   {}
@@ -313,12 +315,12 @@ vim.api.nvim_create_user_command(
 vim.api.nvim_create_user_command(
   "Commit",
   h.async.cb(function()
-    local name = get_stageable_buffer_name()
+    local name = M.get_stageable_buffer_name()
     if name == nil then
       return
     end
 
-    stage_file(name)
+    M.stage_file(name)
 
     local commit_message = ("[:Commit] %s"):format(vim.fs.basename(name))
     vim.notify("Committing…", vim.log.levels.INFO)
@@ -361,7 +363,7 @@ vim.api.nvim_create_autocmd("VimEnter", {
   end,
 })
 
-local function toggle_virtual_lines()
+M.toggle_virtual_lines = function()
   local current_virtual_lines = vim.diagnostic.config().virtual_lines
   vim.diagnostic.config(
     vim.tbl_extend("error", base_diagnostic_config, { virtual_lines = not current_virtual_lines })
@@ -374,13 +376,13 @@ local function toggle_virtual_lines()
   end
 end
 
-vim.keymap.set({ "i", "n" }, "<C-t>", toggle_virtual_lines, { desc = "Toggle virtual lines" })
+vim.keymap.set({ "i", "n" }, "<C-t>", M.toggle_virtual_lines, { desc = "Toggle virtual lines" })
 vim.keymap.set("i", "<C-s>", function()
   vim.lsp.buf.signature_help { border = "single" }
 end, { desc = "LSP signature help" })
 
 --- @param what vim.fn.setqflist.what
-local on_list = function(what)
+M.on_list = function(what)
   local row_1i = unpack(vim.api.nvim_win_get_cursor(0))
 
   local basename_regs = { "%.test%.", "%.spec%." }
@@ -436,7 +438,7 @@ local on_list = function(what)
 end
 
 vim.keymap.set("n", "glr", function()
-  vim.lsp.buf.references(nil, { on_list = on_list })
+  vim.lsp.buf.references(nil, { on_list = M.on_list })
 end, { desc = "LSP go to filtered references" })
 vim.keymap.set("n", "gle", function()
   vim.lsp.buf.references()
@@ -473,7 +475,7 @@ end, { desc = "Close floating windows" })
 
 --- @param direction "next" | "prev"
 --- @param severity? vim.diagnostic.Severity
-local function next_prev_diagnostic(direction, severity)
+M.next_prev_diagnostic = function(direction, severity)
   local diagnostics = vim.diagnostic.get(0, severity and { severity = severity } or nil)
 
   if vim.tbl_count(diagnostics) == 0 then
@@ -487,22 +489,22 @@ local function next_prev_diagnostic(direction, severity)
   vim.diagnostic.jump { severity = severity, count = direction == "next" and 1 or -1 }
 end
 vim.keymap.set("n", "]d", function()
-  next_prev_diagnostic "next"
+  M.next_prev_diagnostic "next"
 end, { desc = "Next diagnostic" })
 vim.keymap.set("n", "[d", function()
-  next_prev_diagnostic "prev"
+  M.next_prev_diagnostic "prev"
 end, { desc = "Next diagnostic" })
 vim.keymap.set("n", "]w", function()
-  next_prev_diagnostic("next", vim.diagnostic.severity.WARN)
+  M.next_prev_diagnostic("next", vim.diagnostic.severity.WARN)
 end, { desc = "Next warning diagnostic" })
 vim.keymap.set("n", "[w", function()
-  next_prev_diagnostic("prev", vim.diagnostic.severity.WARN)
+  M.next_prev_diagnostic("prev", vim.diagnostic.severity.WARN)
 end, { desc = "Next warning diagnostic" })
 vim.keymap.set("n", "]e", function()
-  next_prev_diagnostic("next", vim.diagnostic.severity.ERROR)
+  M.next_prev_diagnostic("next", vim.diagnostic.severity.ERROR)
 end, { desc = "Next error diagnostic" })
 vim.keymap.set("n", "[e", function()
-  next_prev_diagnostic("prev", vim.diagnostic.severity.ERROR)
+  M.next_prev_diagnostic("prev", vim.diagnostic.severity.ERROR)
 end, { desc = "Next error diagnostic" })
 
 vim.lsp.enable {
@@ -514,3 +516,5 @@ vim.lsp.enable {
   "tsc",
   "eslint",
 }
+
+return M

@@ -153,15 +153,17 @@ M.make_temp_dir = function()
 end
 
 --- @param relative_paths string[]
-M.make_files = function(relative_paths)
+--- @param line_count integer?
+M.make_files = function(relative_paths, line_count)
   local dir = M.make_temp_dir()
+  line_count = line_count or 30
 
   return vim.tbl_map(
     --- @param relative_path_arg string
     function(relative_path_arg)
       local path = vim.fs.joinpath(dir, relative_path_arg)
       vim.fn.mkdir(vim.fs.dirname(path), "p")
-      vim.fn.writefile(vim.fn.range(1, 30), path)
+      vim.fn.writefile(vim.fn.range(1, line_count), path)
 
       return path
     end,
