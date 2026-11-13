@@ -87,6 +87,36 @@ local stub_formatting_response = function(response)
   })
 end
 
+--- @class FakeHoverClient
+--- @field supports_method fun(self: FakeHoverClient, method: string): boolean
+
+local stub_hover_client = function()
+  --- @type FakeHoverClient
+  local client = {
+    supports_method = function(_, method)
+      return method == "textDocument/hover"
+    end,
+  }
+
+  require("tests._helpers").mock_child(vim.lsp, {
+    get_clients = function()
+      return { client }
+    end,
+  }, "lsp_get_clients_calls")
+  require("tests._helpers").mock_child(vim.lsp.buf, { hover = function() end }, "hover_calls")
+end
+
+--- @class DiagnosticSeed
+--- @field lnum integer
+--- @field col integer
+--- @field severity vim.diagnostic.Severity
+--- @field message string
+
+--- @param diagnostics DiagnosticSeed[]
+local seed_diagnostics = function(diagnostics)
+  vim.diagnostic.set(vim.api.nvim_create_namespace "lsp_test", 0, diagnostics)
+end
+
 --- @return string[]
 local get_lsp_request_methods = function()
   --- @diagnostic disable-next-line: undefined-field
@@ -800,6 +830,204 @@ T["<C-t>"]["notifies disabled when enabling over the VimEnter default"] = functi
   MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {
     { name = "notify", args = { "Virtual lines disabled", vim.log.levels.OFF } },
   })
+end
+
+T["]d"] = MiniTest.new_set()
+
+T["]d"]["jumps to the next diagnostic and wraps"] = function()
+  child.lua_func(test_helpers.open_buffer, { "one", "two", "three", "four", "five" })
+  child.lua_func(seed_diagnostics, {
+    { lnum = 0, col = 0, severity = vim.diagnostic.severity.ERROR, message = "first" },
+    { lnum = 3, col = 0, severity = vim.diagnostic.severity.WARN, message = "second" },
+  })
+  child.api.nvim_win_set_cursor(0, { 1, 0 })
+
+  child.type_keys "]d"
+
+  test_helpers.expect_cursor(child, { 4, 0 })
+
+  child.type_keys "]d"
+
+  test_helpers.expect_cursor(child, { 1, 0 })
+end
+
+T["]d"]["warns when the buffer has no diagnostics"] = function()
+  child.lua_func(test_helpers.open_buffer, { "one", "two" })
+  child.api.nvim_win_set_cursor(0, { 1, 0 })
+
+  child.type_keys "]d"
+
+  MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {
+    { name = "notify", args = { "No ANY diagnostics", vim.log.levels.WARN } },
+  })
+  test_helpers.expect_cursor(child, { 1, 0 })
+end
+
+T["[d"] = MiniTest.new_set()
+
+T["[d"]["jumps to the previous diagnostic"] = function()
+  child.lua_func(test_helpers.open_buffer, { "one", "two", "three", "four", "five" })
+  child.lua_func(seed_diagnostics, {
+    { lnum = 0, col = 0, severity = vim.diagnostic.severity.ERROR, message = "first" },
+    { lnum = 3, col = 0, severity = vim.diagnostic.severity.WARN, message = "second" },
+  })
+  child.api.nvim_win_set_cursor(0, { 5, 0 })
+
+  child.type_keys "[d"
+
+  test_helpers.expect_cursor(child, { 4, 0 })
+
+  child.type_keys "[d"
+
+  test_helpers.expect_cursor(child, { 1, 0 })
+end
+
+T["]w"] = MiniTest.new_set()
+
+T["]w"]["skips errors when jumping to the next warning"] = function()
+  child.lua_func(test_helpers.open_buffer, { "one", "two", "three", "four", "five" })
+  child.lua_func(seed_diagnostics, {
+    { lnum = 1, col = 0, severity = vim.diagnostic.severity.ERROR, message = "error" },
+    { lnum = 3, col = 0, severity = vim.diagnostic.severity.WARN, message = "warning" },
+  })
+  child.api.nvim_win_set_cursor(0, { 1, 0 })
+
+  child.type_keys "]w"
+
+  test_helpers.expect_cursor(child, { 4, 0 })
+end
+
+T["]w"]["warns when the buffer has no warning diagnostics"] = function()
+  child.lua_func(test_helpers.open_buffer, { "one", "two" })
+  child.lua_func(seed_diagnostics, {
+    { lnum = 0, col = 0, severity = vim.diagnostic.severity.ERROR, message = "error" },
+  })
+  child.api.nvim_win_set_cursor(0, { 1, 0 })
+
+  child.type_keys "]w"
+
+  MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {
+    { name = "notify", args = { "No WARN diagnostics", vim.log.levels.WARN } },
+  })
+  test_helpers.expect_cursor(child, { 1, 0 })
+end
+
+T["[w"] = MiniTest.new_set()
+
+T["[w"]["skips errors when jumping to the previous warning"] = function()
+  child.lua_func(test_helpers.open_buffer, { "one", "two", "three", "four", "five" })
+  child.lua_func(seed_diagnostics, {
+    { lnum = 2, col = 0, severity = vim.diagnostic.severity.WARN, message = "warning" },
+    { lnum = 3, col = 0, severity = vim.diagnostic.severity.ERROR, message = "error" },
+  })
+  child.api.nvim_win_set_cursor(0, { 5, 0 })
+
+  child.type_keys "[w"
+
+  test_helpers.expect_cursor(child, { 3, 0 })
+end
+
+T["]e"] = MiniTest.new_set()
+
+T["]e"]["skips warnings when jumping to the next error"] = function()
+  child.lua_func(test_helpers.open_buffer, { "one", "two", "three", "four", "five" })
+  child.lua_func(seed_diagnostics, {
+    { lnum = 1, col = 0, severity = vim.diagnostic.severity.WARN, message = "warning" },
+    { lnum = 3, col = 0, severity = vim.diagnostic.severity.ERROR, message = "error" },
+  })
+  child.api.nvim_win_set_cursor(0, { 1, 0 })
+
+  child.type_keys "]e"
+
+  test_helpers.expect_cursor(child, { 4, 0 })
+end
+
+T["]e"]["warns when the buffer has no error diagnostics"] = function()
+  child.lua_func(test_helpers.open_buffer, { "one", "two" })
+  child.lua_func(seed_diagnostics, {
+    { lnum = 0, col = 0, severity = vim.diagnostic.severity.WARN, message = "warning" },
+  })
+  child.api.nvim_win_set_cursor(0, { 1, 0 })
+
+  child.type_keys "]e"
+
+  MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {
+    { name = "notify", args = { "No ERROR diagnostics", vim.log.levels.WARN } },
+  })
+  test_helpers.expect_cursor(child, { 1, 0 })
+end
+
+T["[e"] = MiniTest.new_set()
+
+T["[e"]["skips warnings when jumping to the previous error"] = function()
+  child.lua_func(test_helpers.open_buffer, { "one", "two", "three", "four", "five" })
+  child.lua_func(seed_diagnostics, {
+    { lnum = 2, col = 0, severity = vim.diagnostic.severity.ERROR, message = "error" },
+    { lnum = 3, col = 0, severity = vim.diagnostic.severity.WARN, message = "warning" },
+  })
+  child.api.nvim_win_set_cursor(0, { 5, 0 })
+
+  child.type_keys "[e"
+
+  test_helpers.expect_cursor(child, { 3, 0 })
+end
+
+T["K"] = MiniTest.new_set()
+
+T["K"]["asks the client for hover with a bordered float"] = function()
+  child.lua_func(stub_hover_client)
+  child.lua_func(test_helpers.open_file_buffer, { "foo" })
+
+  child.type_keys "K"
+
+  MiniTest.expect.equality(test_helpers.get_calls(child, "lsp_get_clients_calls"), {
+    { name = "get_clients", args = { { bufnr = 0 } } },
+  })
+  MiniTest.expect.equality(test_helpers.get_calls(child, "hover_calls"), {
+    { name = "hover", args = { { border = "single", max_width = 60 } } },
+  })
+  MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {})
+end
+
+T["K"]["falls back to the tag under the cursor"] = function()
+  local definition_path = test_helpers.write_temp_file [[
+first
+second
+]]
+  local source_path = test_helpers.write_temp_file [[
+foo
+bar
+]]
+  child.o.tags = test_helpers.write_temp_file("foo\t" .. definition_path .. "\t2\n")
+  child.lua_func(test_helpers.edit_file, source_path)
+  child.api.nvim_win_set_cursor(0, { 1, 0 })
+
+  child.type_keys "K"
+
+  MiniTest.expect.equality(child.api.nvim_buf_get_name(0), definition_path)
+  test_helpers.expect_cursor(child, { 2, 0 })
+  MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {
+    { name = "notify", args = { "No LSP, falling back to ctags", vim.log.levels.INFO } },
+  })
+end
+
+T["K"]["notifies the tag error when the fallback fails"] = function()
+  child.lua_func(test_helpers.open_file_buffer, { "foo", "bar" })
+  child.api.nvim_win_set_cursor(0, { 1, 0 })
+
+  child.type_keys "K"
+
+  local notifications = test_helpers.get_calls(child, "notifications")
+  MiniTest.expect.equality(notifications[1], {
+    name = "notify",
+    args = { "No LSP, falling back to ctags", vim.log.levels.INFO },
+  })
+  MiniTest.expect.equality(notifications[2].name, "notify")
+  MiniTest.expect.equality(notifications[2].args[2], vim.log.levels.ERROR)
+  MiniTest.expect.equality(
+    vim.endswith(notifications[2].args[1], "Vim(tag):E426: Tag not found: foo"),
+    true
+  )
 end
 
 return T
