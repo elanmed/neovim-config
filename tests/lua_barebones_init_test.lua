@@ -418,6 +418,19 @@ T["s"]["aborts for a buffer with a non-empty buftype"] = function()
   })
 end
 
+T["s"]["aborts for a buffer with no name"] = function()
+  load_config()
+  child.lua_func(test_helpers.open_buffer, { "abc" })
+  child.lua_func(test_helpers.stub_notify)
+
+  child.type_keys "s"
+
+  test_helpers.expect_lines(child, { "abc" })
+  MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {
+    { name = "notify", args = { "Aborting, buf has no name", vim.log.levels.WARN } },
+  })
+end
+
 T["'findfunc'"] = MiniTest.new_set()
 
 T["'findfunc'"]["points to FdFindFiles when fd is executable"] = function()

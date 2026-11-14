@@ -292,6 +292,16 @@ T["write"]["aborts for a buffer that is not normal"] = function()
   MiniTest.expect.equality(child.fn.readfile(path), { "first" })
 end
 
+T["write"]["aborts for a buffer with no name"] = function()
+  child.lua_func(test_helpers.open_buffer, { "first" })
+
+  MiniTest.expect.equality(child.lua_func(run_module_fn, "write"), false)
+
+  MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {
+    { name = "notify", args = { "Aborting, buf has no name", vim.log.levels.WARN } },
+  })
+end
+
 T["write"]["writes a big file without formatting it"] = function()
   local path = test_helpers.make_files({ "big.lua" }, 20001)[1]
   child.lua_func(test_helpers.edit_file, path)

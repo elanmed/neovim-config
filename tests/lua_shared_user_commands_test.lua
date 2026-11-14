@@ -125,6 +125,18 @@ T["Format"]["aborts for buffers with a non-normal buftype"] = function()
   test_helpers.expect_lines(child, { "a" })
 end
 
+T["Format"]["aborts for buffers with no name"] = function()
+  child.lua_func(test_helpers.open_buffer, { "a" })
+  child.lua_func(test_helpers.stub_notify)
+
+  child.cmd "silent Format"
+
+  MiniTest.expect.equality(test_helpers.get_calls(child, "notifications"), {
+    { name = "notify", args = { "Aborting, buf has no name", vim.log.levels.WARN } },
+  })
+  test_helpers.expect_lines(child, { "a" })
+end
+
 T["Snippet"] = MiniTest.new_set()
 
 T["Snippet"]["lists the available triggers when no trigger is given"] = function()
