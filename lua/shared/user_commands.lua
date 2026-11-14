@@ -17,6 +17,10 @@ vim.api.nvim_create_user_command("Format", function()
     return vim.notify("Aborting, buftype is not normal", vim.log.levels.WARN)
   end
 
+  if vim.api.nvim_buf_get_name(0) == "" then
+    return vim.notify("Aborting, buf has no name", vim.log.levels.WARN)
+  end
+
   local view = vim.fn.winsaveview()
   vim.cmd "keepjumps normal! gg=G"
   vim.fn.winrestview(view)

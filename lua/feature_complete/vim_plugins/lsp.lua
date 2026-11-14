@@ -242,6 +242,11 @@ M.write = function()
     return false
   end
 
+  if vim.api.nvim_buf_get_name(0) == "" then
+    vim.notify("Aborting, buf has no name", vim.log.levels.WARN)
+    return false
+  end
+
   local bufnr = vim.api.nvim_get_current_buf()
   local bufname = vim.api.nvim_buf_get_name(bufnr)
   local line_count = vim.api.nvim_buf_line_count(bufnr)
