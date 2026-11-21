@@ -71,6 +71,18 @@ T["<C-d>"]["scrolls in visual mode"] = function()
   MiniTest.expect.equality(child.lua_get [[vim.fn.mode()]], "v")
 end
 
+T["<C-d>"]["scrolls by wrapped display lines"] = function()
+  child.o.columns = 20
+  child.lua_func(test_helpers.open_buffer, { string.rep("x", 1000) })
+
+  child.type_keys "<C-d>"
+
+  test_helpers.expect_eventually(function()
+    local cursor = child.api.nvim_win_get_cursor(0)
+    return cursor[1] == 1 and cursor[2] > 0
+  end, true)
+end
+
 T["<C-u>"] = MiniTest.new_set()
 
 T["<C-u>"]["scrolls up half a page"] = function()
@@ -94,6 +106,19 @@ T["<C-u>"]["stops at the first line"] = function()
   test_helpers.expect_eventually(function()
     return child.api.nvim_win_get_cursor(0)
   end, { 1, 0 })
+end
+
+T["<C-u>"]["scrolls up by wrapped display lines"] = function()
+  child.o.columns = 20
+  child.lua_func(test_helpers.open_buffer, { string.rep("x", 1000) })
+  child.api.nvim_win_set_cursor(0, { 1, 500 })
+
+  child.type_keys "<C-u>"
+
+  test_helpers.expect_eventually(function()
+    local cursor = child.api.nvim_win_get_cursor(0)
+    return cursor[1] == 1 and cursor[2] < 500
+  end, true)
 end
 
 T["L"] = MiniTest.new_set()

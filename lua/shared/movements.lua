@@ -1,4 +1,4 @@
---- @param direction "j"|"k"
+--- @param direction "gj"|"gk"|"j"|"k"
 --- @param num_lines number
 local function smooth_scroll(direction, num_lines)
   local count = 0
@@ -17,11 +17,11 @@ local function get_half_page_lines()
 end
 
 vim.keymap.set({ "n", "v" }, "<C-d>", function()
-  smooth_scroll("j", get_half_page_lines())
+  smooth_scroll("gj", get_half_page_lines())
 end, { desc = "Smooth-scroll a half-page down" })
 
 vim.keymap.set({ "n", "v" }, "<C-u>", function()
-  smooth_scroll("k", get_half_page_lines())
+  smooth_scroll("gk", get_half_page_lines())
 end, { desc = "Smooth-scroll a half-page up" })
 
 --- @param direction "j"|"k"
